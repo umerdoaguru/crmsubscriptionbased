@@ -1,0 +1,281 @@
+
+// import { useState, useEffect } from 'react';
+// import axios from 'axios';
+// import CircleLoader from "react-spinners/CircleLoader";
+// import { BsPencilSquare } from 'react-icons/bs';
+
+// const FacebookLeads = () => {
+//   const [leads, setLeads] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
+//   const [showPopup, setShowPopup] = useState(false);
+//   const [employees,  setEmployees] = useState([]);
+//   const [currentLead, setCurrentLead] = useState({
+//     lead_no: '',
+//     assignedTo: '',
+//     employeeId: '',
+//     createdTime: '', // Added here
+//     name: '',
+//     phone: '',
+//     leadSource: '',
+//     subject:'',
+
+// });
+
+// const fetchEmployees = async () => {
+//   try {
+//       const response = await axios.get('https://crmdemo.vimubds5.a2hosted.com/api/employee');
+//       setEmployees(response.data);
+//   } catch (error) {
+//       console.error('Error fetching employees:', error);
+//   }
+// };
+// const handleInputChange = (e) => {
+//   const { name, value } = e.target;
+//   setCurrentLead((prevLead) => {
+//       const updatedLead = { ...prevLead, [name]: value };
+
+//       // If assignedTo changes, update employeeId accordingly
+//       if (name === 'assignedTo') {
+//           const selectedEmployee = employees.find(employee => employee.name === value);
+//           if (selectedEmployee) {
+//               updatedLead.employeeId = selectedEmployee.employeeId;
+//           } else {
+//               updatedLead.employeeId = ''; // Reset employeeId if no match found
+//           }
+//       }
+
+//       return updatedLead;
+//   });
+// };
+
+// const handleCreateClick = () => {
+
+//   setCurrentLead({
+//       lead_no: '',
+//       assignedTo: '',
+//       employeeId: '',
+//       name: '',
+//       phone: '',
+//       leadSource: '',
+//       createdTime: '', // Clear out createdTime for new lead
+//       subject:'',
+//   });
+//   setShowPopup(true);
+// };
+
+// const saveChanges = async () => {
+
+//           try {
+//               await axios.post('https://crmdemo.vimubds5.a2hosted.com/api/leads', currentLead);
+//               fetchLeads(); // Refresh the list
+//               closePopup();
+//           } catch (error) {
+//               console.error('Error adding lead:', error);
+//           }
+
+//   }
+
+//   const closePopup = () => {
+//     setShowPopup(false);
+
+// };
+
+//   console.log(leads, 'check data save or not in state');
+
+//   // Meta API Token
+//   const ACCESS_TOKEN = 'EAAMAWRBboPIBO87PPmdJdsBd0WjJUw3GZBhYaS1fzmHE97k41JXyRIMhjTmV6lk3VGRRZCJvlrF2fZAJJgANlIwVosGuH30Qaz5eAimreSB57CNisVZArX5tLke0JqMkhZBDuJdlhXlGA5SZBSa1BQjZBUqBVNdUiUXmsPoZB7212Wg2rlPaNelheIlVm1g6Dc96APXfMoX7';
+
+//   // Meta API formId
+//   const formId = 1564826437399879;
+
+//   // Fetch Leads Data
+//   useEffect(() => {
+
+//     fetchLeads();
+//     fetchEmployees();
+//   }, []);
+//   const fetchLeads = async () => {
+//     try {
+//       const response = await axios.get(`https://graph.facebook.com/v20.0/${formId}/leads?access_token=${ACCESS_TOKEN}`);
+
+//       setLeads(response.data.data); // assuming data is in response.data.data
+//       console.log(setLeads, 'Fetch Data State 25 me');
+
+//       setLoading(false);
+//     } catch (err) {
+//       setError('Failed to fetch leads data');
+//       setLoading(false);
+//       console.log(err);
+
+//     }
+//   };
+
+//   const extractFieldValue = (fieldData, fieldName) => {
+//     const field = fieldData.find(item => item.name === fieldName);
+//     return field ? field.values[0] : '';
+//   };
+
+//   // if (loading) return <div>Loading...</div>;
+//   if (loading) return <div><center><CircleLoader color="red" /></center></div>;
+//   if (error) return <div>{error}</div>;
+
+//   return (
+//     <div className="container mx-auto p-4">
+//       <h1 className="text-2xl text-center font-bold mb-4">Facebook Leads Table</h1>
+//       <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
+//       <div className="overflow-x-auto">
+//         <table className="min-w-full bg-white border border-gray-200">
+//           <thead>
+//             <tr className="bg-gray-100">
+//               <th className="py-2 px-4 border-b">Lead S.no</th>
+//               <th className="py-2 px-4 border-b">Lead ID</th>
+//               <th className="py-2 px-4 border-b">Full Name</th>
+//               <th className="py-2 px-4 border-b">Phone Number</th>
+//               <th className="py-2 px-4 border-b">Street Address</th>
+//               <th className="py-2 px-4 border-b">Date Created</th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {leads.map((lead, index) => (
+//               <tr key={lead.id}>
+//                 <td className="py-2 px-4 border-b">{index+1}</td>
+//                 <td className="py-2 px-4 border-b">{lead.id}</td>
+//                 <td className="py-2 px-4 border-b">{extractFieldValue(lead.field_data, 'full_name')}</td>
+//                 <td className="py-2 px-4 border-b">{extractFieldValue(lead.field_data, 'phone_number')}</td>
+//                 <td className="py-2 px-4 border-b">{extractFieldValue(lead.field_data, 'street_address')}</td>
+//                 <td className="py-2 px-4 border-b">{new Date(lead.created_time).toLocaleString()}</td>
+//                 <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+//                                         <button
+//                                            className="text-blue-500 hover:text-blue-700"
+//                                            onClick={handleCreateClick}
+//                                         >
+//                                                                        <BsPencilSquare size={20} />
+//                                         </button>
+
+//                                     </td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+//       </div>
+//       {showPopup && (
+//                     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+//                         <div className="bg-white p-6 rounded-lg shadow-lg w-[500px]">
+//                             <h2 className="text-xl mb-4">{'Add Lead'}</h2>
+//                             <div className="mb-4">
+//                                 <label className="block text-gray-700">Lead Number</label>
+//                                 <input
+//                                     type="number"
+//                                     name="lead_no"
+//                                     value={currentLead.lead_no}
+//                                     onChange={handleInputChange}
+//                                     className={`w-full px-3 py-2 border  rounded`}
+//                                 />
+
+//                             </div>
+//                             <div className="mb-4">
+//                                 <label className="block text-gray-700">Assigned To</label>
+//                                 <select
+//                                     name="assignedTo"
+//                                     value={currentLead.assignedTo}
+//                                     onChange={handleInputChange}
+//                                     className={`w-full px-3 py-2 border rounded`}
+//                                 >
+//                                     <option value="">Select Employee</option>
+//                                     {employees.map(employee => (
+//                                         <option key={employee.employee_id} value={employee.name}>
+//                                             {employee.name}
+//                                         </option>
+//                                     ))}
+//                                 </select>
+
+//                             </div>
+
+//                              {/* Hidden employeeId field */}
+//                              <input
+//                                     type="hidden"
+//                                     id="employeeId"
+//                                     name="employeeId"
+//                                     value={currentLead.employeeId}
+//                                 />
+
+//                             <div className="mb-4">
+//                                 <label className="block text-gray-700">Name</label>
+//                                 <input
+//                                     type="text"
+//                                     name="name"
+//                                     value={currentLead.name}
+//                                     onChange={handleInputChange}
+//                                     className={`w-full px-3 py-2 border  rounded`}
+//                                 />
+
+//                             </div>
+//                             <div className="mb-4">
+//                                 <label className="block text-gray-700">Phone</label>
+//                                 <input
+//                                     type="number"
+//                                     name="phone"
+//                                     value={currentLead.phone}
+//                                     onChange={handleInputChange}
+//                                     className={`w-full px-3 py-2 border rounded`}
+//                                 />
+
+//                             </div>
+//                             <div className="mb-4">
+//         <label className="block text-gray-700">Lead Source</label>
+//         <select
+//           name="leadSource"
+//                 id="leadSource"
+//           value={currentLead.leadSource}
+//           onChange={handleInputChange}
+//           className="w-full p-2 border rounded"
+//         >
+//           <option value="">Select Lead Source</option>
+//           <option value="Website Inquiries">Website Inquiries</option>
+//           <option value="Social Media">Social Media</option>
+//           <option value="Referrals">Referrals</option>
+//           <option value="Cold Calling">Cold Calling</option>
+//           <option value="Email Campaigns">Email Campaigns</option>
+//           <option value="Networking Events">Networking Events</option>
+//           <option value="Paid Advertising">Paid Advertising</option>
+//           <option value="Content Marketing">Content Marketing</option>
+//           <option value="SEO">Search Engine Optimization</option>
+//           <option value="Trade Shows">Trade Shows</option>
+//           <option value="Affiliate Marketing">Affiliate Marketing</option>
+//           <option value="Direct Mail">Direct Mail</option>
+//           <option value="Online Directories">Online Directories</option>
+//         </select>
+
+//       </div><div className="mb-4">
+//                                 <label className="block text-gray-700">Subject</label>
+//                                 <input
+//                                     type="text"
+//                                     name="subject"
+//                                     value={currentLead.subject}
+//                                     onChange={handleInputChange}
+//                                     className={`w-full px-3 py-2 border  rounded`}
+//                                 />
+
+//                             </div>
+
+//                             <div className="flex justify-end">
+//                                 <button
+//                                     className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
+//                                     onClick={saveChanges}
+//                                 >
+//                                     Save
+//                                 </button>
+//                                 <button
+//                                     className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
+//                                     onClick={closePopup}
+//                                 >
+//                                     Cancel
+//                                 </button>
+//                             </div>
+//                         </div>
+//                     </div>
+//                 )}
+//     </div>
+//   );
+// };
