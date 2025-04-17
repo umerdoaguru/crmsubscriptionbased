@@ -25,7 +25,7 @@ function AdminProfile() {
     const fetchEmployee = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/getAdminById/${adminId}`
+          `http://localhost:9000/api/getAdminById/${adminId}`
         ); // Fetch employee data
         setUser(response.data.admin); // Set employee data to state
         console.log(response.data); // Debug: log employee data
@@ -89,6 +89,12 @@ function AdminProfile() {
                   <label className="text-info">Position</label>
                   <div className="p-2 bg-gray-100 rounded">
                     <p className="m-0">{user?.position}</p>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-info">User Id</label>
+                  <div className="p-2 bg-gray-100 rounded">
+                    <p className="m-0">{user?.user_id}</p>
                   </div>
                 </div>
 

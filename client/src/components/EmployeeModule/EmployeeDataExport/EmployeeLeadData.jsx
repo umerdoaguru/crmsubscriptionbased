@@ -56,7 +56,7 @@ function EmployeeLeadData() {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-leads/${EmpId.id}`,
+        `http://localhost:9000/api/employe-leads/${EmpId.id}`,
         {
           headers: {
             'Content-Type': 'application/json',

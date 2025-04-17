@@ -194,19 +194,19 @@ const Reporting = () => {
   };
 
   const quotationAxios = axios.create({
-    baseURL: "https://crmdemo.vimubds5.a2hosted.com/api",
+    baseURL: "http://localhost:9000/api",
   });
 
   const invoiceAxios = axios.create({
-    baseURL: "https://crmdemo.vimubds5.a2hosted.com/api",
+    baseURL: "http://localhost:9000/api",
   });
 
   const employeeAxios = axios.create({
-    baseURL: "https://crmdemo.vimubds5.a2hosted.com/api",
+    baseURL: "http://localhost:9000/api",
   });
 
   const leadsAxios = axios.create({
-    baseURL: "https://crmdemo.vimubds5.a2hosted.com/api",
+    baseURL: "http://localhost:9000/api",
   });
 
   const formatData = (data) => {

@@ -232,7 +232,7 @@ const token = EmpId?.token;
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/leads-employee/${id}`,
+      const response = await axios.get(`http://localhost:9000/api/leads-employee/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -270,7 +270,7 @@ const token = EmpId?.token;
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-visit/${id}`,
+        `http://localhost:9000/api/employe-visit/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -294,7 +294,7 @@ const token = EmpId?.token;
   const fetchFollowUp = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-follow-up/${id}`,
+        `http://localhost:9000/api/employe-follow-up/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -312,7 +312,7 @@ const token = EmpId?.token;
   const fetchUnitSoldEmployee = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/unit-sold-lead-id/${leads[0].lead_id}`,
+        `http://localhost:9000/api/unit-sold-lead-id/${leads[0].lead_id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -332,7 +332,7 @@ const token = EmpId?.token;
   const fetchRemark = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/remarks/${id}`,
+        `http://localhost:9000/api/remarks/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -350,7 +350,7 @@ const token = EmpId?.token;
   const fetchUnitdata = async () => {
     
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/unit-data/${leads[0].unit_id}`,
+      const response = await axios.get(`http://localhost:9000/api/unit-data/${leads[0].unit_id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -536,7 +536,7 @@ const token = EmpId?.token;
       setLoading(true)
       // Send updated data to the backend using Axios
       const response = await axios.put(
-        `https://crmdemo.vimubds5.a2hosted.com/api/updateLeadStatus/${currentLead.lead_id}`,
+        `http://localhost:9000/api/updateLeadStatus/${currentLead.lead_id}`,
         leadData
       );
 
@@ -575,7 +575,7 @@ const token = EmpId?.token;
     try {
       // First API call: Create a visit
       const response = await axios.post(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-visit`,
+        `http://localhost:9000/api/employe-visit`,
         {
           project_name: leads[0].project_name,
           lead_id: leads[0].lead_id,
@@ -593,7 +593,7 @@ const token = EmpId?.token;
   
         // Second API call: Update visit status
         const updateResponse = await axios.put(
-          `https://crmdemo.vimubds5.a2hosted.com/api/updateVisitStatus/${leads[0].lead_id}`,
+          `http://localhost:9000/api/updateVisitStatus/${leads[0].lead_id}`,
           { visit: visitLead.visit,visit_date:visitLead.visit_date  }
         );
   
@@ -608,7 +608,7 @@ const token = EmpId?.token;
   
         // Third API call: Update lead status
         const updateLeadStatusResponse = await axios.put(
-          `https://crmdemo.vimubds5.a2hosted.com/api/updateOnlyLeadStatus/${leads[0].lead_id}`,
+          `http://localhost:9000/api/updateOnlyLeadStatus/${leads[0].lead_id}`,
           { lead_status: "site visit done" }
         );
   
@@ -672,7 +672,7 @@ const token = EmpId?.token;
     try {
       // Send updated data to the backend using Axios
       const response = await axios.post(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-follow-up`,
+        `http://localhost:9000/api/employe-follow-up`,
         {
           project_name: leads[0].project_name,
           lead_id: leads[0].lead_id,
@@ -691,7 +691,7 @@ const token = EmpId?.token;
   
         // Update the Follow Up status after saving the Follow Up
         const putResponse = await axios.put(
-          `https://crmdemo.vimubds5.a2hosted.com/api/updateOnlyFollowUpStatus/${leads[0].lead_id}`,
+          `http://localhost:9000/api/updateOnlyFollowUpStatus/${leads[0].lead_id}`,
           { follow_up_status: "in progress" }
         );
   
@@ -733,7 +733,7 @@ const token = EmpId?.token;
     setLoading(true)
     try {
 
-        const response = await axios.post(`https://crmdemo.vimubds5.a2hosted.com/api/remarks`,
+        const response = await axios.post(`http://localhost:9000/api/remarks`,
         {
           project_name: leads[0].project_name,
           lead_id: leads[0].lead_id,
@@ -774,7 +774,7 @@ const token = EmpId?.token;
     setLoading(true)
     try {
 
-        const response = await axios.post(`https://crmdemo.vimubds5.a2hosted.com/api/unit-sold`,
+        const response = await axios.post(`http://localhost:9000/api/unit-sold`,
         {
           project_name: leads[0].project_name,
           main_project_id: leads[0].main_project_id,
@@ -792,7 +792,7 @@ const token = EmpId?.token;
       if (response.status === 201) {
 
         const putResponse = await axios.put(
-          `https://crmdemo.vimubds5.a2hosted.com/api/unit-data/${unitsold.unit_no}`,
+          `http://localhost:9000/api/unit-data/${unitsold.unit_no}`,
           { unit_status: unitsold.unit_status }
         );
   
@@ -804,7 +804,7 @@ const token = EmpId?.token;
           cogoToast.error("Failed to update the lead Unit Status.");
         }
         const putResponseUnit = await axios.put(
-          `https://crmdemo.vimubds5.a2hosted.com/api/updateOnlyUnitStatus/${leads[0].lead_id}`,
+          `http://localhost:9000/api/updateOnlyUnitStatus/${leads[0].lead_id}`,
           { unit_number: unitsold.unit_no,unit_status: unitsold.unit_status }
         );
   

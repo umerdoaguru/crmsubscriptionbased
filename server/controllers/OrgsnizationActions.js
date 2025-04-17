@@ -3,6 +3,7 @@ const { db } = require("../db");
 const path = require("path");
 const bcrypt = require("bcrypt");
 const JWT = require("jsonwebtoken");
+const { log } = require("console");
 const getAllOrganizations = async (req, res) => {
   try {
     // Query to select all organizations
@@ -177,7 +178,7 @@ const addOrganization = async (req, res) => {
 
 const addEmployee = async (req, res) => {
   try {
-    const { name, email, password, position, phone } = req.body;
+    const { name, email, password, position, phone,user_id } = req.body;
 
     // Validations for required fields
     if (!name || !email) {
@@ -203,8 +204,8 @@ const addEmployee = async (req, res) => {
 
       // If the email does not exist, proceed with inserting the employee
       const insertEmployeeQuery = `
-        INSERT INTO employee (name, email, password, position, phone)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO employee (name, email, password, position, phone,user_id)
+        VALUES (?, ?, ?, ?, ?,?)
       `;
 
       const insertEmployeeParams = [
@@ -213,6 +214,7 @@ const addEmployee = async (req, res) => {
         password,
         position || null,
         phone || null,
+        user_id,
       ];
 
       db.query(
@@ -608,11 +610,12 @@ const updateOrganization = async (req, res) => {
 };
 
 const getAllAdmins = async (req, res) => {
+  const {id}  = req.params
   try {
     // Query to get all admins
-    const getAllAdminsQuery = "SELECT * FROM admins";
+    const getAllAdminsQuery = "SELECT * FROM admins WHERE user_id = ?";
 
-    db.query(getAllAdminsQuery, (err, results) => {
+    db.query(getAllAdminsQuery,[id], (err, results) => {
       if (err) {
         console.error("Error fetching admins from MySQL:", err);
         return res.status(500).json({ error: "Internal server error" });
@@ -665,7 +668,8 @@ const getAdminById = async (req, res) => {
 };
 
 const addAdmin = async (req, res) => {
-  const { name, email, password, position, phone } = req.body;
+  const { name, email, password, position, phone,user_id } = req.body;
+console.log(user_id);
 
   try {
     // Query to check if an admin with the same email already exists
@@ -687,13 +691,13 @@ const addAdmin = async (req, res) => {
 
       // If the email does not exist, proceed with adding the admin
       const addAdminQuery = `
-        INSERT INTO admins (name, email, password, position, phone)
-        VALUES (?, ?, ?, ?,?)
+        INSERT INTO admins (name, email, password, position, phone,user_id)
+        VALUES (?, ?, ?, ?,?,?)
       `;
 
       db.query(
         addAdminQuery,
-        [name, email, password, position, phone],
+        [name, email, password, position, phone,user_id],
         (err, results) => {
           if (err) {
             console.error("Error adding admin:", err);

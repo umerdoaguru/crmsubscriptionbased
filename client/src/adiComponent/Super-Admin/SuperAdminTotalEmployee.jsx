@@ -21,7 +21,7 @@ function SuperAdminTotalEmployee() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get('https://crmdemo.vimubds5.a2hosted.com/api/getAllEmployees-super-admin',
+      const response = await axios.get('http://localhost:9000/api/getAllEmployees-super-admin',
         {
           headers: {
             'Content-Type': 'application/json',

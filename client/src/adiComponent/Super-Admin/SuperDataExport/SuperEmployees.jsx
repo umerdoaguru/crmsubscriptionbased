@@ -25,7 +25,7 @@ function SuperEmployees() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/employee-super-admin",
+      const response = await axios.get("http://localhost:9000/api/employee-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',

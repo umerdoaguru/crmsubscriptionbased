@@ -649,7 +649,7 @@ const CompanyIncoiceData = async (req, res) => {
       charges,
     } = req.body;
 
-    const logoImagePath = "https://crmdemo.vimubds5.a2hosted.com/uploads/" + logo[0].filename;
+    const logoImagePath = "http://localhost:9000/uploads/" + logo[0].filename;
 
     // Insert header and footer images with the associated company_id
     const insertHeaderFooterImages = await new Promise((resolve, reject) => {

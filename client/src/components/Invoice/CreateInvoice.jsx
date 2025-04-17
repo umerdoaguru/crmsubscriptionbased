@@ -121,7 +121,7 @@ const CreateInvoice = () => {
       });
 
       const response = await axios.post(
-        "https://crmdemo.vimubds5.a2hosted.com/api/create-invoice",
+        "http://localhost:9000/api/create-invoice",
         {
           invoice_name: invoiceName,
           invoice_no: invoice_no,
@@ -150,7 +150,7 @@ const CreateInvoice = () => {
 
   const getServicelist = async () => {
     try {
-      const res = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/servicelist`);
+      const res = await axios.get(`http://localhost:9000/api/servicelist`);
 
       setServiceslist(res.data);
     } catch (error) {}
@@ -160,7 +160,7 @@ const CreateInvoice = () => {
     const fetchinvoice = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/company-data`
+          `http://localhost:9000/api/company-data`
         );
         setCompany_data(response.data);
 
@@ -178,7 +178,7 @@ const CreateInvoice = () => {
     const fetchCompanyData = async () => {
       try {
         const response = await axios.post(
-          "https://crmdemo.vimubds5.a2hosted.com/api/company-header-footer",
+          "http://localhost:9000/api/company-header-footer",
           {
             company_name: selectedCompany,
           }

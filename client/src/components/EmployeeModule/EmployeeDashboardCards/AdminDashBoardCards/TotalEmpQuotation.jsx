@@ -15,7 +15,7 @@ function TotalEmpQuotation() {
     const fetchQuotations = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/get-quotation-byEmploye/${EmpId.id}`,
+          `http://localhost:9000/api/get-quotation-byEmploye/${EmpId.id}`,
           {
             headers: {
               'Content-Type': 'application/json',

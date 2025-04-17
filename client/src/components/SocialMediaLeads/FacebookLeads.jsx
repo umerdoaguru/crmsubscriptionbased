@@ -59,7 +59,7 @@ const FacebookLeads = () => {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/employee");
+      const response = await axios.get("http://localhost:9000/api/employee");
       setEmployees(response.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -67,7 +67,7 @@ const FacebookLeads = () => {
   };
   const fetchLeadassigned = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/leads");
+      const response = await axios.get("http://localhost:9000/api/leads");
       setLeadsAssigned(response.data);
       // console.log(leadsAssigned);
     } catch (error) {
@@ -111,7 +111,7 @@ const FacebookLeads = () => {
       return; // Stop further execution if the field is empty
     }
     try {
-      await axios.post("https://crmdemo.vimubds5.a2hosted.com/api/leads", {
+      await axios.post("http://localhost:9000/api/leads", {
         lead_no:  selectedLead.leadId,    
         assignedTo:currentLead.assignedTo,
         employeeId:currentLead.employeeId,

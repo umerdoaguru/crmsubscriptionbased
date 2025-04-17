@@ -14,7 +14,7 @@ const EditInvoiceName = () => {
     const fetchInvoiceData = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/invoice-name/${id}`
+          `http://localhost:9000/api/invoice-name/${id}`
         );
         if (response.data) {
           setNewName(response.data[0].invoice_name);
@@ -31,7 +31,7 @@ const EditInvoiceName = () => {
 
     try {
       const response = await axios.put(
-        `https://crmdemo.vimubds5.a2hosted.com/api/invoice-data/${id}`,
+        `http://localhost:9000/api/invoice-data/${id}`,
         {
           newName,
         }

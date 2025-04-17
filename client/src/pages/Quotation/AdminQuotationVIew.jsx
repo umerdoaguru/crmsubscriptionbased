@@ -19,7 +19,7 @@ function AdminQuotationVIew() {
   const token = adminuser.token;
   const fetchQuotations = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/quotation-admin/${id}`,
+      const response = await axios.get(`http://localhost:9000/api/quotation-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',

@@ -72,7 +72,7 @@ router.delete("/deleteEmployee/:id", deleteEmployee);
 router.post("/addAdmin", addAdmin);
 
 // Route to get all admins
-router.get("/getAllAdmins",authenticateSuperAdmin, getAllAdmins);
+router.get("/getAllAdmins/:id",authenticateSuperAdmin, getAllAdmins);
 
 // Route to get an admin by ID
 router.get("/getAdminById/:adminId", getAdminById);

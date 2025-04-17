@@ -19,7 +19,7 @@ function FinalInvoice() {
   const fetchInvoices = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/invoice/${id}`
+        `http://localhost:9000/api/invoice/${id}`
       );
 
       if (response.status === 200) {
@@ -60,7 +60,7 @@ function FinalInvoice() {
       try {
         // Make an API call to delete the service
         const response = await axios.delete(
-          `https://crmdemo.vimubds5.a2hosted.com/api/invoice-service/${serviceId}`
+          `http://localhost:9000/api/invoice-service/${serviceId}`
         );
 
         if (response.status === 200) {

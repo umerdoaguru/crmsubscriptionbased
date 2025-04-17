@@ -11,7 +11,7 @@ const PaymentsGraph = () => {
     // Fetch data from the API
     const fetchData = async () => {
       try {
-        const response = await fetch("https://crmdemo.vimubds5.a2hosted.com/api/payments");
+        const response = await fetch("http://localhost:9000/api/payments");
         const data = await response.json();
 
         data.forEach((item) => {

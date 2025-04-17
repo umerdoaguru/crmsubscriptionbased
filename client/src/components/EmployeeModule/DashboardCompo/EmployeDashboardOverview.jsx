@@ -28,7 +28,7 @@ const EmployeeOverview = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-leads/${EmpId.id}`,
+        `http://localhost:9000/api/employe-leads/${EmpId.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ const EmployeeOverview = () => {
   const fetchQuotation = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/get-quotation-byEmploye/${EmpId.id}`,
+        `http://localhost:9000/api/get-quotation-byEmploye/${EmpId.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const EmployeeOverview = () => {
   const fetchInvoice = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/get-employee-invoice/${EmpId.id}`,
+        `http://localhost:9000/api/get-employee-invoice/${EmpId.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ const EmployeeOverview = () => {
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-leads/${EmpId.id}`,
+        `http://localhost:9000/api/employe-leads/${EmpId.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -103,7 +103,7 @@ const EmployeeOverview = () => {
   const employeesoldunit = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/unit-sold/${EmpId.id}`,
+        `http://localhost:9000/api/unit-sold/${EmpId.id}`,
         {
           headers: {
             'Content-Type': 'application/json',

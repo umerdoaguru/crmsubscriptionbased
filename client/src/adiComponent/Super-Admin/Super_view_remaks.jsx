@@ -29,7 +29,7 @@ console.log(id);
 
   const fetchRemarks = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/remarks-super-admin/${id}`,
+      const response = await axios.get(`http://localhost:9000/api/remarks-super-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',

@@ -15,7 +15,7 @@ function MainSocialMediaByProject() {
   useEffect(() => {
     const fetchProjectDetail = async () => {
       try {
-        const response = await axios.get('https://crmdemo.vimubds5.a2hosted.com/api/all-project',
+        const response = await axios.get('http://localhost:9000/api/all-project',
           {
             headers: {
               'Content-Type': 'application/json',

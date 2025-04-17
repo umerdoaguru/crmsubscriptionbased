@@ -13,7 +13,7 @@ const LeadsReport = () => {
   useEffect(() => {
     const fetchLeads = async () => {
       try {
-        const response = await fetch("https://crmdemo.vimubds5.a2hosted.com/api/leads",
+        const response = await fetch("http://localhost:9000/api/leads",
           {
             headers: {
               'Content-Type': 'application/json',

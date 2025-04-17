@@ -24,7 +24,7 @@
 
 // const fetchEmployees = async () => {
 //   try {
-//       const response = await axios.get('https://crmdemo.vimubds5.a2hosted.com/api/employee');
+//       const response = await axios.get('http://localhost:9000/api/employee');
 //       setEmployees(response.data);
 //   } catch (error) {
 //       console.error('Error fetching employees:', error);
@@ -67,7 +67,7 @@
 // const saveChanges = async () => {
 
 //           try {
-//               await axios.post('https://crmdemo.vimubds5.a2hosted.com/api/leads', currentLead);
+//               await axios.post('http://localhost:9000/api/leads', currentLead);
 //               fetchLeads(); // Refresh the list
 //               closePopup();
 //           } catch (error) {

@@ -22,7 +22,7 @@ function EmployeeLogin() {
     try {
       setLoading(true)
       const res = await axios.post(
-        "https://crmdemo.vimubds5.a2hosted.com/api/employee-login",
+        "http://localhost:9000/api/employee-login",
         formData
       );
       if (res.data.success) {

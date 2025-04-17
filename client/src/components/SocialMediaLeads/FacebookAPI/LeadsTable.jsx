@@ -42,7 +42,7 @@ const LeadsTable = () => {
 
   const fetchLeadsByFormId = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/Leads-data-fetch-admin/${gotId}`,
+      const response = await axios.get(`http://localhost:9000/api/Leads-data-fetch-admin/${gotId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -59,7 +59,7 @@ const LeadsTable = () => {
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/employee",
+      const response = await axios.get("http://localhost:9000/api/employee",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ const LeadsTable = () => {
   };
   const fetchLeadassigned = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/leads",
+      const response = await axios.get("http://localhost:9000/api/leads",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -127,7 +127,7 @@ const LeadsTable = () => {
     }
     try {
       setLoadingsave(true)
-      await axios.post("https://crmdemo.vimubds5.a2hosted.com/api/leads", {
+      await axios.post("http://localhost:9000/api/leads", {
         lead_no:  selectedLead.leadId,    
         assignedTo:currentLead.assignedTo,
         employeeId:currentLead.employeeId,
@@ -194,7 +194,7 @@ setLoadingsave(false)
   const saveIntoDB = async () => {
     try {
       // Fetch leads from Meta API via backend
-      const response = await axios.post('https://crmdemo.vimubds5.a2hosted.com/api/leads/fetch', {
+      const response = await axios.post('http://localhost:9000/api/leads/fetch', {
         formId: gotId,
       });
       setLoading(true);
@@ -242,7 +242,7 @@ setLoadingsave(false)
   // const saveIntoDB = async () => {
   //   try {
   //     // Fetch leads from Meta API via backend
-  //     const response = await axios.post('https://crmdemo.vimubds5.a2hosted.com/api/leads/fetch', {
+  //     const response = await axios.post('http://localhost:9000/api/leads/fetch', {
   //       formId: gotId,
   //     });
   //     setLoading(true);

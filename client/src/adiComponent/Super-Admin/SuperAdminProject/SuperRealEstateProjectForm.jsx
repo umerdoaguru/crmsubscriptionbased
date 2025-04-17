@@ -21,7 +21,7 @@ const SuperRealEstateProjectForm = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("https://crmdemo.vimubds5.a2hosted.com/api/project-add", formData);
+      const response = await axios.post("http://localhost:9000/api/project-add", formData);
 
       if (response.status === 200) {
         cogoToast.success("Project added successfully!", { position: "top-right" });

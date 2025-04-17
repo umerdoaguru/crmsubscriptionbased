@@ -13,12 +13,16 @@ import { useSelector } from "react-redux";
 
 const SuperAdEmployeemanagement = () => {
   const [employees, setEmployees] = useState([]);
+  const superadminuser = useSelector((state) => state.auth.user);
+  const userId = superadminuser.id
+  const token = superadminuser.token;
   const [newEmployee, setNewEmployee] = useState({
     name: "",
     email: "",
     password: "",
     position: "",
     phone: "",
+    user_id:userId
   });
   const [editingIndex, setEditingIndex] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -27,8 +31,7 @@ const SuperAdEmployeemanagement = () => {
 
  const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 7; 
-  const superadminuser = useSelector((state) => state.auth.user);
-  const token = superadminuser.token;
+
 
   useEffect(() => {
     fetchEmployees();
@@ -37,7 +40,7 @@ const SuperAdEmployeemanagement = () => {
   const fetchEmployees = async () => {
     try {
       const response = await axios.get(
-        "https://crmdemo.vimubds5.a2hosted.com/api/getAllEmployees-super-admin",
+        "http://localhost:9000/api/getAllEmployees-super-admin",
             {
               headers: {
                 'Content-Type': 'application/json',
@@ -104,7 +107,7 @@ const SuperAdEmployeemanagement = () => {
 
   const isEmailTaken = async (email) => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/checkEmail", {
+      const response = await axios.get("http://localhost:9000/api/checkEmail", {
         params: { email },
       });
       return response.data.exists;
@@ -123,13 +126,13 @@ const SuperAdEmployeemanagement = () => {
         // Update existing employee
         const employeeToUpdate = employees[editingIndex];
         response = await axios.put(
-          `https://crmdemo.vimubds5.a2hosted.com/api/updateEmployee/${employeeToUpdate.employeeId}`,
+          `http://localhost:9000/api/updateEmployee/${employeeToUpdate.employeeId}`,
           newEmployee
         );
       } else {
         // Add new employee
         response = await axios.post(
-          "https://crmdemo.vimubds5.a2hosted.com/api/addEmployee",
+          "http://localhost:9000/api/addEmployee",
           newEmployee
         );
       }
@@ -176,7 +179,7 @@ const SuperAdEmployeemanagement = () => {
     if (isConfirmed) {
       try {
         await axios.delete(
-          `https://crmdemo.vimubds5.a2hosted.com/api/deleteEmployee/${employeeId}`
+          `http://localhost:9000/api/deleteEmployee/${employeeId}`
         );
         fetchEmployees(); // Fetch employees to update the list
       } catch (error) {

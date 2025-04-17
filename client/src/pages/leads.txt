@@ -35,7 +35,7 @@
 
 //     const fetchLeads = async () => {
 //         try {
-//             const response = await axios.get('https://crmdemo.vimubds5.a2hosted.com/api/leads');
+//             const response = await axios.get('http://localhost:9000/api/leads');
 //             setLeads(response.data);
 //         } catch (error) {
 //             console.error('Error fetching leads:', error);
@@ -44,7 +44,7 @@
 
 //     const fetchEmployees = async () => {
 //         try {
-//           const response = await axios.get('https://crmdemo.vimubds5.a2hosted.com/api/employee');
+//           const response = await axios.get('http://localhost:9000/api/employee');
 //           setEmployees(response.data);
 //         } catch (error) {
 //           console.error('Error fetching employees:', error);
@@ -127,7 +127,7 @@
 //         if (validateForm()) {
 //             if (isEditing) {
 //                 try {
-//                     await axios.put(`https://crmdemo.vimubds5.a2hosted.com/api/leads/${currentLead.lead_id}`, currentLead);
+//                     await axios.put(`http://localhost:9000/api/leads/${currentLead.lead_id}`, currentLead);
 //                     fetchLeads(); // Refresh the list
 //                     closePopup();
 //                 } catch (error) {
@@ -135,7 +135,7 @@
 //                 }
 //             } else {
 //                 try {
-//                     await axios.post('https://crmdemo.vimubds5.a2hosted.com/api/leads', currentLead);
+//                     await axios.post('http://localhost:9000/api/leads', currentLead);
 //                     fetchLeads(); // Refresh the list
 //                     closePopup();
 //                 } catch (error) {
@@ -149,7 +149,7 @@
 //         const isConfirmed = window.confirm("Are you sure you want to delete this data?");
 //         if (isConfirmed) {
 //             try {
-//                 await axios.delete(`https://crmdemo.vimubds5.a2hosted.com/api/leads/${id}`);
+//                 await axios.delete(`http://localhost:9000/api/leads/${id}`);
 //                 fetchLeads(); // Refresh the list after deletion
 //             } catch (error) {
 //                 console.error('Error deleting lead:', error);

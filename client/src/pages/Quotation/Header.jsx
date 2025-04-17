@@ -10,7 +10,7 @@
 //   useEffect(() => {
 //     const fetchImages = async () => {
 //       try {
-//         const response = await axios.post(`https://crmdemo.vimubds5.a2hosted.com/api/company-header-footer`);
+//         const response = await axios.post(`http://localhost:9000/api/company-header-footer`);
 
 //         if (response.status === 200) {
 //           const { header_img} = response.data;
@@ -63,7 +63,7 @@
 //   useEffect(() => {
 //     const fetchImages = async () => {
 //       try {
-//         const response = await axios.post('https://crmdemo.vimubds5.a2hosted.com/api/company-header-footer', {
+//         const response = await axios.post('http://localhost:9000/api/company-header-footer', {
 //           company_name_branch: companyName // Send the company name in the request body
 //         });
 
@@ -114,7 +114,7 @@ function Header({ companyName, quotationName }) {
     const fetchImages = async () => {
       try {
         const response = await axios.post(
-          "https://crmdemo.vimubds5.a2hosted.com/api/company-header-footer",
+          "http://localhost:9000/api/company-header-footer",
           {
             company_name: companyName,
           }

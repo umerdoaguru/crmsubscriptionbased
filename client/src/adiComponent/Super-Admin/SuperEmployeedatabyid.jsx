@@ -22,7 +22,7 @@ function SuperEmployeedatabyid() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/leads-super-admin/${id}`,
+      const response = await axios.get(`http://localhost:9000/api/leads-super-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ function SuperEmployeedatabyid() {
   const fetchFollowUp = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-follow-up-super-admin/${id}`,
+        `http://localhost:9000/api/employe-follow-up-super-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ function SuperEmployeedatabyid() {
   const fetchRemark = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/remarks-super-admin/${id}`,
+        `http://localhost:9000/api/remarks-super-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ function SuperEmployeedatabyid() {
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-visit-super-admin/${id}`,
+        `http://localhost:9000/api/employe-visit-super-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',

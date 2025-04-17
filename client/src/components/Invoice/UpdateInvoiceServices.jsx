@@ -10,7 +10,7 @@ const UpdateInvoiceServices = ({
   const fetchServices = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/invoice/${invoiceId}`
+        `http://localhost:9000/api/invoice/${invoiceId}`
       );
       setServices(response.data);
     } catch (error) {
@@ -22,7 +22,7 @@ const UpdateInvoiceServices = ({
     e.preventDefault();
     try {
       const response = await axios.put(
-        `https://crmdemo.vimubds5.a2hosted.com/api/invoice/${invoiceId}`,
+        `http://localhost:9000/api/invoice/${invoiceId}`,
         {
           services,
         }

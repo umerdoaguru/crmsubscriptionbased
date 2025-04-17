@@ -228,7 +228,7 @@ const employeeProfile = async (req, res) => {
   try {
     const { id } = req.params;
     const sql =
-      "SELECT employeeId, name, email, phone, position, createdTime FROM employee WHERE employeeId = ?";
+      "SELECT employeeId, name, email, phone, position,user_id, createdTime FROM employee WHERE employeeId = ?";
 
     const result = await new Promise((resolve, reject) => {
       db.query(sql, [id], (err, results) => {

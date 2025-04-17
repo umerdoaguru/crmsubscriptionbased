@@ -38,7 +38,7 @@ const Admin_ViewAll_Unit_Sold = () => {
   const fetchEmployeeUnitSold = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/admin-unit-sold-lead-id/${id}`,
+        `http://localhost:9000/api/admin-unit-sold-lead-id/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',

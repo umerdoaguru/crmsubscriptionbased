@@ -12,7 +12,7 @@ const UpdateInvoiceNotes = () => {
     const fetchNotes = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/invoice-get-notes/${id}`
+          `http://localhost:9000/api/invoice-get-notes/${id}`
         );
         setNotes(response.data);
       } catch (error) {
@@ -28,7 +28,7 @@ const UpdateInvoiceNotes = () => {
 
     try {
       const response = await axios.put(
-        `https://crmdemo.vimubds5.a2hosted.com/api/invoice-update-notes`,
+        `http://localhost:9000/api/invoice-update-notes`,
         { notes }
       );
 

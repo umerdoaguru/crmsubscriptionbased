@@ -37,7 +37,7 @@ const Overview2 = () => {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/leads-super-admin",
+      const response = await axios.get("http://localhost:9000/api/leads-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ const Overview2 = () => {
 
   const fetchEmployee = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/employee-super-admin`,
+      const response = await axios.get(`http://localhost:9000/api/employee-super-admin`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ const Overview2 = () => {
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-all-visit-super-admin`,
+        `http://localhost:9000/api/employe-all-visit-super-admin`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ const Overview2 = () => {
   const fetchProjects = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/super-admin-all-project`,
+        `http://localhost:9000/api/super-admin-all-project`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -109,7 +109,7 @@ const Overview2 = () => {
   const employeesoldunit = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/super-admin-unit-sold`,
+        `http://localhost:9000/api/super-admin-unit-sold`,
         
         {
           headers: {

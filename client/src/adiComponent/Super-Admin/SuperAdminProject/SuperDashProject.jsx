@@ -22,7 +22,7 @@ const SuperDashProject = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/super-admin-all-project", {
+      const response = await axios.get("http://localhost:9000/api/super-admin-all-project", {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

@@ -30,7 +30,7 @@ function WebsiteLeads() {
   // Fetch leads
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/user-data-admin",
+      const response = await axios.get("http://localhost:9000/api/user-data-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ function WebsiteLeads() {
   // Fetch employees
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/employee",
+      const response = await axios.get("http://localhost:9000/api/employee",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ function WebsiteLeads() {
   // Fetch lead assignments
   const fetchLeadassigned = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/leads",
+      const response = await axios.get("http://localhost:9000/api/leads",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ function WebsiteLeads() {
   
     try {
       setLoading(true)
-      await axios.post("https://crmdemo.vimubds5.a2hosted.com/api/leads", {
+      await axios.post("http://localhost:9000/api/leads", {
         lead_no: selectedLead.leadId,
         assignedTo: currentLead.assignedTo,
         employeeId: currentLead.employeeId,

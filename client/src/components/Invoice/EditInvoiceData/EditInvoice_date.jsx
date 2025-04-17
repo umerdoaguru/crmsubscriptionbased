@@ -13,7 +13,7 @@ const EditInvoice_date = () => {
 
     try {
       const response = await axios.put(
-        `https://crmdemo.vimubds5.a2hosted.com/api/invoice-date/${id}`,
+        `http://localhost:9000/api/invoice-date/${id}`,
         { newInvoice_date: newInvoiceDate }
       );
       if (response.status === 200) {

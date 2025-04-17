@@ -31,7 +31,7 @@ function SuperWebsiteLeads() {
   // Fetch leads
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/user-data-super-admin",
+      const response = await axios.get("http://localhost:9000/api/user-data-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ function SuperWebsiteLeads() {
   // Fetch employees
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/employee-super-admin",
+      const response = await axios.get("http://localhost:9000/api/employee-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ function SuperWebsiteLeads() {
   // Fetch lead assignments
   const fetchLeadassigned = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/leads-super-admin",
+      const response = await axios.get("http://localhost:9000/api/leads-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -115,7 +115,7 @@ function SuperWebsiteLeads() {
   
     try {
       setLoading(true)
-      await axios.post("https://crmdemo.vimubds5.a2hosted.com/api/leads", {
+      await axios.post("http://localhost:9000/api/leads", {
         lead_no: selectedLead.leadId,
         assignedTo: currentLead.assignedTo,
         employeeId: currentLead.employeeId,

@@ -10,7 +10,7 @@ const DevicesGraph = () => {
   useEffect(() => {
     const fetchDeviceData = async () => {
       try {
-        const response = await fetch("https://crmdemo.vimubds5.a2hosted.com/api/devices-data");
+        const response = await fetch("http://localhost:9000/api/devices-data");
         const data = await response.json();
 
         // Process the data to format it for the chart

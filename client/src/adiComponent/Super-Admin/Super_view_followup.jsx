@@ -33,7 +33,7 @@ const Super_view_followup = ({id,closeModalFollowUp}) => {
   const fetchFollowUp = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-follow-up-super-admin/${id}`,
+        `http://localhost:9000/api/employe-follow-up-super-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',

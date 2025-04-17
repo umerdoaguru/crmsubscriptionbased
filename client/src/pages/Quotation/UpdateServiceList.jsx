@@ -11,7 +11,7 @@ function UpdateServiceList() {
 
   const fetchServiceList = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/servicelist`);
+      const response = await axios.get(`http://localhost:9000/api/servicelist`);
       if (response.status === 200) {
         setServices(response.data);
         // Initialize updatedServices state with the fetched services
@@ -29,7 +29,7 @@ function UpdateServiceList() {
   const handleUpdate = async () => {
     try {
       const response = await axios.put(
-        `https://crmdemo.vimubds5.a2hosted.com/api/servicelist`,
+        `http://localhost:9000/api/servicelist`,
         {
           services: updatedServices,
         }

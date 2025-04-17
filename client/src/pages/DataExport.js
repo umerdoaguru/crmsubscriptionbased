@@ -39,7 +39,7 @@ function DataExport() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/leads",
+      const response = await axios.get("http://localhost:9000/api/leads",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ function DataExport() {
 
   const fetchEmployee = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/employee`,
+      const response = await axios.get(`http://localhost:9000/api/employee`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ function DataExport() {
   const fetchQuotation = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/quotation-data`
+        `http://localhost:9000/api/quotation-data`
       );
       setQuotation(response.data);
     } catch (error) {
@@ -80,7 +80,7 @@ function DataExport() {
   const fetchInvoice = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/invoice-data`
+        `http://localhost:9000/api/invoice-data`
       );
       setInvoice(response.data);
     } catch (error) {
@@ -90,7 +90,7 @@ function DataExport() {
   const employeesoldunit = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/admin-unit-sold`,
+        `http://localhost:9000/api/admin-unit-sold`,
         {
           headers: {
             'Content-Type': 'application/json',

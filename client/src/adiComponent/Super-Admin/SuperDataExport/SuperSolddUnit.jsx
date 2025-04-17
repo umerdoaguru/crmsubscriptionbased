@@ -37,7 +37,7 @@ const SuperSoldnit= () => {
 
   const fetchEmployeeUnitSold = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/super-admin-unit-sold", {
+      const response = await axios.get("http://localhost:9000/api/super-admin-unit-sold", {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -52,7 +52,7 @@ const SuperSoldnit= () => {
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/employee-super-admin",
+      const response = await axios.get("http://localhost:9000/api/employee-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ const SuperSoldnit= () => {
 
   const fetchSoldUnits = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/super-admin-unit-sold",  {
+      const response = await axios.get("http://localhost:9000/api/super-admin-unit-sold",  {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -82,7 +82,7 @@ const SuperSoldnit= () => {
   const fetchEmployeeData = async (employeeId) => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/unit-sold/${employeeId}`, {
+        `http://localhost:9000/api/unit-sold/${employeeId}`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`

@@ -36,7 +36,7 @@ const token = superadminuser.token;
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-leads-super-admin/${employeeId}`,
+        `http://localhost:9000/api/employe-leads-super-admin/${employeeId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const token = superadminuser.token;
     const fetchEmployee = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/employeeProfile-super-admin/${employeeId}`,
+          `http://localhost:9000/api/employeeProfile-super-admin/${employeeId}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -141,6 +141,12 @@ const token = superadminuser.token;
                   <label className="text-info">Phone</label>
                   <div className="p-2 bg-gray-100 rounded">
                     <p className="m-0">{user.phone}</p>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-info">User Id</label>
+                  <div className="p-2 bg-gray-100 rounded">
+                    <p className="m-0">{user.user_id}</p>
                   </div>
                 </div>
 

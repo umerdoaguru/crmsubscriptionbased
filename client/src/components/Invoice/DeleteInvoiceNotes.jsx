@@ -14,7 +14,7 @@ const DeleteInvoiceNotes = () => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `https://crmdemo.vimubds5.a2hosted.com/api/delete-notes/${noteId}`
+          `http://localhost:9000/api/delete-notes/${noteId}`
         );
 
         if (response.status === 200) {
@@ -31,7 +31,7 @@ const DeleteInvoiceNotes = () => {
   const fetchNotes = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/invoice-get-notes/${id}`
+        `http://localhost:9000/api/invoice-get-notes/${id}`
       );
 
       if (response.status === 200) {

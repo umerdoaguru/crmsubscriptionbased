@@ -62,7 +62,7 @@ const SuperVisitReport = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/leads-super-admin`,
+        `http://localhost:9000/api/leads-super-admin`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ const SuperVisitReport = () => {
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/employee-super-admin",
+      const response = await axios.get("http://localhost:9000/api/employee-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',

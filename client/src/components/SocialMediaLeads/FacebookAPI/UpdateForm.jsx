@@ -26,7 +26,7 @@ const UpdateForm = ({setShowUpdateForm,id}) => {
   const fetchFormData = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/forms/${id}`
+        `http://localhost:9000/api/forms/${id}`
       );
       setForm(response.data.reverse());
       console.log(response);
@@ -43,7 +43,7 @@ const UpdateForm = ({setShowUpdateForm,id}) => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `https://crmdemo.vimubds5.a2hosted.com/api/deleteform/${form.id}`
+          `http://localhost:9000/api/deleteform/${form.id}`
         );
         if (response.status === 200) {
           console.log("form deleted successfully");
@@ -81,7 +81,7 @@ const UpdateForm = ({setShowUpdateForm,id}) => {
   // Function to send the PUT request to update the Form data
   const updateFrom = async () => {
     try {
-      const response = await axios.put(`https://crmdemo.vimubds5.a2hosted.com/api/updateform`, modalData);
+      const response = await axios.put(`http://localhost:9000/api/updateform`, modalData);
       if (response.status === 200) {
         cogoToast.success("Form updated successfully!");
         setRender(!render); // Refresh the list after updating

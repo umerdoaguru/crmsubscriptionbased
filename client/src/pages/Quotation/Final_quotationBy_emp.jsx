@@ -21,7 +21,7 @@ function Final_quotationBy_emp() {
 
   const fetchQuotations = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/quotation/${id}`,
+      const response = await axios.get(`http://localhost:9000/api/quotation/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',

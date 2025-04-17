@@ -21,7 +21,7 @@ const SuperQuotationList = () => {
     const fetchQuotations = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/quotation-data-super-admin`,
+          `http://localhost:9000/api/quotation-data-super-admin`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ const SuperQuotationList = () => {
 
     try {
       // API call to update status in the backend
-      await axios.post(`https://crmdemo.vimubds5.a2hosted.com/api/update-quotation-status`, {
+      await axios.post(`http://localhost:9000/api/update-quotation-status`, {
         id: id, // Send the quotation ID
         status: newStatus, // Send the updated status
       });

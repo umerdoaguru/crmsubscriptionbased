@@ -16,12 +16,16 @@ import { useSelector } from "react-redux";
 
 function Super_Admin_Adminmanagement() {
   const [admins, setAdmins] = useState([]);
-  const initialAdminState = {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
+  const userId = superadminuser.id
+  const initialAdminState = { 
     name: "",
     email: "",
     password: "",
     position: "",
     phone: "",
+    user_id:userId
   };
   const [newAdmin, setNewAdmin] = useState(initialAdminState);
   const [editingIndex, setEditingIndex] = useState(null);
@@ -31,8 +35,7 @@ function Super_Admin_Adminmanagement() {
   const itemsPerPage = 7; 
   const navigate = useNavigate(); // Initialize useNavigate
   const [showPassword, setShowPassword] = useState(false); // State to manage password visibility
-  const superadminuser = useSelector((state) => state.auth.user);
-  const token = superadminuser.token;
+
   // Fetch admins when component loads
   useEffect(() => {
     fetchAdmins();
@@ -53,7 +56,7 @@ function Super_Admin_Adminmanagement() {
   const fetchAdmins = async () => {
     try {
       const response = await axios.get(
-        "https://crmdemo.vimubds5.a2hosted.com/api/getAllAdmins",
+        `http://localhost:9000/api/getAllAdmins/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -76,7 +79,7 @@ function Super_Admin_Adminmanagement() {
 
   //   try {
   //     const response = await axios.get(
-  //       "https://crmdemo.vimubds5.a2hosted.com/api/admins/checkEmail",
+  //       "http://localhost:9000/api/admins/checkEmail",
   //       {
   //         params: { email },
   //       }
@@ -156,7 +159,7 @@ function Super_Admin_Adminmanagement() {
         // console.log("Password to update:", newAdmin.password);
 
         await axios.put(
-          `https://crmdemo.vimubds5.a2hosted.com/api/updateAdmin/${adminToUpdate.admin_id}`,
+          `http://localhost:9000/api/updateAdmin/${adminToUpdate.admin_id}`,
           newAdmin
         );
 
@@ -167,7 +170,7 @@ function Super_Admin_Adminmanagement() {
         console.log("Adding new admin:", newAdmin);
 
         const response = await axios.post(
-          "https://crmdemo.vimubds5.a2hosted.com/api/addAdmin",
+          "http://localhost:9000/api/addAdmin",
           newAdmin
         );
 
@@ -229,7 +232,7 @@ function Super_Admin_Adminmanagement() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`https://crmdemo.vimubds5.a2hosted.com/api/deleteAdmin/${admin_id}`);
+        await axios.delete(`http://localhost:9000/api/deleteAdmin/${admin_id}`);
         fetchAdmins();
       } catch (error) {
         console.error("Error deleting admin:", error);

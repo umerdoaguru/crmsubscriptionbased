@@ -22,7 +22,7 @@ function Single_Lead_Profile() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/leads/${id}`,
+      const response = await axios.get(`http://localhost:9000/api/leads/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ function Single_Lead_Profile() {
   const fetchFollowUp = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-follow-up-admin/${id}`,
+        `http://localhost:9000/api/employe-follow-up-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ function Single_Lead_Profile() {
   const fetchUnitSoldEmployee = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/admin-unit-sold-lead-id/${leads[0].lead_id}`,
+        `http://localhost:9000/api/admin-unit-sold-lead-id/${leads[0].lead_id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ function Single_Lead_Profile() {
   const fetchRemark = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/remarks-admin/${id}`,
+        `http://localhost:9000/api/remarks-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ function Single_Lead_Profile() {
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-visit-admin/${id}`,
+        `http://localhost:9000/api/employe-visit-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',

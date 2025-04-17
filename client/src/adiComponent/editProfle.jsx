@@ -28,7 +28,7 @@ const EditProfile = () => {
 
       // Make the PUT request with FormData
       const response = await axios.put(
-        "https://crmdemo.vimubds5.a2hosted.com/api/editProfile",
+        "http://localhost:9000/api/editProfile",
         formData,
         {
           headers: {

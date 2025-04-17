@@ -12,7 +12,7 @@ const FormSelector = ({  setLoading, setMe, setError,id, onFormSelect  }) => {
   // Fetch forms from backend
   const fetchForms = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/forms/${id}`,
+      const response = await axios.get(`http://localhost:9000/api/forms/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ const FormSelector = ({  setLoading, setMe, setError,id, onFormSelect  }) => {
 
     try {
       // Fetch leads from Meta API via backend
-      const response = await axios.post('https://crmdemo.vimubds5.a2hosted.com/api/leads/fetch', {
+      const response = await axios.post('http://localhost:9000/api/leads/fetch', {
         formId: selectedFormId
       });
       setError('Fetch leads Done');

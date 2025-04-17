@@ -30,7 +30,7 @@ const QuotationInvoice = () => {
   const fetchServices = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/quotation/${id}`
+        `http://localhost:9000/api/quotation/${id}`
       );
       setServices(response.data);
       setQuotationName(response.data[0].quotation_name);
@@ -43,7 +43,7 @@ const QuotationInvoice = () => {
     const fetchCompanyData = async () => {
       try {
         const response = await axios.post(
-          "https://crmdemo.vimubds5.a2hosted.com/api/company-header-footer",
+          "http://localhost:9000/api/company-header-footer",
           {
             company_name: selectedCompany,
           }
@@ -103,7 +103,7 @@ const QuotationInvoice = () => {
     const fetchinvoice = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/company-data/${userId}`
+          `http://localhost:9000/api/company-data/${userId}`
         );
         setCompany_data(response.data);
 
@@ -121,7 +121,7 @@ const QuotationInvoice = () => {
 
     try {
       const response = await axios.post(
-        "https://crmdemo.vimubds5.a2hosted.com/api/create-invoice",
+        "http://localhost:9000/api/create-invoice",
         {
           invoice_name: quotationName,
           invoice_no: invoice_no,

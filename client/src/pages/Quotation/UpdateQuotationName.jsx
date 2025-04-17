@@ -13,7 +13,7 @@ const UpdateQuotation = () => {
   useEffect(() => {
     const fetchQuotation = async () => {
       try {
-        const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/quotation-name/${id}`);
+        const response = await axios.get(`http://localhost:9000/api/quotation-name/${id}`);
         if (response.data && response.data.length > 0) {
           const fetchedData = response.data[0];
           setEditData({
@@ -41,7 +41,7 @@ const UpdateQuotation = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.put(`https://crmdemo.vimubds5.a2hosted.com/api/quotation-data/${id}`, editData);
+      const response = await axios.put(`http://localhost:9000/api/quotation-data/${id}`, editData);
       if (response.status === 200) {
         setMessage(response.data.message);
         navigate(-1);

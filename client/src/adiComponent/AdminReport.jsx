@@ -347,15 +347,15 @@
   
 
 //   const leadsAxios = axios.create({
-//     baseURL: "https://crmdemo.vimubds5.a2hosted.com/api",
+//     baseURL: "http://localhost:9000/api",
 //   });
 
 //   const visitAxios = axios.create({
-//     baseURL: "https://crmdemo.vimubds5.a2hosted.com/api",
+//     baseURL: "http://localhost:9000/api",
 //   });
 
 //   const closedAxios = axios.create({
-//     baseURL: "https://crmdemo.vimubds5.a2hosted.com/api",
+//     baseURL: "http://localhost:9000/api",
 //   });
 
 //   const formatData = (data) => {
@@ -662,7 +662,7 @@ const AdminReport = () =>  {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/leads",
+      const response = await axios.get("http://localhost:9000/api/leads",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -676,7 +676,7 @@ const AdminReport = () =>  {
 
   const fetchEmployee = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/employee`);
+      const response = await axios.get(`http://localhost:9000/api/employee`);
       setEmployee(response.data);
     } catch (error) {
       console.error("Error fetching employee data:", error);
@@ -686,7 +686,7 @@ const AdminReport = () =>  {
   const fetchQuotation = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/quotation-data`
+        `http://localhost:9000/api/quotation-data`
       );
       setQuotation(response.data);
     } catch (error) {
@@ -697,7 +697,7 @@ const AdminReport = () =>  {
   const fetchInvoice = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/invoice-data`
+        `http://localhost:9000/api/invoice-data`
       );
       setInvoice(response.data);
     } catch (error) {
@@ -708,7 +708,7 @@ const AdminReport = () =>  {
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/employe-all-visit-admin`,
+        `http://localhost:9000/api/employe-all-visit-admin`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -727,7 +727,7 @@ const AdminReport = () =>  {
   const unitsolds = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/admin-unit-sold`,
+        `http://localhost:9000/api/admin-unit-sold`,
         {
           headers: {
             'Content-Type': 'application/json',

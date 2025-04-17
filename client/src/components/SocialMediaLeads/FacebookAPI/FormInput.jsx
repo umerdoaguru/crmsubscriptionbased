@@ -14,7 +14,7 @@ const FormInput = ({ setShowForm,onFormSubmit,id }) => {
 
     try {
       // Make POST request to save form ID and form name
-      const response = await axios.post('https://crmdemo.vimubds5.a2hosted.com/api/forms', {
+      const response = await axios.post('http://localhost:9000/api/forms', {
         formId,
         formName,project_id:id
       });

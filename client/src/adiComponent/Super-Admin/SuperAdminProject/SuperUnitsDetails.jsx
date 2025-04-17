@@ -22,7 +22,7 @@ const SuperUnitsDetails = () => {
   const fetchUnits = async () => {
     if (!id) return;
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/super-admin-getUntitsDetailById/${id}`,
+      const response = await axios.get(`http://localhost:9000/api/super-admin-getUntitsDetailById/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ const SuperUnitsDetails = () => {
     try {
       console.log("Updating unit:", editProject);
       const { data } = await axios.put(
-        `https://crmdemo.vimubds5.a2hosted.com/api/editUnitdetailsinner/${editProject.id}`,
+        `http://localhost:9000/api/editUnitdetailsinner/${editProject.id}`,
         editProject
       );
       console.log("Updating unit with id:", editProject.id, editProject);

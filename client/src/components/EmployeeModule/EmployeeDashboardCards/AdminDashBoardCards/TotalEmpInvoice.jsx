@@ -15,7 +15,7 @@ function TotalEmpInvoice() {
     const fetchInvoices = async () => {
       try {
         const response = await axios.get(
-          `https://crmdemo.vimubds5.a2hosted.com/api/get-employee-invoice/${EmpId.id}`,
+          `http://localhost:9000/api/get-employee-invoice/${EmpId.id}`,
           {
             headers: {
               'Content-Type': 'application/json',

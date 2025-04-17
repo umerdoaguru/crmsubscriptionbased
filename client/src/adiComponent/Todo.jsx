@@ -13,7 +13,7 @@ const ToDoList = () => {
   useEffect(() => {
     const fetchTodos = async () => {
       try {
-        const response = await fetch("https://crmdemo.vimubds5.a2hosted.com/api/todo-list");
+        const response = await fetch("http://localhost:9000/api/todo-list");
         const data = await response.json();
         // Process and set the to-do data
         setTodos(data);

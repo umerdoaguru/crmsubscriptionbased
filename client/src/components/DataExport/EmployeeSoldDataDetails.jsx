@@ -37,7 +37,7 @@ const EmployeeSoldDataDetails = () => {
   }, []);
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/employee",
+      const response = await axios.get("http://localhost:9000/api/employee",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ const EmployeeSoldDataDetails = () => {
 
   const fetchEmployeeUnitSold = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/unit-sold", {
+      const response = await axios.get("http://localhost:9000/api/unit-sold", {
         headers: { "Content-Type": "application/json" },
       });
       console.log("Fetched Leads:", response.data);
@@ -66,7 +66,7 @@ const EmployeeSoldDataDetails = () => {
 
   const fetchSoldUnits = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/unit-sold", {
+      const response = await axios.get("http://localhost:9000/api/unit-sold", {
         headers: { "Content-Type": "application/json" },
       });
       setSoldUnits(response.data.data || response.data || []);
@@ -79,7 +79,7 @@ const EmployeeSoldDataDetails = () => {
   const fetchEmployeeData = async (employeeId) => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/unit-sold/${employeeId}`,
+        `http://localhost:9000/api/unit-sold/${employeeId}`,
         {
           headers: { "Content-Type": "application/json" },
         }

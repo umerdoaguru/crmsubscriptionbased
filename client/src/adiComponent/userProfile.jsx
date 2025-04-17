@@ -63,7 +63,7 @@ const UserProfile = () => {
     }
 
     try {
-      const response = await fetch("https://crmdemo.vimubds5.a2hosted.com/api/editProfile", {
+      const response = await fetch("http://localhost:9000/api/editProfile", {
         method: "POST",
         body: formData, // Send the formData instead of JSON
       });
@@ -86,7 +86,7 @@ const UserProfile = () => {
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete your profile?")) {
       try {
-        const response = await fetch("https://crmdemo.vimubds5.a2hosted.com/api/deleteUser", {
+        const response = await fetch("http://localhost:9000/api/deleteUser", {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",

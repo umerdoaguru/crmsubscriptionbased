@@ -46,7 +46,7 @@ function SuperDataExport() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/leads-super-admin",
+      const response = await axios.get("http://localhost:9000/api/leads-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ function SuperDataExport() {
 
   const fetchEmployee = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/employee-super-admin`,
+      const response = await axios.get(`http://localhost:9000/api/employee-super-admin`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ function SuperDataExport() {
   const fetchQuotation = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/quotation-data`
+        `http://localhost:9000/api/quotation-data`
       );
       setQuotation(response.data);
     } catch (error) {
@@ -87,7 +87,7 @@ function SuperDataExport() {
   const fetchInvoice = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/invoice-data`
+        `http://localhost:9000/api/invoice-data`
       );
       setInvoice(response.data);
     } catch (error) {
@@ -97,7 +97,7 @@ function SuperDataExport() {
   const employeesoldunit = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/super-admin-unit-sold`,
+        `http://localhost:9000/api/super-admin-unit-sold`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ function SuperDataExport() {
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-       `https://crmdemo.vimubds5.a2hosted.com/api/employe-all-visit-super-admin`,
+       `http://localhost:9000/api/employe-all-visit-super-admin`,
         {
           headers: {
             'Content-Type': 'application/json',

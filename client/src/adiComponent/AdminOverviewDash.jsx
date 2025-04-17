@@ -39,7 +39,7 @@ const AdminOverviewDash = () =>  {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("https://crmdemo.vimubds5.a2hosted.com/api/leads",
+      const response = await axios.get("http://localhost:9000/api/leads",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -59,7 +59,7 @@ const AdminOverviewDash = () =>  {
 
   const fetchEmployee = async () => {
     try {
-      const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/employee`,
+      const response = await axios.get(`http://localhost:9000/api/employee`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ const AdminOverviewDash = () =>  {
   const fetchProjects = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/all-project`,
+        `http://localhost:9000/api/all-project`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ const AdminOverviewDash = () =>  {
   const employeesoldunit = async () => {
     try {
       const response = await axios.get(
-        `https://crmdemo.vimubds5.a2hosted.com/api/admin-unit-sold`,
+        `http://localhost:9000/api/admin-unit-sold`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -111,7 +111,7 @@ const AdminOverviewDash = () =>  {
 
   // const fetchQuotation = async () => {
   //   try {
-  //     const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/get-quotation-data`);
+  //     const response = await axios.get(`http://localhost:9000/api/get-quotation-data`);
   //     console.log(response.data);
   //     setQuotation(response.data.data);
   //   } catch (error) {
@@ -121,7 +121,7 @@ const AdminOverviewDash = () =>  {
 
   // const fetchInvoice = async () => {
   //   try {
-  //     const response = await axios.get(`https://crmdemo.vimubds5.a2hosted.com/api/invoice-data`);
+  //     const response = await axios.get(`http://localhost:9000/api/invoice-data`);
   //     setInvoice(response.data);
   //   } catch (error) {
   //     console.error("Error fetching invoices:", error);
