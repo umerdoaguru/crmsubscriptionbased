@@ -299,11 +299,12 @@ const addEmployee = async (req, res) => {
 // };
 
 const getAllEmployees = async (req, res) => {
+  const {id} = req.params
   try {
     // Query to get all employees
-    const getAllEmployeesQuery = "SELECT * FROM employee";
+    const getAllEmployeesQuery = "SELECT * FROM employee WHERE user_id = ?";
 
-    db.query(getAllEmployeesQuery, (err, results) => {
+    db.query(getAllEmployeesQuery,[id], (err, results) => {
       if (err) {
         console.error("Error fetching employees from MySQL:", err);
         return res.status(500).json({ error: "Internal server error" });

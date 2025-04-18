@@ -51,7 +51,7 @@ router.put(
 router.post("/addEmployee", addEmployee);
 
 // Route to get all employees
-router.get("/getAllEmployees",authenticateAdmin, getAllEmployees);
+router.get("/getAllEmployees/:id",authenticateAdmin, getAllEmployees);
 
 // Route to get an employee by ID
 router.get("/getEmployeeById/:employeeId",authenticateAdmin, getEmployeeById);

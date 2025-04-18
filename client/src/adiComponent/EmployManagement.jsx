@@ -10,13 +10,17 @@ import { useSelector } from "react-redux";
 
 
 const EmployeeManagement = () => {
-  const [employees, setEmployees] = useState([]);
+  const [employees, setEmployees] = useState([]); 
+   const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;
+  const userId = adminuser.user_id;
   const [newEmployee, setNewEmployee] = useState({
     name: "",
     email: "",
     password: "",
     position: "",
     phone: "",
+    user_id:userId,
   });
   const [editingIndex, setEditingIndex] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -24,8 +28,7 @@ const EmployeeManagement = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const leadsPerPage = 10; // Default leads per page
   const navigate = useNavigate(); // Initialize useNavigate
-  const adminuser = useSelector((state) => state.auth.user);
-  const token = adminuser.token;
+
   useEffect(() => {
     fetchEmployees();
   }, []);
@@ -33,7 +36,7 @@ const EmployeeManagement = () => {
   const fetchEmployees = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:9000/api/getAllEmployees",
+        `http://localhost:9000/api/getAllEmployees/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',

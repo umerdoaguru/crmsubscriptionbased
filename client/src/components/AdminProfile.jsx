@@ -22,7 +22,7 @@ function AdminProfile() {
               <div className="w-full md:w-2/3 md:mx-0 mx-3">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                   <div>
-                    <label className="text-info">User ID</label>
+                    <label className="text-info">ID</label>
                     <div className="p-2 bg-gray-100 rounded">
                       <p className="m-0">{Admin?.id}</p>
                     </div>
@@ -46,6 +46,12 @@ function AdminProfile() {
                     <label className="text-info">Role</label>
                     <div className="p-2 bg-gray-100 rounded">
                       <p className="m-0">{Admin?.roles}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-info">User Id</label>
+                    <div className="p-2 bg-gray-100 rounded">
+                      <p className="m-0">{Admin?.user_id}</p>
                     </div>
                   </div>
   

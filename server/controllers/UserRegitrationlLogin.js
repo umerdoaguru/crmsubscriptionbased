@@ -250,6 +250,9 @@ const adminLogin = async (req, res) => {
           email: user.email,
           roles: user.roles,
           token: token,
+          user_id:user.user_id,
+          created_date:user.createdTime,
+          
         },
       });
     });

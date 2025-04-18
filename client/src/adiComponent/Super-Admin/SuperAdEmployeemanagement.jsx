@@ -40,7 +40,7 @@ const SuperAdEmployeemanagement = () => {
   const fetchEmployees = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:9000/api/getAllEmployees-super-admin",
+        `http://localhost:9000/api/getAllEmployees-super-admin/${userId}`,
             {
               headers: {
                 'Content-Type': 'application/json',

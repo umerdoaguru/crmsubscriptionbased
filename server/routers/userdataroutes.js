@@ -283,7 +283,7 @@ router.get("/leads-super-admin",authenticateSuperAdmin, getLeads);
 router.get("/employe-all-visit-super-admin",authenticateSuperAdmin, AllgetEmployeebyvisit);
 router.get("/quotation-data-super-admin",authenticateSuperAdmin, GetQuotation,);
 router.get("/quotation-super-admin/:id",authenticateSuperAdmin, Quotationviaid);
-router.get("/getAllEmployees-super-admin",authenticateSuperAdmin, getAllEmployees);
+router.get("/getAllEmployees-super-admin/:id",authenticateSuperAdmin, getAllEmployees);
 router.get("/employe-leads-super-admin/:id",authenticateSuperAdmin, getEmployeeLeads);
 router.get("/employeeProfile-super-admin/:id",authenticateSuperAdmin, employeeProfile);
 router.get("/employee-super-admin",authenticateSuperAdmin, employeeData);
