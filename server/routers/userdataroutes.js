@@ -239,14 +239,14 @@ router.put("/invoice-update-notes", InvoiceupdateNote);
 router.post("/leads", createLead);
 // router.post('/facebook-leads',  socialmediaLead);
 router.get("/leads/:id",authenticateAdmin, getleadbyid);
-router.get("/leads",authenticateAdmin, getLeads);
-router.get("/leads-visits/:employeeId", getLeadsByIdVisit);
+router.get("/leads-data-user-id/:userId",authenticateAdmin, getLeads);
+router.get("/leads-visits/:employeeId", getLeadsByIdVisit)  ;
 router.get("/leads-all-visits", getLeadsVisit);
 router.put("/leads/:leadId", updateLead);
 router.delete("/leads/:leadId", deleteLead);
 
-router.get("/employee",authenticateAdmin, employeeData);
-router.get("/employee-super-admin",authenticateSuperAdmin, employeeData);
+router.get("/employee/:id",authenticateAdmin, employeeData);
+router.get("/employee-super-admin/:id",authenticateSuperAdmin, employeeData);
 router.get("/get-invoice-data", getAllInvoice);
 router.get("/get-quotation-data", getAllQuotation);
 

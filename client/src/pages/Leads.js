@@ -13,6 +13,9 @@ import { useSelector } from "react-redux";
 function Leads() {
   const navigate = useNavigate();
   const [leads, setLeads] = useState([]);
+  const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;  
+  const userId = adminuser.user_id;  
   const [employees, setEmployees] = useState([]);
   const [currentLead, setCurrentLead] = useState({
     lead_no: "",
@@ -29,7 +32,11 @@ function Leads() {
     unit_id: "",
     address: "",
     actual_date: "",
+    user_id:userId,
+    
   });
+
+  
   const [customLeadSource, setCustomLeadSource] = useState("");
   const [filterDate, setFilterDate] = useState("");
   const [showPopup, setShowPopup] = useState(false);
@@ -57,8 +64,7 @@ function Leads() {
   const [sortOrder, setSortOrder] = useState("desce"); 
   const [projects, setProjects] = useState([]);
   const [projectunit, setProjectUnit] = useState([]);
-  const adminuser = useSelector((state) => state.auth.user);
-  const token = adminuser.token;
+ 
   const [visitmonthFilter, setVisitMonthFilter] = useState("");
   const [yearFilter, setYearFilter] = useState("");
 const uniqueYears = [
@@ -107,7 +113,7 @@ const uniqueYears = [
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:9000/api/leads",
+        `http://localhost:9000/api/leads-data-user-id/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -126,7 +132,7 @@ const uniqueYears = [
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/employee",
+      const response = await axios.get(`http://localhost:9000/api/employee/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -303,6 +309,7 @@ const uniqueYears = [
       unit_id: "",
       address: "",
       actual_date: "",
+      user_id:userId
     });
     setShowPopup(true);
     

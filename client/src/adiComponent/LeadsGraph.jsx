@@ -12,16 +12,17 @@ import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
 
-const LeadsGraph = () => {
+ const LeadsGraph = () => {
   const [leadsData, setLeadsData] = useState([]);
   const [error, setError] = useState(null);
   const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;  
+  const userId = adminuser.user_id;  
 
-  const token = adminuser?.token;
   useEffect(() => {
     const fetchLeadsData = async () => {
       try {
-        const response = await axios.get("http://localhost:9000/api/leads",
+        const response = await axios.get(`http://localhost:9000/api/leads-data-user-id/${userId}`,
           {
             headers: {
               'Content-Type': 'application/json',

@@ -828,8 +828,11 @@ const createLead = (req, res) => {
     createdTime,
     actual_date,
     assignedBy,
+    user_id
   } = req.body;
-  const sql = `INSERT INTO leads (lead_no, name, phone, assignedTo, leadSource, employeeId,project_name,main_project_id,unit_type,unit_id,address,createdTime,actual_date,assignedBy) VALUES (?,?,?,?,?,?, ?,?, ?,?, ?, ?,?,?)`;
+  console.log(user_id);
+  
+  const sql = `INSERT INTO leads (lead_no, name, phone, assignedTo, leadSource, employeeId,project_name,main_project_id,unit_type,unit_id,address,createdTime,actual_date,assignedBy,user_id) VALUES (?,?,?,?,?,?,?, ?,?, ?,?, ?, ?,?,?)`;
   db.query(
     sql,
     [
@@ -842,7 +845,7 @@ const createLead = (req, res) => {
       project_name,main_project_id,unit_type,unit_id,address,
       createdTime,
       actual_date,
-      assignedBy
+      assignedBy,user_id
     ],
     (err, results) => {
       if (err) {
@@ -901,10 +904,11 @@ const getvisit = (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 const getLeads = (req, res) => {
-  const sql = "SELECT * FROM leads ORDER BY lead_id DESC"; 
-  db.query(sql, (err, results) => {
+  const { userId } = req.params;
+  const sql = "SELECT * FROM leads WHERE user_id = ? ORDER BY lead_id DESC"; 
+  
+  db.query(sql, [userId], (err, results) => {
     if (err) {
       res.status(500).json({ error: "Error fetching data" });
     } else {
@@ -1004,9 +1008,10 @@ const deleteLead = (req, res) => {
 
 
 const employeeData = (req, res) => {
-  const sql = `SELECT * FROM employee`;
+  const {id} = req.params
+  const sql = `SELECT * FROM employee WHERE user_id = ?`;
 
-  db.query(sql, (err, results) => {
+  db.query(sql,[id], (err, results) => {
     if (err) {
       res.status(500).json({ error: "Error fetchinf data " });
     } else {
