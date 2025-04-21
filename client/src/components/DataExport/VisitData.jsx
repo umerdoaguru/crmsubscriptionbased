@@ -49,7 +49,7 @@ const VisitData = () => {
   ]);
 const adminuser = useSelector((state) => state.auth.user);
 const token = adminuser.token;
-
+const userId = adminuser.user_id;  
   // Fetch leads from the API
   useEffect(() => {
     fetchLeads();
@@ -59,7 +59,7 @@ const token = adminuser.token;
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/leads`,
+        `http://localhost:9000/api/leads-data-user-id/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ const token = adminuser.token;
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/employee",
+      const response = await axios.get(`http://localhost:9000/api/employee/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',

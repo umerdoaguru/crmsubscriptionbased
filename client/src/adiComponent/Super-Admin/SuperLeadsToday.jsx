@@ -9,11 +9,12 @@ const SuperLeadsToday = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [leadsPerPage] = useState(7);
   const superadminuser = useSelector((state) => state.auth.user);
+  const userId = superadminuser.id;  
   const token = superadminuser.token;
   useEffect(() => {
     const fetchLeads = async () => {
       try {
-        const response = await fetch("http://localhost:9000/api/leads-super-admin",
+        const response = await fetch(`http://localhost:9000/api/leads-super-admin/${userId}`,
           {
             headers: {
               'Content-Type': 'application/json',

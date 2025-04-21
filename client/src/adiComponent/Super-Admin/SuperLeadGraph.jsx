@@ -17,10 +17,11 @@ const SuperLeadGraph = () => {
   const [error, setError] = useState(null);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
+  const userId = superadminuser.id;  
   useEffect(() => {
     const fetchLeadsData = async () => {
       try {
-        const response = await axios.get("http://localhost:9000/api/leads-super-admin",
+        const response = await axios.get(`http://localhost:9000/api/leads-super-admin/${userId}`,
           {
             headers: {
               'Content-Type': 'application/json',

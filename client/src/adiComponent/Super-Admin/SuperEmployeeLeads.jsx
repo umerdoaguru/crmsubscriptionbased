@@ -13,6 +13,9 @@ import Super_Single_Lead_Profile from "./Super_Single_Lead_Profile";
 import { useSelector } from "react-redux";
 
 function SuperEmployeeLeads() {  
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
+  const userId = superadminuser.id;  
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [filterDate, setFilterDate] = useState("");
@@ -57,14 +60,15 @@ function SuperEmployeeLeads() {
     project_name: "",
     address: "",
     actual_date: "",
+    user_id:""
+
   });
+
 
   const [showPopup, setShowPopup] = useState(false);
   const [loading , setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [customLeadSource, setCustomLeadSource] = useState("");
-  const superadminuser = useSelector((state) => state.auth.user);
-  const token = superadminuser.token;
   const [projects, setProjects] = useState([]);
   const [projectunit, setProjectUnit] = useState([]);
   const [visitmonthFilter, setVisitMonthFilter] = useState("");
@@ -121,7 +125,7 @@ const uniqueYears = [
     try {
       const response = await axios.get(
 
-            "http://localhost:9000/api/leads-super-admin",
+           `http://localhost:9000/api/leads-super-admin/${userId}`,
             {
               headers: {
                 'Content-Type': 'application/json',
@@ -139,7 +143,7 @@ const uniqueYears = [
  
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/employee-super-admin",
+      const response = await axios.get(`http://localhost:9000/api/employee-super-admin/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -513,6 +517,7 @@ const handleCreateClick = () => {
     project_name: "",
     address: "",
     actual_date: "",
+    user_id:userId
   });
   setShowPopup(true);
 };
@@ -532,7 +537,7 @@ const saveChanges = async () => {
         currentLead.leadSource === "Other"
           ? customLeadSource
           : currentLead.leadSource,
-           assignedBy: "Admin"
+           assignedBy: "SuperAdmin"
     };
 
     try {

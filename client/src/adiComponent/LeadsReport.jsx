@@ -9,11 +9,12 @@ const LeadsReport = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [leadsPerPage] = useState(7);
   const adminuser = useSelector((state) => state.auth.user);
+  const userId = adminuser.user_id;  
   const token = adminuser.token;
   useEffect(() => {
     const fetchLeads = async () => {
       try {
-        const response = await fetch("http://localhost:9000/api/leads",
+        const response = await fetch(`http://localhost:9000/api/leads-data-user-id/${userId}`,
           {
             headers: {
               'Content-Type': 'application/json',

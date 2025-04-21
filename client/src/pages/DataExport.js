@@ -27,6 +27,7 @@ function DataExport() {
   const [employeesold, setemployeesold] = useState([]);
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
+  const userId = adminuser.user_id;  
 
   useEffect(() => {
     fetchLeads();
@@ -39,7 +40,7 @@ function DataExport() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/leads",
+      const response = await axios.get( `http://localhost:9000/api/leads-data-user-id/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -53,7 +54,7 @@ function DataExport() {
 
   const fetchEmployee = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/employee`,
+      const response = await axios.get(`http://localhost:9000/api/employee/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',

@@ -279,7 +279,7 @@ router.get("/employe-visit-admin/:id",authenticateAdmin, getEmployeeVisit);
 router.get("/get-quotation-byLead-admin/:id",authenticateAdmin, getLeadQuotation);
 
 
-router.get("/leads-super-admin",authenticateSuperAdmin, getLeads);
+router.get("/leads-super-admin/:userId",authenticateSuperAdmin, getLeads);
 router.get("/employe-all-visit-super-admin",authenticateSuperAdmin, AllgetEmployeebyvisit);
 router.get("/quotation-data-super-admin",authenticateSuperAdmin, GetQuotation,);
 router.get("/quotation-super-admin/:id",authenticateSuperAdmin, Quotationviaid);

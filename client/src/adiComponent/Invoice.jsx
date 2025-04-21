@@ -20,14 +20,14 @@ const LeadVisitChart = () => {
   const [error, setError] = useState(null); // To handle and display errors
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
-
+  const userId = adminuser.user_id;  
 
   useEffect(() => {
     const fetchLeadsData = async () => {
       setLoading(true); // Start loading
 
       try {
-        const response = await axios.get(`http://localhost:9000/api/leads`,
+        const response = await axios.get(`http://localhost:9000/api/leads-data-user-id/${userId}`,
           {
             headers: {
               'Content-Type': 'application/json',

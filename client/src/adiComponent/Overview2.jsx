@@ -29,6 +29,7 @@ const Overview2 = () => {
   const [visit , setVisit] = useState([]);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
+  const userId = superadminuser.id;  
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [project , setProjects] = useState([]);
@@ -37,7 +38,7 @@ const Overview2 = () => {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/leads-super-admin",
+      const response = await axios.get(`http://localhost:9000/api/leads-super-admin/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
