@@ -20,6 +20,7 @@ const SuperLeadAllVisitChart = () => {
   const [error, setError] = useState(null); // To handle and display errors
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
+  const userId = superadminuser.id;  
 
 
   useEffect(() => {
@@ -27,7 +28,7 @@ const SuperLeadAllVisitChart = () => {
       setLoading(true); // Start loading
 
       try {
-        const response = await axios.get(`http://localhost:9000/api/leads-super-admin`,
+        const response = await axios.get(`http://localhost:9000/api/leads-super-admin/${userId}`,
           {
             headers: {
               'Content-Type': 'application/json',

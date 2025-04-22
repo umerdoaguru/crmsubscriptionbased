@@ -34,6 +34,7 @@ function SuperDataExport() {
 
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
+  const userId = superadminuser.id;  
 
   useEffect(() => {
     fetchLeads();
@@ -46,7 +47,7 @@ function SuperDataExport() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/leads-super-admin",
+      const response = await axios.get(`http://localhost:9000/api/leads-super-admin/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -54,7 +55,7 @@ function SuperDataExport() {
         }});
       setLeads(response.data);
     } catch (error) {
-      console.error("Error fetching leads:", error);
+      console.error("Error fetching leads:", error);          
     }
   };
 
