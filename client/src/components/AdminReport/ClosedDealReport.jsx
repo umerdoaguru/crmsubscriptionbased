@@ -47,6 +47,7 @@ const ClosedDealReport = () => {
   ]);
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
+  const userId = adminuser.user_id;  
 
   // Fetch leads from the API
   useEffect(() => {
@@ -57,7 +58,7 @@ const ClosedDealReport = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/leads`,
+        `http://localhost:9000/api/leads-data-user-id/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',

@@ -13,10 +13,12 @@ import {
 } from "recharts";
 import styled from "styled-components";
 
-const DealClosedGraph = () => {
+const   DealClosedGraph = () => {
   const [dealStatusData, setDealStatusData] = useState([]);
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
+  const userId = adminuser.user_id;  
+
   // Function to format the date to "DD MMM" format
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -61,7 +63,7 @@ const DealClosedGraph = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/leads`,
+        `http://localhost:9000/api/leads-data-user-id/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',

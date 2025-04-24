@@ -48,6 +48,7 @@ const SuperClosedDealReport = () => {
   ]);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
+  const userId = superadminuser.id;
 
   // Fetch leads from the API
   useEffect(() => {
@@ -58,7 +59,7 @@ const SuperClosedDealReport = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/leads-super-admin`,
+       `http://localhost:9000/api/leads-super-admin/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',

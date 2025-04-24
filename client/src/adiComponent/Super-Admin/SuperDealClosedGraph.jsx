@@ -17,6 +17,8 @@ const SuperDealClosedGraph = () => {
   const [dealStatusData, setDealStatusData] = useState([]);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
+  const userId = superadminuser.id;
+
   // Function to format the date to "DD MMM" format
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -61,7 +63,7 @@ const SuperDealClosedGraph = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/leads-super-admin`,
+        `http://localhost:9000/api/leads-super-admin/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
