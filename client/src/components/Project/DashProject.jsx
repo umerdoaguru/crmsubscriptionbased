@@ -15,6 +15,7 @@ const DashProject = () => {
   const navigate = useNavigate();
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
+  const userId  = adminuser.user_id;
 
   useEffect(() => {
     fetchProjects();
@@ -22,7 +23,7 @@ const DashProject = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/all-project", {
+      const response = await axios.get(`http://localhost:9000/api/all-project/${userId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

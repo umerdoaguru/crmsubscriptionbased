@@ -1346,9 +1346,9 @@ const getLeadsVisit = (req, res) => {
 // Project Related apis
 const addProject = (req, res) => {
   const {
-    projectName, location, total_area,
+    projectName, location, total_area,user_id
   } = req.body;
-  console.log(projectName, location, total_area,);
+  console.log(projectName, location, total_area,user_id);
   
   if (!projectName ||!location || !total_area ) {
     return res.status(400).json({ error: "Required fields are missing." });
@@ -1356,12 +1356,12 @@ const addProject = (req, res) => {
 
   const query = `
     INSERT INTO projects (
-      project_name, location, total_area 
-    ) VALUES (?, ?, ?)
+      project_name, location, total_area,user_id 
+    ) VALUES (?, ?, ?,?)
   `;
 
   const values = [
-    projectName, location, total_area,
+    projectName, location, total_area,user_id
   ];
 
   db.query(query, values, (err, result) => {
@@ -1375,9 +1375,10 @@ const addProject = (req, res) => {
 };
 
 const getAllProjects = (req, res) => {
-  const query = "SELECT * FROM projects"; 
+  const {userId} = req.params;
+  const query = "SELECT * FROM projects WHERE user_id = ?"; 
 
-  db.query(query, (err, results) => {
+  db.query(query,[userId], (err, results) => {
     if (err) {
       console.error("Error fetching projects from database:", err);
       return res.status(500).json({ error: "Failed to fetch projects." });

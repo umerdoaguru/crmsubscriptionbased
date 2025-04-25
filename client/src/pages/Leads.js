@@ -145,7 +145,7 @@ const uniqueYears = [
   };
   const fetchProjects = async () => {
     try {
-      const { data } = await axios.get("http://localhost:9000/api/all-project",
+      const { data } = await axios.get(`http://localhost:9000/api/all-project/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',

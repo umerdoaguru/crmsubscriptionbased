@@ -45,7 +45,7 @@ function SuperLeadReport() {
     const leadsPerPage = 6;
     const superadminuser = useSelector((state) => state.auth.user);
     const token = superadminuser.token;
-  
+    const userId = superadminuser.id;
     // Fetch leads and employees from the API
     useEffect(() => {
       fetchLeads();
@@ -54,7 +54,7 @@ function SuperLeadReport() {
   
     const fetchLeads = async () => {
       try {
-        const response = await axios.get("http://localhost:9000/api/leads-super-admin",
+        const response = await axios.get(`http://localhost:9000/api/leads-super-admin/${userId}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ function SuperLeadReport() {
   
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get("http://localhost:9000/api/employee-super-admin",
+        const response = await axios.get(`http://localhost:9000/api/employee-super-admin/${userId}`,
           {
             headers: {
               'Content-Type': 'application/json',

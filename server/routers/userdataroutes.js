@@ -296,7 +296,7 @@ router.get("/get-quotation-byLead-super-admin/:id",authenticateSuperAdmin, getLe
 
 // Project Related routes
 router.post("/project-add", addProject);
-router.get("/all-project",authenticateAdmin, getAllProjects);
+router.get("/all-project/:userId",authenticateAdmin, getAllProjects);
 router.delete("/delete-project/:id", deleteProject);
 router.put("/edit-project/:id", editProject);
 
@@ -317,7 +317,7 @@ router.get("/admin-unit-sold/:id",authenticateAdmin, getEmployeeUnitSoldById);
 router.get("/admin-unit-data/:id",authenticateAdmin, getUnitDataByUnitId);
 router.get("/admin-unit-sold-lead-id/:id",authenticateAdmin, getEmployeeUnitSoldByLeadId);
 
-router.get("/super-admin-all-project",authenticateSuperAdmin, getAllProjects);
+router.get("/super-admin-all-project/:userId",authenticateSuperAdmin, getAllProjects);
 router.get('/super-admin-units',authenticateSuperAdmin, getUnits);
 router.get('/super-admin-units/:id',authenticateSuperAdmin, getUnitById);
 router.get('/super-admin-getUnitsdistributeById/:id',authenticateSuperAdmin, getUnitsdistributeById);

@@ -78,7 +78,7 @@ const CloseData = () => {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/employee",
+      const response = await axios.get(`http://localhost:9000/api/employee/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',

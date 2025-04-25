@@ -15,12 +15,14 @@ const Projectshow = () => {
   const [addProject, setAddProject] = useState();
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
+  const userId = adminuser.user_id;  
 
   
   const [formData, setFormData] = useState({
     projectName: "",
     location: "",
     total_area: "",
+    user_id:userId
   });
 
   const handleChange = (e) => {
@@ -31,7 +33,7 @@ const Projectshow = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:9000/api/project-add", formData);
+      const response = await axios.post(`http://localhost:9000/api/project-add`, formData);
 
       if (response.status === 200) {
         cogoToast.success("Project added successfully!", { position: "top-right" });
@@ -43,6 +45,7 @@ const Projectshow = () => {
           projectName: "",
           location: "",
           total_area: "",
+          user_id:userId
         });
       } else {
         cogoToast.error("Failed to add project.", { position: "top-right" });
@@ -63,7 +66,7 @@ const Projectshow = () => {
 
   const fetchProjects = async () => {
     try {
-      const { data } = await axios.get("http://localhost:9000/api/all-project",
+      const { data } = await axios.get(`http://localhost:9000/api/all-project/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',

@@ -11,11 +11,11 @@ function MainSocialMediaByProject() {
    const [projects, setProjects] = useState([]);
    const user = useSelector((state) => state.auth.user);
    const token = user?.token;
-
+   const userId = user.user_id;
   useEffect(() => {
     const fetchProjectDetail = async () => {
       try {
-        const response = await axios.get('http://localhost:9000/api/all-project',
+        const response = await axios.get(`http://localhost:9000/api/all-project/${userId}`,
           {
             headers: {
               'Content-Type': 'application/json',

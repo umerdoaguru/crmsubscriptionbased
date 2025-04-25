@@ -62,7 +62,7 @@ function SuperDataExport() {
 
   const fetchEmployee = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/employee-super-admin`,
+      const response = await axios.get(`http://localhost:9000/api/employee-super-admin/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
