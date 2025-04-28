@@ -37,6 +37,13 @@ import Superunits from './../adiComponent/Super-Admin/SuperAdminProject/Superuni
 import SuperDashProject from "../adiComponent/Super-Admin/SuperAdminProject/SuperDashProject";
 import SuperUnitsDetails from "../adiComponent/Super-Admin/SuperAdminProject/SuperUnitsDetails";
 import SuperAdminSoldUnits from "../adiComponent/Super-Admin/SuperAdminSoldunit";
+import Super_view_visit_by_id from "../adiComponent/Super-Admin/Super_view_visit_by_id";
+import Super_view_follow_by_id from "../adiComponent/Super-Admin/Super_view_follow_by_id";
+import Super_view_unit_byid from "../adiComponent/Super-Admin/Super_view_unit_byid";
+import Super_view_remark_byid from './../adiComponent/Super-Admin/Super_view_remark_byid';
+
+
+
 
 function SuperAdminRoutes() {
   const user = useSelector((state) => state.auth.user);
@@ -77,20 +84,34 @@ function SuperAdminRoutes() {
         />
         <Route
           path="/super_view_visit/:id"
-          element={<Super_view_visit />}
+          element={<Super_view_visit_by_id />}
         />
         <Route
           path="/super_view_visit"
           element={<Super_view_visit />}
         />
         <Route
+          path="/super_view_follow_up/:id"
+          element={<Super_view_follow_by_id/>}
+        />
+        <Route
           path="/super_view_follow_up"
           element={<Super_view_followup/>}
+        />
+        <Route
+          path="/super_view_remark/:id"
+          element={<Super_view_remark_byid/>}
+        />
+       
+        <Route
+          path="/super_view_employee_unit/:id"
+          element={<Super_view_unit_byid/>}
         />
         <Route
           path="/super_view_remarks"
           element={<Super_view_remarks/>}
         />
+    
         <Route
           path="/super-admin-employee-single/:employeeId"
           element={<EmployeeProfile />}

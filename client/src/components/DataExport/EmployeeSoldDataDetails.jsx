@@ -27,7 +27,7 @@ const EmployeeSoldDataDetails = () => {
   ]);
     const adminuser = useSelector((state) => state.auth.user);
     const token = adminuser.token;
-  
+    const userId = adminuser.user_id;  
 
   useEffect(() => {
     fetchEmployeeUnitSold();
@@ -37,7 +37,7 @@ const EmployeeSoldDataDetails = () => {
   }, []);
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/employee",
+      const response = await axios.get(`http://localhost:9000/api/employee/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -51,9 +51,15 @@ const EmployeeSoldDataDetails = () => {
 
   const fetchEmployeeUnitSold = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/unit-sold", {
-        headers: { "Content-Type": "application/json" },
-      });
+          const response = await axios.get(
+            `http://localhost:9000/api/admin-unit-sold/${userId}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
       console.log("Fetched Leads:", response.data);
       const fetchedLeads = response.data.data || response.data || [];
       setLeads(fetchedLeads);

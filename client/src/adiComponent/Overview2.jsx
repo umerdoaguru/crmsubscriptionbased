@@ -110,7 +110,7 @@ const Overview2 = () => {
   const employeesoldunit = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/super-admin-unit-sold`,
+        `http://localhost:9000/api/super-admin-unit-sold/${userId}`,
         
         {
           headers: {

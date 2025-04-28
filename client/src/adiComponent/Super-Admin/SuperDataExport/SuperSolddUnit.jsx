@@ -27,7 +27,7 @@ const SuperSoldnit= () => {
   ]);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-
+  const userId = superadminuser.id;  
 
   useEffect(() => {
     fetchEmployeeUnitSold();
@@ -37,7 +37,7 @@ const SuperSoldnit= () => {
 
   const fetchEmployeeUnitSold = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/super-admin-unit-sold", {
+      const response = await axios.get( `http://localhost:9000/api/super-admin-unit-sold/${userId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -52,7 +52,7 @@ const SuperSoldnit= () => {
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/employee-super-admin",
+      const response = await axios.get(`http://localhost:9000/api/employee-super-admin/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',

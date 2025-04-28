@@ -182,6 +182,7 @@ const employeelogin = async (req, res) => {
           position: user.position,
           roles: user.roles,
           token: token,
+          user_id:user.user_id,
         },
       });
     });

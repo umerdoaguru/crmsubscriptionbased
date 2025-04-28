@@ -3,6 +3,7 @@ import axios from "axios";
 import moment from "moment";
 import * as XLSX from "xlsx";
 import ReactPaginate from "react-paginate";
+import { useSelector } from "react-redux";
 
 function SoldAdminSoldUnitReport() {
   const [leads, setLeads] = useState([]);
@@ -19,6 +20,9 @@ function SoldAdminSoldUnitReport() {
   ]);
   const [currentPage, setCurrentPage] = useState(0);
   const leadsPerPage = 6;
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
+  const userId = superadminuser.id;  
 
   // Fetch leads from the API without appending an ID
   useEffect(() => {
@@ -27,9 +31,11 @@ function SoldAdminSoldUnitReport() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/unit-sold", {
-        headers: {
-          "Content-Type": "application/json",
+      const response = await axios.get( `http://localhost:9000/api/super-admin-unit-sold/${userId}`, {
+        
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
       });
       console.log("Fetched Leads:", response.data);

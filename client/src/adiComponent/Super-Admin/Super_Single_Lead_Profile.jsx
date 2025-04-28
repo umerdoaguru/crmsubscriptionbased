@@ -12,6 +12,8 @@ import { useSelector } from "react-redux";
 import Super_view_unit_sold from "./Super_view_unit_sold";
 
 function Super_Single_Lead_Profile({id,closeModalLead }) {
+  console.log(id);
+  
 
   const navigate = useNavigate();
   const [leads, setLeads] = useState([]);
@@ -32,7 +34,7 @@ function Super_Single_Lead_Profile({id,closeModalLead }) {
    
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/leads-super-admin/${id}`,
+      const response = await axios.get(`http://localhost:9000/api/leads-super-admin-byid/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',

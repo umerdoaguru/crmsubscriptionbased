@@ -25,7 +25,10 @@ function Employee_Single_Lead_Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [render, setRender] = useState(false);
   const [isOtherReason, setIsOtherReason] = useState(false);
-  
+  const EmpId = useSelector((state) => state.auth.user);
+
+const token = EmpId?.token;
+const userId = EmpId.user_id
   const [currentLead, setCurrentLead] = useState({
     lead_status: "",
     visit_date: "",
@@ -87,11 +90,10 @@ const [unitsold, setUnitSold] = useState({
   unit_status:"",
   main_project_id:"",
   date: "",
+  
 });
 
-const EmpId = useSelector((state) => state.auth.user);
 
-const token = EmpId?.token;
 
   const [quotationCreated, setQuotationCreated] = useState(false);
   const [visitCreated, setVisitCreated] = useState(false);
@@ -786,6 +788,7 @@ const token = EmpId?.token;
           unit_no: unitsold.unit_no,
           unit_status: unitsold.unit_status,
           date: unitsold.date,
+          user_id:userId
         }
       );
   

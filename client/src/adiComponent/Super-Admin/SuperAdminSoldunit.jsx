@@ -5,6 +5,7 @@ import MainHeader from "../../components/MainHeader";
 import SuperAdminSider from "./SuperAdminSider";
 import ReactPaginate from "react-paginate";
 import moment from "moment";
+import { useSelector } from "react-redux";
 
 const SuperAdminSoldUnits = () => {
   const [leads, setLeads] = useState([]);
@@ -13,6 +14,10 @@ const SuperAdminSoldUnits = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [leadsPerPage, setLeadsPerPage] = useState(7);
   const navigate = useNavigate();
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
+  const userId = superadminuser.id;  
+  
 
   useEffect(() => {
 
@@ -22,12 +27,12 @@ const SuperAdminSoldUnits = () => {
   const fetchEmployeeSoldUnits = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/unit-sold`,
+        `http://localhost:9000/api/super-admin-unit-sold/${userId}`,
         {
           headers: {
-            "Content-Type": "application/json",
-          },
-        }
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
       );
       setLeads(response.data);
       setFilteredLeads(response.data);

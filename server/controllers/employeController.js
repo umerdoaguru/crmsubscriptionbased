@@ -968,7 +968,8 @@ const createEmployeeUnitSold = (req, res) => {
     unit_status,
     main_project_id,
     project_name,
-    date
+    date,
+    user_id,
   
   } = req.body;
 
@@ -984,9 +985,9 @@ const createEmployeeUnitSold = (req, res) => {
     unit_status,
     main_project_id,
     project_name,
-    date
+    date,user_id
    
-  ) VALUES (?,?,?,?,?,?,?,?,?,?)`;
+  ) VALUES (?,?,?,?,?,?,?,?,?,?,?)`;
 
   db.query(
     sql,
@@ -1000,7 +1001,7 @@ const createEmployeeUnitSold = (req, res) => {
       unit_status,
       main_project_id,
       project_name,
-      date],
+      date,user_id],
     (err, results) => {
       if (err) {
         res.status(500).json({ error: "Error inserting data" });
@@ -1104,11 +1105,11 @@ const deleteEmployeeUnitSold = (req, res) => {
 
 const getEmployeeUnitSold = async (req, res) => {
   try {
-    const { id } = req.params;
-    const sql = "SELECT * FROM  employee_sold_units";
+    const { userId } = req.params;
+    const sql = "SELECT * FROM  employee_sold_units WHERE user_id = ?";
 
     const result = await new Promise((resolve, reject) => {
-      db.query(sql, [id], (err, results) => {
+      db.query(sql, [userId], (err, results) => {
         if (err) {
           reject(err); 
         } else {

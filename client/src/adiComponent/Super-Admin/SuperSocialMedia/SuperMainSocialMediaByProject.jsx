@@ -12,11 +12,13 @@ function SuperMainSocialMediaByProject() {
    const [projects, setProjects] = useState([]);
    const user = useSelector((state) => state.auth.user);
    const token = user?.token;
+   const userId  = user.id;
+   
 
   useEffect(() => {
     const fetchProjectDetail = async () => {
       try {
-        const response = await axios.get('http://localhost:9000/api/super-admin-all-project',
+        const response = await axios.get(`http://localhost:9000/api/super-admin-all-project/${userId}`,
           {
             headers: {
               'Content-Type': 'application/json',

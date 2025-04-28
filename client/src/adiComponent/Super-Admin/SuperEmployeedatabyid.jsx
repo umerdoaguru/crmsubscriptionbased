@@ -16,13 +16,14 @@ function SuperEmployeedatabyid() {
   const [visitCreated, setVisitCreated] = useState(false);
   const [followCreated, setFollowCreated] = useState(false);
   const [remarksCreated, setRemarksCreated] = useState(false);
+  const [employeeunitsoldCreated, setemployeeunitsoldCreated] = useState(false);
 
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/leads-super-admin/${id}`,
+      const response = await axios.get(`http://localhost:9000/api/leads-super-admin-byid/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -89,7 +90,25 @@ function SuperEmployeedatabyid() {
     }
   };
   
-  
+  const fetchUnitSoldEmployee = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:9000/api/super-admin-unit-sold-lead-id/${leads[0].lead_id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }}
+       
+      );
+
+    
+      // Ensure proper comparison with 'Created', trim any spaces and normalize the case
+      setemployeeunitsoldCreated(response.data[0]);
+    } catch (error) {
+      console.error("Error fetching quotations:", error);
+    }
+  };
 
   const handleBackClick = () => {
     navigate(-1); // -1 navigates to the previous page in history
@@ -139,13 +158,23 @@ function SuperEmployeedatabyid() {
   const handleViewRemark = () => {
     navigate(`/super_view_remark/${leads[0].lead_id}`);
   };
+  const handleClickUnitSold = () => {
+    navigate(`/super_view_employee_unit/${leads[0].lead_id}`);
+  };
+
 
   useEffect(() => {
     fetchLeads();
     fetchFollowUp();
     fetchVisit();
     fetchRemark();
+ 
   }, [id]);
+  useEffect(() => {
+      if (leads.length > 0) {
+        fetchUnitSoldEmployee();
+      }
+  }, [leads]); 
 
 
   return (
@@ -231,7 +260,7 @@ function SuperEmployeedatabyid() {
         <div className="2xl:ml-44 mt-2">
         <div className="">
               {/* Conditionally render the View Quotation button */}
-              <div className="flex">
+              <div className="flex gap-2">
                 {/* {quotationCreated ? (
                   <button
                     onClick={() => handleViewQuotation(leads[0])}
@@ -283,6 +312,20 @@ function SuperEmployeedatabyid() {
         Remark not yet created
       </p>
     )}
+     {employeeunitsoldCreated ? (
+      <button
+        onClick={handleClickUnitSold}
+        className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+      >
+        View Unit Sold
+      </button>
+    ) : (
+      <p className="text-white bg-red-400 text-center px-4 py-2 rounded w-full sm:w-auto ">
+        Unit not yet sold
+      </p>
+    )}
+
+
 
 
               </div>

@@ -280,6 +280,9 @@ router.get("/get-quotation-byLead-admin/:id",authenticateAdmin, getLeadQuotation
 
 
 router.get("/leads-super-admin/:userId",authenticateSuperAdmin, getLeads);
+router.get("/leads-super-admin-byid/:id",authenticateSuperAdmin, getleadbyid);
+
+
 router.get("/employe-all-visit-super-admin",authenticateSuperAdmin, AllgetEmployeebyvisit);
 router.get("/quotation-data-super-admin",authenticateSuperAdmin, GetQuotation,);
 router.get("/quotation-super-admin/:id",authenticateSuperAdmin, Quotationviaid);
@@ -312,7 +315,7 @@ router.get('/project-unit/:id',authenticateAdmin, getUnitByProjectId);
 router.get('/getUntitsDetailById/:id',authenticateAdmin, getUnitDetailsById);
 router.put('/editUnitdetailsinner/:id', editUnitdetails);
 
-router.get("/admin-unit-sold",authenticateAdmin, getEmployeeUnitSold);
+router.get("/admin-unit-sold/:userId",authenticateAdmin, getEmployeeUnitSold);
 router.get("/admin-unit-sold/:id",authenticateAdmin, getEmployeeUnitSoldById);
 router.get("/admin-unit-data/:id",authenticateAdmin, getUnitDataByUnitId);
 router.get("/admin-unit-sold-lead-id/:id",authenticateAdmin, getEmployeeUnitSoldByLeadId);
@@ -325,7 +328,7 @@ router.get('/super-admin-units/project',authenticateSuperAdmin, getUnitsByProjec
 router.get('/super-admin-project-unit/:id',authenticateSuperAdmin, getUnitByProjectId);
 router.get('/super-admin-getUntitsDetailById/:id',authenticateSuperAdmin, getUnitDetailsById);
 
-router.get("/super-admin-unit-sold",authenticateSuperAdmin, getEmployeeUnitSold);
+router.get("/super-admin-unit-sold/:userId",authenticateSuperAdmin, getEmployeeUnitSold);
 router.get("/super-admin-unit-sold/:id",authenticateSuperAdmin, getEmployeeUnitSoldById);
 router.get("/super-admin-unit-data/:id",authenticateSuperAdmin, getUnitDataByUnitId);
 router.get("/super-admin-unit-sold-lead-id/:id",authenticateSuperAdmin, getEmployeeUnitSoldByLeadId);

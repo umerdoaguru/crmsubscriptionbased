@@ -15,15 +15,18 @@ const Superprojectshow = () => {
   const [addProject, setAddProject] = useState();
 
   // const [addunits, setUnits] = useState(false);
-
+  
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
+  const userId  = superadminuser.id;
+  
   const [formData, setFormData] = useState({
     projectName: "",
     // projectId: "",
     location: "",
     total_area: "",
+    user_id:userId
   });
-  const superadminuser = useSelector((state) => state.auth.user);
-  const token = superadminuser.token;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,6 +47,7 @@ const Superprojectshow = () => {
           projectName: "",
           location: "",
           total_area: "",
+          user_id:userId,
         });
       } else {
         cogoToast.error("Failed to add project.", { position: "top-right" });
@@ -64,7 +68,7 @@ const Superprojectshow = () => {
 
   const fetchProjects = async () => {
     try {
-      const { data } = await axios.get("http://localhost:9000/api/super-admin-all-project",
+      const { data } = await axios.get(`http://localhost:9000/api/super-admin-all-project/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',

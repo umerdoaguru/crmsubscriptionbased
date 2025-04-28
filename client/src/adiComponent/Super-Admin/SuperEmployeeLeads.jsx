@@ -157,7 +157,7 @@ const uniqueYears = [
 
   const fetchProjects = async () => {
     try {
-      const { data } = await axios.get("http://localhost:9000/api/super-admin-all-project",
+      const { data } = await axios.get(`http://localhost:9000/api/super-admin-all-project/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -604,6 +604,8 @@ const handlePageClick = (data) => {
   // Function to open modal and set lead_id
 const handleRowClick = (leadId) => {
   setSelectedLeadId(leadId);
+
+  
   setIsModalOpenLeadProfile(true);
 };
 

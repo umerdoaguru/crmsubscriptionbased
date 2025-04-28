@@ -22,6 +22,7 @@ function SoldUnitsReport() {
   const leadsPerPage = 6;
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
+  const userId = adminuser.user_id;  
   // Fetch leads from the API without appending an ID
   useEffect(() => {
     fetchLeads();
@@ -29,7 +30,7 @@ function SoldUnitsReport() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/admin-unit-sold",
+      const response = await axios.get(`http://localhost:9000/api/admin-unit-sold/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',

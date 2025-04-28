@@ -16,6 +16,7 @@ const EmployeesoldUnitCards = () => {
   const navigate = useNavigate();
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
+  const userId = adminuser.user_id;      
 
   useEffect(() => {
 
@@ -25,7 +26,7 @@ const EmployeesoldUnitCards = () => {
   const fetchEmployeeSoldUnits = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/admin-unit-sold`,
+         `http://localhost:9000/api/admin-unit-sold/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
