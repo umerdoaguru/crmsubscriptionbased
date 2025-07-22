@@ -58,6 +58,7 @@ import DashProject from "../components/Project/DashProject";
 import UnitDetailDash from "../components/Project/UnitsdetailDash";
 import EmployeesoldUnitCards from "../components/AdminDashBoardCards/Employeesoldcard";
 import Admin_ViewAll_Unit_Sold from "../components/Leads/Admin_view_unit_sold";
+import ImportLeadsAdmin from "../components/AdminDashBoardCards/ImportLeadsAdmin";
 
 function AdminRoutes() {
   const user = useSelector((state) => state.auth.user);
@@ -160,6 +161,10 @@ function AdminRoutes() {
         <Route path="/admin-project" element={<DashProject/>} />
         <Route path="/admin-unit-Detail-Dash/:id" element={<UnitDetailDash/>} />
         <Route path="/employee-sold-units" element={<EmployeesoldUnitCards/>} />
+
+        <Route path="/admin-import-data" element={<ImportLeadsAdmin/>} />
+
+
       </Routes>
     </>
   );

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { BsHouse, BsFileEarmarkPerson } from "react-icons/bs";
-import { FaHistory, FaUserCircle } from "react-icons/fa";
+import { FaFileImport, FaHistory, FaUserCircle } from "react-icons/fa";
 import { RiSecurePaymentLine } from "react-icons/ri";
 import { MdOutlineManageAccounts } from "react-icons/md";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
@@ -85,6 +85,16 @@ const SuperAdminSider = () => {
               </li>
 
 
+            <hr className="w-full border-gray-400" />
+
+            <li className={`xl:w-full ${getSidebarClass("/super-admin-import-data")}`}>
+              <Link to="/super-admin-import-data" className="flex flex-col items-center py-3">
+                <FaFileImport  className="text-white text-2xl md:text-3xl" />
+                <h3 className="text-xs max-md:pt-3 lg:inline text-white md:text-base">
+                Import  Data 
+                </h3>
+              </Link>
+            </li>
             <hr className="w-full border-gray-400" />
 
             <li className={`xl:w-full ${getSidebarClass("/super-admin-reporting")}`}>

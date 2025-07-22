@@ -1382,7 +1382,7 @@ const handleReset = () => {
                     className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
                     onClick={closePopup}
                   >
-                    Cancel
+                     Cancel
                   </button>
                 </div>
               </div>

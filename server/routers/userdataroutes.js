@@ -333,4 +333,6 @@ router.get("/super-admin-unit-sold/:id",authenticateSuperAdmin, getEmployeeUnitS
 router.get("/super-admin-unit-data/:id",authenticateSuperAdmin, getUnitDataByUnitId);
 router.get("/super-admin-unit-sold-lead-id/:id",authenticateSuperAdmin, getEmployeeUnitSoldByLeadId);
           
+
+
 module.exports = router;

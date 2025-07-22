@@ -41,6 +41,7 @@ import Super_view_visit_by_id from "../adiComponent/Super-Admin/Super_view_visit
 import Super_view_follow_by_id from "../adiComponent/Super-Admin/Super_view_follow_by_id";
 import Super_view_unit_byid from "../adiComponent/Super-Admin/Super_view_unit_byid";
 import Super_view_remark_byid from './../adiComponent/Super-Admin/Super_view_remark_byid';
+import SuperAdminImportData from "../adiComponent/Super-Admin/SuperAdminImportData";
 
 
 
@@ -137,6 +138,9 @@ function SuperAdminRoutes() {
         <Route path="/Super-admin-project" element={<SuperDashProject/>} />
         <Route path="/Super-admin-unit-Detail-Dash/:id" element={<SuperUnitsDetails/>} />
         <Route path="/super-admin-Sold-Units" element={<SuperAdminSoldUnits/>} />
+
+
+        <Route path="/super-admin-import-data" element={<SuperAdminImportData/>} />
       </Routes>
     </>
   );

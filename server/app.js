@@ -14,6 +14,7 @@ const Router = require("./routers/userdataroutes");
 const Router5 = require("./routers/response_99acres");
 const Router6 = require("./routers/FacebookRoutes");
 const Router7 = require("./routers/WebsiteRoutes");
+const Router8 = require("./routers/importleadsRoutes");
 const authenticateAdmin = require("./Middleware/authenticateAdmin");
 const authenticateSuperAdmin = require("./Middleware/authenticateSuperAdmin");
 
@@ -31,6 +32,7 @@ app.use("/api", Router);
 app.use("/api", Router5);
 app.use("/api", Router6);
 app.use("/api", Router7);
+app.use("/api", Router8);
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use("/Assets", express.static(path.join(__dirname, "Assets")));
 
