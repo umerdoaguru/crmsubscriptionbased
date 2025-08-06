@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../store/UserSlice";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { FaUsers, FaArrowLeft } from "react-icons/fa";
+import { MdEmail, MdLock } from "react-icons/md";
 
 function EmployeeLogin() {
   const [formData, setFormData] = useState({});
@@ -44,77 +46,132 @@ function EmployeeLogin() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 mx-3 bg-white rounded-lg shadow-lg">
-      <button
-            onClick={() => navigate(-1)}
-            className="bg-blue-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-blue-600 transition-colors "
-          >
-            Back
-          </button>
-        <h1 className="mb-6 text-2xl font-bold text-center">Employee Login</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Enter your email"
-              className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="mb-6">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Password
-            </label>
-            <div className="relative mt-1">
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                name="password"
-                placeholder="Enter your password"
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                onChange={handleChange}
-                required
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
-                onClick={togglePasswordVisibility}
-              >
-                {showPassword ? (
-                  <AiFillEye className="text-gray-500" />
-                ) : (
-                  <AiFillEyeInvisible className="text-gray-500" />
-                )}
-              </button>
-            </div>
-          </div>
-          <button
-            type="submit"
-            className="w-full px-4 py-2 font-semibold text-white bg-blue-500 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-            disabled = {loading}
-          >
+    <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-teal-900 to-green-900 flex items-center justify-center p-4">
+      {/* Background Animation */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      </div>
 
-            {loading ? 'Submiting...' : 'Submit'}
-          </button>
-          <p className="mt-4 text-sm text-center text-gray-600">
-       
-            <Link to="/employee-reset-password" className="text-blue-500 hover:text-green-600">Forgot Password?{' '}</Link>
+      <div className="relative w-full max-w-md">
+        {/* Back Button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute -top-16 left-0 flex items-center gap-2 text-white/80 hover:text-white transition-colors duration-300 group"
+        >
+          <FaArrowLeft className="text-sm group-hover:-translate-x-1 transition-transform duration-300" />
+          <span className="text-sm font-medium">Back to Home</span>
+        </button>
+
+        {/* Login Card */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-2xl mb-4 shadow-lg">
+              <FaUsers className="text-2xl text-white" />
+            </div>
+            <h1 className="text-3xl font-bold text-white mb-2">
+              Employee
+            </h1>
+            <p className="text-emerald-200 text-sm">
+              Access your workspace dashboard
+            </p>
+          </div>
+
+          {/* Login Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Email Field */}
+            <div className="space-y-2">
+              <label htmlFor="email" className="text-white text-sm font-medium flex items-center gap-2">
+                <MdEmail className="text-emerald-300" />
+                Email Address
+              </label>
+              <div className="relative">
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all duration-300"
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Password Field */}
+            <div className="space-y-2">
+              <label htmlFor="password" className="text-white text-sm font-medium flex items-center gap-2">
+                <MdLock className="text-emerald-300" />
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  name="password"
+                  placeholder="Enter your password"
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all duration-300 pr-12"
+                  onChange={handleChange}
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white transition-colors duration-300"
+                  onClick={togglePasswordVisibility}
+                >
+                  {showPassword ? (
+                    <AiFillEye className="text-xl" />
+                  ) : (
+                    <AiFillEyeInvisible className="text-xl" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:from-emerald-700 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-transparent transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <span>Signing In...</span>
+                </div>
+              ) : (
+                'Sign In'
+              )}
+            </button>
+
+            {/* Forgot Password */}
+            <div className="text-center">
+              <Link 
+                to="/employee-reset-password" 
+                className="text-emerald-300 hover:text-white text-sm transition-colors duration-300 hover:underline"
+              >
+                Forgot your password?
+              </Link>
+            </div>
+          </form>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center mt-6">
+          <p className="text-white/60 text-xs">
+            Powered by{' '}
+            <a 
+              href="https://doaguru.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-emerald-300 hover:text-white transition-colors duration-300"
+            >
+              Doaguru Infosystems
+            </a>
           </p>
-        </form>
-      </div>      
+        </div>
+      </div>
     </div>
   );
 }

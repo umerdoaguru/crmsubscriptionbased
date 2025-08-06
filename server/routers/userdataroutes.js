@@ -85,6 +85,12 @@ const {
 } = require("../controllers/UserRegitrationlLogin");
 
 const {
+  googleOAuthLogin,
+  googleOAuthCallback,
+  getGoogleAuthUrl
+} = require("../controllers/GoogleOAuthController");
+
+const {
   createServiceList,
   getServicelist,
   deleteServicename,
@@ -131,6 +137,11 @@ const { getAllEmployees } = require("../controllers/OrgsnizationActions");
 
 router.post("/register", register);
 router.post("/login", login);
+
+// Google OAuth routes for Super Admin
+router.post("/google-oauth-login", googleOAuthLogin);
+router.post("/google-oauth-callback", googleOAuthCallback);
+router.get("/google-auth-url", getGoogleAuthUrl);
 
 router.post("/sendOtp-employee", sendOtpEmployee);
 router.post("/verifyOtp-employee", verifyOtpEmployee);

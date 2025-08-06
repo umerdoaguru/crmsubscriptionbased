@@ -21,6 +21,7 @@ import Landingpage from "./pages/Landingpage";
 import EmployeeResetPassword from "./components/EmployeeModule/EmployeeResetPassword";
 import AdminResetPassword from "./components/AdminResetPassword";
 import SuperAdminResetPassword from "./components/SuperAdminResetPassword";
+import GoogleOAuthCallback from "./components/GoogleOAuthCallback";
 
 function App() {
   const user = useSelector((state) => state.auth.user);
@@ -35,6 +36,7 @@ function App() {
 
           {/* Common routes */}
           <Route path="/SuperAdmin-login" element={<SuperAdminLogin />} />
+          <Route path="/google-oauth-callback" element={<GoogleOAuthCallback />} />
 
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/employee-login" element={<EmployeeLogin />} />
