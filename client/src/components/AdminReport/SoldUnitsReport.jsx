@@ -30,7 +30,7 @@ function SoldUnitsReport() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/admin-unit-sold/${userId}`,
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/admin-unit-sold/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',

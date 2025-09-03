@@ -36,7 +36,7 @@ function UpdateCompanyData() {
     const fetchCompanyData = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:9000/api/company-header-footer",
+          "https://crm-generalize.dentalguru.software/api/company-header-footer",
           {
             company_name: company,
           }
@@ -113,7 +113,7 @@ function UpdateCompanyData() {
       formData.append("digital_sign", companydigitalsign);
 
       const response = await axios.put(
-        `http://localhost:9000/api/companydata/${idcompany}`,
+        `https://crm-generalize.dentalguru.software/api/companydata/${idcompany}`,
         formData,
         {
           headers: {

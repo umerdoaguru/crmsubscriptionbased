@@ -40,7 +40,7 @@ function DataExport() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get( `http://localhost:9000/api/leads-data-user-id/${userId}`,
+      const response = await axios.get( `https://crm-generalize.dentalguru.software/api/leads-data-user-id/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ function DataExport() {
 
   const fetchEmployee = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/employee/${userId}`,
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/employee/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ function DataExport() {
   const fetchQuotation = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/quotation-data`
+        `https://crm-generalize.dentalguru.software/api/quotation-data`
       );
       setQuotation(response.data);
     } catch (error) {
@@ -81,7 +81,7 @@ function DataExport() {
   const fetchInvoice = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/invoice-data`
+        `https://crm-generalize.dentalguru.software/api/invoice-data`
       );
       setInvoice(response.data);
     } catch (error) {
@@ -91,7 +91,7 @@ function DataExport() {
   const employeesoldunit = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/admin-unit-sold/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/admin-unit-sold/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',

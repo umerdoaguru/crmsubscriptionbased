@@ -11,7 +11,7 @@ function TotalQuotation() {
     const fetchQuotations = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/quotation-data`
+          `https://crm-generalize.dentalguru.software/api/quotation-data`
         );
         setQuotations(response.data);
         console.log(response);

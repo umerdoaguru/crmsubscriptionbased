@@ -19,7 +19,7 @@ function FinalInvoice() {
   const fetchInvoices = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/invoice/${id}`
+        `https://crm-generalize.dentalguru.software/api/invoice/${id}`
       );
 
       if (response.status === 200) {
@@ -60,7 +60,7 @@ function FinalInvoice() {
       try {
         // Make an API call to delete the service
         const response = await axios.delete(
-          `http://localhost:9000/api/invoice-service/${serviceId}`
+          `https://crm-generalize.dentalguru.software/api/invoice-service/${serviceId}`
         );
 
         if (response.status === 200) {

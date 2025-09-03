@@ -23,7 +23,7 @@ const EmployeeQuotationList = () => {
   const fetchQuotations = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/get-quotation-byEmploye/${EmpId}`
+        `https://crm-generalize.dentalguru.software/api/get-quotation-byEmploye/${EmpId}`
       );
       setQuotations(response.data);
       console.log(response);
@@ -39,7 +39,7 @@ const EmployeeQuotationList = () => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `http://localhost:9000/api/quotation/${id}`
+          `https://crm-generalize.dentalguru.software/api/quotation/${id}`
         );
         if (response.status === 200) {
           console.log("Quotation deleted successfully");
@@ -55,7 +55,7 @@ const EmployeeQuotationList = () => {
   const handleCopyQuotation = async (quotationId) => {
     try {
       const response = await axios.post(
-        `http://localhost:9000/api/copy-quotation/${quotationId}`
+        `https://crm-generalize.dentalguru.software/api/copy-quotation/${quotationId}`
       );
       console.log(response.data.message);
       // window.location.reload();

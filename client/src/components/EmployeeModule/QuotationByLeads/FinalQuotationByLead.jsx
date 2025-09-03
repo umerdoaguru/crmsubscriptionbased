@@ -28,9 +28,9 @@ function FinalQuotationByLeads() {
   const fetchQuotations = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/quotation/${id}`
+        `https://crm-generalize.dentalguru.software/api/quotation/${id}`
 
-        // `http://localhost:9000/api/get-quotation-byEmploye/${id}`
+        // `https://crm-generalize.dentalguru.software/api/get-quotation-byEmploye/${id}`
       );
       if (response.status === 200) {
         setQuotationName(response.data[0].quotation_name);
@@ -55,7 +55,7 @@ function FinalQuotationByLeads() {
 
   const fetchNotes = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/notes/${id}`);
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/notes/${id}`);
 
       if (response.status === 200) {
         setNotes(response.data);
@@ -104,7 +104,7 @@ function FinalQuotationByLeads() {
       try {
         // Make an API call to delete the service
         const response = await axios.delete(
-          `http://localhost:9000/api/services/${serviceId}`
+          `https://crm-generalize.dentalguru.software/api/services/${serviceId}`
         );
 
         if (response.status === 200) {

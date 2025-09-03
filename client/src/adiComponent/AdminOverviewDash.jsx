@@ -40,7 +40,7 @@ const AdminOverviewDash = () =>  {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/leads-data-user-id/${userId}`,
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/leads-data-user-id/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ const AdminOverviewDash = () =>  {
 
   const fetchEmployee = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/employee`,
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/employee`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ const AdminOverviewDash = () =>  {
   const fetchProjects = async () => {
     try {
       const response = await axios.get(
-      `http://localhost:9000/api/all-project/${userId}`,
+      `https://crm-generalize.dentalguru.software/api/all-project/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -95,7 +95,7 @@ const AdminOverviewDash = () =>  {
   const employeesoldunit = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/admin-unit-sold/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/admin-unit-sold/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ const AdminOverviewDash = () =>  {
 
   // const fetchQuotation = async () => {
   //   try {
-  //     const response = await axios.get(`http://localhost:9000/api/get-quotation-data`);
+  //     const response = await axios.get(`https://crm-generalize.dentalguru.software/api/get-quotation-data`);
   //     console.log(response.data);
   //     setQuotation(response.data.data);
   //   } catch (error) {
@@ -122,7 +122,7 @@ const AdminOverviewDash = () =>  {
 
   // const fetchInvoice = async () => {
   //   try {
-  //     const response = await axios.get(`http://localhost:9000/api/invoice-data`);
+  //     const response = await axios.get(`https://crm-generalize.dentalguru.software/api/invoice-data`);
   //     setInvoice(response.data);
   //   } catch (error) {
   //     console.error("Error fetching invoices:", error);

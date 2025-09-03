@@ -22,7 +22,7 @@ const SuperDashProject = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/super-admin-all-project/${userId}`, {
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/super-admin-all-project/${userId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

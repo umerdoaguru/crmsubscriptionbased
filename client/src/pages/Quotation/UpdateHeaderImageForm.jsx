@@ -22,7 +22,7 @@ const UpdateHeaderImageForm = ({ quotationId }) => {
       formData.append("file", selectedFile);
 
       const response = await axios.put(
-        `http://localhost:9000/api/header/${quotationId}`,
+        `https://crm-generalize.dentalguru.software/api/header/${quotationId}`,
         formData,
         {
           headers: {

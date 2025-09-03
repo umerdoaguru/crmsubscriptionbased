@@ -63,7 +63,7 @@ const SuperDealClosedGraph = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/leads-super-admin/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',

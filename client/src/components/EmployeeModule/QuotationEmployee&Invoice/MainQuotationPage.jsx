@@ -31,7 +31,7 @@ const MainQuoatationPage = () => {
   const fetchQuotations = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/quotation-data`,
+        `https://crm-generalize.dentalguru.software/api/quotation-data`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ const MainQuoatationPage = () => {
   //   if (isConfirmed) {
   //     try {
   //       const response = await axios.delete(
-  //         `http://localhost:9000/api/quotation/${id}`
+  //         `https://crm-generalize.dentalguru.software/api/quotation/${id}`
   //       );
   //       if (response.status === 200) {
   //         console.log("Quotation deleted successfully");
@@ -76,7 +76,7 @@ const MainQuoatationPage = () => {
       try {
         // Delete the quotation
         const response = await axios.delete(
-          `http://localhost:9000/api/quotation/${quotation.id}`
+          `https://crm-generalize.dentalguru.software/api/quotation/${quotation.id}`
         );
         
         if (response.status === 200) {
@@ -85,7 +85,7 @@ const MainQuoatationPage = () => {
           // After deletion, update the leads table status
           try {
             const updateResponse = await axios.put(
-              `http://localhost:9000/api/updateOnlyQuotationStatus/${quotation.lead_id}`,
+              `https://crm-generalize.dentalguru.software/api/updateOnlyQuotationStatus/${quotation.lead_id}`,
               { quotation: "not created" }
             );
   
@@ -112,7 +112,7 @@ const MainQuoatationPage = () => {
   const handleCopyQuotation = async (quotationId) => {
     try {
       const response = await axios.post(
-        `http://localhost:9000/api/copy-quotation/${quotationId}`
+        `https://crm-generalize.dentalguru.software/api/copy-quotation/${quotationId}`
       );
       setRender(!render);
     } catch (error) {

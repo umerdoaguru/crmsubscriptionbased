@@ -27,7 +27,7 @@ function EmployeeProfile() {
     const fetchEmployee = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/employeeProfile/${EmpId.id}`,
+          `https://crm-generalize.dentalguru.software/api/employeeProfile/${EmpId.id}`,
           {
             headers: {
               'Content-Type': 'application/json',

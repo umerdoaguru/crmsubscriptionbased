@@ -36,13 +36,13 @@ const QuotationByLeads = () => {
   
       };
   
-      const response = await axios.post("http://localhost:9000/api/quotation", dataToSubmit);
+      const response = await axios.post("https://crm-generalize.dentalguru.software/api/quotation", dataToSubmit);
       
       console.log("Quotation added successfully:", response.data);
       
       try {
         const updateResponse = await axios.put(
-          `http://localhost:9000/api/updateOnlyQuotationStatus/${id}`,
+          `https://crm-generalize.dentalguru.software/api/updateOnlyQuotationStatus/${id}`,
           { quotation: "created" }
         );
   

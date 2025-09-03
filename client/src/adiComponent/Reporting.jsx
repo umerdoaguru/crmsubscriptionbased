@@ -194,19 +194,19 @@ const Reporting = () => {
   };
 
   const quotationAxios = axios.create({
-    baseURL: "http://localhost:9000/api",
+    baseURL: "https://crm-generalize.dentalguru.software/api",
   });
 
   const invoiceAxios = axios.create({
-    baseURL: "http://localhost:9000/api",
+    baseURL: "https://crm-generalize.dentalguru.software/api",
   });
 
   const employeeAxios = axios.create({
-    baseURL: "http://localhost:9000/api",
+    baseURL: "https://crm-generalize.dentalguru.software/api",
   });
 
   const leadsAxios = axios.create({
-    baseURL: "http://localhost:9000/api",
+    baseURL: "https://crm-generalize.dentalguru.software/api",
   });
 
   const formatData = (data) => {

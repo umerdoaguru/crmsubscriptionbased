@@ -37,7 +37,7 @@ const SuperSoldnit= () => {
 
   const fetchEmployeeUnitSold = async () => {
     try {
-      const response = await axios.get( `http://localhost:9000/api/super-admin-unit-sold/${userId}`, {
+      const response = await axios.get( `https://crm-generalize.dentalguru.software/api/super-admin-unit-sold/${userId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -52,7 +52,7 @@ const SuperSoldnit= () => {
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/employee-super-admin/${userId}`,
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/employee-super-admin/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ const SuperSoldnit= () => {
 
   const fetchSoldUnits = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/super-admin-unit-sold",  {
+      const response = await axios.get("https://crm-generalize.dentalguru.software/api/super-admin-unit-sold",  {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -82,7 +82,7 @@ const SuperSoldnit= () => {
   const fetchEmployeeData = async (employeeId) => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/unit-sold/${employeeId}`, {
+        `https://crm-generalize.dentalguru.software/api/unit-sold/${employeeId}`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`

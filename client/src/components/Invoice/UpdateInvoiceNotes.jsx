@@ -12,7 +12,7 @@ const UpdateInvoiceNotes = () => {
     const fetchNotes = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/invoice-get-notes/${id}`
+          `https://crm-generalize.dentalguru.software/api/invoice-get-notes/${id}`
         );
         setNotes(response.data);
       } catch (error) {
@@ -28,7 +28,7 @@ const UpdateInvoiceNotes = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:9000/api/invoice-update-notes`,
+        `https://crm-generalize.dentalguru.software/api/invoice-update-notes`,
         { notes }
       );
 

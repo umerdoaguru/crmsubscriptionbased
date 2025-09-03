@@ -36,7 +36,7 @@ const token = superadminuser.token;
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-leads-super-admin/${employeeId}`,
+        `https://crm-generalize.dentalguru.software/api/employe-leads-super-admin/${employeeId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const token = superadminuser.token;
     const fetchEmployee = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/employeeProfile-super-admin/${employeeId}`,
+          `https://crm-generalize.dentalguru.software/api/employeeProfile-super-admin/${employeeId}`,
           {
             headers: {
               'Content-Type': 'application/json',

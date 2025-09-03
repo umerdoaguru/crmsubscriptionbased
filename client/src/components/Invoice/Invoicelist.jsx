@@ -11,7 +11,7 @@
 //   useEffect(() => {
 //     const fetchinvoice = async () => {
 //       try {
-//         const response = await axios.get(`http://localhost:9000/api/invoice-data/${UserId}`);
+//         const response = await axios.get(`https://crm-generalize.dentalguru.software/api/invoice-data/${UserId}`);
 //         setInvoice(response.data);
 //         console.log(response);
 //       } catch (error) {
@@ -31,7 +31,7 @@
 //     if (isConfirmed) {
 //       try {
 //         const response = await axios.delete(
-//           `http://localhost:9000/api/invoice/${id}`
+//           `https://crm-generalize.dentalguru.software/api/invoice/${id}`
 //         );
 
 //         if (response.status === 200) {
@@ -46,7 +46,7 @@
 
 //   const handleCopyInvoice = async (invoiceId) => {
 //     try {
-//       const response = await axios.post(`http://localhost:9000/api/copy-invoice/${invoiceId}`);
+//       const response = await axios.post(`https://crm-generalize.dentalguru.software/api/copy-invoice/${invoiceId}`);
 //       console.log(response.data.message);
 //       window.location.reload();
 //     } catch (error) {
@@ -122,7 +122,7 @@ const Invoicelist = () => {
     const fetchInvoices = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/invoice-data`
+          `https://crm-generalize.dentalguru.software/api/invoice-data`
         );
         setInvoices(response.data);
         console.log(response);
@@ -141,7 +141,7 @@ const Invoicelist = () => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `http://localhost:9000/api/invoice/${id}`
+          `https://crm-generalize.dentalguru.software/api/invoice/${id}`
         );
         if (response.status === 200) {
           console.log("Invoice deleted successfully");
@@ -156,7 +156,7 @@ const Invoicelist = () => {
   const handleCopyInvoice = async (invoiceId) => {
     try {
       const response = await axios.post(
-        `http://localhost:9000/api/copy-invoice/${invoiceId}`
+        `https://crm-generalize.dentalguru.software/api/copy-invoice/${invoiceId}`
       );
       console.log(response.data.message);
       window.location.reload();

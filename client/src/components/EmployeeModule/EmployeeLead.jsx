@@ -82,7 +82,7 @@ function EmployeeLead() {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-leads/${EmpId.id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ function EmployeeLead() {
     try {
       // Send updated data to the backend using Axios
       const response = await axios.put(
-        `http://localhost:9000/api/updateOnlyLeadStatus/${lead.lead_id}`,
+        `https://crm-generalize.dentalguru.software/api/updateOnlyLeadStatus/${lead.lead_id}`,
         { lead_status: "active lead" }
       );
 

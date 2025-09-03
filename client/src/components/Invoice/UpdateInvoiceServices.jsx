@@ -10,7 +10,7 @@ const UpdateInvoiceServices = ({
   const fetchServices = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/invoice/${invoiceId}`
+        `https://crm-generalize.dentalguru.software/api/invoice/${invoiceId}`
       );
       setServices(response.data);
     } catch (error) {
@@ -22,7 +22,7 @@ const UpdateInvoiceServices = ({
     e.preventDefault();
     try {
       const response = await axios.put(
-        `http://localhost:9000/api/invoice/${invoiceId}`,
+        `https://crm-generalize.dentalguru.software/api/invoice/${invoiceId}`,
         {
           services,
         }

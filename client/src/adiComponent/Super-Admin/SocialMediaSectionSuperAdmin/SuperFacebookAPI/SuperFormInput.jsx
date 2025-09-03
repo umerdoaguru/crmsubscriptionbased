@@ -13,7 +13,7 @@ const SuperFormInput = ({ setShowForm,onFormSubmit,id }) => {
 
     try {
       // Make POST request to save form ID and form name
-      const response = await axios.post('http://localhost:9000/api/forms', {
+      const response = await axios.post('https://crm-generalize.dentalguru.software/api/forms', {
         formId,
         formName,project_id:id
       });

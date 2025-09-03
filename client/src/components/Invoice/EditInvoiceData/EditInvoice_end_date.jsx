@@ -13,7 +13,7 @@ const EditInvoice_end_date = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:9000/api/invoice-end-date/${id}`,
+        `https://crm-generalize.dentalguru.software/api/invoice-end-date/${id}`,
         {
           newInvoice_end_date: newInvoiceEndDate,
         }

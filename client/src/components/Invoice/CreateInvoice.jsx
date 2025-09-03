@@ -121,7 +121,7 @@ const CreateInvoice = () => {
       });
 
       const response = await axios.post(
-        "http://localhost:9000/api/create-invoice",
+        "https://crm-generalize.dentalguru.software/api/create-invoice",
         {
           invoice_name: invoiceName,
           invoice_no: invoice_no,
@@ -150,7 +150,7 @@ const CreateInvoice = () => {
 
   const getServicelist = async () => {
     try {
-      const res = await axios.get(`http://localhost:9000/api/servicelist`);
+      const res = await axios.get(`https://crm-generalize.dentalguru.software/api/servicelist`);
 
       setServiceslist(res.data);
     } catch (error) {}
@@ -160,7 +160,7 @@ const CreateInvoice = () => {
     const fetchinvoice = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/company-data`
+          `https://crm-generalize.dentalguru.software/api/company-data`
         );
         setCompany_data(response.data);
 
@@ -178,7 +178,7 @@ const CreateInvoice = () => {
     const fetchCompanyData = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:9000/api/company-header-footer",
+          "https://crm-generalize.dentalguru.software/api/company-header-footer",
           {
             company_name: selectedCompany,
           }

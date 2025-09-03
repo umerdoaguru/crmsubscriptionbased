@@ -20,7 +20,7 @@ function Reviews({ handleClose }) {
     try {
       const response = await axios.get(
         `
-        http://localhost:9000/api/quotation/${id}`
+        https://crm-generalize.dentalguru.software/api/quotation/${id}`
       );
 
       if (response.status === 200) {
@@ -37,7 +37,7 @@ function Reviews({ handleClose }) {
     try {
       const response = await axios.get(
         `
-        http://localhost:9000/api/notes/${id}`
+        https://crm-generalize.dentalguru.software/api/notes/${id}`
       );
 
       if (response.status === 200) {
@@ -51,7 +51,7 @@ function Reviews({ handleClose }) {
     try {
       const response = await axios.get(
         `
-        http://localhost:9000/api/${id}/header`
+        https://crm-generalize.dentalguru.software/api/${id}/header`
       );
 
       if (response.status === 200) {

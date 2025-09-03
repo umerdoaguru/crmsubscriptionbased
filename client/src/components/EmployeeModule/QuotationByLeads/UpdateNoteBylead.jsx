@@ -14,7 +14,7 @@ const UpdateNoteBylead = () => {
     const fetchNotes = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/notes/${id}`
+          `https://crm-generalize.dentalguru.software/api/notes/${id}`
         );
         setNotes(response.data);
       } catch (error) {
@@ -29,7 +29,7 @@ const UpdateNoteBylead = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.put(`http://localhost:9000/api/notes`, {
+      const response = await axios.put(`https://crm-generalize.dentalguru.software/api/notes`, {
         notes,
       });
 

@@ -38,7 +38,7 @@ const Admin_ViewAll_Unit_Sold = () => {
   const fetchEmployeeUnitSold = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/admin-unit-sold-lead-id/${id}`,
+        `https://crm-generalize.dentalguru.software/api/admin-unit-sold-lead-id/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',

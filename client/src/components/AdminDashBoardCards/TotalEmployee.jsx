@@ -20,7 +20,7 @@ function TotalEmployee() {
   const fetchEmployees = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:9000/api/getAllEmployees",
+        "https://crm-generalize.dentalguru.software/api/getAllEmployees",
         {
           headers: {
             'Content-Type': 'application/json',

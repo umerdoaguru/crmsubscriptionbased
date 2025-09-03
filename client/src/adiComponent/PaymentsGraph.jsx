@@ -11,7 +11,7 @@ const PaymentsGraph = () => {
     // Fetch data from the API
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:9000/api/payments");
+        const response = await fetch("https://crm-generalize.dentalguru.software/api/payments");
         const data = await response.json();
 
         data.forEach((item) => {

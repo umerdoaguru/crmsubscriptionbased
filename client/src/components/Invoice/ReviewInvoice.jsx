@@ -13,7 +13,7 @@ function ReviewInvoice() {
   const fetchInvoice = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/invoice/${id}`
+        `https://crm-generalize.dentalguru.software/api/invoice/${id}`
       );
 
       if (response.status === 200) {
@@ -30,7 +30,7 @@ function ReviewInvoice() {
   const fetchNotes = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/invoice-get-notes/${id}`
+        `https://crm-generalize.dentalguru.software/api/invoice-get-notes/${id}`
       );
 
       if (response.status === 200) {

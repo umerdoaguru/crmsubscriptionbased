@@ -25,7 +25,7 @@ function AdminProfile() {
     const fetchEmployee = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/getAdminById/${adminId}`
+          `https://crm-generalize.dentalguru.software/api/getAdminById/${adminId}`
         ); // Fetch employee data
         setUser(response.data.admin); // Set employee data to state
         console.log(response.data); // Debug: log employee data

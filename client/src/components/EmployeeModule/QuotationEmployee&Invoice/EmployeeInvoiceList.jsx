@@ -17,7 +17,7 @@ const EmployeeInvoiceList = () => {
     const fetchInvoices = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/get-employee-invoice/${EmpId}`
+          `https://crm-generalize.dentalguru.software/api/get-employee-invoice/${EmpId}`
         );
         setInvoices(response.data);
         console.log(response);
@@ -36,7 +36,7 @@ const EmployeeInvoiceList = () => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `http://localhost:9000/api/invoice/${id}`
+          `https://crm-generalize.dentalguru.software/api/invoice/${id}`
         );
         if (response.status === 200) {
           console.log("Invoice deleted successfully");
@@ -51,7 +51,7 @@ const EmployeeInvoiceList = () => {
   const handleCopyInvoice = async (invoiceId) => {
     try {
       const response = await axios.post(
-        `http://localhost:9000/api/copy-invoice/${invoiceId}`
+        `https://crm-generalize.dentalguru.software/api/copy-invoice/${invoiceId}`
       );
       console.log(response.data.message);
       window.location.reload();

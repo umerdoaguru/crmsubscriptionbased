@@ -48,7 +48,7 @@ const GoogleOAuthButton = () => {
       setLoading(true);
       
       // Send the credential token to our backend
-      const res = await axios.post('http://localhost:9000/api/google-oauth-login', {
+      const res = await axios.post('https://crm-generalize.dentalguru.software/api/google-oauth-login', {
         token: response.credential
       });
 

@@ -23,7 +23,7 @@ const DashProject = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/all-project/${userId}`, {
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/all-project/${userId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

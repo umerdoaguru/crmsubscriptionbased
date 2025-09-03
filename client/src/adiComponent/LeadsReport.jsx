@@ -14,7 +14,7 @@ const LeadsReport = () => {
   useEffect(() => {
     const fetchLeads = async () => {
       try {
-        const response = await fetch(`http://localhost:9000/api/leads-data-user-id/${userId}`,
+        const response = await fetch(`https://crm-generalize.dentalguru.software/api/leads-data-user-id/${userId}`,
           {
             headers: {
               'Content-Type': 'application/json',

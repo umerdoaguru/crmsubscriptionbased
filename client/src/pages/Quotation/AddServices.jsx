@@ -127,7 +127,7 @@ const Addservices = () => {
       });
 
       const response = await axios.post(
-        `http://localhost:9000/api/services/${id}`,
+        `https://crm-generalize.dentalguru.software/api/services/${id}`,
         {
           quotation_name: quotationName,
           services: servicesToSave,
@@ -148,7 +148,7 @@ const Addservices = () => {
   const getQuotationName = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/quotation/${id}`
+        `https://crm-generalize.dentalguru.software/api/quotation/${id}`
       );
       setQuotationName(response.data[0].quotation_name);
     } catch (error) {
@@ -159,7 +159,7 @@ const Addservices = () => {
   const getServicelist = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:9000/api/servicelist/${userId}`
+        `https://crm-generalize.dentalguru.software/api/servicelist/${userId}`
       );
       console.log(res.data);
       setServiceslist(res.data);

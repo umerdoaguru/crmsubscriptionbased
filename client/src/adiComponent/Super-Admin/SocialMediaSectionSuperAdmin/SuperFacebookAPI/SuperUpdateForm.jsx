@@ -26,7 +26,7 @@ const SuperUpdateForm = ({setShowUpdateForm,id}) => {
   const fetchFormData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/forms/${id}`
+        `https://crm-generalize.dentalguru.software/api/forms/${id}`
       );
       setForm(response.data.reverse());
       console.log(response);
@@ -43,7 +43,7 @@ const SuperUpdateForm = ({setShowUpdateForm,id}) => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `http://localhost:9000/api/deleteform/${form.id}`
+          `https://crm-generalize.dentalguru.software/api/deleteform/${form.id}`
         );
         if (response.status === 200) {
           console.log("form deleted successfully");
@@ -81,7 +81,7 @@ const SuperUpdateForm = ({setShowUpdateForm,id}) => {
   // Function to send the PUT request to update the Form data
   const updateFrom = async () => {
     try {
-      const response = await axios.put(`http://localhost:9000/api/updateform`, modalData);
+      const response = await axios.put(`https://crm-generalize.dentalguru.software/api/updateform`, modalData);
       if (response.status === 200) {
         cogoToast.success("Form updated successfully!");
         setRender(!render); // Refresh the list after updating

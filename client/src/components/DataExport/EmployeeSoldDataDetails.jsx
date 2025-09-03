@@ -37,7 +37,7 @@ const EmployeeSoldDataDetails = () => {
   }, []);
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/employee/${userId}`,
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/employee/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ const EmployeeSoldDataDetails = () => {
   const fetchEmployeeUnitSold = async () => {
     try {
           const response = await axios.get(
-            `http://localhost:9000/api/admin-unit-sold/${userId}`,
+            `https://crm-generalize.dentalguru.software/api/admin-unit-sold/${userId}`,
             {
               headers: {
                 "Content-Type": "application/json",
@@ -72,7 +72,7 @@ const EmployeeSoldDataDetails = () => {
 
   const fetchSoldUnits = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/unit-sold", {
+      const response = await axios.get("https://crm-generalize.dentalguru.software/api/unit-sold", {
         headers: { "Content-Type": "application/json" },
       });
       setSoldUnits(response.data.data || response.data || []);
@@ -85,7 +85,7 @@ const EmployeeSoldDataDetails = () => {
   const fetchEmployeeData = async (employeeId) => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/unit-sold/${employeeId}`,
+        `https://crm-generalize.dentalguru.software/api/unit-sold/${employeeId}`,
         {
           headers: { "Content-Type": "application/json" },
         }

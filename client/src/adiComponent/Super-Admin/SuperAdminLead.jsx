@@ -51,7 +51,7 @@ function SuperAdminLead() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/leads");
+      const response = await axios.get("https://crm-generalize.dentalguru.software/api/leads");
       console.log(response.data);
       setLeads(response.data);
     } catch (error) {
@@ -61,7 +61,7 @@ function SuperAdminLead() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/employee");
+      const response = await axios.get("https://crm-generalize.dentalguru.software/api/employee");
       setEmployees(response.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -142,7 +142,7 @@ function SuperAdminLead() {
     if (validateForm()) {
         try {
           await axios.put(
-            `http://localhost:9000/api/leads/${currentLead.lead_id}`,
+            `https://crm-generalize.dentalguru.software/api/leads/${currentLead.lead_id}`,
             currentLead
           );
           fetchLeads(); // Refresh the list
@@ -159,7 +159,7 @@ function SuperAdminLead() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`http://localhost:9000/api/leads/${id}`);
+        await axios.delete(`https://crm-generalize.dentalguru.software/api/leads/${id}`);
         fetchLeads(); // Refresh the list after deletion
       } catch (error) {
         console.error("Error deleting lead:", error);

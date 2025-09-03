@@ -30,7 +30,7 @@ const Super_view_remark_byid = () => {
 
   const fetchRemarks = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/remarks-super-admin/${id}`,
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/remarks-super-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',

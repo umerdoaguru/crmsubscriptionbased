@@ -28,7 +28,7 @@ const Admin_RemarksView = () => {
 
   const fetchRemarks = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/remarks-admin/${id}`,
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/remarks-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',

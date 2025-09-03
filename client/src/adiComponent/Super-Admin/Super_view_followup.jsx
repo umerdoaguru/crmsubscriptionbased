@@ -33,7 +33,7 @@ const Super_view_followup = ({id,closeModalFollowUp}) => {
   const fetchFollowUp = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-follow-up-super-admin/${id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-follow-up-super-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',

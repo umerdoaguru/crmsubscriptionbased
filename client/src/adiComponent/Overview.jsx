@@ -35,7 +35,7 @@ const Overview = () => {
   const fetchCompanies = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:9000/api/getOrganization"
+        "https://crm-generalize.dentalguru.software/api/getOrganization"
       );
       const { organizations } = response.data;
       setCompanies(organizations);
@@ -117,7 +117,7 @@ const Overview = () => {
       if (editingIndex !== null) {
         const companyId = companies[editingIndex].companyId;
         await axios.put(
-          `http://localhost:9000/api/updateOrganization/${companyId}`,
+          `https://crm-generalize.dentalguru.software/api/updateOrganization/${companyId}`,
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },
@@ -129,7 +129,7 @@ const Overview = () => {
         setEditingIndex(null);
       } else {
         await axios.post(
-          "http://localhost:9000/api/addOrganization",
+          "https://crm-generalize.dentalguru.software/api/addOrganization",
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },
@@ -216,7 +216,7 @@ const Overview = () => {
     if (isConfirmed) {
       try {
         await axios.delete(
-          `http://localhost:9000/api/deleteOrganization/${companyId}`
+          `https://crm-generalize.dentalguru.software/api/deleteOrganization/${companyId}`
         );
         setCompanies(
           companies.filter((company) => company.companyId !== companyId)

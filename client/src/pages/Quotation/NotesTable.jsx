@@ -8,7 +8,7 @@ const NotesTable = ({ quotationId }) => {
   useEffect(() => {
     // Fetch notes for the given quotationId
     axios
-      .get(`http://localhost:9000/api/notes?quotationId=${quotationId}`)
+      .get(`https://crm-generalize.dentalguru.software/api/notes?quotationId=${quotationId}`)
       .then((response) => setNotes(response.data))
       .catch((error) => console.error("Error fetching notes:", error));
   }, [quotationId]);
@@ -16,7 +16,7 @@ const NotesTable = ({ quotationId }) => {
   const handleAddNote = () => {
     // Add a new note
     axios
-      .post("http://localhost:9000/api/notes", {
+      .post("https://crm-generalize.dentalguru.software/api/notes", {
         noteText: newNote,
         quotationId,
       })
@@ -30,7 +30,7 @@ const NotesTable = ({ quotationId }) => {
   const handleDeleteNote = (id) => {
     // Delete a note
     axios
-      .delete(`http://localhost:9000/api/notes/${id}`)
+      .delete(`https://crm-generalize.dentalguru.software/api/notes/${id}`)
       .then(() => setNotes(notes.filter((note) => note.id !== id)))
       .catch((error) => console.error("Error deleting note:", error));
   };

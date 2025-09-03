@@ -57,7 +57,7 @@ const CloseData = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-       `http://localhost:9000/api/leads-data-user-id/${userId}`,
+       `https://crm-generalize.dentalguru.software/api/leads-data-user-id/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ const CloseData = () => {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/employee/${userId}`,
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/employee/${userId}`,
         {
           headers: {
             'Content-Type': 'application/json',

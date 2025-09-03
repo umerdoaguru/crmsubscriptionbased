@@ -50,7 +50,7 @@ function PrintInvoice() {
     const fetchInvoiceAddress = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/invoice-address/${id}`
+          `https://crm-generalize.dentalguru.software/api/invoice-address/${id}`
         );
         console.log(response.data);
         if (response.status === 200) {
@@ -80,7 +80,7 @@ function PrintInvoice() {
   const fetchInvoice = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/invoice/${id}`
+        `https://crm-generalize.dentalguru.software/api/invoice/${id}`
       );
       if (response.status === 200) {
         setInvoiceName(response.data[0].invoice_name);
@@ -317,7 +317,7 @@ function PrintInvoice() {
     try {
       // Make a POST request to fetch data for the selected company
       const response = await axios.post(
-        "http://localhost:9000/api/company-name-data",
+        "https://crm-generalize.dentalguru.software/api/company-name-data",
         {
           company_name: companyType,
         }
@@ -384,7 +384,7 @@ function PrintInvoice() {
   const fetchNotes = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/invoice-get-notes/${id}`
+        `https://crm-generalize.dentalguru.software/api/invoice-get-notes/${id}`
       );
 
       if (response.status === 200) {

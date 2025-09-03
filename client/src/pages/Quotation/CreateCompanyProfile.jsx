@@ -31,7 +31,7 @@ function CreateCompanyProfile() {
     const fetchQuotations = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/quotation-data-admin`,
+          `https://crm-generalize.dentalguru.software/api/quotation-data-admin`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ function CreateCompanyProfile() {
 
     try {
       // API call to update status in the backend
-      await axios.post(`http://localhost:9000/api/update-quotation-status`, {
+      await axios.post(`https://crm-generalize.dentalguru.software/api/update-quotation-status`, {
         id: id, // Send the quotation ID
         status: newStatus, // Send the updated status
       });

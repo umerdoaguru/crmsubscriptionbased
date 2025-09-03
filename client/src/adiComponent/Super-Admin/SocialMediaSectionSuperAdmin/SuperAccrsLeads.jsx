@@ -26,7 +26,7 @@ function SuperAccrs() {
 
   const fetchResponses = async () => {
     try {
-      const response = await axios.get('http://localhost:9000/api/get-responses-super-admin',
+      const response = await axios.get('https://crm-generalize.dentalguru.software/api/get-responses-super-admin',
         {
           headers: {
             'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ function SuperAccrs() {
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/employee-super-admin",
+      const response = await axios.get("https://crm-generalize.dentalguru.software/api/employee-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ function SuperAccrs() {
   };
   const fetchLeadassigned = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/leads-super-admin",
+      const response = await axios.get("https://crm-generalize.dentalguru.software/api/leads-super-admin",
         {
           headers: {
             'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ function SuperAccrs() {
     }
     try {
       setLoading(true)
-      await axios.post("http://localhost:9000/api/leads", {
+      await axios.post("https://crm-generalize.dentalguru.software/api/leads", {
         lead_no:  selectedLead.leadId,    
         assignedTo:currentLead.assignedTo,
         employeeId:currentLead.employeeId,

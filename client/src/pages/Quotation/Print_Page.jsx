@@ -40,7 +40,7 @@ function Print_Page() {
   const fetchQuotations = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/quotation/${id}`
+        `https://crm-generalize.dentalguru.software/api/quotation/${id}`
       );
 
       if (response.status === 200) {
@@ -55,7 +55,7 @@ function Print_Page() {
   };
   const fetchNotes = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/notes/${id}`);
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/notes/${id}`);
 
       if (response.status === 200) {
         setNotes(response.data);
@@ -70,7 +70,7 @@ function Print_Page() {
     const fetchCompanyNames = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/header-footer-images/company-names`
+          `https://crm-generalize.dentalguru.software/api/header-footer-images/company-names`
         );
         if (response.status === 200) {
           setCompanyNames(response.data); // Assuming response.data is an array of company names
@@ -359,7 +359,7 @@ function Print_Page() {
     const fetchImages = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:9000/api/company-header-footer",
+          "https://crm-generalize.dentalguru.software/api/company-header-footer",
           {
             company_name: selectedCompany,
           }

@@ -24,7 +24,7 @@ const AdminResetPassword = () => {
     try {
       setLoading(true)
       const response = await axios.post(
-        "http://localhost:9000/api/sendOtp-admin",
+        "https://crm-generalize.dentalguru.software/api/sendOtp-admin",
         {
           email,
         }
@@ -47,7 +47,7 @@ const AdminResetPassword = () => {
     try {
       setLoading(true)
       const response = await axios.post(
-        "http://localhost:9000/api/verifyOtp-admin",
+        "https://crm-generalize.dentalguru.software/api/verifyOtp-admin",
         {
           email,
           otp,
@@ -70,7 +70,7 @@ const AdminResetPassword = () => {
     try {
       setLoading(true)
       const response = await axios.put(
-        "http://localhost:9000/api/resetPassword-admin",
+        "https://crm-generalize.dentalguru.software/api/resetPassword-admin",
         {
           email,
           password: newPassword,

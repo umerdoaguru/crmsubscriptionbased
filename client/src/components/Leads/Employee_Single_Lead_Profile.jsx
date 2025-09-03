@@ -234,7 +234,7 @@ const [unitsold, setUnitSold] = useState({
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/leads-employee/${id}`,
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/leads-employee/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -272,7 +272,7 @@ const [unitsold, setUnitSold] = useState({
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-visit/${id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-visit/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -296,7 +296,7 @@ const [unitsold, setUnitSold] = useState({
   const fetchFollowUp = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-follow-up/${id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-follow-up/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -314,7 +314,7 @@ const [unitsold, setUnitSold] = useState({
   const fetchUnitSoldEmployee = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/unit-sold-lead-id/${leads[0].lead_id}`,
+        `https://crm-generalize.dentalguru.software/api/unit-sold-lead-id/${leads[0].lead_id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -334,7 +334,7 @@ const [unitsold, setUnitSold] = useState({
   const fetchRemark = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/remarks/${id}`,
+        `https://crm-generalize.dentalguru.software/api/remarks/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -352,7 +352,7 @@ const [unitsold, setUnitSold] = useState({
   const fetchUnitdata = async () => {
     
     try {
-      const response = await axios.get(`http://localhost:9000/api/unit-data/${leads[0].unit_id}`,
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/unit-data/${leads[0].unit_id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -538,7 +538,7 @@ const [unitsold, setUnitSold] = useState({
       setLoading(true)
       // Send updated data to the backend using Axios
       const response = await axios.put(
-        `http://localhost:9000/api/updateLeadStatus/${currentLead.lead_id}`,
+        `https://crm-generalize.dentalguru.software/api/updateLeadStatus/${currentLead.lead_id}`,
         leadData
       );
 
@@ -577,7 +577,7 @@ const [unitsold, setUnitSold] = useState({
     try {
       // First API call: Create a visit
       const response = await axios.post(
-        `http://localhost:9000/api/employe-visit`,
+        `https://crm-generalize.dentalguru.software/api/employe-visit`,
         {
           project_name: leads[0].project_name,
           lead_id: leads[0].lead_id,
@@ -595,7 +595,7 @@ const [unitsold, setUnitSold] = useState({
   
         // Second API call: Update visit status
         const updateResponse = await axios.put(
-          `http://localhost:9000/api/updateVisitStatus/${leads[0].lead_id}`,
+          `https://crm-generalize.dentalguru.software/api/updateVisitStatus/${leads[0].lead_id}`,
           { visit: visitLead.visit,visit_date:visitLead.visit_date  }
         );
   
@@ -610,7 +610,7 @@ const [unitsold, setUnitSold] = useState({
   
         // Third API call: Update lead status
         const updateLeadStatusResponse = await axios.put(
-          `http://localhost:9000/api/updateOnlyLeadStatus/${leads[0].lead_id}`,
+          `https://crm-generalize.dentalguru.software/api/updateOnlyLeadStatus/${leads[0].lead_id}`,
           { lead_status: "site visit done" }
         );
   
@@ -674,7 +674,7 @@ const [unitsold, setUnitSold] = useState({
     try {
       // Send updated data to the backend using Axios
       const response = await axios.post(
-        `http://localhost:9000/api/employe-follow-up`,
+        `https://crm-generalize.dentalguru.software/api/employe-follow-up`,
         {
           project_name: leads[0].project_name,
           lead_id: leads[0].lead_id,
@@ -693,7 +693,7 @@ const [unitsold, setUnitSold] = useState({
   
         // Update the Follow Up status after saving the Follow Up
         const putResponse = await axios.put(
-          `http://localhost:9000/api/updateOnlyFollowUpStatus/${leads[0].lead_id}`,
+          `https://crm-generalize.dentalguru.software/api/updateOnlyFollowUpStatus/${leads[0].lead_id}`,
           { follow_up_status: "in progress" }
         );
   
@@ -735,7 +735,7 @@ const [unitsold, setUnitSold] = useState({
     setLoading(true)
     try {
 
-        const response = await axios.post(`http://localhost:9000/api/remarks`,
+        const response = await axios.post(`https://crm-generalize.dentalguru.software/api/remarks`,
         {
           project_name: leads[0].project_name,
           lead_id: leads[0].lead_id,
@@ -776,7 +776,7 @@ const [unitsold, setUnitSold] = useState({
     setLoading(true)
     try {
 
-        const response = await axios.post(`http://localhost:9000/api/unit-sold`,
+        const response = await axios.post(`https://crm-generalize.dentalguru.software/api/unit-sold`,
         {
           project_name: leads[0].project_name,
           main_project_id: leads[0].main_project_id,
@@ -795,7 +795,7 @@ const [unitsold, setUnitSold] = useState({
       if (response.status === 201) {
 
         const putResponse = await axios.put(
-          `http://localhost:9000/api/unit-data/${unitsold.unit_no}`,
+          `https://crm-generalize.dentalguru.software/api/unit-data/${unitsold.unit_no}`,
           { unit_status: unitsold.unit_status }
         );
   
@@ -807,7 +807,7 @@ const [unitsold, setUnitSold] = useState({
           cogoToast.error("Failed to update the lead Unit Status.");
         }
         const putResponseUnit = await axios.put(
-          `http://localhost:9000/api/updateOnlyUnitStatus/${leads[0].lead_id}`,
+          `https://crm-generalize.dentalguru.software/api/updateOnlyUnitStatus/${leads[0].lead_id}`,
           { unit_number: unitsold.unit_no,unit_status: unitsold.unit_status }
         );
   

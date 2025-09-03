@@ -17,7 +17,7 @@ const EmployeeLeadsGraph = () => {
   // useEffect(() => {
   //   const fetchLeadsData = async () => {
   //     try {
-  //       const response = await axios.get(`http://localhost:9000/api/employe-leads/${EmpId}`);
+  //       const response = await axios.get(`https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId}`);
   //       const allLeads = response.data;
 
   //       // Get today's date and the date 28 days ago (to include today and 27 previous days)
@@ -84,7 +84,7 @@ const EmployeeLeadsGraph = () => {
     const fetchLeadsData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/employe-leads/${EmpId.id}`,
+          `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
           {
             headers: {
               'Content-Type': 'application/json',

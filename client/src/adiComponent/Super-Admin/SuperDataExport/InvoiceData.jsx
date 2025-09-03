@@ -18,7 +18,7 @@ const InvoiceData = () => {
     const fetchInvoices = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/invoice-data`
+          `https://crm-generalize.dentalguru.software/api/invoice-data`
         );
         setInvoices(response.data);
       } catch (error) {

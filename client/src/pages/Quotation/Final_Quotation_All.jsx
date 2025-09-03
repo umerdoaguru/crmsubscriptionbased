@@ -20,7 +20,7 @@ function Final_Quotation_All() {
   const token = EmpId?.token;
   const fetchQuotations = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/quotation/${id}`,
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/quotation/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',

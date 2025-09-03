@@ -37,7 +37,7 @@ const ImportLeads = () => {
 
   const fetchEmployees = async () => {
     try {
-      const res = await axios.get(`http://localhost:9000/api/employee-super-admin/${userId}`, {
+      const res = await axios.get(`https://crm-generalize.dentalguru.software/api/employee-super-admin/${userId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       setEmployees(res.data);
@@ -48,7 +48,7 @@ const ImportLeads = () => {
 
   const fetchProjects = async () => {
     try {
-      const res = await axios.get(`http://localhost:9000/api/super-admin-all-project/${userId}`, {
+      const res = await axios.get(`https://crm-generalize.dentalguru.software/api/super-admin-all-project/${userId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       setProjects(res.data);
@@ -61,7 +61,7 @@ const ImportLeads = () => {
 
   const fetchProjectUnits = async (projectId) => {
     try {
-      const res = await axios.get(`http://localhost:9000/api/super-admin-project-unit/${projectId}`, {
+      const res = await axios.get(`https://crm-generalize.dentalguru.software/api/super-admin-project-unit/${projectId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       setProjectUnits(res.data);
@@ -119,7 +119,7 @@ const ImportLeads = () => {
   
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:9000/api/import-leads", formData, {
+      const res = await axios.post("https://crm-generalize.dentalguru.software/api/import-leads", formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`

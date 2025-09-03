@@ -35,7 +35,7 @@ const EmployeeSingle = () => {
   // Fetch employee data
   const fetchEmployee = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/getEmployeeById/${employeeId}`,
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/getEmployeeById/${employeeId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -107,7 +107,7 @@ const EmployeeSingle = () => {
 
   const isEmailTaken = async (email) => {
     try {
-      const response = await axios.get('http://localhost:9000/api/checkEmail', {
+      const response = await axios.get('https://crm-generalize.dentalguru.software/api/checkEmail', {
         params: { email },
       });
       return response.data.exists;
@@ -119,7 +119,7 @@ const EmployeeSingle = () => {
 
   const isPhoneNumberTaken = async (phone) => {
     try {
-      const response = await axios.get('http://localhost:9000/api/checkPhoneNumber', {
+      const response = await axios.get('https://crm-generalize.dentalguru.software/api/checkPhoneNumber', {
         params: { phone },
       });
       return response.data.exists;
@@ -174,11 +174,11 @@ const EmployeeSingle = () => {
 
       let response;
       if (editingIndex !== null) {
-        response = await axios.put(`http://localhost:9000/api/updateSingleEmployee/${employee.employeeId}`, formData, {
+        response = await axios.put(`https://crm-generalize.dentalguru.software/api/updateSingleEmployee/${employee.employeeId}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       } else {
-        response = await axios.post('http://localhost:9000/api/addEmployee', formData, {
+        response = await axios.post('https://crm-generalize.dentalguru.software/api/addEmployee', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       }
@@ -226,7 +226,7 @@ const EmployeeSingle = () => {
       );
       if (isConfirmed) {
         try {
-          await axios.delete(`http://localhost:9000/api/deleteEmployee/${employee.employeeId}`);
+          await axios.delete(`https://crm-generalize.dentalguru.software/api/deleteEmployee/${employee.employeeId}`);
           navigate('/employee-management');
         } catch (error) {
           setError("Error deleting employee");
@@ -243,7 +243,7 @@ const EmployeeSingle = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-leads-admin/${employeeId}`,
+        `https://crm-generalize.dentalguru.software/api/employe-leads-admin/${employeeId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -305,7 +305,7 @@ const EmployeeSingle = () => {
                 <div className="flex items-center mb-6">
                   {/* {employee.photo ? (
                     <img
-                      src={`http://localhost:9000/${employee.photo}`}
+                      src={`https://crm-generalize.dentalguru.software/${employee.photo}`}
                       alt="Profile"
                       className="w-24 h-24 border-2 border-gray-300 rounded-full"
                     />
@@ -334,7 +334,7 @@ const EmployeeSingle = () => {
                       Signature
                     </h4>
                     <img
-                      src={`http://localhost:9000/${employee.signature}`}
+                      src={`https://crm-generalize.dentalguru.software/${employee.signature}`}
                       alt="Signature"
                       className="w-32 h-16 border-t border-gray-300"
                     />

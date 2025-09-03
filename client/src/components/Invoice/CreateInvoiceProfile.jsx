@@ -42,7 +42,7 @@ function CreateInvoiceProfile() {
       formData.append("bank", companyBank);
 
       const response = await axios.post(
-        "http://localhost:9000/api/upload-invoice-profile",
+        "https://crm-generalize.dentalguru.software/api/upload-invoice-profile",
         formData,
         {
           headers: {

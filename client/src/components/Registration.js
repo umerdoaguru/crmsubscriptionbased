@@ -22,7 +22,7 @@
 //     e.preventDefault();
 //     try{
 //       setLoading(true);
-//       const res = await axios.post("http://localhost:9000/api/register" , formData)
+//       const res = await axios.post("https://crm-generalize.dentalguru.software/api/register" , formData)
 //       setLoading(false)
 //       console.log(res)
 //       if(res.data.success === true){
@@ -244,7 +244,7 @@ const Registration = () => {
     try {
       setLoading(true);
       const res = await axios.post(
-        "http://localhost:9000/api/register",
+        "https://crm-generalize.dentalguru.software/api/register",
         formData
       );
       setLoading(false);

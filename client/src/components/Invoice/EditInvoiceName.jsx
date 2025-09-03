@@ -14,7 +14,7 @@ const EditInvoiceName = () => {
     const fetchInvoiceData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/invoice-name/${id}`
+          `https://crm-generalize.dentalguru.software/api/invoice-name/${id}`
         );
         if (response.data) {
           setNewName(response.data[0].invoice_name);
@@ -31,7 +31,7 @@ const EditInvoiceName = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:9000/api/invoice-data/${id}`,
+        `https://crm-generalize.dentalguru.software/api/invoice-data/${id}`,
         {
           newName,
         }

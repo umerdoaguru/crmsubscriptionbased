@@ -13,7 +13,7 @@ const EditInvoice_no = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:9000/api/invoice-no/${id}`,
+        `https://crm-generalize.dentalguru.software/api/invoice-no/${id}`,
         { newInvoice_no: newInvoiceNo }
       );
       if (response.status === 200) {

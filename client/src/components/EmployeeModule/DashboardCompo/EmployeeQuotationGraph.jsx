@@ -62,7 +62,7 @@ const EmployeeQuotationGraph = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/get-quotation-byEmploye/${EmpId}`
+        `https://crm-generalize.dentalguru.software/api/get-quotation-byEmploye/${EmpId}`
       ); // Adjust the API route as necessary
       const data = response.data;
 

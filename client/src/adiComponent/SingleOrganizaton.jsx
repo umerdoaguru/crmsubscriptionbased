@@ -15,7 +15,7 @@ const SingleOrganization = () => {
   const fetchOrganization = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/getOrganization/${id}`
+        `https://crm-generalize.dentalguru.software/api/getOrganization/${id}`
       );
       setOrganization(response.data.organization);
     } catch (error) {

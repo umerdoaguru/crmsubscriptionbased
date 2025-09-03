@@ -31,7 +31,7 @@ const Admin_view_visit = () => {
   const fetchvisit = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-visit-admin/${id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-visit-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ const Admin_view_visit = () => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `http://localhost:9000/api/employe-visit/${id}`
+          `https://crm-generalize.dentalguru.software/api/employe-visit/${id}`
         );
         if (response.status === 200) {
           console.log("visit deleted successfully");
@@ -86,7 +86,7 @@ const Admin_view_visit = () => {
   // Function to send the PUT request to update the visit data
   const updateVisit = async () => {
     try {
-      const response = await axios.put(`http://localhost:9000/api/employe-visit`, modalData);
+      const response = await axios.put(`https://crm-generalize.dentalguru.software/api/employe-visit`, modalData);
       if (response.status === 200) {
         cogoToast.success("Visit updated successfully!");
         setRender(!render); // Refresh the list after updating

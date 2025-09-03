@@ -39,7 +39,7 @@ const Units = () => {
     if (!id) return;
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/getUnitsdistributeById/${id}`,
+        `https://crm-generalize.dentalguru.software/api/getUnitsdistributeById/${id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -78,7 +78,7 @@ const Units = () => {
       const payload = { ...unitData, unit_type: unitTypeToSend };
       delete payload.custom_unit_type;
 
-      await axios.post("http://localhost:9000/api/add-unit", payload, {
+      await axios.post("https://crm-generalize.dentalguru.software/api/add-unit", payload, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -132,7 +132,7 @@ const Units = () => {
     try {
       console.log("Updating unit:", editProject);
       const { data } = await axios.put(
-        `http://localhost:9000/api/edit-unit/${editProject.unit_id}`,
+        `https://crm-generalize.dentalguru.software/api/edit-unit/${editProject.unit_id}`,
         editProject
       );
       cogoToast.success(data.message || "Unit updated successfully!");
@@ -155,7 +155,7 @@ const Units = () => {
   //   if (!isConfirmed) return;
   
   //   try {
-  //     const { data } = await axios.delete(`http://localhost:9000/api/delete-unit/${id}`);
+  //     const { data } = await axios.delete(`https://crm-generalize.dentalguru.software/api/delete-unit/${id}`);
   //     cogoToast.success(data.message || "Unit deleted successfully!");
   //     fetchUnits();
   //     // Corrected filtering
@@ -173,12 +173,12 @@ const Units = () => {
     try {
       let response;
       try {
-        response = await axios.delete(`http://localhost:9000/api/delete-unit/${id}`);
+        response = await axios.delete(`https://crm-generalize.dentalguru.software/api/delete-unit/${id}`);
       } catch (error) {
         if (error.response && error.response.status === 400) {
           const userConfirmed = window.confirm(error.response.data.message);
           if (!userConfirmed) return;
-          response = await axios.delete(`http://localhost:9000/api/delete-unit/${id}?confirm=true`);
+          response = await axios.delete(`https://crm-generalize.dentalguru.software/api/delete-unit/${id}?confirm=true`);
         } else {
           throw error;
         }

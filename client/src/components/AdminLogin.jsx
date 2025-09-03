@@ -28,7 +28,7 @@
 //     console.log(formData);
 //     e.preventDefault();
 //     try{
-//       const res  = await axios.post("http://localhost:9000/api/login", formData)
+//       const res  = await axios.post("https://crm-generalize.dentalguru.software/api/login", formData)
 //       console.log(res)
 //       if(res.data.success === true){
 //         dispatch(loginUser(res.data.user));
@@ -195,7 +195,7 @@ function AdminLogin() {
     try {
       setLoading(true)
       const res = await axios.post(
-        "http://localhost:9000/api/admin-login",
+        "https://crm-generalize.dentalguru.software/api/admin-login",
         formData
       );
       if (res.data.success) {

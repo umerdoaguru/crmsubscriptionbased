@@ -11,7 +11,7 @@ function UpdateServiceList() {
 
   const fetchServiceList = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/servicelist`);
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/servicelist`);
       if (response.status === 200) {
         setServices(response.data);
         // Initialize updatedServices state with the fetched services
@@ -29,7 +29,7 @@ function UpdateServiceList() {
   const handleUpdate = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:9000/api/servicelist`,
+        `https://crm-generalize.dentalguru.software/api/servicelist`,
         {
           services: updatedServices,
         }

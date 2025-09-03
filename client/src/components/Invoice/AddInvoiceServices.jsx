@@ -102,7 +102,7 @@ const AddInvoiceServices = () => {
       });
 
       const response = await axios.post(
-        `http://localhost:9000/api/add-invoice-services/${id}`,
+        `https://crm-generalize.dentalguru.software/api/add-invoice-services/${id}`,
         {
           invoice_name: invoiceName,
           services: servicesToSave,
@@ -123,7 +123,7 @@ const AddInvoiceServices = () => {
   const getQuotationName = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/invoice-name/${id}`
+        `https://crm-generalize.dentalguru.software/api/invoice-name/${id}`
       );
       setInvoiceName(response.data[0].invoice_name);
     } catch (error) {
@@ -133,7 +133,7 @@ const AddInvoiceServices = () => {
 
   const getServicelist = async () => {
     try {
-      const res = await axios.get(`http://localhost:9000/api/services`);
+      const res = await axios.get(`https://crm-generalize.dentalguru.software/api/services`);
       setServiceslist(res.data.services);
     } catch (error) {
       console.log("Error fetching services list:", error);

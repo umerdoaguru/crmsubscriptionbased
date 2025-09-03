@@ -14,7 +14,7 @@ const DeleteInvoiceNotes = () => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `http://localhost:9000/api/delete-notes/${noteId}`
+          `https://crm-generalize.dentalguru.software/api/delete-notes/${noteId}`
         );
 
         if (response.status === 200) {
@@ -31,7 +31,7 @@ const DeleteInvoiceNotes = () => {
   const fetchNotes = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/invoice-get-notes/${id}`
+        `https://crm-generalize.dentalguru.software/api/invoice-get-notes/${id}`
       );
 
       if (response.status === 200) {

@@ -29,7 +29,7 @@ const GoogleOAuthCallback = () => {
         }
 
         // Exchange the authorization code for user information
-        const response = await axios.post('http://localhost:9000/api/google-oauth-callback', {
+        const response = await axios.post('https://crm-generalize.dentalguru.software/api/google-oauth-callback', {
           code: code
         });
 

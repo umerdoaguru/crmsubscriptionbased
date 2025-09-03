@@ -41,7 +41,7 @@ const ViewAllUnitSold = () => {
   const fetchEmployeeUnitSold = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/unit-sold-lead-id/${id}`,
+        `https://crm-generalize.dentalguru.software/api/unit-sold-lead-id/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ const ViewAllUnitSold = () => {
   const fetchUnitdata = async () => {
     
     try {
-      const response = await axios.get(`http://localhost:9000/api/unit-data/${employeeunitsold[0].unit_id}`,
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/unit-data/${employeeunitsold[0].unit_id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -83,13 +83,13 @@ const ViewAllUnitSold = () => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `http://localhost:9000/api/unit-sold/${unitsold.id}`
+          `https://crm-generalize.dentalguru.software/api/unit-sold/${unitsold.id}`
         );
         if (response.status === 200) {
           console.log("Unit Sold deleted successfully");
           cogoToast.success("")
           const putResponse = await axios.put(
-            `http://localhost:9000/api/unit-data/${unitsold.unit_no}`,
+            `https://crm-generalize.dentalguru.software/api/unit-data/${unitsold.unit_no}`,
             { unit_status: "pending" }
           );
     
@@ -100,7 +100,7 @@ const ViewAllUnitSold = () => {
             cogoToast.error("Failed to update the lead Unit Status.");
           }  
           const putResponseUnit = await axios.put(
-            `http://localhost:9000/api/updateOnlyUnitStatus/${unitsold.lead_id}`,
+            `https://crm-generalize.dentalguru.software/api/updateOnlyUnitStatus/${unitsold.lead_id}`,
             { unit_number: "pending",unit_status: "pending"}
           );
     
@@ -146,12 +146,12 @@ const ViewAllUnitSold = () => {
   // Function to send the PUT request to update the visit data
   const updateVisit = async () => {
     try {
-      const response = await axios.put(`http://localhost:9000/api/unit-sold`, modalData);
+      const response = await axios.put(`https://crm-generalize.dentalguru.software/api/unit-sold`, modalData);
       if (response.status === 200) {
         cogoToast.success("Unit Sold updated successfully!");
 
         const putResponseUnit = await axios.put(
-          `http://localhost:9000/api/updateOnlyUnitStatus/${modalData.lead_id}`,
+          `https://crm-generalize.dentalguru.software/api/updateOnlyUnitStatus/${modalData.lead_id}`,
           { unit_number: modalData.unit_no,unit_status: modalData.unit_status }
         );
   
@@ -162,7 +162,7 @@ const ViewAllUnitSold = () => {
           cogoToast.error("Failed to update the lead Unit Status.");
         }
         const putResponseUnitdelete = await axios.put(
-          `http://localhost:9000/api/unit-data/${previousUnit}`,
+          `https://crm-generalize.dentalguru.software/api/unit-data/${previousUnit}`,
           { unit_status: "pending" }
         );
   
@@ -175,7 +175,7 @@ const ViewAllUnitSold = () => {
 
 
         const putResponse = await axios.put(
-          `http://localhost:9000/api/unit-data/${modalData.unit_no}`,
+          `https://crm-generalize.dentalguru.software/api/unit-data/${modalData.unit_no}`,
           { unit_status: modalData.unit_status }
         );
   

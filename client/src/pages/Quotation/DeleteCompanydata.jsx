@@ -15,7 +15,7 @@ function DeleteCompanydata() {
     if (isConfirmed) {
       try {
         const response = await axios.post(
-          "http://localhost:9000/api/companydata",
+          "https://crm-generalize.dentalguru.software/api/companydata",
           {
             company_name: CompanyName,
           }
@@ -37,7 +37,7 @@ function DeleteCompanydata() {
     const fetchCompanyNames = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/header-footer-images/company-names/${UserId}`
+          `https://crm-generalize.dentalguru.software/api/header-footer-images/company-names/${UserId}`
         );
         if (response.status === 200) {
           setCompanyNames(response.data); // Assuming response.data is an array of company names

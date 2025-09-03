@@ -22,7 +22,7 @@ import { useSelector } from "react-redux";
   useEffect(() => {
     const fetchLeadsData = async () => {
       try {
-        const response = await axios.get(`http://localhost:9000/api/leads-data-user-id/${userId}`,
+        const response = await axios.get(`https://crm-generalize.dentalguru.software/api/leads-data-user-id/${userId}`,
           {
             headers: {
               'Content-Type': 'application/json',

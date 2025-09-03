@@ -36,7 +36,7 @@ const Super_view_visit = ({id,closeModalVisit}) => {
   const fetchvisit = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-visit-super-admin/${id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-visit-super-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',

@@ -40,7 +40,7 @@ const UnitDetailDash = () => {
   const fetchUnits = async () => {
     if (!id) return;
     try {
-      const response = await axios.get(`http://localhost:9000/api/getUntitsDetailById/${id}`,
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/getUntitsDetailById/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ const UnitDetailDash = () => {
   //     const payload = { ...unitData, unit_type: unitTypeToSend };
   //     delete payload.custom_unit_type;
 
-  //     await axios.post("http://localhost:9000/api/add-unit", payload, {
+  //     await axios.post("https://crm-generalize.dentalguru.software/api/add-unit", payload, {
   //       headers: {
   //         "Content-Type": "application/json",
   //       },
@@ -114,7 +114,7 @@ const UnitDetailDash = () => {
   //   try {
   //     console.log("Updating unit:", editProject);
   //     const { data } = await axios.put(
-  //       `http://localhost:9000/api/edit-unit/${editProject.unit_id}`,
+  //       `https://crm-generalize.dentalguru.software/api/edit-unit/${editProject.unit_id}`,
   //       editProject
   //     );
   //     cogoToast.success(data.message || "Unit updated successfully!");
@@ -137,7 +137,7 @@ const UnitDetailDash = () => {
   //   if (!isConfirmed) return;
   
   //   try {
-  //     const { data } = await axios.delete(`http://localhost:9000/api/delete-unit/${id}`);
+  //     const { data } = await axios.delete(`https://crm-generalize.dentalguru.software/api/delete-unit/${id}`);
   //     cogoToast.success(data.message || "Unit deleted successfully!");
   //     fetchUnits();
   //     // Corrected filtering
@@ -180,7 +180,7 @@ const UnitDetailDash = () => {
       try {
         console.log("Updating unit:", editProject);
         const { data } = await axios.put(
-          `http://localhost:9000/api/editUnitdetailsinner/${editProject.id}`,
+          `https://crm-generalize.dentalguru.software/api/editUnitdetailsinner/${editProject.id}`,
           editProject
         );
         console.log("Updating unit with id:", editProject.id, editProject);

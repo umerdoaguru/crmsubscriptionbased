@@ -27,7 +27,7 @@ const SuperDash = () => {
   };
   const getInvoiceData = () => {
     try {
-      const response = axios.get("http://localhost:9000/api/invoiceData");
+      const response = axios.get("https://crm-generalize.dentalguru.software/api/invoiceData");
     } catch (err) {}
   };
 

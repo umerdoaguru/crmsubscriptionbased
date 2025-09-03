@@ -23,7 +23,7 @@ function SuperEmployeedatabyid() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`http://localhost:9000/api/leads-super-admin-byid/${id}`,
+      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/leads-super-admin-byid/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ function SuperEmployeedatabyid() {
   const fetchFollowUp = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-follow-up-super-admin/${id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-follow-up-super-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ function SuperEmployeedatabyid() {
   const fetchRemark = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/remarks-super-admin/${id}`,
+        `https://crm-generalize.dentalguru.software/api/remarks-super-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ function SuperEmployeedatabyid() {
   const fetchUnitSoldEmployee = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/super-admin-unit-sold-lead-id/${leads[0].lead_id}`,
+        `https://crm-generalize.dentalguru.software/api/super-admin-unit-sold-lead-id/${leads[0].lead_id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ function SuperEmployeedatabyid() {
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/employe-visit-super-admin/${id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-visit-super-admin/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
