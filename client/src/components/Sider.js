@@ -44,9 +44,7 @@ const Sider = () => {
 
         <div className="flex flex-col items-center max-h-screen overflow-auto	p-4 xl:w-[10rem]	">
           <ul className="flex flex-col items-center space-y-4 w-full pb-16">
-            <li
-              className={`xl:w-full ${getSidebarClass("/admin-dashboard")}`}
-            >
+            <li className={`xl:w-full ${getSidebarClass("/admin-dashboard")}`}>
               <Link
                 to="/admin-dashboard"
                 className="flex flex-col items-center py-3"
@@ -69,32 +67,44 @@ const Sider = () => {
             </li>
 
             <hr className="w-full border-gray-400" />
-              <li className={`xl:w-full ${getSidebarClass("/main-social-media-leads")}`}>
-                <Link
-                  to="/main-social-media-leads"
-                  className="flex flex-col items-center py-3"
-                >
-                  <FaHistory className="text-white text-2xl md:text-3xl" />
-                  <h3 className="text-xs text-center max-md:pt-3 lg:inline text-white md:text-base">
-                    Social Media <br /> <span>Leads</span>
-                  </h3>
-                </Link>
-              </li>
-              <hr className="w-full border-gray-400" />
+            <li
+              className={`xl:w-full ${getSidebarClass(
+                "/main-social-media-leads"
+              )}`}
+            >
+              <Link
+                to="/main-social-media-leads"
+                className="flex flex-col items-center py-3"
+              >
+                <FaHistory className="text-white text-2xl md:text-3xl" />
+                <h3 className="text-xs text-center max-md:pt-3 lg:inline text-white md:text-base">
+                  Social Media <br /> <span>Leads</span>
+                </h3>
+              </Link>
+            </li>
+            <hr className="w-full border-gray-400" />
 
-<li className={`xl:w-full ${getSidebarClass("/admin-import-data")}`}>
-  <Link to="/admin-import-data" className="flex flex-col items-center py-3">
-    <FaFileImport  className="text-white text-2xl md:text-3xl" />
-    <h3 className="text-xs max-md:pt-3 lg:inline text-white md:text-base">
-    Import  Data 
-    </h3>
-  </Link>
-</li>
+            <li
+              className={`xl:w-full ${getSidebarClass("/admin-import-data")}`}
+            >
+              <Link
+                to="/admin-import-data"
+                className="flex flex-col items-center py-3"
+              >
+                <FaFileImport className="text-white text-2xl md:text-3xl" />
+                <h3 className="text-xs max-md:pt-3 lg:inline text-white md:text-base">
+                  Import Data
+                </h3>
+              </Link>
+            </li>
 
             <hr className="w-full border-gray-400" />
 
             <li className={`xl:w-full ${getSidebarClass("/admin-report")}`}>
-              <Link to="/admin-report" className="flex flex-col items-center py-3">
+              <Link
+                to="/admin-report"
+                className="flex flex-col items-center py-3"
+              >
                 <RiSecurePaymentLine className="text-white text-2xl md:text-3xl" />
                 <h3 className="text-xs max-md:pt-3 lg:inline text-white md:text-base">
                   Reports
@@ -116,23 +126,12 @@ const Sider = () => {
               </Link>
             </li>
 
-            {/* <hr className="w-full border-gray-400" />
-
-            <li className={`xl:w-full ${getSidebarClass("/quotation-section")}`}>
+            <hr className="w-full border-gray-400" />
+            <li className={`xl:w-full ${getSidebarClass("/Project-Dash")}`}>
               <Link
-                to="/quotation-section"
-                className="flex flex-col items-center py-1"
+                to="/Project-Dash"
+                className="flex flex-col items-center py-3"
               >
-                <BsFileEarmarkPerson className="text-white text-2xl md:text-3xl" />
-                <h3 className="text-xs text-center max-md:pt-3 lg:inline text-white md:text-base">
-                  Quotation 
-                </h3>
-              </Link>
-            </li> */}
-
-                        <hr className="w-full border-gray-400" />
-              <li className={`xl:w-full ${getSidebarClass("/Project-Dash")}`}>
-              <Link to="/Project-Dash" className="flex flex-col items-center py-3">
                 <RiSecurePaymentLine className="text-white text-2xl md:text-3xl" />
                 <h3 className="text-xs max-md:pt-3 lg:inline text-white md:text-base">
                   Project
@@ -140,10 +139,11 @@ const Sider = () => {
               </Link>
             </li>
 
-
             <hr className="w-full border-gray-400" />
 
-            <li className={`xl:w-full ${getSidebarClass("/employee-management")}`}>
+            <li
+              className={`xl:w-full ${getSidebarClass("/employee-management")}`}
+            >
               <Link
                 to="/employee-management"
                 className="flex flex-col items-center py-3"
@@ -162,12 +162,10 @@ const Sider = () => {
               >
                 <FaUserCircle className="text-white text-2xl md:text-3xl" />
                 <h3 className="text-xs text-center max-md:pt-3 lg:inline text-white md:text-base">
-                 Admin Profile
+                  Admin Profile
                 </h3>
               </Link>
             </li>
-
-         
           </ul>
         </div>
       </div>

@@ -44,8 +44,13 @@ const EmployeeeSider = () => {
 
         <div className="flex flex-col items-center pt-10 max-h-screen overflow-auto	">
           <ul className="flex flex-col items-center space-y-4 w-full pb-16">
-            <li className={`xl:w-full ${getSidebarClass("/employees-dashboard")}`}>
-              <Link to="/employees-dashboard" className="flex flex-col items-center py-3">
+            <li
+              className={`xl:w-full ${getSidebarClass("/employees-dashboard")}`}
+            >
+              <Link
+                to="/employees-dashboard"
+                className="flex flex-col items-center py-3"
+              >
                 <BsHouse className="text-white text-2xl md:text-3xl" />
                 <h3 className="text-xs max-md:pt-3 lg:inline text-white md:text-base">
                   Dashboard
@@ -56,10 +61,13 @@ const EmployeeeSider = () => {
             <hr className="w-full border-gray-400" />
 
             <li className={`xl:w-full ${getSidebarClass("/employee-leads")}`}>
-              <Link to="/employee-leads" className="flex flex-col items-center py-3">
+              <Link
+                to="/employee-leads"
+                className="flex flex-col items-center py-3"
+              >
                 <FaHistory className="text-white text-2xl md:text-3xl" />
                 <h3 className="text-xs max-md:pt-3 lg:inline text-white md:text-base mx-3">
-                Assigned <br /> <span>Leads</span>
+                  Assigned <br /> <span>Leads</span>
                 </h3>
               </Link>
             </li>
@@ -67,7 +75,10 @@ const EmployeeeSider = () => {
             <hr className="w-full border-gray-400" />
 
             <li className={`xl:w-full ${getSidebarClass("/employee-report")}`}>
-              <Link to="/employee-report" className="flex flex-col items-center py-3">
+              <Link
+                to="/employee-report"
+                className="flex flex-col items-center py-3"
+              >
                 <RiSecurePaymentLine className="text-white text-2xl md:text-3xl" />
                 <h3 className="text-xs max-md:pt-3 lg:inline text-white md:text-base">
                   Reports
@@ -77,8 +88,15 @@ const EmployeeeSider = () => {
 
             <hr className="w-full border-gray-400" />
 
-            <li className={`xl:w-full ${getSidebarClass("/employee-data-export")}`}>
-              <Link to="/employee-data-export" className="flex flex-col items-center py-3">
+            <li
+              className={`xl:w-full ${getSidebarClass(
+                "/employee-data-export"
+              )}`}
+            >
+              <Link
+                to="/employee-data-export"
+                className="flex flex-col items-center py-3"
+              >
                 <BsFileEarmarkPerson className="text-white text-2xl md:text-3xl" />
                 <h3 className="text-xs max-md:pt-3 lg:inline text-white md:text-base">
                   Data Export
@@ -86,24 +104,16 @@ const EmployeeeSider = () => {
               </Link>
             </li>
 
-            {/* <hr className="w-full border-gray-400" />
-
-            <li className={`xl:w-full ${getSidebarClass("/employee-all-quotation")}`}>
-              <Link to="/employee-all-quotation" className="flex flex-col items-center py-1">
-                <BsFileEarmarkPerson className="text-white text-2xl md:text-3xl" />
-                <h3 className="text-xs text-center max-md:pt-3 lg:inline text-white md:text-base">
-                  Quotation 
-                </h3>
-              </Link>
-            </li> */}
-
             <hr className="w-full border-gray-400" />
 
             <li className={`xl:w-full ${getSidebarClass("/employee-profile")}`}>
-              <Link to="/employee-profile" className="flex flex-col items-center py-3">
+              <Link
+                to="/employee-profile"
+                className="flex flex-col items-center py-3"
+              >
                 <MdOutlineManageAccounts className="text-white text-2xl md:text-3xl" />
                 <h3 className="text-xs text-center max-md:pt-3 lg:inline text-white md:text-base">
-                Employees Profile
+                  Employees Profile
                 </h3>
               </Link>
             </li>

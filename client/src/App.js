@@ -36,18 +36,25 @@ function App() {
 
           {/* Common routes */}
           <Route path="/SuperAdmin-login" element={<SuperAdminLogin />} />
-          <Route path="/google-oauth-callback" element={<GoogleOAuthCallback />} />
+          <Route
+            path="/google-oauth-callback"
+            element={<GoogleOAuthCallback />}
+          />
 
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/employee-login" element={<EmployeeLogin />} />
-          <Route path="/employee-reset-password" element={<EmployeeResetPassword />} />
-          <Route path="/admin-reset-password" element={<AdminResetPassword />} />
-          <Route path="/superadmin-reset-password" element={<SuperAdminResetPassword />} />
-
-          
-          {/* Conditionally render Admin or Employee routes based on user's role
-        {user?.roles === 'Admin' ? (<Route path="/*" element={<AdminRoutes />} />) : user?.roles === 'Employee' ? (<Route path="/*" element={<EmployeeRoutes />} />) :
-         ( <Route path="/" element={<Navigate to="/main_page_crm" />} /> )} */}
+          <Route
+            path="/employee-reset-password"
+            element={<EmployeeResetPassword />}
+          />
+          <Route
+            path="/admin-reset-password"
+            element={<AdminResetPassword />}
+          />
+          <Route
+            path="/superadmin-reset-password"
+            element={<SuperAdminResetPassword />}
+          />
 
           {user?.roles === "Super-Admin" ? (
             <Route path="/*" element={<SuperAdminRoutes />} />
@@ -58,12 +65,11 @@ function App() {
           ) : (
             <Route path="/" element={<Navigate to="/main_page_crm" />} />
           )}
-          
+
           {/* Catch-all route to redirect unauthorized users */}
           <Route path="*" element={<Navigate to="/" />} />
 
           <Route path="/admincrmdoaguru" element={<Registration />} />
-
         </Routes>
       </div>
     </>

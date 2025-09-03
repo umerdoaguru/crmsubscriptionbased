@@ -6,7 +6,7 @@ import { RiSecurePaymentLine } from "react-icons/ri";
 import { MdOutlineManageAccounts } from "react-icons/md";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 
-const SuperAdminSider = () => { 
+const SuperAdminSider = () => {
   const location = useLocation(); // To get the current route
   const [isOpen, setIsOpen] = useState(false);
 
@@ -46,7 +46,9 @@ const SuperAdminSider = () => {
         <div className="flex flex-col items-center max-h-screen overflow-auto	p-4 xl:w-[10rem]">
           <ul className="flex flex-col items-center space-y-4 w-full pb-16">
             <li
-              className={`xl:w-full ${getSidebarClass("/super-admin-dashboard")}`}
+              className={`xl:w-full ${getSidebarClass(
+                "/super-admin-dashboard"
+              )}`}
             >
               <Link
                 to="/super-admin-dashboard"
@@ -61,8 +63,15 @@ const SuperAdminSider = () => {
 
             <hr className="w-full border-gray-400" />
 
-            <li className={`xl:w-full ${getSidebarClass("/super-admin-employee-leads")}`}>
-              <Link to="/super-admin-employee-leads" className="flex flex-col items-center py-3">
+            <li
+              className={`xl:w-full ${getSidebarClass(
+                "/super-admin-employee-leads"
+              )}`}
+            >
+              <Link
+                to="/super-admin-employee-leads"
+                className="flex flex-col items-center py-3"
+              >
                 <FaHistory className="text-white text-2xl md:text-3xl" />
                 <h3 className="text-xs max-md:pt-3 lg:inline text-white md:text-base">
                   Leads
@@ -70,35 +79,51 @@ const SuperAdminSider = () => {
               </Link>
             </li>
 
-
-              <hr className="w-full border-gray-400" />
-              <li className={`xl:w-full ${getSidebarClass("/main-social-media-super-admin-leads")}`}>
-                <Link
-                  to="/main-social-media-super-admin-leads"
-                  className="flex flex-col items-center py-3"
-                >
-                  <FaHistory className="text-white text-2xl md:text-3xl" />
-                  <h3 className="text-xs text-center max-md:pt-3 lg:inline text-white md:text-base">
-                   Social Media <br /> <span>Leads</span>
-                  </h3>
-                </Link>
-              </li>
-
+            <hr className="w-full border-gray-400" />
+            <li
+              className={`xl:w-full ${getSidebarClass(
+                "/main-social-media-super-admin-leads"
+              )}`}
+            >
+              <Link
+                to="/main-social-media-super-admin-leads"
+                className="flex flex-col items-center py-3"
+              >
+                <FaHistory className="text-white text-2xl md:text-3xl" />
+                <h3 className="text-xs text-center max-md:pt-3 lg:inline text-white md:text-base">
+                  Social Media <br /> <span>Leads</span>
+                </h3>
+              </Link>
+            </li>
 
             <hr className="w-full border-gray-400" />
 
-            <li className={`xl:w-full ${getSidebarClass("/super-admin-import-data")}`}>
-              <Link to="/super-admin-import-data" className="flex flex-col items-center py-3">
-                <FaFileImport  className="text-white text-2xl md:text-3xl" />
+            <li
+              className={`xl:w-full ${getSidebarClass(
+                "/super-admin-import-data"
+              )}`}
+            >
+              <Link
+                to="/super-admin-import-data"
+                className="flex flex-col items-center py-3"
+              >
+                <FaFileImport className="text-white text-2xl md:text-3xl" />
                 <h3 className="text-xs max-md:pt-3 lg:inline text-white md:text-base">
-                Import  Data 
+                  Import Data
                 </h3>
               </Link>
             </li>
             <hr className="w-full border-gray-400" />
 
-            <li className={`xl:w-full ${getSidebarClass("/super-admin-reporting")}`}>
-              <Link to="/super-admin-reporting" className="flex flex-col items-center py-3">
+            <li
+              className={`xl:w-full ${getSidebarClass(
+                "/super-admin-reporting"
+              )}`}
+            >
+              <Link
+                to="/super-admin-reporting"
+                className="flex flex-col items-center py-3"
+              >
                 <RiSecurePaymentLine className="text-white text-2xl md:text-3xl" />
                 <h3 className="text-xs max-md:pt-3 lg:inline text-white md:text-base">
                   Reports
@@ -107,7 +132,11 @@ const SuperAdminSider = () => {
             </li>
 
             <hr className="w-full border-gray-400" />
-            <li className={`xl:w-full ${getSidebarClass("/super-admin-data-export")}`}>
+            <li
+              className={`xl:w-full ${getSidebarClass(
+                "/super-admin-data-export"
+              )}`}
+            >
               <Link
                 to="/super-admin-data-export"
                 className="flex flex-col items-center py-3"
@@ -119,21 +148,12 @@ const SuperAdminSider = () => {
               </Link>
             </li>
 
-            {/* <hr className="w-full border-gray-400" /> 
-
-            <li className={`xl:w-full ${getSidebarClass("/super-admin-quotationlist")}`}>
-              <Link
-                to="/super-admin-quotationlist"
-                className="flex flex-col items-center py-3"
-              >
-                <BsFileEarmarkPerson className="text-white text-2xl md:text-3xl" />
-                <h3 className="text-xs text-center max-md:pt-3 lg:inline text-white md:text-base">
-                  All Quotations
-                </h3>
-              </Link>
-            </li> */}
-             <hr className="w-full border-gray-400" />
-            <li className={`xl:w-full ${getSidebarClass("/super-admin-project-dash")}`}>
+            <hr className="w-full border-gray-400" />
+            <li
+              className={`xl:w-full ${getSidebarClass(
+                "/super-admin-project-dash"
+              )}`}
+            >
               <Link
                 to="/super-admin-project-dash"
                 className="flex flex-col items-center py-3"
@@ -147,7 +167,11 @@ const SuperAdminSider = () => {
 
             <hr className="w-full border-gray-400" />
 
-            <li className={`xl:w-full ${getSidebarClass("/super-admin-employee-management")}`}>
+            <li
+              className={`xl:w-full ${getSidebarClass(
+                "/super-admin-employee-management"
+              )}`}
+            >
               <Link
                 to="/super-admin-employee-management"
                 className="flex flex-col items-center py-3"
@@ -159,9 +183,12 @@ const SuperAdminSider = () => {
               </Link>
             </li>
 
-           
             <hr className="w-full border-gray-400" />
-            <li className={`xl:w-full ${getSidebarClass("/super-admin-AdminManagement")}`}>
+            <li
+              className={`xl:w-full ${getSidebarClass(
+                "/super-admin-AdminManagement"
+              )}`}
+            >
               <Link
                 to="/super-admin-AdminManagement"
                 className="flex flex-col items-center py-3"
@@ -173,7 +200,9 @@ const SuperAdminSider = () => {
               </Link>
             </li>
             <hr className="w-full border-gray-400" />
-            <li className={`xl:w-full ${getSidebarClass("/super-admin-profile")}`}>
+            <li
+              className={`xl:w-full ${getSidebarClass("/super-admin-profile")}`}
+            >
               <Link
                 to="/super-admin-profile"
                 className="flex flex-col items-center py-3"
