@@ -44,7 +44,7 @@ const SuperDealClosedGraph = () => {
       const matchedLeads = fetchedData.filter(
         (item) =>
           item.d_closeDate.split("T")[0] === formattedDate &&
-          item.deal_status?.trim().toLowerCase() === "close" 
+          item.deal_status?.trim().toLowerCase() === "close"
       );
 
       console.log(`Date: ${formattedDate}, Leads: ${matchedLeads.length}`);
@@ -66,9 +66,10 @@ const SuperDealClosedGraph = () => {
         `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }}
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       const data = response.data;
 
@@ -87,35 +88,39 @@ const SuperDealClosedGraph = () => {
 
   return (
     <>
-    <div className="mx-2">
-      <div className="w-full max-w-4xl mx-auto p-4 border rounded-lg shadow-md bg-white">
-        <h2 className="text-xl font-bold mb-2">Closed Deal Overview</h2>
-        <p className="text-sm text-gray-500 mb-4">
-          Deal status for the past 28 days
-        </p>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart
-            data={dealStatusData}
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="day" />
-            <YAxis   allowDecimals={false} 
-  tickFormatter={(value) => Number.isInteger(value) ? value : ''} />
-            <Tooltip />
-            <Legend />
-            <Line
-              type="monotone"
-              dataKey="Close_Deal"
-              stroke="#1C4E80"
-              strokeWidth={3}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div></div>
+      <div className="mx-2">
+        <div className="w-full max-w-4xl mx-auto p-4 border rounded-lg shadow-md bg-white">
+          <h2 className="text-xl font-bold mb-2">Closed Deal Overview</h2>
+          <p className="text-sm text-gray-500 mb-4">
+            Deal status for the past 28 days
+          </p>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart
+              data={dealStatusData}
+              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="day" />
+              <YAxis
+                allowDecimals={false}
+                tickFormatter={(value) =>
+                  Number.isInteger(value) ? value : ""
+                }
+              />
+              <Tooltip />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="Close_Deal"
+                stroke="#0891b2"
+                strokeWidth={3}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
     </>
   );
 };
 
 export default SuperDealClosedGraph;
-

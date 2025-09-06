@@ -18,6 +18,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { IoIosPeople } from "react-icons/io";
 import { RiAdminFill } from "react-icons/ri";
 import { logoutUser } from "../store/UserSlice";
+import logoTwo from "../assets/favicon_one.png";
+import logoOne from "../assets/CRMGuruLogo.png";
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const user = useSelector((state) => state.auth.user);
@@ -171,14 +173,17 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-md font-bold text-cyan-600">
           {isSidebarOpen ? (
-            user?.roles === "admin" ? (
-              "Admin Dashboard"
-            ) : (
-              "CRMGuru"
-            )
+            // user?.roles === "admin" ? (
+            //   "Admin Dashboard"
+            // ) : (
+            //   "CRMGuru"
+            // )
+            <>
+              <img src={logoOne} alt="logo" srcset="" className="h-10 w-36" />
+            </>
           ) : (
             <>
-              <img src="#" alt="logo" srcset="" className="h-12 w-12" />
+              <img src={logoTwo} alt="logo" srcset="" className="h-12 w-12" />
             </>
           )}
         </h1>

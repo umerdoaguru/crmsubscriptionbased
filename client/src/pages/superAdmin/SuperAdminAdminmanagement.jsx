@@ -2,8 +2,6 @@ import { useState } from "react";
 import React from "react";
 import Sidebar from "../../utils/Sidebar";
 import Topbar from "../../utils/Topbar";
-import SuperReportsContent from "../../adiComponent/Super-Admin/SuperReportsContent";
-import SuperDataExportContent from "../../adiComponent/Super-Admin/SuperDataExportContent";
 import SuperAdminAdminmanagementContent from "../../adiComponent/Super-Admin/SuperAdminAdminmanagementContent";
 
 const SuperAdminAdminmanagement = () => {

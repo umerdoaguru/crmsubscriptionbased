@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react";
-import LeadData from "../components/DataExport/LeadData";
-import QuotationData from "../components/DataExport/QuotationData";
-import InvoiceData from "../components/DataExport/InvoiceData"; // Add your invoice component here if it exists
-import Employees from "../components/DataExport/Employees";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-// import MainHeader from '../components/MainHeader';
-// import Sider from '../components/Sider';
-import { SiMoneygram } from "react-icons/si";
 import { MdOutlineNextWeek } from "react-icons/md";
 import { AiOutlineProject } from "react-icons/ai";
 import { GiFiles, GiMoneyStack } from "react-icons/gi";
@@ -17,12 +10,6 @@ import { logoutUser } from "../store/UserSlice";
 import cogoToast from "cogo-toast";
 
 const Overview2 = () => {
-  // const [metrics, setMetrics] = useState([
-  //     { title: 'Total Leads', value: 0, positive: true },
-  //     { title: 'Total Invoices', value: 0, positive: false },
-  //     { title: 'Total Quotation', value: 0, positive: true },
-  //     { title: 'Total Employees', value: 0, positive: true },
-  // ]);
   const [leads, setLeads] = useState([]);
   const [employee, setEmployee] = useState([]);
   const [selectedComponent, setSelectedComponent] = useState("LeadData"); // Set 'LeadData' as default
@@ -161,7 +148,7 @@ const Overview2 = () => {
               //   onClick={() => setSelectedComponent('LeadData')}  // Set selected component
             >
               <div className="p-4 flex flex-col items-center text-center">
-                <div className=" text-3xl text-gray-700">
+                <div className=" text-3xl text-cyan-600">
                   <AiOutlineProject />
                 </div>
                 <div className="mt-2">
@@ -184,7 +171,7 @@ const Overview2 = () => {
               //   onClick={() => setSelectedComponent('LeadData')}  // Set selected component
             >
               <div className="p-4 flex flex-col items-center text-center">
-                <div className=" text-3xl text-gray-700">
+                <div className=" text-3xl text-cyan-600">
                   <GiFiles />
                 </div>
                 <div className="mt-2">
@@ -204,7 +191,7 @@ const Overview2 = () => {
           <Link to="/super-admin-total-visit">
             <div className="shadow-lg rounded-lg overflow-hidden cursor-pointer text-gray-600">
               <div className="p-4 flex flex-col items-center text-center">
-                <div className=" text-3xl text-gray-700">
+                <div className=" text-3xl text-cyan-600">
                   <MdOutlineNextWeek />
                 </div>
                 <div className="mt-2">
@@ -227,7 +214,7 @@ const Overview2 = () => {
               //   onClick={() => setSelectedComponent('EmployeeData')}  // Set selected component
             >
               <div className="p-4 flex flex-col items-center text-center">
-                <div className=" text-3xl text-gray-700">
+                <div className=" text-3xl text-cyan-600">
                   <SiMoneygram />
                 </div>
                 <div className="mt-2">
@@ -259,7 +246,7 @@ const Overview2 = () => {
                   className={`text-3xl ${
                     selectedComponent === "ClosedData"
                       ? "text-white"
-                      : "text-gray-700"
+                      : "text-cyan-600"
                   }`}
                 >
                   <FaCheckCircle />
@@ -301,7 +288,7 @@ const Overview2 = () => {
               <div className="p-4 flex flex-col items-center text-center">
                 <div
                   className={`text-3xl ${
-                    employeesold === "soldunit" ? "text-white" : "text-gray-700"
+                    employeesold === "soldunit" ? "text-white" : "text-cyan-600"
                   }`}
                 >
                   <FaCheckCircle />

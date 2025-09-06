@@ -1,6 +1,8 @@
 import { FaBell, FaSearch } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import logoTwo from "../assets/favicon_one.png";
+import logoOne from "../assets/CRMGuruLogo.png";
 
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -117,7 +119,7 @@ const Topbar = ({ isSidebarOpen }) => {
     >
       {/* Logo */}
       <div className="flex items-center gap-3">
-        <img src="#" alt="Logo" className="h-12 w-14 object-contain" />
+        <img src={logoTwo} alt="Logo" className="h-12 w-14 object-contain" />
         <p className="text-xl font-bold text-cyan-600">
           CRMGuru <br />
           <span className="text-md font-bold text-gray-500">{pageTitle}</span>

@@ -17,16 +17,19 @@ const SuperLeadGraph = () => {
   const [error, setError] = useState(null);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;  
+  const userId = superadminuser.id;
   useEffect(() => {
     const fetchLeadsData = async () => {
       try {
-        const response = await axios.get(`https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
+        const response = await axios.get(
+          `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
           {
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-          }});
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const allLeads = response.data;
 
         const today = moment();
@@ -76,42 +79,50 @@ const SuperLeadGraph = () => {
 
   return (
     <>
-    <div className="mx-2">
+      <div className="mx-2">
         <div className="w-full max-w-4xl  p-4 border rounded-lg shadow-md bg-white ">
-      <h2 className="text-xl font-bold mb-2">Daily Leads Overview</h2>
-      {error ? (
-        <p className="text-red-500">{error}</p>
-      ) : (
-        <>
-          <p className="text-sm text-gray-500 mb-4">Leads for the past 28 days</p>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={leadsData} margin={{ top: 5, right: 30, left: 0, bottom: 25 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis
-                dataKey="createdDate"
-                tick={{ fill: "gray" }}
-                angle={0}
-                textAnchor="middle"
-              />
-              <YAxis tick={{ fill: "gray" }}   allowDecimals={false} 
-  tickFormatter={(value) => Number.isInteger(value) ? value : ''}/>
-              <Tooltip />
-              <Bar
-                dataKey="Leads"
-                name="Leads"
-                fill="#EA6A47"
-                radius={[10, 10, 0, 0]}
-                barSize={15}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </>
-      )}
-    </div>
-    </div>
-    
+          <h2 className="text-xl font-bold mb-2">Daily Leads Overview</h2>
+          {error ? (
+            <p className="text-red-500">{error}</p>
+          ) : (
+            <>
+              <p className="text-sm text-gray-500 mb-4">
+                Leads for the past 28 days
+              </p>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  data={leadsData}
+                  margin={{ top: 5, right: 30, left: 0, bottom: 25 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis
+                    dataKey="createdDate"
+                    tick={{ fill: "gray" }}
+                    angle={0}
+                    textAnchor="middle"
+                  />
+                  <YAxis
+                    tick={{ fill: "gray" }}
+                    allowDecimals={false}
+                    tickFormatter={(value) =>
+                      Number.isInteger(value) ? value : ""
+                    }
+                  />
+                  <Tooltip />
+                  <Bar
+                    dataKey="Leads"
+                    name="Leads"
+                    fill="#0891b2"
+                    radius={[10, 10, 0, 0]}
+                    barSize={15}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </>
+          )}
+        </div>
+      </div>
     </>
-
   );
 };
 

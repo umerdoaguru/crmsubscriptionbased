@@ -9,9 +9,8 @@ import { logoutUser } from "../../../store/UserSlice";
 import cogoToast from "cogo-toast";
 
 const EmployeeOverview = () => {
- 
   const [leads, setLeads] = useState([]);
- 
+
   const [quotation, setQuotation] = useState([]);
   const [invoice, setInvoice] = useState([]);
   const [selectedComponent, setSelectedComponent] = useState("LeadData"); // Set 'LeadData' as default
@@ -24,25 +23,25 @@ const EmployeeOverview = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
         `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }}
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setLeads(response.data);
     } catch (error) {
       console.error("Error fetching leads:", error);
-        if (error?.response?.status === 401) {
-              navigate("/main_page_crm");
-              dispatch(logoutUser());
-              cogoToast.error("Token is expired Please Login Again !!");
-            }
+      if (error?.response?.status === 401) {
+        navigate("/main_page_crm");
+        dispatch(logoutUser());
+        cogoToast.error("Token is expired Please Login Again !!");
+      }
     }
   };
 
@@ -52,9 +51,10 @@ const EmployeeOverview = () => {
         `https://crm-generalize.dentalguru.software/api/get-quotation-byEmploye/${EmpId.id}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }}
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       console.log(response.data);
       setQuotation(response.data);
@@ -69,9 +69,10 @@ const EmployeeOverview = () => {
         `https://crm-generalize.dentalguru.software/api/get-employee-invoice/${EmpId.id}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }}
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setInvoice(response.data);
     } catch (error) {
@@ -87,14 +88,14 @@ const EmployeeOverview = () => {
         `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }}
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       console.log(response.data);
       setVisit(response.data);
       // Ensure proper comparison with 'Created', trim any spaces and normalize the case
-    
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
@@ -106,28 +107,25 @@ const EmployeeOverview = () => {
         `https://crm-generalize.dentalguru.software/api/unit-sold/${EmpId.id}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }}
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       console.log(response.data);
       setemployeesold(response.data);
-    
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
   };
-  
 
   useEffect(() => {
     fetchLeads();
-  fetchVisit();
+    fetchVisit();
     fetchQuotation();
     fetchInvoice();
     employeesoldunit();
   }, []);
-
-
 
   const leadCount = leads.length;
   //   const employeeCount = employee.length;
@@ -142,25 +140,19 @@ const EmployeeOverview = () => {
     ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
   ).length;
 
-
   return (
     <>
-      {/* <div className="w-full  h-screen"> */}
-
-      <div className="flex flex-wrap justify-around mt-5 ">
+      <div className="flex flex-wrap justify-around mt-2">
         <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3  ">
           <Link to="/employees-total-leads">
-            <div
-              className="shadow-lg rounded-lg overflow-hidden cursor-pointer text-gray-600 border-1" // Change background color if active
-              //   onClick={() => setSelectedComponent('LeadData')}  // Set selected component
-            >
+            <div className="shadow-lg rounded-lg overflow-hidden cursor-pointer text-gray-600 border-1">
               <div className="p-4 flex flex-col items-center text-center">
                 <div className=" text-3xl text-gray-700">
                   <GiFiles />
                 </div>
                 <div className="mt-2">
                   <h5 className="text-gray-800 text-xl font-semibold ">
-                  Total Assign Leads{" "}
+                    Total Assign Leads{" "}
                   </h5>
                   <p className="text-gray-800 text-xl font-semibold ">
                     {leadCount}
@@ -170,7 +162,6 @@ const EmployeeOverview = () => {
             </div>
           </Link>
         </div>
-
 
         {/* Card for Visit Data */}
         <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3">
@@ -269,18 +260,14 @@ const EmployeeOverview = () => {
           <Link to="/employee-sold">
             <div
               className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
-                employeesold === "solddata"
-                  ? "bg-blue-500 text-white"
-                  : ""
+                employeesold === "solddata" ? "bg-blue-500 text-white" : ""
               }`}
               onClick={() => setSelectedComponent("solddata")}
             >
               <div className="p-4 flex flex-col items-center text-center">
                 <div
                   className={`text-3xl ${
-                    employeesold === "solddata"
-                      ? "text-white"
-                      : "text-gray-700"
+                    employeesold === "solddata" ? "text-white" : "text-gray-700"
                   }`}
                 >
                   <FaClipboardList />
@@ -309,11 +296,7 @@ const EmployeeOverview = () => {
             </div>
           </Link>
         </div>
-
-      
       </div>
-
-     
     </>
   );
 };

@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { GiFiles } from "react-icons/gi";
 import { Link } from "react-router-dom";
-import axios from "axios"; // Make sure axios is imported
-
+import axios from "axios";
 import { useSelector } from "react-redux";
-
-import MainHeader from "../../../components/MainHeader";
-import SuperAdminSider from "../SuperAdminSider";
 
 function SuperMainSocialMediaByProjectContent() {
   const [projects, setProjects] = useState([]);
@@ -42,17 +38,17 @@ function SuperMainSocialMediaByProjectContent() {
             <h2 className="text-2xl text-center font-medium">
               Project Wise Social Interigation
             </h2>
-            <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
-            <div className="flex flex-wrap justify-around mt-12">
+            <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
+            <div className="flex flex-wrap justify-around mt-12 ">
               {projects.map((project) => (
                 <div
                   key={project.main_project_id} // Use a unique key for each project
-                  className="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 my-3 p-0 sm-mx-0 mx-3"
+                  className="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 my-3 p-0 sm-mx-0 mx-3 "
                 >
                   <Link
                     to={`/social-media-superleads/${project.main_project_id}`}
                   >
-                    <div className="shadow-md rounded-2xl overflow-hidden cursor-pointer text-gray-600 border-2">
+                    <div className="shadow-md rounded-2xl overflow-hidden cursor-pointer text-gray-600 border-2 hover:bg-cyan-600">
                       <div className="p-10 flex flex-col items-center text-center">
                         {/* <div className="text-3xl text-gray-700">
                       <GiFiles /> 

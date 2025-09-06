@@ -5,9 +5,8 @@ import * as XLSX from "xlsx";
 import ReactPaginate from "react-paginate"; // Import react-paginate
 // import Sider from "../Sider";
 
-
 import { useSelector } from "react-redux";
-import Header from './../../../pages/Quotation/Header';
+import Header from "./../../../pages/Quotation/Header";
 
 function SuperLeadData() {
   const [leads, setLeads] = useState([]);
@@ -45,7 +44,6 @@ function SuperLeadData() {
     "d_closeDate",
     "createdTime",
     "actual_date",
-    
   ]);
 
   const superadminuser = useSelector((state) => state.auth.user);
@@ -59,16 +57,18 @@ function SuperLeadData() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
+      const response = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }});
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setLeads(response.data);
       setFilteredLeads(response.data); // Initial data set for filtering
       console.log(leads);
-      
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
@@ -76,121 +76,119 @@ function SuperLeadData() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/employee-super-admin/${userId}`,
+      const response = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/employee-super-admin/${userId}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }});
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setEmployees(response.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
   };
 
-
   // Add a filter for completed leads within the useEffect for filtering
-useEffect(() => {
-  let filtered = leads;
+  useEffect(() => {
+    let filtered = leads;
 
-  // Filter by date range if specified
-  if (startDate && endDate) {
-    filtered = filtered.filter((lead) => {
-      const createdTime = moment(lead.createdTime, "YYYY-MM-DD");
-      return createdTime.isBetween(startDate, endDate, undefined, "[]");
-    });
-  }
+    // Filter by date range if specified
+    if (startDate && endDate) {
+      filtered = filtered.filter((lead) => {
+        const createdTime = moment(lead.createdTime, "YYYY-MM-DD");
+        return createdTime.isBetween(startDate, endDate, undefined, "[]");
+      });
+    }
 
-  // Filter by selected employee if specified
-  if (selectedEmployee) {
-    filtered = filtered.filter((lead) => lead.assignedTo === selectedEmployee);
-  }
+    // Filter by selected employee if specified
+    if (selectedEmployee) {
+      filtered = filtered.filter(
+        (lead) => lead.assignedTo === selectedEmployee
+      );
+    }
 
-  // Filter by lead_status 'completed'
-  filtered = filtered.filter((lead) => lead.lead_status === "completed");
+    // Filter by lead_status 'completed'
+    filtered = filtered.filter((lead) => lead.lead_status === "completed");
 
-  setFilteredLeads(filtered);
-  setCurrentPage(0); // Reset to first page on filter change
-}, [startDate, endDate, selectedEmployee, leads]);
+    setFilteredLeads(filtered);
+    setCurrentPage(0); // Reset to first page on filter change
+  }, [startDate, endDate, selectedEmployee, leads]);
 
+  const downloadExcel = () => {
+    const columnMapping = {
+      lead_no: "Lead Number",
+      assignedTo: "Assigned To",
+      name: "Name",
+      phone: "Phone",
+      leadSource: "Lead Source",
+      remark_status: "Remark Status",
+      answer_remark: "Answer Remark",
+      meeting_status: "Meeting Status",
+      assignedBy: "Assigned By",
+      lead_status: "Lead Status",
+      address: "Address",
+      booking_amount: "Booking Amount",
+      deal_status: "Deal Status",
+      employeeId: "Employee ID",
+      follow_up_status: "Follow-up Status",
+      payment_mode: "Payment Mode",
+      reason: "Reason",
+      registry: "Registry",
+      project_name: "Project",
+      visit: "Visit",
+      visit_date: "Visit Date",
+      d_closeDate: "Close Date",
+      createdTime: "Assigned Date",
+      actual_date: "Actual Date",
+    };
 
+    // Filter and format data for the Excel report
+    const completedLeads = filteredLeads.map((lead) => {
+      const formattedLead = {};
 
+      selectedColumns.forEach((col) => {
+        const newKey = columnMapping[col] || col;
 
-
-
-const downloadExcel = () => {
-  const columnMapping = {
-    lead_no: "Lead Number",
-    assignedTo: "Assigned To",
-    name: "Name",
-    phone: "Phone",
-    leadSource: "Lead Source",
-    remark_status: "Remark Status",
-    answer_remark: "Answer Remark",
-    meeting_status: "Meeting Status",
-    assignedBy: "Assigned By",
-    lead_status: "Lead Status",
-    address: "Address",
-    booking_amount: "Booking Amount",
-    deal_status: "Deal Status",
-    employeeId: "Employee ID",
-    follow_up_status: "Follow-up Status",
-    payment_mode: "Payment Mode",
-    reason: "Reason",
-    registry: "Registry",
-    project_name: "Project",
-    visit: "Visit",
-    visit_date: "Visit Date",
-    d_closeDate: "Close Date",
-    createdTime: "Assigned Date",
-    actual_date: "Actual Date",
-  };
-
-  // Filter and format data for the Excel report
-  const completedLeads = filteredLeads.map((lead) => {
-    const formattedLead = {};
-  
-    selectedColumns.forEach((col) => {
-      const newKey = columnMapping[col] || col;
-  
-      if (["actual_date", "createdTime", "visit_date", "d_closeDate"].includes(col)) {
-        // Check if date exists and is valid
-        formattedLead[newKey] =
-          lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
-            ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-            : "pending"; // If invalid or missing, set as "PENDING"
-      } else {
-        formattedLead[newKey] = lead[col]; // Assign other fields normally
-      }
-    });
+        if (
+          ["actual_date", "createdTime", "visit_date", "d_closeDate"].includes(
+            col
+          )
+        ) {
+          // Check if date exists and is valid
+          formattedLead[newKey] =
+            lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
+              ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
+              : "pending"; // If invalid or missing, set as "PENDING"
+        } else {
+          formattedLead[newKey] = lead[col]; // Assign other fields normally
+        }
+      });
 
       return formattedLead;
     });
 
-  // Ensure we handle empty reports gracefully
-  if (completedLeads.length === 0) {
-    alert("No data available for the selected date range.");
-    return;
-  }
+    // Ensure we handle empty reports gracefully
+    if (completedLeads.length === 0) {
+      alert("No data available for the selected date range.");
+      return;
+    }
 
-  // Generate the Excel workbook
-  const worksheet = XLSX.utils.json_to_sheet(completedLeads);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
+    // Generate the Excel workbook
+    const worksheet = XLSX.utils.json_to_sheet(completedLeads);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
 
-  // Generate a valid filename
-  const filename = ` Lead Report ${
-    startDate ? moment(startDate).format("DD-MM-YYYY") : "Start"
-  } to ${
-    endDate ? moment(endDate).format("DD-MM-YYYY") : "End"
-  }.xlsx`;
+    // Generate a valid filename
+    const filename = ` Lead Report ${
+      startDate ? moment(startDate).format("DD-MM-YYYY") : "Start"
+    } to ${endDate ? moment(endDate).format("DD-MM-YYYY") : "End"}.xlsx`;
 
-  // Download the Excel file
-  XLSX.writeFile(workbook, filename);
-};
-
-
-
+    // Download the Excel file
+    XLSX.writeFile(workbook, filename);
+  };
 
   // Pagination logic
   // Calculate total number of pages
@@ -200,7 +198,7 @@ const downloadExcel = () => {
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
   const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
-  
+
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
     console.log("change current page ", data.selected);
@@ -253,7 +251,7 @@ const downloadExcel = () => {
           <div className="respo ">
             <button
               onClick={downloadExcel}
-              className="bg-blue-500 text-white font-medium px-4 py-2 rounded hover:bg-blue-700"
+              className="bg-cyan-600 text-white font-medium px-4 py-2 rounded hover:bg-cyan-700"
             >
               Download Excel
             </button>
@@ -265,89 +263,100 @@ const downloadExcel = () => {
             <thead>
               <tr>
                 <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">Lead Number</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">Assigned To</th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">
+                  Lead Number
+                </th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">
+                  Assigned To
+                </th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">Name</th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">Phone</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">Lead Source</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">Lead Status</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">Assigned Date</th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">
+                  Lead Source
+                </th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">
+                  Lead Status
+                </th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">
+                  Assigned Date
+                </th>
               </tr>
             </thead>
             <tbody>
-  {currentLeads.length === 0 ? (
-    <tr>
-      <td
-        colSpan="11"
-        className="px-6 py-4 border-b border-gray-200 text-center text-gray-500"
-      >
-        No data found
-      </td>
-    </tr>
-  ) : (
-    currentLeads.map((lead, index) => (
-      <tr key={lead.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {index + 1 + currentPage * leadsPerPage}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.lead_no}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.assignedTo}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.name}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.phone}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.leadSource}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.lead_status}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-        {moment(lead.createdTime).format("DD MMM YYYY").toUpperCase()}
-        </td>
-      </tr>
-    ))
-  )}
-</tbody>
-
+              {currentLeads.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan="11"
+                    className="px-6 py-4 border-b border-gray-200 text-center text-gray-500"
+                  >
+                    No data found
+                  </td>
+                </tr>
+              ) : (
+                currentLeads.map((lead, index) => (
+                  <tr
+                    key={lead.id}
+                    className={index % 2 === 0 ? "bg-gray-100" : ""}
+                  >
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {index + 1 + currentPage * leadsPerPage}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {lead.lead_no}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {lead.assignedTo}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {lead.name}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {lead.phone}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {lead.leadSource}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {lead.lead_status}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {moment(lead.createdTime)
+                        .format("DD MMM YYYY")
+                        .toUpperCase()}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
           </table>
         </div>
 
         {/* Pagination */}
         <div className="mt-2 mb-2 flex justify-center">
-        <ReactPaginate
-          previousLabel={"Previous"}
-          nextLabel={"Next"}
-          breakLabel={"..."}
-          pageCount={pageCount}
-forcePage={currentPage}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={3}
-          onPageChange={handlePageClick}
-          containerClassName={"pagination"}
-          activeClassName={"active"}
-          pageClassName={"page-item"}
-          pageLinkClassName={"page-link"}
-          previousClassName={"page-item"}
-          nextClassName={"page-item"}
-          previousLinkClassName={"page-link"}
-          nextLinkClassName={"page-link"}
-          breakClassName={"page-item"}
-          breakLinkClassName={"page-link"}
-        />
-</div>
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            breakLabel={"..."}
+            pageCount={pageCount}
+            forcePage={currentPage}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination"}
+            activeClassName={"active"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            nextClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextLinkClassName={"page-link"}
+            breakClassName={"page-item"}
+            breakLinkClassName={"page-link"}
+          />
+        </div>
       </div>
     </>
   );
 }
 
 export default SuperLeadData;
-
-
-  

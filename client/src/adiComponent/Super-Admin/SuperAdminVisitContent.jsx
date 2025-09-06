@@ -93,7 +93,7 @@ const SuperAdminVisitContent = () => {
             <div className="mt-[1rem]">
               <button
                 onClick={() => navigate(-1)}
-                className="bg-blue-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-blue-600 transition-colors"
+                className="bg-cyan-600 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-cyan-700 transition-colors"
               >
                 Back
               </button>
@@ -103,7 +103,7 @@ const SuperAdminVisitContent = () => {
                 <center className="text-2xl text-center font-medium">
                   Total Visits
                 </center>
-                <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
+                <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
                 <div className="flex justify-between mb-3">
                   <input
                     type="text"

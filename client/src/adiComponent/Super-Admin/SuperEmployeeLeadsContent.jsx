@@ -52,7 +52,7 @@ function SuperEmployeeLeadsContent() {
     assignedTo: "",
     employeeId: "",
     employeephone: "",
-    createdTime: "", // Added here
+    createdTime: "",
     name: "",
     phone: "",
     leadSource: "",
@@ -408,7 +408,6 @@ function SuperEmployeeLeadsContent() {
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
 
-  // const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
   const currentLeads =
     leadsPerPage === Infinity
       ? filteredLeads
@@ -697,7 +696,7 @@ function SuperEmployeeLeadsContent() {
               </div>
               <div className="mb-4">
                 <button
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 font-medium"
+                  className="bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-700 font-medium"
                   onClick={handleCreateClick}
                 >
                   Add Lead
@@ -715,7 +714,7 @@ function SuperEmployeeLeadsContent() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
-                      searchTerm ? "bg-blue-500 text-white" : "bg-white"
+                      searchTerm ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   />
                 </div>
@@ -726,7 +725,7 @@ function SuperEmployeeLeadsContent() {
                     value={filterDate}
                     onChange={(e) => setFilterDate(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
-                      filterDate ? "bg-blue-500 text-white" : "bg-white"
+                      filterDate ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   />
                 </div>
@@ -738,7 +737,7 @@ function SuperEmployeeLeadsContent() {
                     onChange={(e) => setMeetingStatusFilter(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
                       meetingStatusFilter
-                        ? "bg-blue-500 text-white"
+                        ? "bg-cyan-600 text-white"
                         : "bg-white"
                     }`}
                   >
@@ -754,7 +753,7 @@ function SuperEmployeeLeadsContent() {
                     value={leadSourceFilter}
                     onChange={(e) => setLeadSourceFilter(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
-                      leadSourceFilter ? "bg-blue-500 text-white" : "bg-white"
+                      leadSourceFilter ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   >
                     <option value="">Select Lead Source</option>
@@ -788,7 +787,7 @@ function SuperEmployeeLeadsContent() {
                     value={dealFilter}
                     onChange={(e) => setDealFilter(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
-                      dealFilter ? "bg-blue-500 text-white" : "bg-white"
+                      dealFilter ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   >
                     <option value="">All Deal</option>
@@ -804,7 +803,7 @@ function SuperEmployeeLeadsContent() {
                     value={leadStatusFilter}
                     onChange={(e) => setLeadStatusFilter(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
-                      leadStatusFilter ? "bg-blue-500 text-white" : "bg-white"
+                      leadStatusFilter ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   >
                     <option value="">All Lead Status</option>
@@ -828,7 +827,7 @@ function SuperEmployeeLeadsContent() {
                       }
                       className={`border rounded-2xl p-2 w-full ${
                         leadnotInterestedStatusFilter
-                          ? "bg-blue-500 text-white"
+                          ? "bg-cyan-600 text-white"
                           : "bg-white"
                       }`}
                     >
@@ -842,14 +841,14 @@ function SuperEmployeeLeadsContent() {
                 )}
 
                 <div>
-                  <label htmlFor="" className=" fw-semibold text-[blue]">
+                  <label htmlFor="" className=" fw-semibold text-cyan-600">
                     Visit Month Filter
                   </label>
                   <select
                     value={visitmonthFilter}
                     onChange={(e) => setVisitMonthFilter(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
-                      visitmonthFilter ? "bg-blue-500 text-white" : "bg-white"
+                      visitmonthFilter ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   >
                     <option value="">All Months</option>
@@ -868,7 +867,7 @@ function SuperEmployeeLeadsContent() {
                       value={visitFilter}
                       onChange={(e) => setVisitFilter(e.target.value)}
                       className={`border rounded-2xl p-2 w-full ${
-                        visitFilter ? "bg-blue-500 text-white" : "bg-white"
+                        visitFilter ? "bg-cyan-600 text-white" : "bg-white"
                       }`}
                     >
                       <option value="">All visit</option>
@@ -886,7 +885,7 @@ function SuperEmployeeLeadsContent() {
                     value={yearFilter}
                     onChange={(e) => setYearFilter(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
-                      yearFilter ? "bg-blue-500 text-white" : "bg-white"
+                      yearFilter ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   >
                     <option value="">All Years</option>
@@ -905,7 +904,7 @@ function SuperEmployeeLeadsContent() {
                       value={monthFilter}
                       onChange={(e) => setMonthFilter(e.target.value)}
                       className={`border rounded-2xl p-2 w-full ${
-                        monthFilter ? "bg-blue-500 text-white" : "bg-white"
+                        monthFilter ? "bg-cyan-600 text-white" : "bg-white"
                       }`}
                     >
                       <option value="">All Months</option>
@@ -926,7 +925,7 @@ function SuperEmployeeLeadsContent() {
                     value={employeeFilter}
                     onChange={(e) => setEmployeeFilter(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
-                      employeeFilter ? "bg-blue-500 text-white" : "bg-white"
+                      employeeFilter ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   >
                     <option value="">Select Employee</option>
@@ -943,7 +942,7 @@ function SuperEmployeeLeadsContent() {
                     value={soldunitFilter}
                     onChange={(e) => setSoldUnitFilter(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
-                      soldunitFilter ? "bg-blue-500 text-white" : "bg-white"
+                      soldunitFilter ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   >
                     <option value="">All Deal</option>
@@ -954,7 +953,7 @@ function SuperEmployeeLeadsContent() {
                 <div>
                   <button
                     onClick={handleReset}
-                    className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
+                    className="bg-cyan-600 text-white py-2 px-4 rounded hover:bg-cyan-600 transition-colors"
                   >
                     Reset Page
                   </button>
@@ -1042,7 +1041,7 @@ function SuperEmployeeLeadsContent() {
                       onClick={toggleSortOrder}
                     >
                       Assigned Date
-                      <span className="text-blue-900 mx-2">
+                      <span className="text-cyan-600 mx-2">
                         {sortOrder === "desce" ? "▲" : "▼"}
                       </span>
                     </th>
@@ -1068,7 +1067,7 @@ function SuperEmployeeLeadsContent() {
                           {lead.project_name}
                         </td>
                         <td
-                          className="px-6 py-4 border-b border-gray-200 underline text-[blue] cursor-pointer font-semibold"
+                          className="px-6 py-4 border-b border-gray-200 underline text-cyan-600 cursor-pointer font-semibold"
                           onClick={() => handleRowClick(lead.lead_id)}
                         >
                           {lead.lead_id}
@@ -1116,7 +1115,7 @@ function SuperEmployeeLeadsContent() {
                           {lead.remark_status}
                         </td>
                         <td
-                          className="px-6 text-[blue] underline cursor-pointer text-wrap font-semibold"
+                          className="px-6 text-cyan-600 underline cursor-pointer text-wrap font-semibold"
                           onClick={() => openModal(lead)}
                         >
                           {lead.answer_remark}
@@ -1128,7 +1127,7 @@ function SuperEmployeeLeadsContent() {
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-nowrap">
                           <button
-                            className="text-blue-500 hover:text-blue-700"
+                            className="text-cyan-600 hover:text-cyan-700"
                             onClick={() => handleEditClick(lead)}
                           >
                             <BsPencilSquare size={20} />
@@ -1188,7 +1187,7 @@ function SuperEmployeeLeadsContent() {
                       <button
                         type="button"
                         onClick={updateAnswerRemark}
-                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
+                        className="bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-700 mr-2"
                       >
                         Update
                       </button>
@@ -1446,7 +1445,7 @@ function SuperEmployeeLeadsContent() {
 
                   <div className="flex justify-end">
                     <button
-                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
+                      className="bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-700 mr-2"
                       onClick={saveChanges}
                       disabled={loading}
                     >

@@ -22,7 +22,7 @@ function SoldAdminSoldUnitReport() {
   const leadsPerPage = 6;
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;  
+  const userId = superadminuser.id;
 
   // Fetch leads from the API without appending an ID
   useEffect(() => {
@@ -31,13 +31,15 @@ function SoldAdminSoldUnitReport() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get( `https://crm-generalize.dentalguru.software/api/super-admin-unit-sold/${userId}`, {
-        
+      const response = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/super-admin-unit-sold/${userId}`,
+        {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-      });
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       console.log("Fetched Leads:", response.data);
       const fetchedLeads = response.data.data || response.data || [];
       setLeads(fetchedLeads);
@@ -85,7 +87,9 @@ function SoldAdminSoldUnitReport() {
       const formattedLead = {};
       selectedColumns.forEach((col) => {
         const newKey = columnMapping[col] || col;
-        if (["actual_date", "createdTime", "visit_date", "date"].includes(col)) {
+        if (
+          ["actual_date", "createdTime", "visit_date", "date"].includes(col)
+        ) {
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
               ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
@@ -99,7 +103,11 @@ function SoldAdminSoldUnitReport() {
 
     const worksheet = XLSX.utils.json_to_sheet(completedLeads);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, `Lead of ${duration} Report`);
+    XLSX.utils.book_append_sheet(
+      workbook,
+      worksheet,
+      `Lead of ${duration} Report`
+    );
     XLSX.writeFile(workbook, `Lead of ${duration} Report.xlsx`);
   };
 
@@ -107,7 +115,10 @@ function SoldAdminSoldUnitReport() {
   const pageCount = Math.ceil((filteredLeads || []).length / leadsPerPage);
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-  const currentLeads = (filteredLeads || []).slice(indexOfFirstLead, indexOfLastLead);
+  const currentLeads = (filteredLeads || []).slice(
+    indexOfFirstLead,
+    indexOfLastLead
+  );
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
@@ -131,7 +142,7 @@ function SoldAdminSoldUnitReport() {
         </div>
         <button
           onClick={downloadExcel}
-          className="bg-blue-500 text-white font-medium px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-cyan-500 text-white font-medium px-4 py-2 rounded hover:bg-cyan-700"
         >
           Download Excel
         </button>
@@ -144,11 +155,21 @@ function SoldAdminSoldUnitReport() {
             <tr>
               <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
               <th className="px-6 py-3 border-b-2 border-gray-300">Lead Id</th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">Project Name</th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">Customer Name</th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">Unit Number</th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">Employee Name</th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">Unit Status</th>
+              <th className="px-6 py-3 border-b-2 border-gray-300">
+                Project Name
+              </th>
+              <th className="px-6 py-3 border-b-2 border-gray-300">
+                Customer Name
+              </th>
+              <th className="px-6 py-3 border-b-2 border-gray-300">
+                Unit Number
+              </th>
+              <th className="px-6 py-3 border-b-2 border-gray-300">
+                Employee Name
+              </th>
+              <th className="px-6 py-3 border-b-2 border-gray-300">
+                Unit Status
+              </th>
               <th className="px-6 py-3 border-b-2 border-gray-300">Date</th>
             </tr>
           </thead>
@@ -164,7 +185,10 @@ function SoldAdminSoldUnitReport() {
               </tr>
             ) : (
               currentLeads.map((lead, index) => (
-                <tr key={lead.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
+                <tr
+                  key={lead.id}
+                  className={index % 2 === 0 ? "bg-gray-100" : ""}
+                >
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                     {index + 1 + currentPage * leadsPerPage}
                   </td>
@@ -204,7 +228,7 @@ function SoldAdminSoldUnitReport() {
             nextLabel={"Next"}
             breakLabel={"..."}
             pageCount={pageCount}
-forcePage={currentPage}
+            forcePage={currentPage}
             marginPagesDisplayed={2}
             pageRangeDisplayed={3}
             onPageChange={handlePageClick}

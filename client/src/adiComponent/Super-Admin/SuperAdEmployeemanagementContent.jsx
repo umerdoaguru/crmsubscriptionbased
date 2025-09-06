@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { BsPencilSquare, BsTrash, BsPlusCircle } from "react-icons/bs";
-import Modal from "../Modal"; // Assuming you have a modal component
+import Modal from "../Modal";
 
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import SuperAdminSider from "./SuperAdminSider";
-import MainHeader from "../../components/MainHeader";
-import cogoToast from "cogo-toast"; // Import CogoToast
+import { useNavigate } from "react-router-dom";
+import cogoToast from "cogo-toast";
 import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
 
@@ -225,7 +223,7 @@ const SuperAdEmployeemanagementContent = () => {
             <h2 className="text-2xl text-center mt-[2rem] font-medium">
               Employee Management
             </h2>
-            <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
+            <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
           </div>
 
           <div className=" container flex flex-col min-h-screen lg:flex-row">
@@ -236,7 +234,7 @@ const SuperAdEmployeemanagementContent = () => {
                     setShowForm(true);
                     setEditingIndex(null);
                   }}
-                  className="flex items-center px-4 py-2 font-medium text-white transition duration-200 bg-blue-500 rounded-lg shadow-lg hover:bg-blue-600"
+                  className="flex items-center px-4 py-2 font-medium text-white transition duration-200 bg-cyan-500 rounded-lg shadow-lg hover:bg-cyan-600"
                 >
                   <BsPlusCircle className="mr-2 font-medium" /> Add Employee
                 </button>
@@ -260,7 +258,7 @@ const SuperAdEmployeemanagementContent = () => {
                         .map((employee, index) => (
                           <tr
                             key={employee.employeeId}
-                            className="border-b border-gray-200 cursor-pointer hover:bg-gray-100"
+                            className="border-b border-gray-200 cursor-pointer hover:text-cyan-600"
                             onClick={() =>
                               handleEmployeeClick(employee.employeeId)
                             } // Navigate on row click
@@ -284,7 +282,7 @@ const SuperAdEmployeemanagementContent = () => {
                                     e.stopPropagation();
                                     handleEditEmployee(index);
                                   }} // Now index is available
-                                  className="text-blue-500 transition duration-200 hover:text-blue-600"
+                                  className="text-cyan-500 transition duration-200 hover:text-cyan-600"
                                 >
                                   <BsPencilSquare size={20} />
                                 </button>
@@ -494,7 +492,7 @@ const SuperAdEmployeemanagementContent = () => {
                   </button>
                   <button
                     onClick={handleSaveEmployee}
-                    className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+                    className="px-4 py-2 text-white bg-cyan-500 rounded-lg hover:bg-cyan-600"
                   >
                     {editingIndex !== null ? "Update" : "Add"}
                   </button>

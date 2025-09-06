@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import axios from 'axios';
+import { useState } from "react";
+import axios from "axios";
 
-const SuperFormInput = ({ setShowForm,onFormSubmit,id }) => {
-  const [formId, setFormId] = useState('');
-  const [formName, setFormName] = useState('');
-  const [success, setSuccess] = useState('');
-  const [error, setError] = useState('');
+const SuperFormInput = ({ setShowForm, onFormSubmit, id }) => {
+  const [formId, setFormId] = useState("");
+  const [formName, setFormName] = useState("");
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
 
   // Function to handle form submission
   const handleSubmit = async (e) => {
@@ -13,24 +13,28 @@ const SuperFormInput = ({ setShowForm,onFormSubmit,id }) => {
 
     try {
       // Make POST request to save form ID and form name
-      const response = await axios.post('https://crm-generalize.dentalguru.software/api/forms', {
-        formId,
-        formName,project_id:id
-      });
+      const response = await axios.post(
+        "https://crm-generalize.dentalguru.software/api/forms",
+        {
+          formId,
+          formName,
+          project_id: id,
+        }
+      );
 
       if (response.status === 200) {
-        setSuccess('Form saved successfully!');
-        setError('');
-        setFormId('');
-        setFormName('');
-        setShowForm(false);  // Hide form on successful submit
-          // Trigger LeadsTable refresh
-          onFormSubmit();
+        setSuccess("Form saved successfully!");
+        setError("");
+        setFormId("");
+        setFormName("");
+        setShowForm(false); // Hide form on successful submit
+        // Trigger LeadsTable refresh
+        onFormSubmit();
       }
     } catch (err) {
-      console.error('Error saving form:', err);
-      setError('Failed to save form');
-      setSuccess('');
+      console.error("Error saving form:", err);
+      setError("Failed to save form");
+      setSuccess("");
     }
   };
 
@@ -73,13 +77,13 @@ const SuperFormInput = ({ setShowForm,onFormSubmit,id }) => {
         <div className="flex gap-2">
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded"
           >
             Save Form
           </button>
           <button
             type="button"
-            onClick={() => setShowForm(false)}  // Hide form on cancel
+            onClick={() => setShowForm(false)} // Hide form on cancel
             className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
           >
             Cancel

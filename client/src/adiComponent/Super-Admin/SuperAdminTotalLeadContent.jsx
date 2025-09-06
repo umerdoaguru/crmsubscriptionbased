@@ -85,17 +85,17 @@ const SuperAdminTotalLeadContent = () => {
       <div className="flex mt-20">
         <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
           <div>
-            <div className="container  mt-[6rem]">
+            <div className="container  mt-[2rem]">
               <div className="">
                 <button
                   onClick={() => navigate(-1)}
-                  className="bg-blue-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-blue-600 transition-colors"
+                  className="bg-cyan-600 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-cyan-700 transition-colors"
                 >
                   Back
                 </button>
               </div>
               <h1 className="text-2xl text-center ">Total Leads </h1>
-              <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
+              <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
             </div>
             <div className=" px-2 ">
               <div className="flex justify-between mb-3">

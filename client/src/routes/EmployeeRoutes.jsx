@@ -31,29 +31,21 @@ import UpdateInvoiceNotes from "../components/Invoice/UpdateInvoiceNotes";
 import AddInvoiceServices from "../components/Invoice/AddInvoiceServices";
 import QuotationInvoice from "../components/Invoice/QuotationInvoice";
 
-import Dashboard from "../adiComponent/Dashboard";
+import Dashboard from "../adiComponent/AdminDashboardContent";
 import Overview from "../adiComponent/Overview";
 import UserProfile from "../adiComponent/userProfile";
-import EmployeeManagement from "../adiComponent/EmployManagement";
-import EmployeeSingle from "../adiComponent/EmployeSingle";
+import EmployeeManagement from "../adiComponent/EmployManagementContent";
+import EmployeeSingle from "../adiComponent/EmployeSingleContent";
 import SingleOrganization from "../adiComponent/SingleOrganizaton";
 import Reporting from "../adiComponent/Reporting";
-import Single_Lead_Profile from "../components/Leads/Single_Lead_Profile";
 import Landingpage from "../pages/Landingpage";
-
-import EmployeeDashboard from "../components/EmployeeModule/EmployeeDashboard";
 import EmployeeLogin from "../components/EmployeeModule/EmployeeLogin";
-import EmployeeLead from "../components/EmployeeModule/EmployeeLead";
-import EmployeeReport from "../components/EmployeeModule/EmployeeReport";
-import EmployeeDataExport from "../components/EmployeeModule/EmployeeDataExport";
 import EmployeeQuotationData from "../components/EmployeeModule/EmployeeDataExport/EmployeeQuotationData";
-import EmployeeProfile from "../components/EmployeeModule/EmployeeProfile";
 import MainQuotation from "../components/EmployeeModule/QuotationEmployee&Invoice/MainQuotationPage";
-import TotalEmpLead from "../components/EmployeeModule/EmployeeDashboardCards/AdminDashBoardCards/TotalEmpLead";
 import TotalEmployee from "../components/AdminDashBoardCards/TotalEmployee";
 import TotalEmpInvoice from "../components/EmployeeModule/EmployeeDashboardCards/AdminDashBoardCards/TotalEmpInvoice";
 import TotalEmpQuotation from "../components/EmployeeModule/EmployeeDashboardCards/AdminDashBoardCards/TotalEmpQuotation";
-import Leads from "../pages/Leads";
+import Leads from "../pages/AdminLeadsContent";
 import Employee_Single_Lead_Profile from "../components/Leads/Employee_Single_Lead_Profile";
 import QuotationByLeads from "../components/EmployeeModule/QuotationByLeads/QuotationByLeads";
 import PrintQuotationBylead from "../components/EmployeeModule/QuotationByLeads/PrintQuotationBylead";
@@ -63,8 +55,6 @@ import DeleteNoteBylead from "./../components/EmployeeModule/QuotationByLeads/De
 import UpdateNoteBylead from "./../components/EmployeeModule/QuotationByLeads/UpdateNoteBylead";
 import FinalQuotationByLeads from "./../components/EmployeeModule/QuotationByLeads/FinalQuotationByLead";
 import EmployeeVisitData from "../components/EmployeeModule/EmployeeDataExport/EmployeeVisitData";
-import VisitTable from "../components/EmployeeModule/VisitTable";
-import CloseTable from "../components/EmployeeModule/CloseTable";
 import ViewAllQuotationsByLead from "../components/Leads/ViewAllQuotationsByLead";
 import Final_quotationBy_emp from "../pages/Quotation/Final_quotationBy_emp";
 import QuotationInputForm from "../components/EmployeeModule/QuotationByLeads/QuotationInputForm";
@@ -73,28 +63,40 @@ import Final_Quotation_All from "../pages/Quotation/Final_Quotation_All";
 import ViewAllFollowUp from "../components/Leads/ViewAllFollowUp";
 import ViewAllRemark from "../components/Leads/ViewAllRemark";
 import ViewAllUnitSold from "../components/Leads/ViewAllUnitSold";
-import Employeesoldunit from "../components/EmployeeModule/employeesoldunits";
+import EmployeeDashboard from "../pages/Employees/EmployeeDashboard";
+import EmployeeLead from "../pages/Employees/EmployeeLead";
+import EmployeeReport from "../pages/Admin/EmployeeReport";
+import EmployeeDataExport from "../pages/Employees/EmployeeDataExport";
+import EmployeeProfile from "../pages/Employees/EmployeeProfile";
+import TotalEmpLead from "../pages/Employees/TotalEmpLead";
+import EmployeeVisitTable from "../pages/Employees/EmployeeVisitTable";
+import CloseTable from "../pages/Employees/CloseTable";
+import Employeesoldunit from "../pages/Employees/Employeesoldunit";
 
 function EmployeeRoutes() {
   const user = useSelector((state) => state.auth.user);
 
   return (
-    <> 
+    <>
       <div style={{ overflow: "hidden" }}>
         <Routes>
-          {/* Admin routes */}
-
-          {/* <Route path="/leads" element={  <Leads/>} /> */}
-
           <Route path="/" element={<EmployeeDashboard />} />
           <Route path="/employees-dashboard" element={<EmployeeDashboard />} />
-
+          <Route path="/employee-leads" element={<EmployeeLead />} />
+          <Route path="/employee-report" element={<EmployeeReport />} />
+          <Route
+            path="/employee-data-export"
+            element={<EmployeeDataExport />}
+          />
+          <Route path="/employee-profile" element={<EmployeeProfile />} />
           <Route path="/employees-total-leads" element={<TotalEmpLead />} />
-          <Route path="/employees-visit-data" element={<EmployeeVisitData />} />
-          {/* <Route path="/employees-visit-data" element={<EmployeeVisitData />} /> */}
-          <Route path="/visit-data" element={<VisitTable />} />
-          <Route path="/employee-sold" element={<Employeesoldunit/>} />
+          <Route path="/visit-data" element={<EmployeeVisitTable />} />
           <Route path="/close-data" element={<CloseTable />} />
+          <Route path="/employee-sold" element={<Employeesoldunit />} />
+
+          {/* ========================================================================== */}
+
+          {/* <Route path="/employees-visit-data" element={<EmployeeVisitData />} />
           <Route
             path="/employees-total-quotations"
             element={<TotalEmpQuotation />}
@@ -103,18 +105,21 @@ function EmployeeRoutes() {
             path="/employees-total-invoices"
             element={<TotalEmpInvoice />}
           />
-
           <Route path="/quotation-form" element={<QuotationForm1 />} />
-          {/* Input Form details  */}
-          <Route path="/quotation-information-form" element={<QuotationInputForm />} />
-
+          <Route
+            path="/quotation-information-form"
+            element={<QuotationInputForm />}
+          />
           <Route path="/final-quotation/:id" element={<Final_quotation />} />
-          <Route path="/final-quotationBy-emp/:leadId/:id" element={<Final_quotationBy_emp />} />
-          <Route path="/final-quotationBy-emp/:id" element={<Final_Quotation_All />} />
-         
-
+          <Route
+            path="/final-quotationBy-emp/:leadId/:id"
+            element={<Final_quotationBy_emp />}
+          />
+          <Route
+            path="/final-quotationBy-emp/:id"
+            element={<Final_Quotation_All />}
+          />
           <Route path="/print/:id" element={<Print_Page />} />
-
           <Route path="/addservices/:id" element={<Addservices />} />
           <Route path="/createnotes/:id" element={<CreateNotes />} />
           <Route path="/deletenotes/:id" element={<DeleteNotes />} />
@@ -126,7 +131,6 @@ function EmployeeRoutes() {
             path="/update-quotation-name/:id"
             element={<UpdateQuotationName />}
           />
-
           <Route path="/create-invoice" element={<CreateInvoice />} />
           <Route path="/final-invoice/:id" element={<FinalInvoice />} />
           <Route path="/invoicelist" element={<Invoicelist />} />
@@ -139,7 +143,6 @@ function EmployeeRoutes() {
             path="/addservicesinvoice/:id"
             element={<AddInvoiceServices />}
           />
-
           <Route
             path="/update-invoice-number/:id"
             element={<EditInvoice_no />}
@@ -169,9 +172,7 @@ function EmployeeRoutes() {
             path="/invoice-update-notes/:id"
             element={<UpdateInvoiceNotes />}
           />
-
           <Route path="/quotation-invoice/:id" element={<QuotationInvoice />} />
-
           <Route
             path="/employee-lead-single-data/:id"
             element={<Employee_Single_Lead_Profile />}
@@ -180,27 +181,12 @@ function EmployeeRoutes() {
             path="/View_quotations/:id"
             element={<ViewAllQuotationsByLead />}
           />
-          <Route
-            path="/view_visit/:id"
-            element={<ViewAllVisit />}
-          />
-          <Route
-            path="/view_follow_up/:id"
-            element={<ViewAllFollowUp />}
-          />
-          <Route
-            path="/view_unit_sold/:id"
-            element={<ViewAllUnitSold />}
-          />
-          <Route
-            path="/view_remark/:id"
-            element={<ViewAllRemark />}
-          />
-
+          <Route path="/view_visit/:id" element={<ViewAllVisit />} />
+          <Route path="/view_follow_up/:id" element={<ViewAllFollowUp />} />
+          <Route path="/view_unit_sold/:id" element={<ViewAllUnitSold />} />
+          <Route path="/view_remark/:id" element={<ViewAllRemark />} />
           <Route path="/overview" element={<Overview />} />
-
           <Route path="/edit-profile" element={<UserProfile />} />
-          {/* <Route path="/employee-management" element={<EmployeeManagement />} /> */}
           <Route
             path="/employee-single/:employeeId"
             element={<EmployeeSingle />}
@@ -210,27 +196,16 @@ function EmployeeRoutes() {
             element={<SingleOrganization />}
           />
           <Route path="/reporting" element={<Reporting />} />
-
-          {/* employees routes */}
-          <Route path="/employee-leads" element={<EmployeeLead />} />
-          <Route path="/employee-report" element={<EmployeeReport />} />
-          <Route
-            path="/employee-data-export"
-            element={<EmployeeDataExport />}
-          />
-          <Route path="/employee-all-quotation" element={<MainQuotation />}/>
-          <Route path="/employee-profile" element={<EmployeeProfile />} />
+          <Route path="/employee-all-quotation" element={<MainQuotation />} />
           <Route path="/quotation-by-lead/:id" element={<QuotationByLeads />} />
           <Route
             path="/final-quotation-by-lead/:id"
             element={<FinalQuotationByLeads />}
           />
-
           <Route
             path="/quotationprint-by-lead/:id"
             element={<PrintQuotationBylead />}
           />
-
           <Route
             path="/quotationaddservices-by-lead/:id"
             element={<AddServiceByLead />}
@@ -246,7 +221,7 @@ function EmployeeRoutes() {
           <Route
             path="/quotationupdatenotes-by-lead/:id"
             element={<UpdateNoteBylead />}
-          />
+          /> */}
         </Routes>
       </div>
     </>

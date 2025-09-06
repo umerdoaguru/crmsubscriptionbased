@@ -3,9 +3,9 @@ import axios from "axios";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
 import * as XLSX from "xlsx";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 
-const SuperSoldnit= () => {
+const SuperSoldnit = () => {
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [startDate, setStartDate] = useState("");
@@ -27,7 +27,7 @@ const SuperSoldnit= () => {
   ]);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;  
+  const userId = superadminuser.id;
 
   useEffect(() => {
     fetchEmployeeUnitSold();
@@ -37,11 +37,15 @@ const SuperSoldnit= () => {
 
   const fetchEmployeeUnitSold = async () => {
     try {
-      const response = await axios.get( `https://crm-generalize.dentalguru.software/api/super-admin-unit-sold/${userId}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-      }});
+      const response = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/super-admin-unit-sold/${userId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       console.log("Fetched Leads:", response.data);
       const fetchedLeads = response.data.data || response.data || [];
       setLeads(fetchedLeads);
@@ -52,26 +56,32 @@ const SuperSoldnit= () => {
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/employee-super-admin/${userId}`,
+      const response = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/employee-super-admin/${userId}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }});
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setEmployees(response.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
   };
 
-
   const fetchSoldUnits = async () => {
     try {
-      const response = await axios.get("https://crm-generalize.dentalguru.software/api/super-admin-unit-sold",  {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-      }});
+      const response = await axios.get(
+        "https://crm-generalize.dentalguru.software/api/super-admin-unit-sold",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setSoldUnits(response.data.data || response.data || []);
       console.log("Fetched Sold Units:", response.data);
     } catch (error) {
@@ -82,11 +92,13 @@ const SuperSoldnit= () => {
   const fetchEmployeeData = async (employeeId) => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/unit-sold/${employeeId}`, {
+        `https://crm-generalize.dentalguru.software/api/unit-sold/${employeeId}`,
+        {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }}
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       console.log("Fetched Employee Data:", response.data);
       const employeeData = response.data.data || response.data || [];
@@ -115,10 +127,12 @@ const SuperSoldnit= () => {
       });
     }
     if (selectedEmployee) {
-      filtered = filtered.filter((lead) => lead.employee_name === selectedEmployee);
+      filtered = filtered.filter(
+        (lead) => lead.employee_name === selectedEmployee
+      );
     }
     setFilteredLeads(filtered);
-  }, [startDate,selectedEmployee, endDate, leads]);
+  }, [startDate, selectedEmployee, endDate, leads]);
 
   const downloadExcel = () => {
     const columnMapping = {
@@ -160,9 +174,7 @@ const SuperSoldnit= () => {
 
     const filename = `Lead Report ${
       startDate ? moment(startDate).format("DD-MM-YYYY") : "Start"
-    } to ${
-      endDate ? moment(endDate).format("DD-MM-YYYY") : "End"
-    }.xlsx`;
+    } to ${endDate ? moment(endDate).format("DD-MM-YYYY") : "End"}.xlsx`;
 
     XLSX.writeFile(workbook, filename);
   };
@@ -203,24 +215,24 @@ const SuperSoldnit= () => {
           onChange={(e) => setEndDate(e.target.value)}
           className="border p-1"
         />
-     <div className="">
-            <select
-              value={selectedEmployee}
-              onChange={(e) => setSelectedEmployee(e.target.value)}
-              className="border p-1"
-            >
-              <option value="">Select Employee</option>
-              {employees.map((employee) => (
-                <option key={employee.id} value={employee.name}>
-                  {employee.name}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="">
+          <select
+            value={selectedEmployee}
+            onChange={(e) => setSelectedEmployee(e.target.value)}
+            className="border p-1"
+          >
+            <option value="">Select Employee</option>
+            {employees.map((employee) => (
+              <option key={employee.id} value={employee.name}>
+                {employee.name}
+              </option>
+            ))}
+          </select>
+        </div>
         <div>
           <button
             onClick={downloadExcel}
-            className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded"
+            className="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded"
           >
             Download Excel
           </button>
@@ -288,7 +300,6 @@ const SuperSoldnit= () => {
                     {sold.unit_status}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-              
                     {moment(sold.date).format("DD MMM YYYY").toUpperCase()}
                   </td>
                 </tr>
@@ -305,7 +316,7 @@ const SuperSoldnit= () => {
           nextLabel={"Next"}
           breakLabel={"..."}
           pageCount={pageCount}
-forcePage={currentPage}
+          forcePage={currentPage}
           marginPagesDisplayed={2}
           pageRangeDisplayed={3}
           onPageChange={handlePageClick}

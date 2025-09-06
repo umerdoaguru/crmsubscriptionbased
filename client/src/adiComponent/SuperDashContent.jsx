@@ -1,19 +1,6 @@
 import React, { useState } from "react";
 import Overview from "./Overview2";
-import PaymentsGraph from "./QuotationGraph";
-import DevicesGraph from "./LeadsGraph";
-import LeadsReport from "./LeadsReport";
-import ToDoList from "./Todo";
-import Sider from "../components/Sider";
-import { FaBars, FaTimes } from "react-icons/fa"; // Icons for hamburger and close
-import MainHeader from "../components/MainHeader";
-import Invoice from "./Invoice";
 import axios from "axios";
-import LeadsGraph from "./LeadsGraph";
-import QuotationGraph from "./QuotationGraph";
-import SuperAdminSider from "./Super-Admin/SuperAdminSider";
-import SuperHeader from "./Super-Admin/SuperHeader";
-import DealGraph from "./DealClosedGraph";
 import SuperLeadGraph from "./Super-Admin/SuperLeadGraph";
 import SuperLeadAllVisitChart from "./Super-Admin/SuperLeadAllVisitChart";
 import SuperDealClosedGraph from "./Super-Admin/SuperDealClosedGraph";
@@ -39,7 +26,7 @@ const SuperDashContent = () => {
         <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
           <div className="">
             <div>
-              <h2 className="text-2xl font-bold text-gray-800 mt-2">
+              <h2 className="text-2xl font-bold text-gray-600 mt-2">
                 Super Admin Dashboard
               </h2>
             </div>

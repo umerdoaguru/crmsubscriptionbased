@@ -69,31 +69,6 @@ function SuperAdminAdminmanagementContent() {
     }
   };
 
-  // const isEmailTaken = async (email) => {
-  //   if (!email) {
-  //     console.error("No email provided for validation");
-  //     return false; // Return false if no email is passed
-  //   }
-
-  //   try {
-  //     const response = await axios.get(
-  //       "https://crm-generalize.dentalguru.software/api/admins/checkEmail",
-  //       {
-  //         params: { email },
-  //       }
-  //     );
-  //     return response.data.exists; // Assuming response has 'exists' field
-  //   } catch (error) {
-  //     console.error(
-  //       "Error checking email:",
-  //       error.response ? error.response.data : error.message
-  //     );
-  //     return false; // If the request fails, assume the email is not taken
-  //   }
-  // };
-
-  // Handle input changes for the new admin
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "phone") {
@@ -261,7 +236,7 @@ function SuperAdminAdminmanagementContent() {
               <center className="text-2xl text-center font-medium">
                 Admin Management
               </center>
-              <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
+              <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
 
               <div className="gap-4 mb-3">
                 <button
@@ -269,7 +244,7 @@ function SuperAdminAdminmanagementContent() {
                     setShowForm(true);
                     setEditingIndex(null);
                   }}
-                  className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition"
+                  className="mt-4 px-6 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-700 transition"
                 >
                   <BsPlusCircle className="inline-block mr-2" /> Add Admin
                 </button>
@@ -299,7 +274,7 @@ function SuperAdminAdminmanagementContent() {
                                 `/super-admin-admin-employe/${admin.admin_id}`
                               )
                             }
-                            className="border-b border-gray-200 hover:bg-gray-100"
+                            className="border-b border-gray-200 hover:text-cyan-600"
                           >
                             <td className="px-4 py-4 sm:px-6">{admin.name}</td>
                             <td className="px-4 py-4 sm:px-6">{admin.email}</td>
@@ -314,7 +289,7 @@ function SuperAdminAdminmanagementContent() {
                                     e.stopPropagation();
                                     handleEditAdmin(index);
                                   }}
-                                  className="text-blue-500 transition hover:text-blue-600"
+                                  className="text-cyan-500 transition hover:text-cyan-600"
                                 >
                                   <BsPencilSquare size={20} />
                                 </button>
@@ -422,7 +397,7 @@ function SuperAdminAdminmanagementContent() {
                     <button
                       type="button"
                       onClick={togglePasswordVisibility}
-                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-blue-500 hover:text-blue-700" // Position the text inside the input
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-cyan-500 hover:text-cyan-700" // Position the text inside the input
                     >
                       {showPassword ? <FaEyeSlash /> : <FaEye />}{" "}
                       {/* Show the icon when password is hidden */}
@@ -481,7 +456,7 @@ function SuperAdminAdminmanagementContent() {
                     </button>
                     <button
                       onClick={handleSaveAdmin}
-                      className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+                      className="px-4 py-2 text-white bg-cyan-500 rounded-lg hover:bg-cyan-600"
                     >
                       {editingIndex !== null ? "Update" : "Add"}
                     </button>

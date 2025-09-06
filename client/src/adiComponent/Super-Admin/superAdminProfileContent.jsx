@@ -18,7 +18,7 @@ function SuperAdminProfileContent() {
                 <center className="text-2xl text-center font-medium">
                   Super Admin Profile
                 </center>
-                <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
+                <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
                 <div className="flex flex-wrap  mb-4">
                   <div className="w-full md:w-2/3 md:mx-0 mx-3">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">

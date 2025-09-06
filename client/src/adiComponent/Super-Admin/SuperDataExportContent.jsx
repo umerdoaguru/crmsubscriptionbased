@@ -153,14 +153,14 @@ function SuperDataExportContent() {
             <h2 className="text-2xl text-center mt-[1rem] font-medium">
               Data Export
             </h2>
-            <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
+            <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
 
             <div className="flex flex-wrap justify-around mt-5">
               <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3 ">
                 <div
                   className={` shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "LeadData"
-                      ? "bg-blue-500 text-white"
+                      ? "bg-cyan-600 text-white"
                       : ""
                   }`} // Change background color if active
                   onClick={() => setSelectedComponent("LeadData")} // Set selected component
@@ -199,55 +199,12 @@ function SuperDataExportContent() {
                 </div>
               </div>
 
-              {/* <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3">
-            <div
-              className={` shadow-lg rounded-lg overflow-hidden cursor-pointer ${
-                selectedComponent === "EmployeeData"
-                  ? "bg-blue-500 text-white"
-                  : ""
-              }`} // Change background color if active
-              onClick={() => setSelectedComponent("EmployeeData")} // Set selected component
-            >
-              <div className="p-4 flex flex-col items-center text-center">
-                <div
-                  className={`text-3xl ${
-                    selectedComponent === "EmployeeData"
-                      ? "text-white"
-                      : "text-gray-700"
-                  }`}
-                >
-                  <SiMoneygram />
-                </div>
-                <div className="mt-2">
-                  <h5
-                    className={`text-xl font-semibold ${
-                      selectedComponent === "EmployeeData"
-                        ? "text-white"
-                        : "text-gray-800"
-                    }`}
-                  >
-                    Employees Data
-                  </h5>
-                  <p
-                    className={`${
-                      selectedComponent === "EmployeeData"
-                        ? "text-white"
-                        : "text-gray-600"
-                    }`}
-                  >
-                    {employeeCount}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div> */}
-
               {/* Card for Visit Data */}
               <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3">
                 <div
                   className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "VisitData"
-                      ? "bg-blue-500 text-white"
+                      ? "bg-cyan-600 text-white"
                       : ""
                   }`}
                   onClick={() => setSelectedComponent("VisitData")}
@@ -291,7 +248,7 @@ function SuperDataExportContent() {
                 <div
                   className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "ClosedData"
-                      ? "bg-blue-500 text-white"
+                      ? "bg-cyan-600 text-white"
                       : ""
                   }`}
                   onClick={() => setSelectedComponent("ClosedData")}
@@ -334,7 +291,7 @@ function SuperDataExportContent() {
                 <div
                   className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "SoldData"
-                      ? "bg-blue-500 text-white"
+                      ? "bg-cyan-600 text-white"
                       : ""
                   }`}
                   onClick={() => setSelectedComponent("SoldData")}

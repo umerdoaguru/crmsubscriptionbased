@@ -170,7 +170,7 @@ const SuperAdminImportDataContent = () => {
               <center className="text-2xl text-center  font-medium">
                 Import Data
               </center>
-              <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
+              <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
 
               <div className="">
                 <label>Upload File only .xlsx,.csv</label>
@@ -186,7 +186,7 @@ const SuperAdminImportDataContent = () => {
               <a
                 href="/sample_leads.xlsx"
                 download
-                className="text-blue-600 underline hover:text-blue-800"
+                className="text-cyan-600 underline hover:text-cyan-800"
               >
                 Download Sample Excel File
               </a>
@@ -259,7 +259,7 @@ const SuperAdminImportDataContent = () => {
               </div>
 
               <button
-                className="bg-blue-600 text-white px-4 py-2 rounded"
+                className="bg-cyan-600 text-white px-4 py-2 rounded"
                 onClick={handleSubmit}
                 disabled={loading}
               >

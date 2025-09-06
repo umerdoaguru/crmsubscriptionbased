@@ -232,14 +232,14 @@ const SuperReportsContent = () => {
             <h2 className="text-2xl text-center mt-[1rem] font-medium">
               Report
             </h2>
-            <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
+            <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
 
             <div className="flex flex-wrap  mt-5">
               <div className=" my-3 p-0 sm-mx-0 mx-3 ">
                 <div
                   className={` shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "LeadData"
-                      ? "bg-blue-500 text-white"
+                      ? "bg-cyan-600 text-white"
                       : ""
                   }`} // Change background color if active
                   onClick={() => setSelectedComponent("LeadData")} // Set selected component
@@ -272,7 +272,7 @@ const SuperReportsContent = () => {
                 <div
                   className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "VisitData"
-                      ? "bg-blue-500 text-white"
+                      ? "bg-cyan-600 text-white"
                       : ""
                   }`}
                   onClick={() => setSelectedComponent("VisitData")}
@@ -305,7 +305,7 @@ const SuperReportsContent = () => {
                 <div
                   className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "ClosedData"
-                      ? "bg-blue-500 text-white"
+                      ? "bg-cyan-600 text-white"
                       : ""
                   }`}
                   onClick={() => setSelectedComponent("ClosedData")}
@@ -338,7 +338,7 @@ const SuperReportsContent = () => {
                 <div
                   className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "SoldUnits"
-                      ? "bg-blue-500 text-white"
+                      ? "bg-cyan-600 text-white"
                       : ""
                   }`}
                   onClick={() => setSelectedComponent("SoldUnits")}
