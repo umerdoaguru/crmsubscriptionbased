@@ -23,9 +23,10 @@ const EmployeeInvoiceData = () => {
           `https://crm-generalize.dentalguru.software/api/get-employee-invoice/${EmpId.id}`,
           {
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-          }}
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setInvoices(response.data);
       } catch (error) {
@@ -85,7 +86,7 @@ const EmployeeInvoiceData = () => {
             <div className="respo mx-2 ">
               <button
                 onClick={downloadExcel}
-                className=" text-white px-4 py-2 rounded bg-blue-500 hover:bg-blue-700"
+                className=" text-white px-4 py-2 rounded bg-cyan-600 hover:bg-cyan-700"
               >
                 Download Excel
               </button>
@@ -135,7 +136,7 @@ const EmployeeInvoiceData = () => {
               nextLabel={"next"}
               breakLabel={"..."}
               pageCount={pageCount}
-forcePage={currentPage}
+              forcePage={currentPage}
               marginPagesDisplayed={2}
               pageRangeDisplayed={5}
               onPageChange={handlePageClick}
@@ -156,7 +157,7 @@ forcePage={currentPage}
               breakLinkClassName={
                 "page-link  border border-gray-300 rounded-md shadow-sm px-4 py-2 mx-1 "
               }
-              activeClassName={"active  hover:bg-blue-700 "}
+              activeClassName={"active  hover:bg-cyan-700 "}
             />
           </div>
         </div>

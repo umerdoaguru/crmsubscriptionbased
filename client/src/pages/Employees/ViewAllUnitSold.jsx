@@ -2,9 +2,10 @@ import { useState } from "react";
 import React from "react";
 import Sidebar from "../../utils/Sidebar";
 import Topbar from "../../utils/Topbar";
-import VisitTableContent from "../../components/EmployeeModule/VisitTableContent";
+import ViewAllRemarkContent from "../../components/Leads/ViewAllRemarkContent";
+import ViewAllUnitSoldContent from "../../components/Leads/ViewAllUnitSoldContent";
 
-const EmployeeVisitTable = () => {
+const ViewAllUnitSold = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {
@@ -26,10 +27,10 @@ const EmployeeVisitTable = () => {
           <Topbar isSidebarOpen={isSidebarOpen} />
           <div className=""></div>
 
-          <VisitTableContent />
+          <ViewAllUnitSoldContent />
         </div>
       </div>
     </div>
   );
 };
-export default EmployeeVisitTable;
+export default ViewAllUnitSold;

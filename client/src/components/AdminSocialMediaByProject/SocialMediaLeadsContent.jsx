@@ -21,7 +21,7 @@ function SocialMediaLeadsContent() {
             <div className="mt-[1rem]">
               <button
                 onClick={() => navigate(-1)}
-                className="bg-blue-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-blue-600 transition-colors"
+                className="bg-cyan-600 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-cyan-700 transition-colors"
               >
                 Back
               </button>
@@ -29,14 +29,14 @@ function SocialMediaLeadsContent() {
             <h1 className="text-2xl text-center font-medium">
               Social Media Leads
             </h1>
-            <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
+            <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
 
             <div className="flex flex-wrap justify-around mt-3">
               <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3 ">
                 <div
                   className={` shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "FacebookData"
-                      ? "bg-blue-500 text-white"
+                      ? "bg-cyan-500 text-white"
                       : ""
                   }`} // Change background color if active
                   onClick={() => setSelectedComponent("FacebookData")} // Set selected component

@@ -1,13 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { BsDownload, BsFilter } from "react-icons/bs";
-import * as XLSX from "xlsx";
-
-import axios from "axios";
-
-import MainHeader from "../MainHeader";
-import EmployeeSider from "./EmployeeSider";
-import { useSelector } from "react-redux";
-import moment from "moment";
 import EmpLeadReport from "./EmployeeReport/EmpLeadReport";
 import EmpVisitReport from "./EmployeeReport/EmpVisitReport";
 import EmpClosedDealReport from "./EmployeeReport/EmpClosedDealReport";
@@ -21,146 +12,141 @@ const EmployeeReportContent = () => {
       <div className="flex mt-20">
         <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
           <div className="container">
-            <h2 className="text-2xl text-center mt-[1rem] font-medium">
+            {/* Title */}
+            <h2 className="text-3xl text-center mt-6 font-semibold tracking-wide text-gray-800">
               Report
             </h2>
-            <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
+            <div className="mx-auto h-[3px] w-20 bg-cyan-600 my-4 rounded-full"></div>
 
-            <div className="flex flex-wrap  mt-2">
-              <div className=" my-3 p-0 sm-mx-0 mx-3 ">
-                <div
-                  className={` shadow-lg rounded-lg overflow-hidden cursor-pointer ${
-                    selectedComponent === "LeadData"
-                      ? "bg-blue-500 text-white"
-                      : ""
-                  }`} // Change background color if active
-                  onClick={() => setSelectedComponent("LeadData")} // Set selected component
-                >
-                  <div className="p-2 flex flex-col items-center text-center">
-                    <div
-                      className={`text-3xl ${
-                        selectedComponent === "LeadData"
-                          ? "text-white"
-                          : "text-gray-700"
-                      }`}
-                    ></div>
-                    <div className="">
-                      <p
-                        className={` text-xl font-semibold ${
-                          selectedComponent === "LeadData"
-                            ? "text-white"
-                            : "text-gray-800"
-                        }`}
-                      >
-                        Leads
-                      </p>
-                    </div>
+            {/* Card Section */}
+            <div className="flex flex-wrap justify-center gap-6 mt-4">
+              {/* Leads */}
+              <div
+                className={`transition-all duration-300 transform hover:scale-105 shadow-md rounded-2xl cursor-pointer w-40 sm:w-48 ${
+                  selectedComponent === "LeadData"
+                    ? "bg-cyan-600 text-white shadow-lg shadow-cyan-300/50"
+                    : "bg-white text-gray-800 hover:bg-gray-100"
+                }`}
+                onClick={() => setSelectedComponent("LeadData")}
+              >
+                <div className="p-6 flex flex-col items-center text-center">
+                  <div
+                    className={`text-4xl mb-2 ${
+                      selectedComponent === "LeadData"
+                        ? "text-white"
+                        : "text-cyan-600"
+                    }`}
+                  >
+                    📊
                   </div>
+                  <p
+                    className={`text-lg font-semibold ${
+                      selectedComponent === "LeadData"
+                        ? "text-white"
+                        : "text-gray-800"
+                    }`}
+                  >
+                    Leads
+                  </p>
                 </div>
               </div>
 
-              {/* Card for Visit Data */}
-              <div className=" my-3 p-0 sm-mx-0 mx-3">
-                <div
-                  className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
-                    selectedComponent === "VisitData"
-                      ? "bg-blue-500 text-white"
-                      : ""
-                  }`}
-                  onClick={() => setSelectedComponent("VisitData")}
-                >
-                  <div className="p-2 flex flex-col items-center text-center">
-                    <div
-                      className={`text-3xl ${
-                        selectedComponent === "VisitData"
-                          ? "text-white"
-                          : "text-gray-700"
-                      }`}
-                    ></div>
-                    <div className="">
-                      <h5
-                        className={`text-xl font-semibold ${
-                          selectedComponent === "VisitData"
-                            ? "text-white"
-                            : "text-gray-800"
-                        }`}
-                      >
-                        Site Visit
-                      </h5>
-                    </div>
+              {/* Site Visit */}
+              <div
+                className={`transition-all duration-300 transform hover:scale-105 shadow-md rounded-2xl cursor-pointer w-40 sm:w-48 ${
+                  selectedComponent === "VisitData"
+                    ? "bg-cyan-600 text-white shadow-lg shadow-cyan-300/50"
+                    : "bg-white text-gray-800 hover:bg-gray-100"
+                }`}
+                onClick={() => setSelectedComponent("VisitData")}
+              >
+                <div className="p-6 flex flex-col items-center text-center">
+                  <div
+                    className={`text-4xl mb-2 ${
+                      selectedComponent === "VisitData"
+                        ? "text-white"
+                        : "text-cyan-600"
+                    }`}
+                  >
+                    🏡
                   </div>
+                  <h5
+                    className={`text-lg font-semibold ${
+                      selectedComponent === "VisitData"
+                        ? "text-white"
+                        : "text-gray-800"
+                    }`}
+                  >
+                    Site Visit
+                  </h5>
                 </div>
               </div>
 
-              {/* Card for Closed Data */}
-              <div className=" my-3 p-0 sm-mx-0 mx-3">
-                <div
-                  className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
-                    selectedComponent === "ClosedData"
-                      ? "bg-blue-500 text-white"
-                      : ""
-                  }`}
-                  onClick={() => setSelectedComponent("ClosedData")}
-                >
-                  <div className="p-2 flex flex-col items-center text-center">
-                    <div
-                      className={`text-3xl ${
-                        selectedComponent === "ClosedData"
-                          ? "text-white"
-                          : "text-gray-700"
-                      }`}
-                    ></div>
-                    <div className="">
-                      <h5
-                        className={`text-xl font-semibold ${
-                          selectedComponent === "ClosedData"
-                            ? "text-white"
-                            : "text-gray-800"
-                        }`}
-                      >
-                        Closed Deal
-                      </h5>
-                    </div>
+              {/* Closed Deal */}
+              <div
+                className={`transition-all duration-300 transform hover:scale-105 shadow-md rounded-2xl cursor-pointer w-40 sm:w-48 ${
+                  selectedComponent === "ClosedData"
+                    ? "bg-cyan-600 text-white shadow-lg shadow-cyan-300/50"
+                    : "bg-white text-gray-800 hover:bg-gray-100"
+                }`}
+                onClick={() => setSelectedComponent("ClosedData")}
+              >
+                <div className="p-6 flex flex-col items-center text-center">
+                  <div
+                    className={`text-4xl mb-2 ${
+                      selectedComponent === "ClosedData"
+                        ? "text-white"
+                        : "text-cyan-600"
+                    }`}
+                  >
+                    🤝
                   </div>
+                  <h5
+                    className={`text-lg font-semibold ${
+                      selectedComponent === "ClosedData"
+                        ? "text-white"
+                        : "text-gray-800"
+                    }`}
+                  >
+                    Closed Deal
+                  </h5>
                 </div>
               </div>
 
-              {/* Card for Sold Unit Data */}
-              <div className=" my-3 p-0 sm-mx-0 mx-3">
-                <div
-                  className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
-                    selectedComponent === "SoldUnits"
-                      ? "bg-blue-500 text-white"
-                      : ""
-                  }`}
-                  onClick={() => setSelectedComponent("SoldUnits")}
-                >
-                  <div className="p-2 flex flex-col items-center text-center">
-                    <div
-                      className={`text-3xl ${
-                        selectedComponent === "SoldUnits"
-                          ? "text-white"
-                          : "text-gray-700"
-                      }`}
-                    ></div>
-                    <div className="">
-                      <h5
-                        className={`text-xl font-semibold ${
-                          selectedComponent === "SoldUnits"
-                            ? "text-white"
-                            : "text-gray-800"
-                        }`}
-                      >
-                        Sold Units
-                      </h5>
-                    </div>
+              {/* Sold Units */}
+              <div
+                className={`transition-all duration-300 transform hover:scale-105 shadow-md rounded-2xl cursor-pointer w-40 sm:w-48 ${
+                  selectedComponent === "SoldUnits"
+                    ? "bg-cyan-600 text-white shadow-lg shadow-cyan-300/50"
+                    : "bg-white text-gray-800 hover:bg-gray-100"
+                }`}
+                onClick={() => setSelectedComponent("SoldUnits")}
+              >
+                <div className="p-6 flex flex-col items-center text-center">
+                  <div
+                    className={`text-4xl mb-2 ${
+                      selectedComponent === "SoldUnits"
+                        ? "text-white"
+                        : "text-cyan-600"
+                    }`}
+                  >
+                    🏢
                   </div>
+                  <h5
+                    className={`text-lg font-semibold ${
+                      selectedComponent === "SoldUnits"
+                        ? "text-white"
+                        : "text-gray-800"
+                    }`}
+                  >
+                    Sold Units
+                  </h5>
                 </div>
               </div>
             </div>
 
-            {/* Conditionally render the selected component */}
-            <div className="w-full h-[calc(100vh-10rem)] overflow-y-auto">
+            {/* Render Selected Component */}
+            <div className="w-full h-[calc(100vh-12rem)] overflow-y-auto mt-6 bg-white shadow-inner rounded-xl p-4">
               {selectedComponent === "LeadData" && <EmpLeadReport />}
               {selectedComponent === "VisitData" && <EmpVisitReport />}
               {selectedComponent === "ClosedData" && <EmpClosedDealReport />}

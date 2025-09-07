@@ -71,7 +71,7 @@ const AdminViewAllUnitSoldContent = () => {
             <div className="mt-[1rem] ">
               <button
                 onClick={() => navigate(-1)}
-                className="bg-blue-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-blue-600 transition-colors"
+                className="bg-cyan-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-cyan-600 transition-colors"
               >
                 Back
               </button>

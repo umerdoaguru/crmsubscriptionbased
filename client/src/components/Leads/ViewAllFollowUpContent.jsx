@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import moment from "moment";
 import { useSelector } from "react-redux";
 import ReactPaginate from "react-paginate";
+import MainHeader from "../MainHeader";
+import EmployeeeSider from "../EmployeeModule/EmployeeSider";
 import cogoToast from "cogo-toast";
 
-const AdminFollowUpViewContent = () => {
+const ViewAllFollowUpContent = () => {
   const [follow_up, setFollow_Up] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(10); // Number of items per page
   const [filterText, setFilterText] = useState("");
   const [sortAsc, setSortAsc] = useState(true);
   const [render, setRender] = useState(false);
@@ -16,12 +19,12 @@ const AdminFollowUpViewContent = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
   const navigate = useNavigate();
+  const EmpId = useSelector((state) => state.auth.user);
 
+  const token = EmpId?.token;
   useEffect(() => {
     fetchFollowUp();
   }, [id, render]);
-  const adminuser = useSelector((state) => state.auth.user);
-  const token = adminuser.token;
 
   const fetchFollowUp = async () => {
     try {
@@ -52,6 +55,17 @@ const AdminFollowUpViewContent = () => {
         );
         if (response.status === 200) {
           console.log("follow up deleted successfully");
+          const putResponse = await axios.put(
+            `https://crm-generalize.dentalguru.software/api/updateOnlyFollowUpStatus/${follow_up[0].lead_id}`,
+            { follow_up_status: "pending" }
+          );
+
+          if (putResponse.status === 200) {
+            console.log("Status updated successfully:", putResponse.data);
+          } else {
+            console.error("Error updating status:", putResponse.data);
+            cogoToast.error("Failed to update the lead status.");
+          }
         }
 
         console.log(response);
@@ -118,12 +132,14 @@ const AdminFollowUpViewContent = () => {
       <div className="flex mt-20">
         <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
           <div className="container mt-2">
-            <button
-              onClick={handleBackClick}
-              className="bg-cyan-500 text-white mt-1 px-4 py-2 rounded"
-            >
-              Go Back
-            </button>
+            <div className="mt-[1rem] ">
+              <button
+                onClick={() => navigate(-1)}
+                className="bg-cyan-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-cyan-600 transition-colors"
+              >
+                Back
+              </button>
+            </div>
             <div className="w-full px-2 mx-auto p-4">
               <div className="w-full px-2 mt-4">
                 <h2 className="text-2xl font-bold mb-4 text-center">
@@ -135,6 +151,9 @@ const AdminFollowUpViewContent = () => {
                       <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           S.no
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Project Name
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Lead Id
@@ -154,6 +173,9 @@ const AdminFollowUpViewContent = () => {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Report
                         </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Action
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -161,6 +183,9 @@ const AdminFollowUpViewContent = () => {
                         <tr key={followup.id}>
                           <td className="px-6 py-4 whitespace-nowrap">
                             {offset + index + 1}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {followup.project_name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             {followup.lead_id}
@@ -175,48 +200,32 @@ const AdminFollowUpViewContent = () => {
                             {followup.follow_up_type}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {followup.follow_up_date}
+                            {moment(followup.follow_up_date)
+                              .format("DD MMM YYYY")
+                              .toUpperCase()}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             {followup.report}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <button
+                              className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded m-1"
+                              onClick={() => openModal(followup)}
+                            >
+                              Edit
+                            </button>
+
+                            <button
+                              className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded m-1"
+                              onClick={() => handleDelete(followup)}
+                            >
+                              Delete
+                            </button>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-
-                  <ReactPaginate
-                    previousLabel={"previous"}
-                    nextLabel={"next"}
-                    breakLabel={"..."}
-                    pageCount={pageCount}
-                    forcePage={currentPage}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={5}
-                    onPageChange={handlePageClick}
-                    containerClassName={"flex justify-center space-x-2 mt-4"}
-                    pageClassName={"bg-white border border-gray-300 rounded-md"}
-                    pageLinkClassName={
-                      "py-2 px-4 text-sm text-gray-700 hover:bg-gray-200"
-                    }
-                    previousClassName={
-                      "bg-white border border-gray-300 rounded-md"
-                    }
-                    previousLinkClassName={
-                      "py-2 px-4 text-sm text-gray-700 hover:bg-gray-200"
-                    }
-                    nextClassName={"bg-white border border-gray-300 rounded-md"}
-                    nextLinkClassName={
-                      "py-2 px-4 text-sm text-gray-700 hover:bg-gray-200"
-                    }
-                    breakClassName={
-                      "bg-white border border-gray-300 rounded-md"
-                    }
-                    breakLinkClassName={
-                      "py-2 px-4 text-sm text-gray-700 hover:bg-gray-200"
-                    }
-                    activeClassName={"bg-gray-200"}
-                  />
 
                   {/* Modal for Editing Follow Up Data */}
                   {isModalOpen && (
@@ -228,6 +237,19 @@ const AdminFollowUpViewContent = () => {
                         <form>
                           <div className="mb-4">
                             <label className="block text-gray-700">
+                              Project Name:
+                            </label>
+                            <input
+                              type="text"
+                              name="lead_id"
+                              value={modalData.project_name || ""}
+                              onChange={handleInputChange}
+                              className="w-full px-3 py-2 border border-gray-300 rounded"
+                              disabled
+                            />
+                          </div>
+                          <div className="mb-4">
+                            <label className="block text-gray-700">
                               Lead ID:
                             </label>
                             <input
@@ -236,6 +258,7 @@ const AdminFollowUpViewContent = () => {
                               value={modalData.lead_id || ""}
                               onChange={handleInputChange}
                               className="w-full px-3 py-2 border border-gray-300 rounded"
+                              disabled
                             />
                           </div>
 
@@ -247,6 +270,7 @@ const AdminFollowUpViewContent = () => {
                               value={modalData.name || ""}
                               onChange={handleInputChange}
                               className="w-full px-3 py-2 border border-gray-300 rounded"
+                              disabled
                             />
                           </div>
 
@@ -318,4 +342,4 @@ const AdminFollowUpViewContent = () => {
   );
 };
 
-export default AdminFollowUpViewContent;
+export default ViewAllFollowUpContent;

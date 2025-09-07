@@ -1,13 +1,10 @@
 import axios from "axios";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import img from "../../images/lead_profile.png"; // Assuming this will be the employee's image as well
-import MainHeader from "../MainHeader";
-import EmployeeSider from "./EmployeeSider";
 import { useSelector } from "react-redux";
 
 function EmployeeProfileContent() {
-  const [user, setUser] = useState([]); // Initialize state for employee data
+  const [user, setUser] = useState([]);
   const EmpId = useSelector((state) => state.auth.user);
 
   const token = EmpId?.token;
@@ -44,47 +41,59 @@ function EmployeeProfileContent() {
               <center className="text-2xl text-center mt-8 font-medium">
                 Employee Profile
               </center>
-              <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
+              <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
               <div className="flex flex-wrap justify-center mb-4">
                 <div className="w-full md:w-2/3 md:mx-0 mx-3">
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     <div>
-                      <label className="text-info">Employee ID</label>
+                      <label className="text-cyan-600 font-semibold">
+                        Employee ID
+                      </label>
                       <div className="p-2 bg-gray-100 rounded">
                         <p className="m-0">{user.employeeId}</p>
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-info">Name</label>
+                      <label className="text-cyan-600 font-semibold">
+                        Name
+                      </label>
                       <div className="p-2 bg-gray-100 rounded">
                         <p className="m-0">{user.name}</p>
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-info">Email</label>
+                      <label className="text-cyan-600 font-semibold">
+                        Email
+                      </label>
                       <div className="p-2 bg-gray-100 rounded">
                         <p className="m-0">{user.email}</p>
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-info">Phone</label>
+                      <label className="text-cyan-600 font-semibold">
+                        Phone
+                      </label>
                       <div className="p-2 bg-gray-100 rounded">
                         <p className="m-0">{user.phone}</p>
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-info">Position</label>
+                      <label className="text-cyan-600 font-semibold">
+                        Position
+                      </label>
                       <div className="p-2 bg-gray-100 rounded">
                         <p className="m-0">{user.position}</p>
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-info">Created Date</label>
+                      <label className="text-cyan-600 font-semibold">
+                        Created Date
+                      </label>
                       <div className="p-2 bg-gray-100 rounded">
                         <p className="m-0">
                           {moment(user.createdTime).format("DD/MM/YYYY")}

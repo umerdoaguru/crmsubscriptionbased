@@ -2,10 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import moment from "moment";
-import * as XLSX from "xlsx";
-import MainHeader from "../MainHeader";
-import EmployeeSider from "./EmployeeSider";
-import Pagination from "../../adiComponent/comp/pagination";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 
@@ -97,7 +93,7 @@ const CloseTableContent = () => {
             <div className="mt-[1rem] ">
               <button
                 onClick={() => navigate(-1)}
-                className="bg-blue-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-blue-600 transition-colors"
+                className="bg-cyan-600 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-cyan-700 transition-colors"
               >
                 Back
               </button>
@@ -106,7 +102,7 @@ const CloseTableContent = () => {
               <center className="text-2xl text-center  font-medium">
                 Total Closed Deals
               </center>
-              <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
+              <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
               <div className="flex justify-between mb-3">
                 <input
                   type="text"

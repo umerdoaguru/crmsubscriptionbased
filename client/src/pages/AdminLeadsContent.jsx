@@ -625,7 +625,7 @@ function AdminLeadsContent() {
                 <h2 className="text-2xl text-center mt-[2rem] font-medium">
                   Leads Management
                 </h2>
-                <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
+                <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
 
                 {/* Button to create a new lead */}
                 <div className="mb-4">

@@ -55,17 +55,11 @@ function EmployeeSoldUnits() {
     const today = moment();
     switch (duration) {
       case "week":
-        return leads.filter((lead) =>
-          moment(lead.date).isSame(today, "week")
-        );
+        return leads.filter((lead) => moment(lead.date).isSame(today, "week"));
       case "month":
-        return leads.filter((lead) =>
-          moment(lead.date).isSame(today, "month")
-        );
+        return leads.filter((lead) => moment(lead.date).isSame(today, "month"));
       case "year":
-        return leads.filter((lead) =>
-          moment(lead.date).isSame(today, "year")
-        );
+        return leads.filter((lead) => moment(lead.date).isSame(today, "year"));
       case "all":
       default:
         return leads;
@@ -82,13 +76,13 @@ function EmployeeSoldUnits() {
   // Excel download function
   const downloadExcel = () => {
     const columnMapping = {
-      lead_id:"lead id",
+      lead_id: "lead id",
       project_name: "Project Name",
-      name:"Costumer name",
-      unit_no:"unit Id",
-      employee_name:"Employee Name",
-      unit_status:"Unit Status",
-      date:"Date",
+      name: "Costumer name",
+      unit_no: "unit Id",
+      employee_name: "Employee Name",
+      unit_status: "Unit Status",
+      date: "Date",
     };
 
     const completedLeads = filteredLeads.map((lead) => {
@@ -96,7 +90,15 @@ function EmployeeSoldUnits() {
 
       selectedColumns.forEach((col) => {
         const newKey = columnMapping[col] || col;
-        if (["actual_date", "createdTime", "visit_date", "d_closeDate","date"].includes(col)) {
+        if (
+          [
+            "actual_date",
+            "createdTime",
+            "visit_date",
+            "d_closeDate",
+            "date",
+          ].includes(col)
+        ) {
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
               ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
@@ -150,7 +152,7 @@ function EmployeeSoldUnits() {
         </div>
         <button
           onClick={downloadExcel}
-          className="bg-blue-500 text-white font-medium px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-cyan-600 text-white font-medium px-4 py-2 rounded hover:bg-cyan-700"
         >
           Download Excel
         </button>
@@ -163,11 +165,21 @@ function EmployeeSoldUnits() {
             <tr>
               <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
               <th className="px-6 py-3 border-b-2 border-gray-300">Lead Id</th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">Project Name</th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">Customer Name</th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">Unit Number</th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">Employee Name</th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">Unit Status</th>
+              <th className="px-6 py-3 border-b-2 border-gray-300">
+                Project Name
+              </th>
+              <th className="px-6 py-3 border-b-2 border-gray-300">
+                Customer Name
+              </th>
+              <th className="px-6 py-3 border-b-2 border-gray-300">
+                Unit Number
+              </th>
+              <th className="px-6 py-3 border-b-2 border-gray-300">
+                Employee Name
+              </th>
+              <th className="px-6 py-3 border-b-2 border-gray-300">
+                Unit Status
+              </th>
               <th className="px-6 py-3 border-b-2 border-gray-300">Date</th>
             </tr>
           </thead>
@@ -209,8 +221,7 @@ function EmployeeSoldUnits() {
                     {lead.unit_status}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    
-                      {moment(lead.date).format("DD MMM YYYY").toUpperCase()}
+                    {moment(lead.date).format("DD MMM YYYY").toUpperCase()}
                   </td>
                 </tr>
               ))
@@ -227,7 +238,7 @@ function EmployeeSoldUnits() {
             nextLabel={"Next"}
             breakLabel={"..."}
             pageCount={pageCount}
-forcePage={currentPage}
+            forcePage={currentPage}
             marginPagesDisplayed={2}
             pageRangeDisplayed={3}
             onPageChange={handlePageClick}

@@ -3,10 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
-import * as XLSX from "xlsx";
-import styled from "styled-components";
-import MainHeader from "../MainHeader";
-import EmployeeeSider from "./EmployeeSider";
 import ReactPaginate from "react-paginate";
 
 const VisitTableContent = () => {
@@ -15,8 +11,8 @@ const VisitTableContent = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [currentPage, setCurrentPage] = useState(0); // Current page for pagination
-  const [leadsPerPage, setLeadsPerPage] = useState(7); // Default leads per page
+  const [currentPage, setCurrentPage] = useState(0);
+  const [leadsPerPage, setLeadsPerPage] = useState(7);
   const EmpId = useSelector((state) => state.auth.user);
   const token = EmpId?.token;
   const navigate = useNavigate();
@@ -89,7 +85,7 @@ const VisitTableContent = () => {
           <div className="mt-[1rem] ">
             <button
               onClick={() => navigate(-1)}
-              className="bg-blue-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-blue-600 transition-colors"
+              className="bg-cyan-600 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-cyan-600 transition-colors"
             >
               Back
             </button>
@@ -99,7 +95,7 @@ const VisitTableContent = () => {
               <center className="text-2xl text-center font-medium">
                 Total Visits
               </center>
-              <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
+              <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
               <div className="flex justify-between mb-3">
                 <input
                   type="text"

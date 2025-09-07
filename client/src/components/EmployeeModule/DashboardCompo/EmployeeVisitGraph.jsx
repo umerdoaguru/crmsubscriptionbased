@@ -1,5 +1,3 @@
-
-
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -30,14 +28,14 @@ const EmployeeVisitGraph = () => {
           `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
           {
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-          }}
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         const leadList = response.data.filter((lead) =>
           ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
         );
-        
 
         // Get the current date and the date 28 days ago
         const today = new Date();
@@ -84,44 +82,48 @@ const EmployeeVisitGraph = () => {
 
   return (
     <>
-    <div className="mx-2 ">
-      <div className="w-full max-w-4xl mx-auto p-4 border rounded-lg shadow-md bg-white ">
-        <h2 className="text-xl font-bold mb-2">Daily Visit Overview</h2>
-        <p className="text-sm text-gray-500 mb-4">
-          Visits for the past 28 days
-        </p>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart
-            width={400}
-            height={300}
-            data={visitData}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 0,
-              bottom: 5,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey="date"
-              tick={{
-                fontSize: 10,
-                dy: 5,
-                fill: "#666",
+      <div className="mx-2 ">
+        <div className="w-full max-w-4xl mx-auto p-4 border rounded-lg shadow-md bg-white ">
+          <h2 className="text-xl font-bold mb-2">Daily Visit Overview</h2>
+          <p className="text-sm text-gray-500 mb-4">
+            Visits for the past 28 days
+          </p>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              width={400}
+              height={300}
+              data={visitData}
+              margin={{
+                top: 5,
+                right: 15,
+                left: -40,
+                bottom: 5,
               }}
-            />
-            <YAxis   allowDecimals={false} 
-  tickFormatter={(value) => Number.isInteger(value) ? value : ''}/>
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="visits" fill="#82ca9d" name="Visits" barSize={15} />
-          </BarChart>
-        </ResponsiveContainer>
-      </div></div>
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="date"
+                tick={{
+                  fontSize: 10,
+                  dy: 5,
+                  fill: "#666",
+                }}
+              />
+              <YAxis
+                allowDecimals={false}
+                tickFormatter={(value) =>
+                  Number.isInteger(value) ? value : ""
+                }
+              />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="visits" fill="#0891b2" name="Visits" barSize={15} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
     </>
   );
 };
 
 export default EmployeeVisitGraph;
-

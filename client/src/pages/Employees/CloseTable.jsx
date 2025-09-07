@@ -2,8 +2,6 @@ import { useState } from "react";
 import React from "react";
 import Sidebar from "../../utils/Sidebar";
 import Topbar from "../../utils/Topbar";
-import TotalEmpLeadContent from "../../components/EmployeeModule/EmployeeDashboardCards/AdminDashBoardCards/TotalEmpLeadContent";
-import VisitTableContent from "../../components/EmployeeModule/VisitTableContent";
 import CloseTableContent from "../../components/EmployeeModule/CloseTableContent";
 
 const CloseTable = () => {

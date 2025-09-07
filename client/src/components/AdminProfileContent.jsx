@@ -1,6 +1,4 @@
 import React from "react";
-import Sider from "./Sider";
-import MainHeader from "./MainHeader";
 import moment from "moment";
 import { useSelector } from "react-redux";
 function AdminProfileContent() {
@@ -17,46 +15,58 @@ function AdminProfileContent() {
                 <center className="text-2xl text-center mt-8 font-medium">
                   Admin Profile
                 </center>
-                <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
+                <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
                 <div className="flex flex-wrap  mb-4">
                   <div className="w-full md:w-2/3 md:mx-0 mx-3">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                       <div>
-                        <label className="text-info">ID</label>
+                        <label className="text-cyan-600 font-semibold">
+                          ID
+                        </label>
                         <div className="p-2 bg-gray-100 rounded">
                           <p className="m-0">{Admin?.id}</p>
                         </div>
                       </div>
 
                       <div>
-                        <label className="text-info">Name</label>
+                        <label className="text-cyan-600 font-semibold">
+                          Name
+                        </label>
                         <div className="p-2 bg-gray-100 rounded">
                           <p className="m-0">{Admin?.name}</p>
                         </div>
                       </div>
 
                       <div>
-                        <label className="text-info">Email</label>
+                        <label className="text-cyan-600 font-semibold">
+                          Email
+                        </label>
                         <div className="p-2 bg-gray-100 rounded">
                           <p className="m-0">{Admin?.email}</p>
                         </div>
                       </div>
 
                       <div>
-                        <label className="text-info">Role</label>
+                        <label className="text-cyan-600 font-semibold">
+                          Role
+                        </label>
                         <div className="p-2 bg-gray-100 rounded">
                           <p className="m-0">{Admin?.roles}</p>
                         </div>
                       </div>
                       <div>
-                        <label className="text-info">User Id</label>
+                        <label className="text-cyan-600 font-semibold">
+                          User Id
+                        </label>
                         <div className="p-2 bg-gray-100 rounded">
                           <p className="m-0">{Admin?.user_id}</p>
                         </div>
                       </div>
 
                       <div>
-                        <label className="text-info">Created Date</label>
+                        <label className="text-cyan-600 font-semibold">
+                          Created Date
+                        </label>
                         <div className="p-2 bg-gray-100 rounded">
                           <p className="m-0">
                             {moment(Admin?.created_date).format("DD/MM/YYYY")}

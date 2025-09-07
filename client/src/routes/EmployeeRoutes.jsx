@@ -46,7 +46,6 @@ import TotalEmployee from "../components/AdminDashBoardCards/TotalEmployee";
 import TotalEmpInvoice from "../components/EmployeeModule/EmployeeDashboardCards/AdminDashBoardCards/TotalEmpInvoice";
 import TotalEmpQuotation from "../components/EmployeeModule/EmployeeDashboardCards/AdminDashBoardCards/TotalEmpQuotation";
 import Leads from "../pages/AdminLeadsContent";
-import Employee_Single_Lead_Profile from "../components/Leads/Employee_Single_Lead_Profile";
 import QuotationByLeads from "../components/EmployeeModule/QuotationByLeads/QuotationByLeads";
 import PrintQuotationBylead from "../components/EmployeeModule/QuotationByLeads/PrintQuotationBylead";
 import AddServiceByLead from "./../components/EmployeeModule/QuotationByLeads/AddServiceBylead";
@@ -58,11 +57,7 @@ import EmployeeVisitData from "../components/EmployeeModule/EmployeeDataExport/E
 import ViewAllQuotationsByLead from "../components/Leads/ViewAllQuotationsByLead";
 import Final_quotationBy_emp from "../pages/Quotation/Final_quotationBy_emp";
 import QuotationInputForm from "../components/EmployeeModule/QuotationByLeads/QuotationInputForm";
-import ViewAllVisit from "../components/Leads/ViewAllVisit";
 import Final_Quotation_All from "../pages/Quotation/Final_Quotation_All";
-import ViewAllFollowUp from "../components/Leads/ViewAllFollowUp";
-import ViewAllRemark from "../components/Leads/ViewAllRemark";
-import ViewAllUnitSold from "../components/Leads/ViewAllUnitSold";
 import EmployeeDashboard from "../pages/Employees/EmployeeDashboard";
 import EmployeeLead from "../pages/Employees/EmployeeLead";
 import EmployeeReport from "../pages/Admin/EmployeeReport";
@@ -72,6 +67,11 @@ import TotalEmpLead from "../pages/Employees/TotalEmpLead";
 import EmployeeVisitTable from "../pages/Employees/EmployeeVisitTable";
 import CloseTable from "../pages/Employees/CloseTable";
 import Employeesoldunit from "../pages/Employees/Employeesoldunit";
+import EmployeeSingleLeadProfile from "../pages/Employees/EmployeeSingleLeadProfile";
+import ViewAllVisit from "../pages/Employees/ViewAllVisit";
+import ViewAllFollowUp from "../pages/Employees/ViewAllFollowUp";
+import ViewAllRemark from "../pages/Employees/ViewAllRemark";
+import ViewAllUnitSold from "../pages/Employees/ViewAllUnitSold";
 
 function EmployeeRoutes() {
   const user = useSelector((state) => state.auth.user);
@@ -93,6 +93,14 @@ function EmployeeRoutes() {
           <Route path="/visit-data" element={<EmployeeVisitTable />} />
           <Route path="/close-data" element={<CloseTable />} />
           <Route path="/employee-sold" element={<Employeesoldunit />} />
+          <Route
+            path="/employee-lead-single-data/:id"
+            element={<EmployeeSingleLeadProfile />}
+          />
+          <Route path="/view_visit/:id" element={<ViewAllVisit />} />
+          <Route path="/view_follow_up/:id" element={<ViewAllFollowUp />} />
+          <Route path="/view_remark/:id" element={<ViewAllRemark />} />
+          <Route path="/view_unit_sold/:id" element={<ViewAllUnitSold />} />
 
           {/* ========================================================================== */}
 
@@ -173,18 +181,15 @@ function EmployeeRoutes() {
             element={<UpdateInvoiceNotes />}
           />
           <Route path="/quotation-invoice/:id" element={<QuotationInvoice />} />
-          <Route
-            path="/employee-lead-single-data/:id"
-            element={<Employee_Single_Lead_Profile />}
-          />
+          
           <Route
             path="/View_quotations/:id"
             element={<ViewAllQuotationsByLead />}
           />
-          <Route path="/view_visit/:id" element={<ViewAllVisit />} />
-          <Route path="/view_follow_up/:id" element={<ViewAllFollowUp />} />
-          <Route path="/view_unit_sold/:id" element={<ViewAllUnitSold />} />
-          <Route path="/view_remark/:id" element={<ViewAllRemark />} />
+         
+          
+          
+          
           <Route path="/overview" element={<Overview />} />
           <Route path="/edit-profile" element={<UserProfile />} />
           <Route

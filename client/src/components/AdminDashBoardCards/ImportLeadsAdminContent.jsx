@@ -170,7 +170,7 @@ const ImportLeadsAdminContent = () => {
               <center className="text-2xl text-center font-medium">
                 Import Data
               </center>
-              <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
+              <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
 
               <div className="">
                 <label>Upload File only .xlsx,.csv</label>

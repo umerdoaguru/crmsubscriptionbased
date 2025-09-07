@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import MainHeader from "../MainHeader";
-import EmployeeeSider from "./EmployeeSider";
 import ReactPaginate from "react-paginate";
 import moment from "moment";
 
@@ -84,7 +82,7 @@ const EmployeesoldunitContent = () => {
           <div className="mt-[2rem] ">
             <button
               onClick={() => navigate(-1)}
-              className="bg-blue-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-blue-600 transition-colors"
+              className="bg-cyan-600 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-cyan-700 transition-colors"
             >
               Back
             </button>
@@ -94,7 +92,7 @@ const EmployeesoldunitContent = () => {
               <h2 className="text-2xl text-center mt-2 font-medium">
                 Employee Sold Units
               </h2>
-              <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
+              <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
               <div className="flex justify-between mb-3">
                 <input
                   type="text"

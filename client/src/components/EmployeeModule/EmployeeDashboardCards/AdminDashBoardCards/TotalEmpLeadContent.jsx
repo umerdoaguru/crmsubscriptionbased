@@ -3,9 +3,6 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import EmployeeSider from "../../EmployeeSider";
-import MainHeader from "../../../MainHeader";
-import Pagination from "../../../../adiComponent/comp/pagination";
 import ReactPaginate from "react-paginate";
 
 function TotalEmpLeadContent() {
@@ -14,7 +11,7 @@ function TotalEmpLeadContent() {
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const [leadsPerPage, setLeadsPerPage] = useState(7); // Default leads per page
+  const [leadsPerPage, setLeadsPerPage] = useState(7);
   const navigate = useNavigate();
 
   const token = EmpId?.token;
@@ -94,7 +91,7 @@ function TotalEmpLeadContent() {
             <div className="mt-[2rem] ">
               <button
                 onClick={() => navigate(-1)}
-                className="bg-blue-500 text-white px-3 mx-1 py-1 max-sm:hidden rounded-lg hover:bg-blue-600 transition-colors"
+                className="bg-cyan-600 text-white px-3 mx-1 py-1 max-sm:hidden rounded-lg hover:bg-cyan-600 transition-colors"
               >
                 Back
               </button>
@@ -103,7 +100,7 @@ function TotalEmpLeadContent() {
               <center className="text-2xl text-center  font-medium">
                 Total Assign Leads
               </center>
-              <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
+              <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
 
               <div className="flex justify-between mb-3">
                 <input

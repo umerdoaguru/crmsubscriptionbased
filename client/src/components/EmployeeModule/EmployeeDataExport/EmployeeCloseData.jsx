@@ -15,32 +15,32 @@ const EmployeeCloseData = () => {
   const leadsPerPage = 7; // Number of leads to display per page
   const EmpId = useSelector((state) => state.auth.user);
   const [selectedColumns, setSelectedColumns] = useState([
-       "project_name",
-        "lead_no",
-        "assignedTo",
-        "name",
-        "phone",
-        "leadSource",
-        "remark_status",
-        "answer_remark",
-        "meeting_status",
-        "assignedBy",
-        "lead_status",
-        "address",
-        "booking_amount",
-        "deal_status",
-        "employeeId",
-        "follow_up_status",
-        "payment_mode",
- 
-        "reason",
-        "registry",
-       
-        "visit",
-        "visit_date",
-        "d_closeDate",
-        "createdTime",
-        "actual_date",
+    "project_name",
+    "lead_no",
+    "assignedTo",
+    "name",
+    "phone",
+    "leadSource",
+    "remark_status",
+    "answer_remark",
+    "meeting_status",
+    "assignedBy",
+    "lead_status",
+    "address",
+    "booking_amount",
+    "deal_status",
+    "employeeId",
+    "follow_up_status",
+    "payment_mode",
+
+    "reason",
+    "registry",
+
+    "visit",
+    "visit_date",
+    "d_closeDate",
+    "createdTime",
+    "actual_date",
   ]);
   const token = EmpId?.token;
   // Fetch leads from the API
@@ -54,9 +54,10 @@ const EmployeeCloseData = () => {
         `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }}
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       // Filter out leads where deal status is "pending"
       const nonPendingLeads = response.data.filter(
@@ -65,7 +66,7 @@ const EmployeeCloseData = () => {
 
       setLeads(nonPendingLeads);
       console.log(leads);
-      
+
       setFilteredLeads(nonPendingLeads); // Initial data set for filtering
     } catch (error) {
       console.error("Error fetching leads:", error);
@@ -74,20 +75,21 @@ const EmployeeCloseData = () => {
 
   useEffect(() => {
     let filtered = leads;
-  
+
     // Filter by date range
     if (startDate && endDate) {
       filtered = filtered.filter((lead) => {
         const closeDate = moment(lead.d_closeDate, "YYYY-MM-DD", true); // Strict date parsing
-        return closeDate.isValid() && closeDate.isBetween(startDate, endDate, undefined, "[]");
+        return (
+          closeDate.isValid() &&
+          closeDate.isBetween(startDate, endDate, undefined, "[]")
+        );
       });
     }
-  
-   
-  
+
     setFilteredLeads(filtered);
-  }, [startDate, endDate,  leads]);
-  
+  }, [startDate, endDate, leads]);
+
   const downloadExcel = () => {
     const columnMapping = {
       project_name: "Project Name",
@@ -107,10 +109,10 @@ const EmployeeCloseData = () => {
       employeeId: "Employee ID",
       follow_up_status: "Follow-up Status",
       payment_mode: "Payment Mode",
-   
+
       reason: "Reason",
       registry: "Registry",
-     
+
       subject: "Project",
       visit: "Visit",
       visit_date: "Visit Date",
@@ -118,16 +120,19 @@ const EmployeeCloseData = () => {
       createdTime: "Assigned Date",
       actual_date: "Actual Date",
     };
-    
-  
+
     // Filter and format data for the Excel report
     const completedLeads = filteredLeads.map((lead) => {
       const formattedLead = {};
-    
+
       selectedColumns.forEach((col) => {
         const newKey = columnMapping[col] || col;
-    
-        if (["actual_date", "createdTime", "visit_date", "d_closeDate"].includes(col)) {
+
+        if (
+          ["actual_date", "createdTime", "visit_date", "d_closeDate"].includes(
+            col
+          )
+        ) {
           // Check if date exists and is valid
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
@@ -138,39 +143,36 @@ const EmployeeCloseData = () => {
         }
       });
 
-  
-        return formattedLead;
-      });
-  
+      return formattedLead;
+    });
+
     // Ensure we handle empty reports gracefully
     if (completedLeads.length === 0) {
       alert("No data available for the selected date range.");
       return;
     }
-  
+
     // Generate the Excel workbook
     const worksheet = XLSX.utils.json_to_sheet(completedLeads);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
-  
+
     // Generate a valid filename
     const filename = `Closed Lead Report ${
       startDate ? moment(startDate).format("DD-MM-YYYY") : "Start"
-    } to ${
-      endDate ? moment(endDate).format("DD-MM-YYYY") : "End"
-    }.xlsx`;
-  
+    } to ${endDate ? moment(endDate).format("DD-MM-YYYY") : "End"}.xlsx`;
+
     // Download the Excel file
     XLSX.writeFile(workbook, filename);
   };
- // Calculate total number of pages
- const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
+  // Calculate total number of pages
+  const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
 
- // Pagination logic
- const indexOfLastLead = (currentPage + 1) * leadsPerPage;
- const indexOfFirstLead = indexOfLastLead - leadsPerPage;
- const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
- 
+  // Pagination logic
+  const indexOfLastLead = (currentPage + 1) * leadsPerPage;
+  const indexOfFirstLead = indexOfLastLead - leadsPerPage;
+  const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
+
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
@@ -181,7 +183,7 @@ const EmployeeCloseData = () => {
         <center className="text-2xl text-center mt-8 font-medium">
           Closed Deal Data
         </center>
-        <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
+        <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
 
         {/* Date Filter */}
         <div className="flex space-x-1 mb-4 sm:flex-row flex-col">
@@ -203,7 +205,7 @@ const EmployeeCloseData = () => {
           <div className="respo mx-2 ">
             <button
               onClick={downloadExcel}
-              className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded "
+              className="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded "
             >
               Download Excel
             </button>
@@ -228,7 +230,7 @@ const EmployeeCloseData = () => {
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Lead Name
                 </th>
-           
+
                 <th className="px-6 py-3 border-b-2 border-gray-300">Phone</th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Lead Source
@@ -240,9 +242,7 @@ const EmployeeCloseData = () => {
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Deal Status
                 </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                 Date
-                </th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">Date</th>
               </tr>
             </thead>
             <tbody>
@@ -276,7 +276,7 @@ const EmployeeCloseData = () => {
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.name}
                     </td>
-                 
+
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.phone}
                     </td>
@@ -293,9 +293,9 @@ const EmployeeCloseData = () => {
                       {lead.deal_status}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                  
-          {moment(lead.createdTime).format("DD MMM YYYY").toUpperCase()}
-
+                      {moment(lead.createdTime)
+                        .format("DD MMM YYYY")
+                        .toUpperCase()}
                     </td>
                   </tr>
                 ))
@@ -304,27 +304,27 @@ const EmployeeCloseData = () => {
           </table>
         </div>
         <div className="mt-4 flex justify-center">
-        <ReactPaginate
-          previousLabel={"Previous"}
-          nextLabel={"Next"}
-          breakLabel={"..."}
-          pageCount={pageCount}
-forcePage={currentPage}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={3}
-          onPageChange={handlePageClick}
-          containerClassName={"pagination"}
-          activeClassName={"active"}
-          pageClassName={"page-item"}
-          pageLinkClassName={"page-link"}
-          previousClassName={"page-item"}
-          nextClassName={"page-item"}
-          previousLinkClassName={"page-link"}
-          nextLinkClassName={"page-link"}
-          breakClassName={"page-item"}
-          breakLinkClassName={"page-link"}
-        />
-      </div>
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            breakLabel={"..."}
+            pageCount={pageCount}
+            forcePage={currentPage}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination"}
+            activeClassName={"active"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            nextClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextLinkClassName={"page-link"}
+            breakClassName={"page-item"}
+            breakLinkClassName={"page-link"}
+          />
+        </div>
       </div>
     </Wrapper>
   );
@@ -333,7 +333,7 @@ forcePage={currentPage}
 export default EmployeeCloseData;
 
 const Wrapper = styled.div`
-.pagination-container {
+  .pagination-container {
     display: flex;
     justify-content: center;
     align-items: center;

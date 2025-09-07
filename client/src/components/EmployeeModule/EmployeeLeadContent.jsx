@@ -3,9 +3,6 @@ import moment from "moment";
 
 import cogoToast from "cogo-toast";
 import { Link, useNavigate } from "react-router-dom";
-import MainHeader from "../MainHeader";
-import EmployeeSider from "./EmployeeSider";
-import UpdateLeadField from "./updateLeadField";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
@@ -72,7 +69,6 @@ function EmployeeLeadContent() {
   ].sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b)); // Sort months in order
 
   const [endDate, setEndDate] = useState("");
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(0);
   const [leadsPerPage, setLeadsPerPage] = useState(10);
 
@@ -291,22 +287,37 @@ function EmployeeLeadContent() {
   };
 
   const handleReset = () => {
-    window.location.reload();
+    // window.location.reload();
+    setSearchTerm("");
+    setFilterDate("");
+    setLeads([]);
+    setLeadSourceFilter("");
+    setStatusFilter("");
+    setVisitFilter("");
+    setDealFilter("");
+    setLeadStatusFilter("");
+    setLeadnotInterestedStatusFilter("");
+    setMeetingStatusFilter("");
+    setSoldUnitFilter("");
+    setMonthFilter("");
+    setYearFilter("");
+    setVisitMonthFilter("");
+    setSortOrder("desce");
   };
 
   return (
     <>
       <div className="flex mt-20">
         <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
-          <div className="flex flex-col">
-            <div className="flex-grow p-4 mt-2 lg:mt-2 sm:ml-0">
+          <div className="flex flex-col overflow-x-hidden">
+            <div className="flex-grow p-2 sm:p-4 mt-2 lg:mt-2 sm:ml-0">
               <center className="text-2xl text-center font-medium">
                 Assigned Employee Leads
               </center>
-              <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
+              <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
 
               {/* Button to create a new lead */}
-              <div className="grid max-sm:grid-cols-2 sm:grid-cols-3  lg:grid-cols-5 gap-4 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
                 <div>
                   <label htmlFor="">Search</label>
                   <input
@@ -315,7 +326,7 @@ function EmployeeLeadContent() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
-                      searchTerm ? "bg-blue-500 text-white" : "bg-white"
+                      searchTerm ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   />
                 </div>
@@ -326,7 +337,7 @@ function EmployeeLeadContent() {
                     value={filterDate}
                     onChange={(e) => setFilterDate(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
-                      filterDate ? "bg-blue-500 text-white" : "bg-white"
+                      filterDate ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   />
                 </div>
@@ -338,7 +349,7 @@ function EmployeeLeadContent() {
                     onChange={(e) => setMeetingStatusFilter(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
                       meetingStatusFilter
-                        ? "bg-blue-500 text-white"
+                        ? "bg-cyan-600 text-white"
                         : "bg-white"
                     }`}
                   >
@@ -354,7 +365,7 @@ function EmployeeLeadContent() {
                     value={leadSourceFilter}
                     onChange={(e) => setLeadSourceFilter(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
-                      leadSourceFilter ? "bg-blue-500 text-white" : "bg-white"
+                      leadSourceFilter ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   >
                     <option value="">Select Lead Source</option>
@@ -371,7 +382,6 @@ function EmployeeLeadContent() {
                     <option value="Content Marketing">Content Marketing</option>
                     <option value="SEO">Search Engine Optimization</option>
                     <option value="Trade Shows">Trade Shows</option>
-
                     <option value="Affiliate Marketing">
                       Affiliate Marketing
                     </option>
@@ -388,7 +398,7 @@ function EmployeeLeadContent() {
                     value={dealFilter}
                     onChange={(e) => setDealFilter(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
-                      dealFilter ? "bg-blue-500 text-white" : "bg-white"
+                      dealFilter ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   >
                     <option value="">All Deal</option>
@@ -404,7 +414,7 @@ function EmployeeLeadContent() {
                     value={leadStatusFilter}
                     onChange={(e) => setLeadStatusFilter(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
-                      leadStatusFilter ? "bg-blue-500 text-white" : "bg-white"
+                      leadStatusFilter ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   >
                     <option value="">All Lead Status</option>
@@ -414,7 +424,6 @@ function EmployeeLeadContent() {
                     <option value="site visit done">Site Visit Done</option>
                     <option value="interested">Interested</option>
                     <option value="not-interested">Not-Interested</option>
-
                     <option value="completed">Completed</option>
                   </select>
                 </div>
@@ -428,7 +437,7 @@ function EmployeeLeadContent() {
                       }
                       className={`border rounded-2xl p-2 w-full ${
                         leadnotInterestedStatusFilter
-                          ? "bg-blue-500 text-white"
+                          ? "bg-cyan-600 text-white"
                           : "bg-white"
                       }`}
                     >
@@ -441,14 +450,14 @@ function EmployeeLeadContent() {
                   </div>
                 )}
                 <div>
-                  <label htmlFor="" className=" fw-semibold text-[blue]">
+                  <label htmlFor="" className="fw-semibold text-cyan-600">
                     Visit Month Filter
                   </label>
                   <select
                     value={visitmonthFilter}
                     onChange={(e) => setVisitMonthFilter(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
-                      visitmonthFilter ? "bg-blue-500 text-white" : "bg-white"
+                      visitmonthFilter ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   >
                     <option value="">All Months</option>
@@ -467,7 +476,7 @@ function EmployeeLeadContent() {
                       value={visitFilter}
                       onChange={(e) => setVisitFilter(e.target.value)}
                       className={`border rounded-2xl p-2 w-full ${
-                        visitFilter ? "bg-blue-500 text-white" : "bg-white"
+                        visitFilter ? "bg-cyan-600 text-white" : "bg-white"
                       }`}
                     >
                       <option value="">All visit</option>
@@ -485,7 +494,7 @@ function EmployeeLeadContent() {
                     value={yearFilter}
                     onChange={(e) => setYearFilter(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
-                      yearFilter ? "bg-blue-500 text-white" : "bg-white"
+                      yearFilter ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   >
                     <option value="">All Years</option>
@@ -504,11 +513,10 @@ function EmployeeLeadContent() {
                       value={monthFilter}
                       onChange={(e) => setMonthFilter(e.target.value)}
                       className={`border rounded-2xl p-2 w-full ${
-                        monthFilter ? "bg-blue-500 text-white" : "bg-white"
+                        monthFilter ? "bg-cyan-600 text-white" : "bg-white"
                       }`}
                     >
                       <option value="">All Months</option>
-
                       {uniqueMonth.map((month) => (
                         <option key={month} value={month}>
                           {month}
@@ -524,7 +532,7 @@ function EmployeeLeadContent() {
                     value={soldunitFilter}
                     onChange={(e) => setSoldUnitFilter(e.target.value)}
                     className={`border rounded-2xl p-2 w-full ${
-                      soldunitFilter ? "bg-blue-500 text-white" : "bg-white"
+                      soldunitFilter ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   >
                     <option value="">All Deal</option>
@@ -535,96 +543,98 @@ function EmployeeLeadContent() {
                 <div className="mt-4">
                   <button
                     onClick={handleReset}
-                    className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
+                    className="bg-cyan-600 text-white py-2 px-4 rounded hover:bg-cyan-600 transition-colors"
                   >
                     Reset Page
                   </button>
                 </div>
               </div>
 
-              <div className="flex gap-10 text-xl font-semibold my-3 mt-5">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 text-xl font-semibold my-3 mt-5">
                 {/* Total Lead Count */}
-                <div>Total Lead: {totalLeads}</div>
+                <h2 className="text-md text-gray-600">
+                  Total Lead: {totalLeads}
+                </h2>
 
                 {/* Total Lead Visits */}
-                <div>Total Site Visit: {totalVisits}</div>
+                <h2 className="text-md text-gray-600">
+                  Total Site Visit: {totalVisits}
+                </h2>
 
                 {/* Total Closed Leads */}
-                <div>Total Closed Lead: {totalClosedLeads}</div>
+                <h2 className="text-md text-gray-600">
+                  Total Closed Lead: {totalClosedLeads}
+                </h2>
                 <select
                   onChange={handleLeadsPerPageChange}
-                  className="border rounded-2xl w-1/4"
+                  className="border border-cyan-600 rounded-2xl text-md text-gray-600 p-1 w-full sm:w-1/2 lg:w-1/4"
                 >
                   <option value={10}>Number of rows: 10</option>
-
                   <option value={20}>20</option>
                   <option value={50}>50</option>
                   <option value="All">All</option>
                 </select>
               </div>
 
-              <div className="overflow-x-auto rounded-lg shadow-md">
-                <table className="min-w-full bg-white">
-                  <thead>
+              <div className="w-[78rem] overflow-x-auto">
+                <table className="bg-white">
+                  <thead className="bg-gray-200">
                     <tr>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
                         S.no
                       </th>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
                         Project Name
                       </th>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
                         Lead Id
                       </th>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
                         Name
                       </th>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
                         Phone
                       </th>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
                         Lead Source
                       </th>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
                         Assigned To
                       </th>
-
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
                         Lead Status
                       </th>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
                         Unit Status
                       </th>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
                         Visit
                       </th>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
                         Visit Date
                       </th>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
                         Reason
                       </th>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
                         Meeting Status
                       </th>
-
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
                         Remark Status
                       </th>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
                         Answer Remark
                       </th>
-
                       <th
-                        className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left cursor-pointer"
+                        className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap cursor-pointer"
                         onClick={toggleSortOrder}
                       >
                         Assigned Date
-                        <span className="text-blue-900 mx-2">
+                        <span className="text-cyan-900 mx-2">
                           {sortOrder === "desce" ? "▲" : "▼"}
                         </span>
                       </th>
-                      <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left">
+                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
                         Action
                       </th>
                     </tr>
@@ -637,84 +647,81 @@ function EmployeeLeadContent() {
                           key={lead.id}
                           className={`${index % 2 === 0 ? "bg-gray-100" : ""} `}
                         >
-                          <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words">
                             {leadsPerPage === Infinity
                               ? index + 1
                               : index + 1 + currentPage * leadsPerPage}
                           </td>
-                          <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words text-wrap">
                             {lead.project_name}
                           </td>
-                          <td className="px-6 py-4 border-b border-gray-200 underline font-semibold text-[blue]">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 underline font-semibold text-cyan-600">
                             <Link
                               to={`/employee-lead-single-data/${lead.lead_id}`}
                             >
                               {lead.lead_id}
                             </Link>
                           </td>
-                          <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words text-wrap">
                             {lead.name}
                           </td>
-                          <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words">
                             {lead.phone}
                           </td>
-                          <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words">
                             {lead.leadSource}
                           </td>
-                          <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words">
                             {lead.assignedTo}
                           </td>
-
-                          <td className="px-6 py-4 border-b border-gray-200 font-semibold">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 font-semibold">
                             {lead.lead_status}
                           </td>
-                          <td className="px-6 py-4 border-b border-gray-200 font-semibold">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 font-semibold">
                             {lead.unit_status}
                           </td>
-                          <td className="px-6 py-4 border-b border-gray-200 font-semibold">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 font-semibold">
                             {lead.visit}
                           </td>
-                          <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-nowrap">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words text-nowrap">
                             {lead.visit_date === "pending"
                               ? "pending"
                               : moment(lead.visit_date)
                                   .format("DD MMM YYYY")
                                   .toUpperCase()}
                           </td>
-                          <td className="px-6 py-4 border-b border-gray-200 font-semibold">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 font-semibold">
                             {lead.reason}
                           </td>
-
-                          <td className="px-6 py-4 border-b border-gray-200 font-semibold">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 font-semibold">
                             {lead.meeting_status}
                           </td>
-
-                          <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-wrap">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words text-wrap">
                             {lead.remark_status}
                           </td>
-                          <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold  text-wrap">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words text-wrap">
                             {lead.answer_remark}
                           </td>
-                          <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words">
                             {moment(lead.createdTime)
                               .format("DD MMM YYYY")
                               .toUpperCase()}
                           </td>
-                          <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words">
                             {lead.lead_status === "active lead" ||
                             lead.lead_status === "calling done" ||
                             lead.lead_status === "site visit done" ||
                             lead.lead_status === "interested" ||
                             lead.lead_status === "not-interested" ? (
                               <button
-                                className="text-[green] font-semibold hover:text-blue-700"
+                                className="text-[green] font-semibold hover:text-cyan-700"
                                 onClick={() => handleUpdate(lead)}
                               >
                                 Started Work
                               </button>
                             ) : lead.lead_status === "pending" ? (
                               <button
-                                className="text-blue-500 font-semibold hover:text-blue-700"
+                                className="text-cyan-600 font-semibold hover:text-cyan-700"
                                 onClick={() => handleUpdate(lead)}
                               >
                                 Not Start Work
@@ -733,7 +740,7 @@ function EmployeeLeadContent() {
                     ) : (
                       <tr>
                         <td
-                          colSpan="12"
+                          colSpan="20"
                           className="text-center py-4 text-gray-500"
                         >
                           No Data Available
@@ -743,6 +750,7 @@ function EmployeeLeadContent() {
                   </tbody>
                 </table>
               </div>
+
               <div className="mt-4 flex justify-center">
                 <ReactPaginate
                   previousLabel={"Previous"}
@@ -753,7 +761,7 @@ function EmployeeLeadContent() {
                   marginPagesDisplayed={2}
                   pageRangeDisplayed={3}
                   onPageChange={handlePageClick}
-                  containerClassName={"pagination"}
+                  containerClassName={"pagination flex gap-2"}
                   activeClassName={"active"}
                   pageClassName={"page-item"}
                   pageLinkClassName={"page-link"}

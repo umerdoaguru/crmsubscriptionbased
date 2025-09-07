@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
 import * as XLSX from "xlsx";
-import ReactPaginate from "react-paginate"; // Import react-paginate
+import ReactPaginate from "react-paginate";
 
 import { useSelector } from "react-redux";
 
@@ -51,12 +51,13 @@ function EmpLeadReport() {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api//employe-leads/${EmpId.id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }}
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setLeads(response.data);
       setFilteredLeads(response.data);
@@ -87,6 +88,8 @@ function EmpLeadReport() {
         return leads;
     }
   };
+
+  console.log(leads);
 
   // Filter leads when employee or duration changes
   useEffect(() => {
@@ -119,7 +122,6 @@ function EmpLeadReport() {
       employeeId: "Employee ID",
       follow_up_status: "Follow-up Status",
       payment_mode: "Payment Mode",
-    
       reason: "Reason",
       registry: "Registry",
       visit: "Visit",
@@ -131,21 +133,24 @@ function EmpLeadReport() {
 
     const completedLeads = filteredLeads.map((lead) => {
       const formattedLead = {};
-    
+
       selectedColumns.forEach((col) => {
         const newKey = columnMapping[col] || col;
-    
-        if (["actual_date", "createdTime", "visit_date", "d_closeDate"].includes(col)) {
+
+        if (
+          ["actual_date", "createdTime", "visit_date", "d_closeDate"].includes(
+            col
+          )
+        ) {
           // Check if date exists and is valid
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
               ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-              : "pending"; // If invalid or missing, set as "PENDING"
+              : "pending";
         } else {
-          formattedLead[newKey] = lead[col]; // Assign other fields normally
+          formattedLead[newKey] = lead[col];
         }
       });
-
 
       return formattedLead;
     });
@@ -166,13 +171,15 @@ function EmpLeadReport() {
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
   const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
 
+  console.log(currentLeads);
+
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
 
   return (
     <>
-      <div className="container 2xl:w-[95%] ">
+      <div className="container w-full">
         {/* Filters */}
         <div className="flex mb-4 sm:flex-row justify-end flex-col gap-2">
           <div>
@@ -189,36 +196,42 @@ function EmpLeadReport() {
           </div>
           <button
             onClick={downloadExcel}
-            className="bg-blue-500 text-white font-medium px-4 py-2 rounded hover:bg-blue-700"
+            className="bg-cyan-600 text-white font-medium px-4 py-2 rounded hover:bg-cyan-700"
           >
             Download Excel
           </button>
         </div>
 
         {/* Leads Table */}
-        <div className="overflow-auto mt-4">
+        <div className="overflow-x-auto mt-4">
           <table className="min-w-full bg-white border">
             <thead>
               <tr>
-                <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
+                <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
+                  S.no
+                </th>
+                <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
                   Project Name
                 </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
+                <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
                   Lead Number
                 </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
+                <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
                   Assigned To
                 </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">Name</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">Phone</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
+                <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
+                  Name
+                </th>
+                <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
+                  Phone
+                </th>
+                <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
                   Lead Source
                 </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
+                <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
                   Lead Status
                 </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
+                <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
                   Assigned Date
                 </th>
               </tr>
@@ -284,7 +297,7 @@ function EmpLeadReport() {
               nextLabel={"Next"}
               breakLabel={"..."}
               pageCount={pageCount}
-forcePage={currentPage}
+              forcePage={currentPage}
               marginPagesDisplayed={2}
               pageRangeDisplayed={3}
               onPageChange={handlePageClick}

@@ -4,8 +4,6 @@ import cogoToast from "cogo-toast";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
 import { FaTrash, FaEdit } from "react-icons/fa";
-import MainHeader from "../MainHeader";
-import Sider from "../Sider";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -236,7 +234,7 @@ const UnitsContent = () => {
           <div className="mt-[1rem]">
             <button
               onClick={() => navigate(-1)}
-              className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition-colors"
+              className="bg-cyan-600 text-white px-3 py-1 rounded-lg hover:bg-cyan-600 transition-colors"
             >
               Back
             </button>
@@ -255,7 +253,7 @@ const UnitsContent = () => {
                   </h3>
                   <button
                     onClick={() => handleaddunit()}
-                    className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700"
+                    className="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700"
                   >
                     Add Unit
                   </button>
@@ -311,7 +309,7 @@ const UnitsContent = () => {
                             <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                               <button
                                 onClick={() => handleEdit(unit)}
-                                className="mr-2 text-blue-600 hover:text-blue-800"
+                                className="mr-2 text-cyan-600 hover:text-cyan-800"
                               >
                                 <FaEdit />
                               </button>
@@ -333,7 +331,7 @@ const UnitsContent = () => {
                                 to={`/admin-unit-Detail-Dash/${unit.unit_id}`}
                                 className="inline-block"
                               >
-                                <button className="bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition">
+                                <button className="bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-cyan-700 transition">
                                   Detail
                                 </button>
                               </Link>
@@ -511,7 +509,7 @@ const UnitsContent = () => {
                           <div className="mt-4">
                             <button
                               type="submit"
-                              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition shadow-md"
+                              className="w-full bg-cyan-600 text-white py-3 rounded-lg hover:bg-cyan-700 transition shadow-md"
                             >
                               Add Unit
                             </button>
@@ -543,7 +541,7 @@ const UnitsContent = () => {
                               unit_type: e.target.value,
                             })
                           }
-                          className="border p-2 w-full rounded focus:ring focus:ring-blue-300"
+                          className="border p-2 w-full rounded focus:ring focus:ring-cyan-300"
                           placeholder="Enter unit type"
                           disabled
                         />
@@ -563,7 +561,7 @@ const UnitsContent = () => {
                               unit_size: e.target.value,
                             })
                           }
-                          className="border p-2 w-full rounded focus:ring focus:ring-blue-300"
+                          className="border p-2 w-full rounded focus:ring focus:ring-cyan-300"
                           placeholder="Enter unit size"
                           disabled
                         />
@@ -583,7 +581,7 @@ const UnitsContent = () => {
                               total_units: e.target.value,
                             })
                           }
-                          className="border p-2 w-full rounded focus:ring focus:ring-blue-300"
+                          className="border p-2 w-full rounded focus:ring focus:ring-cyan-300"
                           placeholder="Enter total units"
                         />
                       </div>
@@ -602,7 +600,7 @@ const UnitsContent = () => {
                               base_price: e.target.value,
                             })
                           }
-                          className="border p-2 w-full rounded focus:ring focus:ring-blue-300"
+                          className="border p-2 w-full rounded focus:ring focus:ring-cyan-300"
                           placeholder="Enter base price"
                           disabled
                           min={0}
@@ -624,7 +622,7 @@ const UnitsContent = () => {
                         </button>
                         <button
                           onClick={handleUpdate}
-                          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                          className="bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-600 transition"
                         >
                           Update
                         </button>

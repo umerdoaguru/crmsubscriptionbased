@@ -12,7 +12,7 @@ import EmployeeSider from "../EmployeeSider";
 const EmployeeQuotationData = () => {
   const [quotations, setQuotations] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage] = useState(10); // Number of items per page
+  const [itemsPerPage] = useState(10);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const EmpId = useSelector((state) => state.auth.user.id);
@@ -87,7 +87,7 @@ const EmployeeQuotationData = () => {
               <div className="respo mx-2 ">
                 <button
                   onClick={downloadExcel}
-                  className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded "
+                  className="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded "
                 >
                   Download Excel
                 </button>
@@ -105,22 +105,21 @@ const EmployeeQuotationData = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-  {currentQuotations.map((quotation, index) => (
-    <tr key={quotation.quotation_id}>
-      <td className="border border-gray-200 px-4 py-2">
-        {/* Ensure offset is calculated correctly */}
-        {offset + index + 1}
-      </td>
-      <td className="border border-gray-200 px-4 py-2">
-        {quotation.quotation_name}
-      </td>
-      <td className="border border-gray-200 px-4 py-2">
-        {moment(quotation.created_date).format("DD/MM/YYYY")}
-      </td>
-    </tr>
-  ))}
-</tbody>
-
+                  {currentQuotations.map((quotation, index) => (
+                    <tr key={quotation.quotation_id}>
+                      <td className="border border-gray-200 px-4 py-2">
+                        {/* Ensure offset is calculated correctly */}
+                        {offset + index + 1}
+                      </td>
+                      <td className="border border-gray-200 px-4 py-2">
+                        {quotation.quotation_name}
+                      </td>
+                      <td className="border border-gray-200 px-4 py-2">
+                        {moment(quotation.created_date).format("DD/MM/YYYY")}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
 
               {/* Pagination */}
@@ -129,7 +128,7 @@ const EmployeeQuotationData = () => {
                 nextLabel={"next"}
                 breakLabel={"..."}
                 pageCount={pageCount}
-forcePage={currentPage}
+                forcePage={currentPage}
                 marginPagesDisplayed={2}
                 pageRangeDisplayed={5}
                 onPageChange={handlePageClick}
@@ -159,7 +158,7 @@ const Wrapper = styled.div`
       margin-top: 1rem;
     }
   }
-  
+
   .pagination-container {
     display: flex;
     justify-content: center;

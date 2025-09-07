@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
@@ -17,35 +16,35 @@ function EmployeeLeadData() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const leadsPerPage = 7; // Adjust as needed
+  const leadsPerPage = 7;
   const EmpId = useSelector((state) => state.auth.user);
   const [selectedColumns, setSelectedColumns] = useState([
-        "project_name",
-        "lead_no",
-        "assignedTo",
-        "name",
-        "phone",
-        "leadSource",
-        "remark_status",
-        "answer_remark",
-        "meeting_status",
-        "assignedBy",
-        "lead_status",
-        "address",
-        "booking_amount",
-        "deal_status",
-        "employeeId",
-        "follow_up_status",
-        "payment_mode",
-      
-        "reason",
-        "registry",
-        "visit",
-        "visit_date",
-        "d_closeDate",
-        "createdTime",
-        "actual_date",
-  ]);  
+    "project_name",
+    "lead_no",
+    "assignedTo",
+    "name",
+    "phone",
+    "leadSource",
+    "remark_status",
+    "answer_remark",
+    "meeting_status",
+    "assignedBy",
+    "lead_status",
+    "address",
+    "booking_amount",
+    "deal_status",
+    "employeeId",
+    "follow_up_status",
+    "payment_mode",
+
+    "reason",
+    "registry",
+    "visit",
+    "visit_date",
+    "d_closeDate",
+    "createdTime",
+    "actual_date",
+  ]);
   const token = EmpId?.token;
 
   // Fetch leads from the API
@@ -59,19 +58,20 @@ function EmployeeLeadData() {
         `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }}
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setLeads(response.data);
-      setFilteredLeads(response.data); // Initial data set for filtering
+      setFilteredLeads(response.data);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
   };
   useEffect(() => {
     let filtered = leads;
-  
+
     // Filter by date range if specified
     if (startDate && endDate) {
       filtered = filtered.filter((lead) => {
@@ -79,21 +79,14 @@ function EmployeeLeadData() {
         return createdTime.isBetween(startDate, endDate, undefined, "[]");
       });
     }
-  
-   
-  
+
     // Filter by lead_status 'completed'
     filtered = filtered.filter((lead) => lead.lead_status === "completed");
-  
+
     setFilteredLeads(filtered);
     setCurrentPage(0); // Reset to first page on filter change
   }, [startDate, endDate, leads]);
-  
-  
-  
-  
-  
-  
+
   const downloadExcel = () => {
     const columnMapping = {
       project_name: "Project Name",
@@ -113,25 +106,29 @@ function EmployeeLeadData() {
       employeeId: "Employee ID",
       follow_up_status: "Follow-up Status",
       payment_mode: "Payment Mode",
-     
+
       reason: "Reason",
       registry: "Registry",
-     
+
       visit: "Visit",
       visit_date: "Visit Date",
       d_closeDate: "Close Date",
       createdTime: "Assigned Date",
       actual_date: "Actual Date",
     };
-  
+
     // Filter and format data for the Excel report
     const completedLeads = filteredLeads.map((lead) => {
       const formattedLead = {};
-    
+
       selectedColumns.forEach((col) => {
         const newKey = columnMapping[col] || col;
-    
-        if (["actual_date", "createdTime", "visit_date", "d_closeDate"].includes(col)) {
+
+        if (
+          ["actual_date", "createdTime", "visit_date", "d_closeDate"].includes(
+            col
+          )
+        ) {
           // Check if date exists and is valid
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
@@ -141,32 +138,30 @@ function EmployeeLeadData() {
           formattedLead[newKey] = lead[col]; // Assign other fields normally
         }
       });
-  
-        return formattedLead;
-      });
-  
+
+      return formattedLead;
+    });
+
     // Ensure we handle empty reports gracefully
     if (completedLeads.length === 0) {
       alert("No data available for the selected date range.");
       return;
     }
-  
+
     // Generate the Excel workbook
     const worksheet = XLSX.utils.json_to_sheet(completedLeads);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
-  
+
     // Generate a valid filename
     const filename = ` Lead Report ${
       startDate ? moment(startDate).format("DD-MM-YYYY") : "Start"
-    } to ${
-      endDate ? moment(endDate).format("DD-MM-YYYY") : "End"
-    }.xlsx`;
-  
+    } to ${endDate ? moment(endDate).format("DD-MM-YYYY") : "End"}.xlsx`;
+
     // Download the Excel file
     XLSX.writeFile(workbook, filename);
   };
-  
+
   const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
 
   // Pagination logic
@@ -184,7 +179,7 @@ function EmployeeLeadData() {
         <center className="text-2xl text-center mt-8 font-medium">
           Leads Management
         </center>
-        <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
+        <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
 
         {/* Date Filter */}
         <div className="flex space-x-1 mb-4 sm:flex-row flex-col">
@@ -206,7 +201,7 @@ function EmployeeLeadData() {
           <div className=" max-sm:mt-2 md:mt-0 mx-2">
             <button
               onClick={downloadExcel}
-              className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2  rounded "
+              className="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2  rounded "
             >
               Download Excel
             </button>
@@ -232,7 +227,7 @@ function EmployeeLeadData() {
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Lead Source
                 </th>
-             
+
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Lead Status
                 </th>
@@ -242,76 +237,79 @@ function EmployeeLeadData() {
               </tr>
             </thead>
             <tbody>
-  {currentLeads.length === 0 ? (
-    <tr>
-      <td colSpan="8" className="px-6 py-4 border-b border-gray-200 text-gray-800 text-center">
-        No data found
-      </td>
-    </tr>
-  ) : (
-    currentLeads.map((lead, index) => (
-      <tr
-        key={lead.id}
-        className={index % 2 === 0 ? "bg-gray-100" : ""}
-      >
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {index + 1 + currentPage * leadsPerPage}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.project_name}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.lead_no}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.assignedTo}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.name}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.phone}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.leadSource}
-        </td>
-     
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-          {lead.lead_status}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-        
-          {moment(lead.createdTime).format("DD MMM YYYY").toUpperCase()}
-        </td>
-      </tr>
-    ))
-  )}
-</tbody>
+              {currentLeads.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan="8"
+                    className="px-6 py-4 border-b border-gray-200 text-gray-800 text-center"
+                  >
+                    No data found
+                  </td>
+                </tr>
+              ) : (
+                currentLeads.map((lead, index) => (
+                  <tr
+                    key={lead.id}
+                    className={index % 2 === 0 ? "bg-gray-100" : ""}
+                  >
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {index + 1 + currentPage * leadsPerPage}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {lead.project_name}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {lead.lead_no}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {lead.assignedTo}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {lead.name}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {lead.phone}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {lead.leadSource}
+                    </td>
 
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {lead.lead_status}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {moment(lead.createdTime)
+                        .format("DD MMM YYYY")
+                        .toUpperCase()}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
           </table>
         </div>
         <div className="mt-4 flex justify-center">
-        <ReactPaginate
-          previousLabel={"Previous"}
-          nextLabel={"Next"}
-          breakLabel={"..."}
-          pageCount={pageCount}
-forcePage={currentPage}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={3}
-          onPageChange={handlePageClick}
-          containerClassName={"pagination"}
-          activeClassName={"active"}
-          pageClassName={"page-item"}
-          pageLinkClassName={"page-link"}
-          previousClassName={"page-item"}
-          nextClassName={"page-item"}
-          previousLinkClassName={"page-link"}
-          nextLinkClassName={"page-link"}
-          breakClassName={"page-item"}
-          breakLinkClassName={"page-link"}
-        />
-      </div>
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            breakLabel={"..."}
+            pageCount={pageCount}
+            forcePage={currentPage}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination"}
+            activeClassName={"active"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            nextClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextLinkClassName={"page-link"}
+            breakClassName={"page-item"}
+            breakLinkClassName={"page-link"}
+          />
+        </div>
       </div>
     </>
   );
@@ -319,7 +317,6 @@ forcePage={currentPage}
 
 export default EmployeeLeadData;
 const PaginationWrapper = styled.div`
-  
   .pagination-container {
     display: flex;
     justify-content: center;

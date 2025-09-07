@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { BsPencilSquare, BsTrash, BsPlusCircle } from "react-icons/bs";
-import Modal from "./Modal"; // Assuming you have a modal component
-import Sider from "../components/Sider";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import MainHeader from "../components/MainHeader";
+import Modal from "./Modal";
+import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
 
@@ -205,7 +203,7 @@ const EmployeeManagementContent = () => {
               <center className="text-2xl text-center mt-2 font-medium">
                 Empolyee Management
               </center>
-              <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
+              <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
 
               <div className="gap-4 mb-3">
                 <button
@@ -213,7 +211,7 @@ const EmployeeManagementContent = () => {
                     setShowForm(true);
                     setEditingIndex(null);
                   }}
-                  className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition"
+                  className="mt-4 px-6 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-700 transition"
                 >
                   <BsPlusCircle className="inline-block mr-2" /> Add Employee
                 </button>
@@ -262,7 +260,7 @@ const EmployeeManagementContent = () => {
                                     e.stopPropagation();
                                     handleEditEmployee(index);
                                   }} // Now index is available
-                                  className="text-blue-500 transition duration-200 hover:text-blue-600"
+                                  className="text-cyan-600 transition duration-200 hover:text-cyan-600"
                                 >
                                   <BsPencilSquare size={20} />
                                 </button>
@@ -439,7 +437,7 @@ const EmployeeManagementContent = () => {
                   </button>
                   <button
                     onClick={handleSaveEmployee}
-                    className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+                    className="px-4 py-2 text-white bg-cyan-600 rounded-lg hover:bg-cyan-600"
                   >
                     {editingIndex !== null ? "Update" : "Add"}
                   </button>

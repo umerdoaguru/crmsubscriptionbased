@@ -1,16 +1,8 @@
 import React, { useEffect, useState } from "react";
-import MainHeader from "../components/MainHeader";
-import Sider from "../components/Sider";
-
-import { Link } from "react-router-dom";
 import axios from "axios";
-import { SiMoneygram } from "react-icons/si";
-import { MdOutlineNextWeek } from "react-icons/md";
 import { GiFiles, GiMoneyStack } from "react-icons/gi";
 import { useSelector } from "react-redux";
 import LeadData from "../components/DataExport/LeadData";
-
-import Employees from "../components/DataExport/Employees";
 import { FaCheckCircle, FaClipboardList } from "react-icons/fa";
 import VisitData from "../components/DataExport/VisitData";
 import CloseData from "../components/DataExport/CloseDateData";
@@ -132,14 +124,14 @@ function DataExportContent() {
             <h2 className="text-2xl text-center mt-[2rem] font-medium">
               Data Export
             </h2>
-            <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
+            <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
 
             <div className="flex flex-wrap justify-around mt-5">
               <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3 ">
                 <div
                   className={` shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "LeadData"
-                      ? "bg-blue-500 text-white"
+                      ? "bg-cyan-500 text-white"
                       : ""
                   }`} // Change background color if active
                   onClick={() => setSelectedComponent("LeadData")} // Set selected component
@@ -183,7 +175,7 @@ function DataExportContent() {
                 <div
                   className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "VisitData"
-                      ? "bg-blue-500 text-white"
+                      ? "bg-cyan-500 text-white"
                       : ""
                   }`}
                   onClick={() => setSelectedComponent("VisitData")}
@@ -227,7 +219,7 @@ function DataExportContent() {
                 <div
                   className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "ClosedData"
-                      ? "bg-blue-500 text-white"
+                      ? "bg-cyan-500 text-white"
                       : ""
                   }`}
                   onClick={() => setSelectedComponent("ClosedData")}
@@ -271,7 +263,7 @@ function DataExportContent() {
                 <div
                   className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "SoldData"
-                      ? "bg-blue-500 text-white"
+                      ? "bg-cyan-500 text-white"
                       : ""
                   }`}
                   onClick={() => setSelectedComponent("SoldData")}

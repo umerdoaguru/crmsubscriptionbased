@@ -2,9 +2,6 @@ import { useState } from "react";
 import React from "react";
 import Sidebar from "../../utils/Sidebar";
 import Topbar from "../../utils/Topbar";
-import TotalVisitContent from "../../components/AdminDashBoardCards/ToatalVisitContent";
-import AdminTotalClosedDealContent from "../../components/AdminDashBoardCards/AdminTotalClosedDealContent";
-import SingleLeadProfileContent from "../../components/Leads/SingleLeadProfileContent";
 import SocialMediaLeadsContent from "../../components/AdminSocialMediaByProject/SocialMediaLeadsContent";
 
 const SocialMediaLeads = () => {

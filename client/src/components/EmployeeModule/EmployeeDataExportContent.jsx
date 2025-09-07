@@ -9,11 +9,9 @@ import { useSelector } from "react-redux";
 import EmployeeLeadData from "./EmployeeDataExport/EmployeeLeadData";
 import EmployeeQuotationData from "./EmployeeDataExport/EmployeeQuotationData";
 import EmployeeInvoiceData from "./EmployeeDataExport/EmployeeInvoiceData";
-import MainHeader from "../MainHeader";
-import EmployeeSider from "./EmployeeSider";
 import EmployeeVisitData from "./EmployeeDataExport/EmployeeVisitData";
 import EmployeeCloseData from "./EmployeeDataExport/EmployeeCloseData";
-import Employee_Single_Lead_Profile from "../Leads/Employee_Single_Lead_Profile";
+import Employee_Single_Lead_Profile from "../Leads/EmployeeSingleLeadProfileContent";
 import EmployeeSoldData from "./EmployeeDataExport/EmployeeSoldData";
 
 function EmployeeDataExportContent() {
@@ -128,14 +126,14 @@ function EmployeeDataExportContent() {
             <center className="text-2xl text-center mt-2 font-medium">
               Employee Data Export
             </center>
-            <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
+            <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
 
             <div className="flex flex-wrap justify-around mt-5">
               <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3 ">
                 <div
                   className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "LeadData"
-                      ? "bg-blue-500 text-white"
+                      ? "bg-cyan-600 text-white"
                       : ""
                   }`}
                   onClick={() => setSelectedComponent("LeadData")}
@@ -179,7 +177,7 @@ function EmployeeDataExportContent() {
                 <div
                   className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "VisitData"
-                      ? "bg-blue-500 text-white"
+                      ? "bg-cyan-600 text-white"
                       : ""
                   }`}
                   onClick={() => setSelectedComponent("VisitData")}
@@ -223,7 +221,7 @@ function EmployeeDataExportContent() {
                 <div
                   className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "ClosedData"
-                      ? "bg-blue-500 text-white"
+                      ? "bg-cyan-600 text-white"
                       : ""
                   }`}
                   onClick={() => setSelectedComponent("ClosedData")}
@@ -267,7 +265,7 @@ function EmployeeDataExportContent() {
                 <div
                   className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "SoldData"
-                      ? "bg-blue-500 text-white"
+                      ? "bg-cyan-600 text-white"
                       : ""
                   }`}
                   onClick={() => setSelectedComponent("SoldData")}
@@ -309,7 +307,6 @@ function EmployeeDataExportContent() {
 
             {/* Conditionally render the selected component */}
             <div className="w-full mb-20">
-              {/* {selectedComponent === "ProjectName" && <Employee_Single_Lead_Profile />} */}
               {selectedComponent === "LeadData" && <EmployeeLeadData />}
               {selectedComponent === "QuotationData" && (
                 <EmployeeQuotationData />

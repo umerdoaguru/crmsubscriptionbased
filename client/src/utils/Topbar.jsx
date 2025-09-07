@@ -131,7 +131,7 @@ const Topbar = ({ isSidebarOpen }) => {
         {/* Search */}
 
         <div className="relative w-64">
-          <div className="flex items-center bg-gray-100 px-4 py-2 rounded-full text-gray-600 focus-within:ring-2 focus-within:ring-blue-500 transition">
+          <div className="flex items-center bg-gray-100 px-4 py-2 rounded-full text-gray-600 focus-within:ring-2 focus-within:ring-cyan-600 transition">
             <input
               type="text"
               placeholder="Search..."
@@ -139,7 +139,7 @@ const Topbar = ({ isSidebarOpen }) => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
-            <FaSearch className="ml-2" />
+            <FaSearch className="ml-2 text-cyan-600" />
           </div>
           {filteredPages.length > 0 && (
             <ul className="absolute mt-1 w-full bg-white border rounded-lg shadow z-50 overflow-hidden max-h-60 overflow-y-auto">
@@ -147,7 +147,7 @@ const Topbar = ({ isSidebarOpen }) => {
                 <li
                   key={index}
                   onClick={() => handleSelect(page.path)}
-                  className="px-4 py-2 text-sm hover:bg-blue-100 cursor-pointer transition"
+                  className="px-4 py-2 text-sm hover:bg-cyan-100 cursor-pointer transition"
                 >
                   {page.name}
                 </li>

@@ -10,7 +10,7 @@ const EmployeeSoldDataDetails = () => {
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
- const [employees, setEmployees] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const leadsPerPage = 7;
@@ -25,9 +25,9 @@ const EmployeeSoldDataDetails = () => {
     "unit_status",
     "date",
   ]);
-    const adminuser = useSelector((state) => state.auth.user);
-    const token = adminuser.token;
-    const userId = adminuser.user_id;  
+  const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;
+  const userId = adminuser.user_id;
 
   useEffect(() => {
     fetchEmployeeUnitSold();
@@ -37,12 +37,15 @@ const EmployeeSoldDataDetails = () => {
   }, []);
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/employee/${userId}`,
+      const response = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/employee/${userId}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }});
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setEmployees(response.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -51,15 +54,15 @@ const EmployeeSoldDataDetails = () => {
 
   const fetchEmployeeUnitSold = async () => {
     try {
-          const response = await axios.get(
-            `https://crm-generalize.dentalguru.software/api/admin-unit-sold/${userId}`,
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
+      const response = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/admin-unit-sold/${userId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       console.log("Fetched Leads:", response.data);
       const fetchedLeads = response.data.data || response.data || [];
       setLeads(fetchedLeads);
@@ -69,12 +72,14 @@ const EmployeeSoldDataDetails = () => {
     }
   };
 
-
   const fetchSoldUnits = async () => {
     try {
-      const response = await axios.get("https://crm-generalize.dentalguru.software/api/unit-sold", {
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await axios.get(
+        "https://crm-generalize.dentalguru.software/api/unit-sold",
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
       setSoldUnits(response.data.data || response.data || []);
       console.log("Fetched Sold Units:", response.data);
     } catch (error) {
@@ -117,10 +122,12 @@ const EmployeeSoldDataDetails = () => {
       });
     }
     if (selectedEmployee) {
-      filtered = filtered.filter((lead) => lead.employee_name === selectedEmployee);
+      filtered = filtered.filter(
+        (lead) => lead.employee_name === selectedEmployee
+      );
     }
     setFilteredLeads(filtered);
-  }, [startDate,selectedEmployee, endDate, leads]);
+  }, [startDate, selectedEmployee, endDate, leads]);
 
   const downloadExcel = () => {
     const columnMapping = {
@@ -162,9 +169,7 @@ const EmployeeSoldDataDetails = () => {
 
     const filename = `Lead Report ${
       startDate ? moment(startDate).format("DD-MM-YYYY") : "Start"
-    } to ${
-      endDate ? moment(endDate).format("DD-MM-YYYY") : "End"
-    }.xlsx`;
+    } to ${endDate ? moment(endDate).format("DD-MM-YYYY") : "End"}.xlsx`;
 
     XLSX.writeFile(workbook, filename);
   };
@@ -205,24 +210,24 @@ const EmployeeSoldDataDetails = () => {
           onChange={(e) => setEndDate(e.target.value)}
           className="border p-1"
         />
-       <div className="">
-            <select
-              value={selectedEmployee}
-              onChange={(e) => setSelectedEmployee(e.target.value)}
-              className="border p-1"
-            >
-              <option value="">Select Employee</option>
-              {employees.map((employee) => (
-                <option key={employee.id} value={employee.name}>
-                  {employee.name}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="">
+          <select
+            value={selectedEmployee}
+            onChange={(e) => setSelectedEmployee(e.target.value)}
+            className="border p-1"
+          >
+            <option value="">Select Employee</option>
+            {employees.map((employee) => (
+              <option key={employee.id} value={employee.name}>
+                {employee.name}
+              </option>
+            ))}
+          </select>
+        </div>
         <div>
           <button
             onClick={downloadExcel}
-            className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded"
+            className="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded"
           >
             Download Excel
           </button>
@@ -290,7 +295,6 @@ const EmployeeSoldDataDetails = () => {
                     {sold.unit_status}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-             
                     {moment(sold.date).format("DD MMM YYYY").toUpperCase()}
                   </td>
                 </tr>
@@ -307,7 +311,7 @@ const EmployeeSoldDataDetails = () => {
           nextLabel={"Next"}
           breakLabel={"..."}
           pageCount={pageCount}
-forcePage={currentPage}
+          forcePage={currentPage}
           marginPagesDisplayed={2}
           pageRangeDisplayed={3}
           onPageChange={handlePageClick}
