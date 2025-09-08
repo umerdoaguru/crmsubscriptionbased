@@ -2,7 +2,6 @@ import { useState } from "react";
 import React from "react";
 import Sidebar from "../../utils/Sidebar";
 import Topbar from "../../utils/Topbar";
-import AdminProfileContent from "../../adiComponent/Super-Admin/adminProfileContent";
 import AdminDashboardContent from "../../adiComponent/AdminDashboardContent";
 
 const AdminDashboard = () => {

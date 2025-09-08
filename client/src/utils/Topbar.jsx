@@ -10,7 +10,7 @@ import axios from "axios";
 
 const Topbar = ({ isSidebarOpen }) => {
   const user = useSelector((state) => state.auth.user);
-  console.log(user?.roles);
+  console.log(user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -167,7 +167,7 @@ const Topbar = ({ isSidebarOpen }) => {
             onClick={navigateToProfile}
             className="bg-cyan-600 text-white text-xl font-bold w-10 h-10 p-6 flex items-center justify-center rounded-full"
           >
-            {getInitials(user?.user?.name)}
+            {getInitials(user?.name)}
           </button>
         </div>
       </div>

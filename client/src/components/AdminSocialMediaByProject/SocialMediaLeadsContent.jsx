@@ -26,9 +26,9 @@ function SocialMediaLeadsContent() {
                 Back
               </button>
             </div>
-            <h1 className="text-2xl text-center font-medium">
+            <h2 className="text-2xl text-center font-medium">
               Social Media Leads
-            </h1>
+            </h2>
             <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
 
             <div className="flex flex-wrap justify-around mt-3">

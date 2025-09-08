@@ -27,7 +27,7 @@ const AdminLeads = () => {
           <Topbar isSidebarOpen={isSidebarOpen} />
           <div className=""></div>
 
-          <AdminLeadsContent />
+          <AdminLeadsContent isSidebarOpen={isSidebarOpen} />
         </div>
       </div>
     </div>

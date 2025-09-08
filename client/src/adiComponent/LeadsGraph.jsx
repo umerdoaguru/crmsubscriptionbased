@@ -34,15 +34,13 @@ const LeadsGraph = () => {
         const allLeads = response.data;
 
         const today = moment();
-        const startDate = moment().subtract(28, "days"); // 28 days range including today
+        const startDate = moment().subtract(28, "days");
 
-        // Format dates to 'MMM DD' for display
         const formatDate = (date) => moment(date).format("MMM DD");
 
-        // Filter the data for the last 28 days including today
         const filteredLeads = allLeads.filter((lead) => {
-          const leadDate = moment(lead.createdTime, "YYYY-MM-DD HH:mm:ss"); // Parse the string
-          return leadDate.isBetween(startDate, today, undefined, "[]"); // Check date range
+          const leadDate = moment(lead.createdTime, "YYYY-MM-DD HH:mm:ss");
+          return leadDate.isBetween(startDate, today, undefined, "[]");
         });
 
         // Group by date
@@ -93,7 +91,7 @@ const LeadsGraph = () => {
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
                   data={leadsData}
-                  margin={{ top: 5, right: 30, left: 0, bottom: 25 }}
+                  margin={{ top: 5, right: 15, left: -40, bottom: 25 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis

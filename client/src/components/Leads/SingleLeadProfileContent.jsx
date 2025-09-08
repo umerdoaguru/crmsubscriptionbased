@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import img from "../../images/lead_profile.png";
 import { useSelector } from "react-redux";
-function SingleLeadProfileContent() {
+function SingleLeadProfileContent({ isSidebarOpen }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [leads, setLeads] = useState([]);
@@ -194,49 +194,63 @@ function SingleLeadProfileContent() {
                 <div className="w-full lg:w-2/3 ">
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     <div>
-                      <label className="text-cyan-600">Lead Number</label>
+                      <label className="text-cyan-600 font-semibold">
+                        Lead Number
+                      </label>
                       <div className="p-2 bg-gray-100 rounded">
                         <p className="m-0">{lead.lead_no}</p>
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-cyan-600">Name</label>
+                      <label className="text-cyan-600 font-semibold">
+                        Name
+                      </label>
                       <div className="p-2 bg-gray-100 rounded">
                         <p className="m-0 break-words">{lead.name}</p>
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-cyan-600">Assigned To</label>
+                      <label className="text-cyan-600 font-semibold">
+                        Assigned To
+                      </label>
                       <div className="p-2 bg-gray-100 rounded">
                         <p className="m-0">{lead.assignedTo}</p>
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-cyan-600">Mobile Number</label>
+                      <label className="text-cyan-600 font-semibold">
+                        Mobile Number
+                      </label>
                       <div className="p-2 bg-gray-100 rounded">
                         <p className="m-0">{lead.phone}</p>
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-cyan-600">Lead Source</label>
+                      <label className="text-cyan-600 font-semibold">
+                        Lead Source
+                      </label>
                       <div className="p-2 bg-gray-100 rounded">
                         <p className="m-0">{lead.leadSource}</p>
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-cyan-600">Lead Status</label>
+                      <label className="text-cyan-600 font-semibold">
+                        Lead Status
+                      </label>
                       <div className="p-2 bg-gray-100 rounded">
                         <p className="m-0">{lead.lead_status}</p>
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-cyan-600">Assigned Date</label>
+                      <label className="text-cyan-600 font-semibold">
+                        Assigned Date
+                      </label>
                       <div className="p-2 bg-gray-100 rounded">
                         <p className="m-0">
                           {moment(lead.createdTime)
@@ -307,7 +321,11 @@ function SingleLeadProfileContent() {
               </div>
             </div>
 
-            <div className="overflow-x-auto mt-5 ">
+            <div
+              className={`overflow-x-auto mt-5 ${
+                isSidebarOpen ? "w-[78rem]" : "w-[85rem]"
+              } `}
+            >
               <table className="min-w-full whitespace-nowrap bg-white border">
                 <thead>
                   <tr>

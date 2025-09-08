@@ -26,7 +26,7 @@ const SingleLeadProfile = () => {
           <Topbar isSidebarOpen={isSidebarOpen} />
           <div className=""></div>
 
-          <SingleLeadProfileContent />
+          <SingleLeadProfileContent isSidebarOpen={isSidebarOpen} />
         </div>
       </div>
     </div>

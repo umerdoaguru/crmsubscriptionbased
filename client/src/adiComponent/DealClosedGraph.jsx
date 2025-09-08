@@ -28,19 +28,16 @@ const DealClosedGraph = () => {
     });
   };
 
-  // Generate static structure for the past 28 days
   const generateStaticData = (fetchedData) => {
     const data = [];
     const today = new Date();
 
-    // Iterate over the past 28 days
     for (let i = 0; i < 28; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() - i);
       const formattedDay = formatDate(date);
-      const formattedDate = date.toISOString().split("T")[0]; // Format date as "YYYY-MM-DD"
+      const formattedDate = date.toISOString().split("T")[0];
 
-      // Filter leads that match the `d_closeDate` for this specific day
       const matchedLeads = fetchedData.filter(
         (item) =>
           item.d_closeDate.split("T")[0] === formattedDate &&
@@ -49,14 +46,13 @@ const DealClosedGraph = () => {
 
       console.log(`Date: ${formattedDate}, Leads: ${matchedLeads.length}`);
 
-      // Push the day and the number of closed deals for that day
       data.push({
-        day: formattedDay, // Day in "DD MMM" format
-        Close_Deal: matchedLeads.length, // Count the number of matched leads
+        day: formattedDay,
+        Close_Deal: matchedLeads.length,
       });
     }
 
-    return data.reverse(); // Keep the data in chronological order from oldest to newest
+    return data.reverse();
   };
 
   // Fetch data from the API
@@ -97,7 +93,7 @@ const DealClosedGraph = () => {
           <ResponsiveContainer width="100%" height={300}>
             <LineChart
               data={dealStatusData}
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              margin={{ top: 5, right: 15, left: -40, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="day" />

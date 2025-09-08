@@ -270,7 +270,7 @@ const LeadsTable = () => {
   };
 
   return (
-    <div className="container 2xl:w-[95%]">
+    <div className="container">
       <div>
         <div className="flex gap-2">
           <button
@@ -286,8 +286,8 @@ const LeadsTable = () => {
           <button
             className="bg-orange-500 text-white py-2 px-3 rounded mb-4"
             onClick={() => {
-              setShowUpdateForm(!showUpdateForm); // Toggle Edit/Delete Form visibility
-              setShowForm(false); // Hide Add Form if active
+              setShowUpdateForm(!showUpdateForm);
+              setShowForm(false);
             }}
           >
             Edit And Delete Form
@@ -307,11 +307,8 @@ const LeadsTable = () => {
         )}
       </div>
 
-      <h1 className="text-2xl font-bold mb-4">Select Form to Fetch Leads</h1>
+      <h2 className="text-2xl font-bold mb-4">Select Form to Fetch Leads</h2>
 
-      {/* {error && <p className="text-red-500 mb-4">{error}</p>} */}
-
-      {/* <FormSelector setLoading={setLoading} setMe={setGotId} setError={setError} onFormSelect={handleFormSelect} /> */}
       <FormSelector
         setLoading={setLoading}
         setMe={setGotId}

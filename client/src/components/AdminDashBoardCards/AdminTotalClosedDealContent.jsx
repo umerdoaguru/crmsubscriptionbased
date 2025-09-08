@@ -56,16 +56,15 @@ const AdminTotalClosedDealContent = () => {
       );
     }
 
-    // Update the filtered leads and reset to the first page
     setFilteredLeads(filtered);
-    setCurrentPage(0); // Reset to the first page when the search term changes
+    setCurrentPage(0);
   }, [searchTerm, leads]);
 
   // Pagination logic
   const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-  // const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
+
   const currentLeads =
     leadsPerPage === Infinity
       ? filteredLeads
@@ -78,7 +77,7 @@ const AdminTotalClosedDealContent = () => {
   const handleLeadsPerPageChange = (e) => {
     const value = e.target.value;
     setLeadsPerPage(value === "All" ? Infinity : parseInt(value, 10));
-    setCurrentPage(0); // Reset to the first page
+    setCurrentPage(0);
   };
   return (
     <>
@@ -122,35 +121,35 @@ const AdminTotalClosedDealContent = () => {
                 <table className="min-w-full bg-white border">
                   <thead>
                     <tr>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
+                      <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
                         S.no
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
+                      <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
                         Lead Id
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
+                      <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
                         Assigned To
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
+                      <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
                         Lead Name
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
+                      <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
                         Phone
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
+                      <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
                         Lead Source
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
+                      <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
                         Visit
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
+                      <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
                         Follow Up Status
                       </th>
 
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
+                      <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
                         Deal Status
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
+                      <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
                         Deal Close Date
                       </th>
                     </tr>

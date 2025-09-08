@@ -10,14 +10,13 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import styled from "styled-components";
 import moment from "moment";
 import { useSelector } from "react-redux";
 
 const LeadVisitChart = () => {
-  const [loading, setLoading] = useState(false); // Properly manage loading state
-  const [visitData, setVisitData] = useState([]); // Correct state variable name
-  const [error, setError] = useState(null); // To handle and display errors
+  const [loading, setLoading] = useState(false);
+  const [visitData, setVisitData] = useState([]);
+  const [error, setError] = useState(null);
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
   const userId = adminuser.user_id;
@@ -41,15 +40,13 @@ const LeadVisitChart = () => {
         );
 
         const today = moment();
-        const startDate = moment().subtract(28, "days"); // 28 days range including today
+        const startDate = moment().subtract(28, "days");
 
-        // Format dates to 'MMM DD' for display
         const formatDate = (date) => moment(date).format("MMM DD");
 
-        // Filter the data for the last 28 days including today
         const filteredLeads = allLeads.filter((lead) => {
-          const leadDate = moment(lead.visit_date, "YYYY-MM-DD HH:mm:ss"); // Parse the string
-          return leadDate.isBetween(startDate, today, undefined, "[]"); // Check date range
+          const leadDate = moment(lead.visit_date, "YYYY-MM-DD HH:mm:ss");
+          return leadDate.isBetween(startDate, today, undefined, "[]");
         });
 
         // Group by date
@@ -69,13 +66,13 @@ const LeadVisitChart = () => {
           const date = moment().subtract(i, "days");
           const formattedDate = formatDate(date);
           leadsData.push({
-            createdDate: formattedDate, // Change 'date' to 'createdDate'
+            createdDate: formattedDate,
             Leads: groupedLeads[formattedDate] || 0,
           });
         }
 
         leadsData.reverse();
-        setVisitData(leadsData); // Correct state function usage
+        setVisitData(leadsData);
       } catch (error) {
         console.error("Error fetching leads data:", error);
         setError("Failed to load leads data");
@@ -108,8 +105,8 @@ const LeadVisitChart = () => {
                 data={visitData}
                 margin={{
                   top: 5,
-                  right: 30,
-                  left: 0,
+                  right: 15,
+                  left: -40,
                   bottom: 5,
                 }}
               >
