@@ -2,7 +2,6 @@ import { useState } from "react";
 import React from "react";
 import Sidebar from "../../utils/Sidebar";
 import Topbar from "../../utils/Topbar";
-import SuperAdminTotalLeadContent from "../../adiComponent/Super-Admin/SuperAdminTotalLeadContent";
 import SuperAdminTotalClosedDealContent from "../../adiComponent/Super-Admin/SuperAdminTotalClosedDealContent";
 
 const SuperAdminTotalClosedDeal = () => {

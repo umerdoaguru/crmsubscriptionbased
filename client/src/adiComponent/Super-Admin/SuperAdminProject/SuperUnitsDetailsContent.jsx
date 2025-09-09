@@ -99,7 +99,7 @@ const SuperUnitsDetailsContent = () => {
           <div className="mt-[2rem]">
             <button
               onClick={() => navigate(-1)}
-              className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition-colors"
+              className="bg-cyan-600 text-white px-3 py-1 rounded-lg hover:bg-cyan-700 transition-colors"
             >
               Back
             </button>
@@ -122,7 +122,7 @@ const SuperUnitsDetailsContent = () => {
                         setStatusFilter(e.target.value);
                         setCurrentPage(0);
                       }}
-                      className="border border-gray-300 p-2 rounded-lg bg-white text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      className="border border-gray-300 p-2 rounded-lg bg-white text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600 transition-all"
                     >
                       <option value="">All</option>
                       <option value="pending">Pending</option>
@@ -174,13 +174,13 @@ const SuperUnitsDetailsContent = () => {
                               className={`py-2 px-2 rounded-lg transition mt-3 ${
                                 unit.status === "sold"
                                   ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-                                  : "bg-green-600 text-white hover:bg-blue-700"
+                                  : "bg-green-600 text-white hover:bg-cyan-700"
                               }`}
                               disabled={unit.status === "sold"}
                             >
                               Edit Details
                             </button>
-                            {/* <button  className="mr-2 text-blue-600 hover:text-blue-800"></button>      */}
+                            {/* <button  className="mr-2 text-cyan-700 hover:text-cyan-800"></button>      */}
                           </tr>
                         ))
                       ) : (
@@ -243,7 +243,7 @@ const SuperUnitsDetailsContent = () => {
                           unit_type: e.target.value,
                         })
                       }
-                      className="border p-2 w-full rounded focus:ring focus:ring-blue-300"
+                      className="border p-2 w-full rounded focus:ring focus:ring-cyan-300"
                       placeholder="Enter unit type"
                       disabled
                     />
@@ -263,7 +263,7 @@ const SuperUnitsDetailsContent = () => {
                           unit_size: e.target.value,
                         })
                       }
-                      className="border p-2 w-full rounded focus:ring focus:ring-blue-300"
+                      className="border p-2 w-full rounded focus:ring focus:ring-cyan-300"
                       placeholder="Enter unit size"
                     />
                   </div>
@@ -282,7 +282,7 @@ const SuperUnitsDetailsContent = () => {
                           base_price: e.target.value,
                         })
                       }
-                      className="border p-2 w-full rounded focus:ring focus:ring-blue-300"
+                      className="border p-2 w-full rounded focus:ring focus:ring-cyan-300"
                       placeholder="Enter base price"
                     />
                   </div>
@@ -297,7 +297,7 @@ const SuperUnitsDetailsContent = () => {
                     </button>
                     <button
                       onClick={handleUpdate}
-                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                      className="bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-700 transition"
                     >
                       Update
                     </button>

@@ -2,7 +2,6 @@ import { useState } from "react";
 import React from "react";
 import Sidebar from "../../utils/Sidebar";
 import Topbar from "../../utils/Topbar";
-import SuperDashContent from "../../adiComponent/SuperDashContent";
 import SuperEmployeeLeadsContent from "../../adiComponent/Super-Admin/SuperEmployeeLeadsContent";
 
 const SuperEmployeeLeads = () => {
@@ -27,7 +26,7 @@ const SuperEmployeeLeads = () => {
           <Topbar isSidebarOpen={isSidebarOpen} />
           <div className=""></div>
 
-          <SuperEmployeeLeadsContent />
+          <SuperEmployeeLeadsContent isSidebarOpen={isSidebarOpen} />
         </div>
       </div>
     </div>

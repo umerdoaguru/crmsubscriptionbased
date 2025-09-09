@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
 import * as XLSX from "xlsx";
-import ReactPaginate from "react-paginate"; // Import react-paginate
-// import Sider from "../Sider";
-
+import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
 import Header from "./../../../pages/Quotation/Header";
 
@@ -15,10 +13,8 @@ function SuperLeadData() {
   const [endDate, setEndDate] = useState("");
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
-
   const [currentPage, setCurrentPage] = useState(0);
-  const leadsPerPage = 6; // Default leads per page
-
+  const leadsPerPage = 6;
   const [selectedColumns, setSelectedColumns] = useState([
     "lead_no",
     "assignedTo",
@@ -49,7 +45,6 @@ function SuperLeadData() {
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
   const userId = superadminuser.id;
-  // Fetch leads and employees from the API
   useEffect(() => {
     fetchLeads();
     fetchEmployees();
@@ -67,7 +62,7 @@ function SuperLeadData() {
         }
       );
       setLeads(response.data);
-      setFilteredLeads(response.data); // Initial data set for filtering
+      setFilteredLeads(response.data);
       console.log(leads);
     } catch (error) {
       console.error("Error fetching leads:", error);
@@ -95,7 +90,6 @@ function SuperLeadData() {
   useEffect(() => {
     let filtered = leads;
 
-    // Filter by date range if specified
     if (startDate && endDate) {
       filtered = filtered.filter((lead) => {
         const createdTime = moment(lead.createdTime, "YYYY-MM-DD");
@@ -103,7 +97,6 @@ function SuperLeadData() {
       });
     }
 
-    // Filter by selected employee if specified
     if (selectedEmployee) {
       filtered = filtered.filter(
         (lead) => lead.assignedTo === selectedEmployee
@@ -114,7 +107,7 @@ function SuperLeadData() {
     filtered = filtered.filter((lead) => lead.lead_status === "completed");
 
     setFilteredLeads(filtered);
-    setCurrentPage(0); // Reset to first page on filter change
+    setCurrentPage(0);
   }, [startDate, endDate, selectedEmployee, leads]);
 
   const downloadExcel = () => {
@@ -190,8 +183,6 @@ function SuperLeadData() {
     XLSX.writeFile(workbook, filename);
   };
 
-  // Pagination logic
-  // Calculate total number of pages
   const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
 
   // Pagination logic
@@ -214,29 +205,42 @@ function SuperLeadData() {
         <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
 
         {/* Date Filter */}
-        <div className="flex  mb-4 sm:flex-row flex-col gap-2">
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="border p-1"
-          />
-          <div className="p-1">
-            <p>to</p>
+        <div className="flex flex-col sm:flex-row flex-wrap items-end gap-4 mb-4">
+          {/* Start Date */}
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-semibold text-gray-700">
+              Start Date
+            </label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="border rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            />
           </div>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="border p-1"
-          />
+
+          {/* End Date */}
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-semibold text-gray-700">
+              End Date
+            </label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="border rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            />
+          </div>
 
           {/* Employee Filter */}
-          <div className="">
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-semibold text-gray-700">
+              Employee
+            </label>
             <select
               value={selectedEmployee}
               onChange={(e) => setSelectedEmployee(e.target.value)}
-              className="border p-1"
+              className="border rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
             >
               <option value="">Select Employee</option>
               {employees.map((employee) => (
@@ -248,10 +252,13 @@ function SuperLeadData() {
           </div>
 
           {/* Download Button */}
-          <div className="respo ">
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-semibold text-gray-700 invisible">
+              Download
+            </label>
             <button
               onClick={downloadExcel}
-              className="bg-cyan-600 text-white font-medium px-4 py-2 rounded hover:bg-cyan-700"
+              className="bg-cyan-600 text-white font-medium px-5 py-2 rounded-lg shadow-md hover:bg-cyan-700 active:scale-95 transition"
             >
               Download Excel
             </button>

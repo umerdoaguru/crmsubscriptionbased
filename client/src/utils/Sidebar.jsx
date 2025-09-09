@@ -63,7 +63,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             icon: <BiExport />,
           },
           {
-            name: "Project",
+            name: "Projects",
             path: "/super-admin-project-dash",
             icon: <GrProjects />,
           },
@@ -116,7 +116,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
           },
 
           {
-            name: "Project",
+            name: "Projects",
             path: "/Project-Dash",
             icon: <GrProjects />,
           },
@@ -167,7 +167,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
     <div
       className={`${
         isSidebarOpen ? "w-60" : "w-28"
-      } h-screen fixed p-2 flex flex-col bg-white`}
+      } h-screen fixed p-2 flex flex-col bg-white shadow-sm`}
     >
       {/* Top Logo and Hamburger */}
       <div className="flex items-center justify-between mb-4">

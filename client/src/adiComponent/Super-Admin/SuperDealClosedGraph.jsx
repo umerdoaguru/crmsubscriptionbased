@@ -11,7 +11,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import styled from "styled-components";
 
 const SuperDealClosedGraph = () => {
   const [dealStatusData, setDealStatusData] = useState([]);
@@ -97,7 +96,7 @@ const SuperDealClosedGraph = () => {
           <ResponsiveContainer width="100%" height={300}>
             <LineChart
               data={dealStatusData}
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              margin={{ top: 5, right: 15, left: -40, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="day" />

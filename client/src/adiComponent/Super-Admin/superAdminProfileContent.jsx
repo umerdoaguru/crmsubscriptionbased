@@ -1,74 +1,68 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import MainHeader from "../../components/MainHeader";
-import SuperAdminSider from "./SuperAdminSider";
+import React from "react";
+import { useSelector } from "react-redux";
+import { motion } from "framer-motion";
 import moment from "moment";
 
 function SuperAdminProfileContent() {
   const superAdmin = useSelector((state) => state.auth.user);
-  console.log(superAdmin);
+
+  const infoFields = [
+    { label: "User ID", value: superAdmin?.id },
+    { label: "Name", value: superAdmin?.name },
+    { label: "Email", value: superAdmin?.email },
+    { label: "Role", value: superAdmin?.roles },
+    {
+      label: "Created Date",
+      value: moment(superAdmin?.created_date).format("DD/MM/YYYY"),
+    },
+  ];
 
   return (
-    <>
-      <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
-          <div className="container">
-            <div className="flex flex-col  lg:flex-row">
-              <div className="flex-grow md:p-4 lg:mt-0 sm:ml-0">
-                <center className="text-2xl text-center font-medium">
-                  Super Admin Profile
-                </center>
-                <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
-                <div className="flex flex-wrap  mb-4">
-                  <div className="w-full md:w-2/3 md:mx-0 mx-3">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                      <div>
-                        <label className="text-info">User ID</label>
-                        <div className="p-2 bg-gray-100 rounded">
-                          <p className="m-0">{superAdmin?.id}</p>
-                        </div>
-                      </div>
+    <div className="flex justify-center mt-36 px-4">
+      <motion.div
+        className="w-full max-w-5xl bg-gradient-to-br from-white via-blue-50 to-cyan-100 rounded-3xl shadow-2xl p-8"
+        initial={{ opacity: 0, scale: 0.9, y: 40 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        {/* Header */}
+        <motion.h2
+          className="text-3xl font-bold text-center text-cyan-700"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          Super Admin Profile
+        </motion.h2>
+        <motion.div
+          className="h-1 w-28 bg-cyan-600 mx-auto my-4 rounded-full"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+        />
 
-                      <div>
-                        <label className="text-info">Name</label>
-                        <div className="p-2 bg-gray-100 rounded">
-                          <p className="m-0">{superAdmin?.name}</p>
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="text-info">Email</label>
-                        <div className="p-2 bg-gray-100 rounded">
-                          <p className="m-0">{superAdmin?.email}</p>
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="text-info">Role</label>
-                        <div className="p-2 bg-gray-100 rounded">
-                          <p className="m-0">{superAdmin?.roles}</p>
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="text-info">Created Date</label>
-                        <div className="p-2 bg-gray-100 rounded">
-                          <p className="m-0">
-                            {moment(superAdmin?.created_date).format(
-                              "DD/MM/YYYY"
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* Profile Info */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+          {infoFields.map((field, idx) => (
+            <motion.div
+              key={idx}
+              className="bg-white rounded-2xl shadow-md p-4 hover:shadow-lg transition cursor-default border border-gray-100"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * idx }}
+              whileHover={{ scale: 1.03 }}
+            >
+              <p className="text-sm text-cyan-600 font-semibold mb-1">
+                {field.label}
+              </p>
+              <p className="text-gray-800 font-medium break-all">
+                {field.value || "—"}
+              </p>
+            </motion.div>
+          ))}
         </div>
-      </div>
-    </>
+      </motion.div>
+    </div>
   );
 }
 

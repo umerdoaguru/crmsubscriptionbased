@@ -5,9 +5,6 @@ import { BsPencilSquare, BsTrash, BsPlusCircle } from "react-icons/bs";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import cogoToast from "cogo-toast"; // Import CogoToast
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-
-import SuperAdminSider from "./SuperAdminSider";
-import MainHeader from "../../components/MainHeader";
 import Modal from "../Modal";
 import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
@@ -345,13 +342,17 @@ function SuperAdminAdminmanagementContent() {
                   {editingIndex !== null ? "Edit Employee" : "Add Employee"}
                 </h3>
                 <form onSubmit={handleSaveAdmin}>
+                  {/* Name */}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Name
+                  </label>
                   <input
                     type="text"
                     name="name"
                     value={newAdmin.name}
                     onChange={handleInputChange}
-                    placeholder="Name"
-                    className={`block w-full px-4 py-2 mb-2 border ${
+                    placeholder="Enter name"
+                    className={`block w-full px-4 py-2 mb-2 border rounded-lg ${
                       validationErrors.name
                         ? "border-red-500"
                         : "border-gray-300"
@@ -363,13 +364,17 @@ function SuperAdminAdminmanagementContent() {
                     </p>
                   )}
 
+                  {/* Email */}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
                   <input
                     type="email"
                     name="email"
                     value={newAdmin.email}
                     onChange={handleInputChange}
-                    placeholder="Email"
-                    className={`block w-full px-4 py-2 mb-2 border ${
+                    placeholder="Enter email"
+                    className={`block w-full px-4 py-2 mb-2 border rounded-lg ${
                       validationErrors.email
                         ? "border-red-500"
                         : "border-gray-300"
@@ -381,42 +386,48 @@ function SuperAdminAdminmanagementContent() {
                     </p>
                   )}
 
+                  {/* Password */}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Password
+                  </label>
                   <div className="relative">
                     <input
-                      type={showPassword ? "text" : "password"} // Toggle password visibility
+                      type={showPassword ? "text" : "password"}
                       name="password"
                       value={newAdmin.password}
                       onChange={handleInputChange}
-                      placeholder="Password"
-                      className={`block w-full px-4 py-2 mb-2 border ${
+                      placeholder="Enter password"
+                      className={`block w-full px-4 py-2 mb-2 border rounded-lg ${
                         validationErrors.password
                           ? "border-red-500"
                           : "border-gray-300"
-                      } pr-12`} // Add padding on the right to accommodate the text
+                      } pr-12`}
                     />
                     <button
                       type="button"
                       onClick={togglePasswordVisibility}
-                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-cyan-500 hover:text-cyan-700" // Position the text inside the input
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-cyan-500 hover:text-cyan-700"
                     >
-                      {showPassword ? <FaEyeSlash /> : <FaEye />}{" "}
-                      {/* Show the icon when password is hidden */}
-                      {/* Text for toggling visibility */}
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
-                    {validationErrors.password && (
-                      <p className="text-red-500 text-sm">
-                        {validationErrors.password}
-                      </p>
-                    )}
                   </div>
+                  {validationErrors.password && (
+                    <p className="text-red-500 text-sm">
+                      {validationErrors.password}
+                    </p>
+                  )}
 
+                  {/* Position */}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Position
+                  </label>
                   <input
                     type="text"
                     name="position"
                     value={newAdmin.position}
                     onChange={handleInputChange}
-                    placeholder="Position"
-                    className={`block w-full px-4 py-2 mb-2 border ${
+                    placeholder="Enter position"
+                    className={`block w-full px-4 py-2 mb-2 border rounded-lg ${
                       validationErrors.position
                         ? "border-red-500"
                         : "border-gray-300"
@@ -428,14 +439,18 @@ function SuperAdminAdminmanagementContent() {
                     </p>
                   )}
 
+                  {/* Phone */}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Phone
+                  </label>
                   <input
                     type="text"
                     name="phone"
                     value={newAdmin.phone}
                     onChange={handleInputChange}
                     onKeyPress={handleKeyPress}
-                    placeholder="Phone"
-                    className={`block w-full px-4 py-2 mb-2 border ${
+                    placeholder="Enter phone number"
+                    className={`block w-full px-4 py-2 mb-2 border rounded-lg ${
                       validationErrors.phone
                         ? "border-red-500"
                         : "border-gray-300"
@@ -447,9 +462,10 @@ function SuperAdminAdminmanagementContent() {
                     </p>
                   )}
 
+                  {/* Buttons */}
                   <div className="flex justify-end mt-4 gap-3">
                     <button
-                      onClick={handleCancel} // Reset form on Cancel
+                      onClick={handleCancel}
                       className="px-4 py-2 text-white bg-gray-500 rounded-lg hover:bg-gray-600"
                     >
                       Cancel

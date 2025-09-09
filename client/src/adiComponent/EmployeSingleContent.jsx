@@ -3,8 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import Modal from "./Modal";
-import Sider from "../components/Sider";
-import MainHeader from "../components/MainHeader";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
@@ -299,28 +297,29 @@ const EmployeeSingleContent = () => {
             <div className="container mt-1 px-2 mx-auto p-4">
               <button
                 onClick={handleBackClick}
-                className="bg-blue-500 text-white px-4 py-2 rounded"
+                className="bg-cyan-600 text-white px-4 py-2 rounded"
               >
                 Go Back
               </button>
-              <main className="flex-1 p-4 lg:p-8">
+              <main className="flex-1 pt-2">
                 {error && <p className="text-red-600">{error}</p>}
 
                 {employee ? (
                   <div className="p-6 bg-white rounded-lg shadow-md">
                     <div className="flex items-center mb-6">
                       <div className="ml-6">
-                        <h3 className="text-xl font-semibold text-gray-800">
-                          {employee.name || "No Name Available"}
+                        <h3 className="text-xl font-semibold capitalize">
+                          Name: {employee.name || "No Name Available"}
                         </h3>
-                        <p className="text-gray-600">
+                        <p className="text-gray-600 capitalize">
+                          Position:{" "}
                           {employee.position || "No Position Available"}
                         </p>
                         <p className="text-gray-600">
-                          {employee.email || "No Email Available"}
+                          Email: {employee.email || "No Email Available"}
                         </p>
                         <p className="text-gray-600">
-                          {employee.phone || "No Phone Available"}
+                          Phone: {employee.phone || "No Phone Available"}
                         </p>
                       </div>
                     </div>
@@ -388,7 +387,7 @@ const EmployeeSingleContent = () => {
                                 {index + 1}
                               </td>
                               <Link to={`/lead-single-data/${lead.lead_id}`}>
-                                <td className="px-6 py-4 border-b border-gray-200  underline text-[blue]">
+                                <td className="px-6 py-4 border-b border-gray-200 text-cyan-600 font-bold">
                                   {lead.lead_no}
                                 </td>
                               </Link>
@@ -544,7 +543,7 @@ const EmployeeSingleContent = () => {
                   <div className="flex justify-end mt-6 space-x-4">
                     <button
                       onClick={handleSaveEmployee}
-                      className="px-4 py-2 text-white bg-blue-500 rounded-lg shadow-lg hover:bg-blue-600"
+                      className="px-4 py-2 text-white bg-cyan-500 rounded-lg shadow-lg hover:bg-cyan-600"
                     >
                       Save
                     </button>

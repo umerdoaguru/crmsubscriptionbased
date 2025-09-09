@@ -207,27 +207,42 @@ const SuperVisitData = () => {
           </center>
           <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
           {/* Date Filter */}
-          <div className="flex  mb-4 sm:flex-row flex-col gap-2">
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="border p-1"
-            />
-            <div className="p-1">
-              <p>to</p>
+          <div className="flex flex-col sm:flex-row gap-4 mb-6 items-end">
+            {/* Start Date */}
+            <div className="flex flex-col w-full sm:w-auto">
+              <label className="mb-1 text-sm font-semibold text-gray-700">
+                Start Date
+              </label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="border rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              />
             </div>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="border p-1"
-            />
-            <div className="">
+
+            {/* End Date */}
+            <div className="flex flex-col w-full sm:w-auto">
+              <label className="mb-1 text-sm font-semibold text-gray-700">
+                End Date
+              </label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="border rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              />
+            </div>
+
+            {/* Employee Filter */}
+            <div className="flex flex-col w-full sm:w-auto">
+              <label className="mb-1 text-sm font-semibold text-gray-700">
+                Employee
+              </label>
               <select
                 value={selectedEmployee}
                 onChange={(e) => setSelectedEmployee(e.target.value)}
-                className="border p-1"
+                className="border rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
               >
                 <option value="">Select Employee</option>
                 {employees.map((employee) => (
@@ -237,10 +252,12 @@ const SuperVisitData = () => {
                 ))}
               </select>
             </div>
-            <div className="respo ">
+
+            {/* Download Button */}
+            <div className="w-full sm:w-auto">
               <button
                 onClick={downloadExcel}
-                className="bg-cyan-500 hover:bg-cyan-700 text-white px-4 py-2 rounded"
+                className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-6 py-2 rounded-lg shadow-md transition active:scale-95 w-full sm:w-auto"
               >
                 Download Excel
               </button>

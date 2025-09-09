@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { GiFiles } from "react-icons/gi";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
@@ -34,7 +33,7 @@ function SuperMainSocialMediaByProjectContent() {
     <>
       <div className="flex mt-20">
         <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
-          <div className="flex-1 max-w-full mt-[5rem]">
+          <div className="flex-1 max-w-full mt-[2rem]">
             <h2 className="text-2xl text-center font-medium">
               Project Wise Social Interigation
             </h2>
@@ -50,16 +49,14 @@ function SuperMainSocialMediaByProjectContent() {
                   >
                     <div className="shadow-md rounded-2xl overflow-hidden cursor-pointer text-gray-600 border-2 hover:bg-cyan-600">
                       <div className="p-10 flex flex-col items-center text-center">
-                        {/* <div className="text-3xl text-gray-700">
-                      <GiFiles /> 
-                    </div> */}
                         <div className="mt-2">
-                          <h5 className="text-gray-800 text-xl font-semibold">
+                          <h5 className="text-gray-800 text-xl font-semibold capitalize">
                             {project.project_name} {/* Category name */}
                           </h5>
                         </div>
-                        <div className="mt-2">
-                          <h5 className="text-gray-800 text-xl font-semibold">
+                        <div className="mx-auto h-[1px] w-16 bg-black my-1"></div>
+                        <div className="">
+                          <h5 className="text-gray-800 text-xl font-semibold uppercase">
                             {project.location} {/* Category name */}
                           </h5>
                         </div>

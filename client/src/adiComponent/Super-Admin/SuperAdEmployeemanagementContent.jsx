@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { BsPencilSquare, BsTrash, BsPlusCircle } from "react-icons/bs";
-import Modal from "../Modal";
 
 import { useNavigate } from "react-router-dom";
-import cogoToast from "cogo-toast";
 import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
+import SuperAddEditEmployeePopup from "./SuperAdminProject/SuperAddEditEmployeePopup";
 
 const SuperAdEmployeemanagementContent = () => {
   const [employees, setEmployees] = useState([]);
@@ -52,19 +51,7 @@ const SuperAdEmployeemanagementContent = () => {
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    // For phone number, allow only numeric values
-    if (name === "phone") {
-      const numericValue = value.replace(/[^0-9]/g, "").slice(0, 10); // Allow only digits and limit to 10 characters
-      setNewEmployee((prev) => ({ ...prev, [name]: numericValue }));
-    } else {
-      setNewEmployee((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
   const handleKeyPress = (e) => {
-    // Allow only numeric keys and control keys (e.g., backspace, arrow keys)
     if (e.target.name === "phone") {
       if (
         !/[0-9]/.test(e.key) &&
@@ -78,16 +65,12 @@ const SuperAdEmployeemanagementContent = () => {
   const validateForm = async () => {
     const errors = {};
 
-    // Validate Name
     if (!newEmployee.name) errors.name = "Name is required";
 
-    // Validate Email
     if (!newEmployee.email) errors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(newEmployee.email))
       errors.email = "Email is invalid";
-    // else if (await isEmailTaken(newEmployee.email)) errors.email = 'Email is already taken';
 
-    // Validate Password
     if (!newEmployee.password) errors.password = "Password is required";
 
     // Validate Position
@@ -117,58 +100,8 @@ const SuperAdEmployeemanagementContent = () => {
     }
   };
 
-  const handleSaveEmployee = async () => {
-    if (!(await validateForm())) return; // Stop saving if validation fails
-    console.log(newEmployee, employees[editingIndex]);
-    try {
-      let response;
-      if (editingIndex !== null) {
-        // Update existing employee
-        const employeeToUpdate = employees[editingIndex];
-        response = await axios.put(
-          `https://crm-generalize.dentalguru.software/api/updateEmployee/${employeeToUpdate.employeeId}`,
-          newEmployee
-        );
-      } else {
-        // Add new employee
-        response = await axios.post(
-          "https://crm-generalize.dentalguru.software/api/addEmployee",
-          newEmployee
-        );
-      }
-
-      cogoToast.success(response.data.message);
-
-      setNewEmployee({
-        name: "",
-        email: "",
-        password: "",
-        position: "",
-        phone: "",
-      });
-      setShowForm(false);
-      fetchEmployees(); // Fetch employees to update the list
-    } catch (error) {
-      cogoToast.error(error.response.data.message);
-      console.error(
-        "Error saving employee:",
-        error.response?.data,
-        error?.message
-      );
-    }
-  };
-
-  const handleEditEmployee = (index) => {
-    const employeeToEdit = employees[index];
-    console.log(employeeToEdit);
-    setNewEmployee({
-      name: employeeToEdit.name,
-      email: employeeToEdit.email,
-      password: employeeToEdit.password,
-      position: employeeToEdit.position,
-      phone: employeeToEdit.phone,
-    });
-    setEditingIndex(index);
+  const handleEditEmployee = (data) => {
+    setEditingIndex(data);
     setShowForm(true);
   };
 
@@ -181,7 +114,7 @@ const SuperAdEmployeemanagementContent = () => {
         await axios.delete(
           `https://crm-generalize.dentalguru.software/api/deleteEmployee/${employeeId}`
         );
-        fetchEmployees(); // Fetch employees to update the list
+        fetchEmployees();
       } catch (error) {
         console.error("Error deleting employee:", error);
       }
@@ -280,7 +213,7 @@ const SuperAdEmployeemanagementContent = () => {
                                 <button
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleEditEmployee(index);
+                                    handleEditEmployee(employee);
                                   }} // Now index is available
                                   className="text-cyan-500 transition duration-200 hover:text-cyan-600"
                                 >
@@ -310,194 +243,6 @@ const SuperAdEmployeemanagementContent = () => {
                 </table>
               </div>
 
-              <Modal isOpen={showForm} onClose={() => setShowForm(false)}>
-                <h3 className="mb-4 text-lg font-bold">
-                  {editingIndex !== null ? "Edit Employee" : "Add Employee"}
-                </h3>
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  {/* Name Input */}
-                  <div className="flex flex-col">
-                    <label
-                      htmlFor="name"
-                      className="block mb-1 text-sm font-medium"
-                    >
-                      Name
-                    </label>
-                    <input
-                      required
-                      type="text"
-                      name="name"
-                      value={newEmployee.name}
-                      onChange={handleInputChange}
-                      placeholder="Name"
-                      className={`p-2 border rounded-lg ${
-                        validationErrors.name
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                    />
-                    {/* Error Messages for Name */}
-                    {validationErrors.name && (
-                      <div className="flex flex-col text-sm text-red-500 space-y-1">
-                        {validationErrors.name
-                          .split("\n")
-                          .map((error, index) => (
-                            <p key={index}>{error}</p>
-                          ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Email Input */}
-                  <div className="flex flex-col">
-                    <label
-                      htmlFor="email"
-                      className="block mb-1 text-sm font-medium"
-                    >
-                      Email
-                    </label>
-                    <input
-                      required
-                      type="email"
-                      name="email"
-                      value={newEmployee.email}
-                      onChange={handleInputChange}
-                      placeholder="Email"
-                      className={`p-2 border rounded-lg ${
-                        validationErrors.email
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                    />
-                    {/* Error Messages for Email */}
-                    {validationErrors.email && (
-                      <div className="flex flex-col text-sm text-red-500 space-y-1">
-                        {validationErrors.email
-                          .split("\n")
-                          .map((error, index) => (
-                            <p key={index}>{error}</p>
-                          ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Password Input */}
-                  <div className="flex flex-col">
-                    <label
-                      htmlFor="password"
-                      className="block mb-1 text-sm font-medium"
-                    >
-                      Password
-                    </label>
-                    <input
-                      required
-                      type="text"
-                      name="password"
-                      value={newEmployee.password}
-                      onChange={handleInputChange}
-                      placeholder="Password"
-                      className={`p-2 border rounded-lg ${
-                        validationErrors.password
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                    />
-                    {/* Error Messages for Password */}
-                    {validationErrors.password && (
-                      <div className="flex flex-col text-sm text-red-500 space-y-1">
-                        {validationErrors.password
-                          .split("\n")
-                          .map((error, index) => (
-                            <p key={index}>{error}</p>
-                          ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Position Input */}
-                  <div className="flex flex-col">
-                    <label
-                      htmlFor="position"
-                      className="block mb-1 text-sm font-medium"
-                    >
-                      Position
-                    </label>
-                    <input
-                      required
-                      type="text"
-                      name="position"
-                      value={newEmployee.position}
-                      onChange={handleInputChange}
-                      placeholder="Position"
-                      className={`p-2 border rounded-lg ${
-                        validationErrors.position
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                    />
-                    {/* Error Messages for Position */}
-                    {validationErrors.position && (
-                      <div className="flex flex-col text-sm text-red-500 space-y-1">
-                        {validationErrors.position
-                          .split("\n")
-                          .map((error, index) => (
-                            <p key={index}>{error}</p>
-                          ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Phone Input */}
-                  <div className="flex flex-col">
-                    <label
-                      htmlFor="phone"
-                      className="block mb-1 text-sm font-medium"
-                    >
-                      {" "}
-                      Phone
-                    </label>
-                    <input
-                      required
-                      type="text"
-                      name="phone"
-                      value={newEmployee.phone}
-                      onChange={handleInputChange}
-                      onKeyPress={handleKeyPress}
-                      placeholder="Phone"
-                      className={`p-2 border rounded-lg ${
-                        validationErrors.phone
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                    />
-                    {/* Error Messages for Phone */}
-                    {validationErrors.phone && (
-                      <div className="flex flex-col text-sm text-red-500 space-y-1">
-                        {validationErrors.phone
-                          .split("\n")
-                          .map((error, index) => (
-                            <p key={index}>{error}</p>
-                          ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex justify-end mt-4 space-x-4">
-                  <button
-                    onClick={cancelButton} // Cancel button to close modal
-                    className="px-4 py-2 text-white bg-gray-500 rounded-lg hover:bg-gray-600"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSaveEmployee}
-                    className="px-4 py-2 text-white bg-cyan-500 rounded-lg hover:bg-cyan-600"
-                  >
-                    {editingIndex !== null ? "Update" : "Add"}
-                  </button>
-                </div>
-              </Modal>
               <div className="mt-2 mb-2 flex justify-center">
                 <ReactPaginate
                   previousLabel={"Previous"}
@@ -524,6 +269,13 @@ const SuperAdEmployeemanagementContent = () => {
           </div>
         </div>
       </div>
+      <SuperAddEditEmployeePopup
+        isOpen={showForm}
+        onClose={() => setShowForm(false)}
+        editingIndex={editingIndex}
+        setEditingIndex={setEditingIndex}
+        fetchEmployees={fetchEmployees}
+      />
     </>
   );
 };

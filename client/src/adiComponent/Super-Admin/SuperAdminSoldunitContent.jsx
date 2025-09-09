@@ -94,14 +94,14 @@ const SuperAdminSoldUnitsContent = () => {
               <div className="flex justify-between mb-3">
                 <input
                   type="text"
-                  placeholder="Project Name, Customer Name, Visit Type, Employee Name"
+                  placeholder="Search By Project Name, Customer Name, Visit Type, Employee Name...."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="border rounded-2xl p-2 w-1/4"
+                  className="border rounded-md p-2 w-2/4"
                 />
                 <select
                   onChange={handleLeadsPerPageChange}
-                  className="border rounded-2xl p-2 w-1/4"
+                  className="border rounded-md p-2 w-1/4"
                 >
                   <option value={7}>Number of rows: 7</option>
                   <option value={10}>10</option>
@@ -114,28 +114,28 @@ const SuperAdminSoldUnitsContent = () => {
                 <table className="min-w-full divide-y divide-gray-200 border border-gray-300">
                   <thead className="bg-gray-100">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-bold text-cyan-700 uppercase tracking-wider">
                         S.no
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-bold text-cyan-700 uppercase tracking-wider">
                         Lead Id
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-bold text-cyan-700 uppercase tracking-wider">
                         Project Name
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-bold text-cyan-700 uppercase tracking-wider">
                         Customer Name
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-bold text-cyan-700 uppercase tracking-wider">
                         Unit Number
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-bold text-cyan-700 uppercase tracking-wider">
                         Employee Name
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-bold text-cyan-700 uppercase tracking-wider">
                         Unit Status
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-bold text-cyan-700 uppercase tracking-wider">
                         Date
                       </th>
                     </tr>

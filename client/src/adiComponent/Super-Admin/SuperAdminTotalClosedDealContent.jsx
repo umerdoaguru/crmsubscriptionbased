@@ -1,22 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
-import * as XLSX from "xlsx";
-import MainHeader from "../../components/MainHeader";
-import SuperAdminSider from "./SuperAdminSider";
 import ReactPaginate from "react-paginate";
-import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const SuperAdminTotalClosedDealContent = () => {
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
-  const [startDate, setStartDate] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const [leadsPerPage, setLeadsPerPage] = useState(7); // Default leads per page
+  const [leadsPerPage, setLeadsPerPage] = useState(7);
   const navigate = useNavigate();
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
@@ -97,23 +91,23 @@ const SuperAdminTotalClosedDealContent = () => {
                 Back
               </button>
             </div>
-            <div className="flex flex-col ">
+            <div className="flex flex-col">
               <div className="flex-grow p-4 mt-2  sm:ml-0">
                 <center className="text-2xl text-center  font-medium">
                   Total Closed Deals
                 </center>
                 <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
-                <div className="flex justify-between mb-3">
+                <div className="flex justify-between mb-2">
                   <input
                     type="text"
-                    placeholder=" Name,Lead Source,Assigned To,Phone No"
+                    placeholder="Search by Name, Lead Source, Assigned To, Phone No...."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="border rounded-2xl p-2 w-25"
+                    className="border rounded-md p-2 w-2/4"
                   />
                   <select
                     onChange={handleLeadsPerPageChange}
-                    className="border rounded-2xl p-2 w-1/4"
+                    className="border rounded-md p-2 w-1/4"
                   >
                     <option value={7}>Number of rows: 7</option>
                     <option value={10}>10</option>
@@ -123,39 +117,39 @@ const SuperAdminTotalClosedDealContent = () => {
                   </select>
                 </div>
 
-                <div className="overflow-x-auto mt-4">
+                <div className="overflow-x-auto">
                   <table className="min-w-full bg-white border">
                     <thead>
                       <tr>
-                        <th className="px-6 py-3 border-b-2 border-gray-300">
+                        <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap text-cyan-700 font-bold text-sm">
                           S.no
                         </th>
-                        <th className="px-6 py-3 border-b-2 border-gray-300">
+                        <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap text-cyan-700 font-bold text-sm">
                           Lead Id
                         </th>
-                        <th className="px-6 py-3 border-b-2 border-gray-300">
+                        <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap text-cyan-700 font-bold text-sm">
                           Assigned To
                         </th>
-                        <th className="px-6 py-3 border-b-2 border-gray-300">
+                        <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap text-cyan-700 font-bold text-sm">
                           Lead Name
                         </th>
-                        <th className="px-6 py-3 border-b-2 border-gray-300">
+                        <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap text-cyan-700 font-bold text-sm">
                           Phone
                         </th>
-                        <th className="px-6 py-3 border-b-2 border-gray-300">
+                        <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap text-cyan-700 font-bold text-sm">
                           Lead Source
                         </th>
-                        <th className="px-6 py-3 border-b-2 border-gray-300">
+                        <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap text-cyan-700 font-bold text-sm">
                           Visit
                         </th>
-                        <th className="px-6 py-3 border-b-2 border-gray-300">
+                        <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap text-cyan-700 font-bold text-sm">
                           Follow Up Status
                         </th>
 
-                        <th className="px-6 py-3 border-b-2 border-gray-300">
+                        <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap text-cyan-700 font-bold text-sm">
                           Deal Status
                         </th>
-                        <th className="px-6 py-3 border-b-2 border-gray-300">
+                        <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap text-cyan-700 font-bold text-sm">
                           Deal Close Date
                         </th>
                       </tr>

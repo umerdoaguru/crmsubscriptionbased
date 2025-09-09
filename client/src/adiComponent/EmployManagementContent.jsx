@@ -5,26 +5,18 @@ import Modal from "./Modal";
 import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
+import AddEditEmployeePopup from "./AddEditEmployeePopup";
 
 const EmployeeManagementContent = () => {
   const [employees, setEmployees] = useState([]);
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
   const userId = adminuser.user_id;
-  const [newEmployee, setNewEmployee] = useState({
-    name: "",
-    email: "",
-    password: "",
-    position: "",
-    phone: "",
-    user_id: userId,
-  });
   const [editingIndex, setEditingIndex] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const [validationErrors, setValidationErrors] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
-  const leadsPerPage = 10; // Default leads per page
-  const navigate = useNavigate(); // Initialize useNavigate
+  const leadsPerPage = 10;
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchEmployees();
@@ -42,124 +34,10 @@ const EmployeeManagementContent = () => {
         }
       );
       const { employees } = response.data;
-      setEmployees(employees || []); // Ensure employees is always an array
+      setEmployees(employees || []);
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    // For phone number, allow only numeric values
-    if (name === "phone") {
-      const numericValue = value.replace(/[^0-9]/g, "").slice(0, 10); // Allow only digits and limit to 10 characters
-      setNewEmployee((prev) => ({ ...prev, [name]: numericValue }));
-    } else {
-      setNewEmployee((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  const handleKeyPress = (e) => {
-    // Allow only numeric keys and control keys (e.g., backspace, arrow keys)
-    if (e.target.name === "phone") {
-      if (
-        !/[0-9]/.test(e.key) &&
-        !["Backspace", "ArrowLeft", "ArrowRight"].includes(e.key)
-      ) {
-        e.preventDefault();
-      }
-    }
-  };
-
-  const validateForm = async () => {
-    const errors = {};
-
-    // Validate Name
-    if (!newEmployee.name) errors.name = "Name is required";
-
-    // Validate Email
-    if (!newEmployee.email) errors.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(newEmployee.email))
-      errors.email = "Email is invalid";
-    else if (await isEmailTaken(newEmployee.email))
-      errors.email = "Email is already taken";
-
-    // Validate Password
-    if (!newEmployee.password) errors.password = "Password is required";
-
-    // Validate Position
-    if (!newEmployee.position) errors.position = "Position is required";
-
-    // Validate Phone
-    if (!newEmployee.phone) errors.phone = "Phone number is required";
-    else if (!/^\d{10}$/.test(newEmployee.phone))
-      errors.phone = "Phone number must be 10 digits";
-
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const isEmailTaken = async (email) => {
-    try {
-      const response = await axios.get(
-        "https://crm-generalize.dentalguru.software/api/checkEmail",
-        {
-          params: { email },
-        }
-      );
-      return response.data.exists;
-    } catch (error) {
-      console.error("Error checking email:", error);
-      return false; // Assuming email check fails means it's not taken
-    }
-  };
-
-  const handleSaveEmployee = async () => {
-    if (!(await validateForm())) return; // Stop saving if validation fails
-
-    try {
-      if (editingIndex !== null) {
-        // Update existing employee
-        const employeeToUpdate = employees[editingIndex];
-        await axios.put(
-          `https://crm-generalize.dentalguru.software/api/updateEmployee/${employeeToUpdate.employeeId}`,
-          newEmployee
-        );
-      } else {
-        // Add new employee
-        await axios.post(
-          "https://crm-generalize.dentalguru.software/api/addEmployee",
-          newEmployee
-        );
-      }
-      setNewEmployee({
-        name: "",
-        email: "",
-        password: "",
-        position: "",
-        phone: "",
-      });
-      setShowForm(false);
-      fetchEmployees(); // Fetch employees to update the list
-    } catch (error) {
-      console.error(
-        "Error saving employee:",
-        error.response?.data || error.message
-      );
-    }
-  };
-
-  const handleEditEmployee = (index) => {
-    const employeeToEdit = employees[index];
-    setNewEmployee({
-      name: employeeToEdit.name,
-      email: employeeToEdit.email,
-      password: employeeToEdit.password,
-      position: employeeToEdit.position,
-      phone: employeeToEdit.phone,
-    });
-    setEditingIndex(index);
-    setShowForm(true);
   };
 
   const handleDeleteEmployee = async (employeeId) => {
@@ -171,7 +49,7 @@ const EmployeeManagementContent = () => {
         await axios.delete(
           `https://crm-generalize.dentalguru.software/api/deleteEmployee/${employeeId}`
         );
-        fetchEmployees(); // Fetch employees to update the list
+        fetchEmployees();
       } catch (error) {
         console.error("Error deleting employee:", error);
       }
@@ -181,7 +59,7 @@ const EmployeeManagementContent = () => {
   const handleEmployeeClick = (employeeId) => {
     navigate(`/employee-single/${employeeId}`);
   };
-  // Calculate total number of pages
+
   const pageCount = Math.ceil(employees.length / leadsPerPage);
 
   // Pagination logic
@@ -192,6 +70,11 @@ const EmployeeManagementContent = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
     console.log("change current page ", data.selected);
+  };
+
+  const handleEditEmployee = (data) => {
+    setShowForm(true);
+    setEditingIndex(data);
   };
 
   return (
@@ -236,10 +119,10 @@ const EmployeeManagementContent = () => {
                         .map((employee, index) => (
                           <tr
                             key={employee.employeeId}
-                            className="border-b border-gray-200 cursor-pointer hover:bg-gray-100"
+                            className="border-b border-gray-200 cursor-pointer hover:text-cyan-600 font-semibold"
                             onClick={() =>
                               handleEmployeeClick(employee.employeeId)
-                            } // Navigate on row click
+                            }
                           >
                             <td className="px-4 py-4 sm:px-6">
                               {employee.name}
@@ -258,8 +141,8 @@ const EmployeeManagementContent = () => {
                                 <button
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleEditEmployee(index);
-                                  }} // Now index is available
+                                    handleEditEmployee(employee);
+                                  }}
                                   className="text-cyan-600 transition duration-200 hover:text-cyan-600"
                                 >
                                   <BsPencilSquare size={20} />
@@ -309,144 +192,17 @@ const EmployeeManagementContent = () => {
                   breakLinkClassName={"page-link"}
                 />
               </div>
-
-              <Modal isOpen={showForm} onClose={() => setShowForm(false)}>
-                <h3 className="mb-4 text-lg font-bold">
-                  {editingIndex !== null ? "Edit Employee" : "Add Employee"}
-                </h3>
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  <label
-                    htmlFor="name"
-                    className="block mb-1 text-sm font-medium"
-                  >
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={newEmployee.name}
-                    onChange={handleInputChange}
-                    placeholder="Name"
-                    className={`p-2 border rounded-lg ${
-                      validationErrors.name
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
-                  />
-                  {validationErrors.name && (
-                    <p className="text-sm text-red-500">
-                      {validationErrors.name}
-                    </p>
-                  )}
-                  <label
-                    htmlFor="email"
-                    className="block mb-1 text-sm font-medium"
-                  >
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={newEmployee.email}
-                    onChange={handleInputChange}
-                    placeholder="Email"
-                    className={`p-2 border rounded-lg ${
-                      validationErrors.email
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
-                  />
-                  {validationErrors.email && (
-                    <p className="text-sm text-red-500">
-                      {validationErrors.email}
-                    </p>
-                  )}
-                  <label
-                    htmlFor="password"
-                    className="block mb-1 text-sm font-medium"
-                  >
-                    Password
-                  </label>
-                  <input
-                    type="text"
-                    name="password"
-                    value={newEmployee.password}
-                    onChange={handleInputChange}
-                    placeholder="password"
-                    className={`p-2 border rounded-lg ${
-                      validationErrors.password
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
-                  />
-                  <label
-                    htmlFor="position"
-                    className="block mb-1 text-sm font-medium"
-                  >
-                    Position
-                  </label>
-                  <input
-                    type="text"
-                    name="position"
-                    value={newEmployee.position}
-                    onChange={handleInputChange}
-                    placeholder="Position"
-                    className={`p-2 border rounded-lg ${
-                      validationErrors.position
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
-                  />
-                  {validationErrors.position && (
-                    <p className="text-sm text-red-500">
-                      {validationErrors.position}
-                    </p>
-                  )}
-                  <label
-                    htmlFor="phone"
-                    className="block mb-1 text-sm font-medium"
-                  >
-                    {" "}
-                    Phone
-                  </label>
-                  <input
-                    type="text"
-                    name="phone"
-                    value={newEmployee.phone}
-                    onChange={handleInputChange}
-                    onKeyPress={handleKeyPress}
-                    placeholder="Phone"
-                    className={`p-2 border rounded-lg ${
-                      validationErrors.phone
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    }`}
-                  />
-                  {validationErrors.phone && (
-                    <p className="text-sm text-red-500">
-                      {validationErrors.phone}
-                    </p>
-                  )}
-                </div>
-                <div className="flex justify-end mt-4 space-x-4">
-                  <button
-                    onClick={() => setShowForm(false)} // Cancel button to close modal
-                    className="px-4 py-2 text-white bg-gray-500 rounded-lg hover:bg-gray-600"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSaveEmployee}
-                    className="px-4 py-2 text-white bg-cyan-600 rounded-lg hover:bg-cyan-600"
-                  >
-                    {editingIndex !== null ? "Update" : "Add"}
-                  </button>
-                </div>
-              </Modal>
             </div>
           </div>
         </div>
       </div>
+      <AddEditEmployeePopup
+        isOpen={showForm}
+        onClose={() => setShowForm(false)}
+        editingIndex={editingIndex}
+        setEditingIndex={setEditingIndex}
+        fetchEmployees={fetchEmployees}
+      />
     </>
   );
 };

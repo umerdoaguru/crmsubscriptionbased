@@ -4,8 +4,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { useSelector } from "react-redux";
-import SuperAdminSider from "./SuperAdminSider";
-import MainHeader from "../../components/MainHeader";
 import ReactPaginate from "react-paginate";
 
 const SuperAdminTotalLeadContent = () => {
@@ -43,9 +41,6 @@ const SuperAdminTotalLeadContent = () => {
   useEffect(() => {
     let filtered = leads;
 
-    // Filter by search term
-    // Filter by search term
-    // Filter by search term
     if (searchTerm) {
       const trimmedSearchTerm = searchTerm.toLowerCase().trim();
       filtered = filtered.filter((lead) =>
@@ -57,14 +52,13 @@ const SuperAdminTotalLeadContent = () => {
 
     // Update the filtered leads and reset to the first page
     setFilteredLeads(filtered);
-    setCurrentPage(0); // Reset to the first page when the search term changes
+    setCurrentPage(0);
   }, [searchTerm, leads]);
 
   // Pagination logic
   const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-  // const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
   const currentLeads =
     leadsPerPage === Infinity
       ? filteredLeads
@@ -77,7 +71,7 @@ const SuperAdminTotalLeadContent = () => {
   const handleLeadsPerPageChange = (e) => {
     const value = e.target.value;
     setLeadsPerPage(value === "All" ? Infinity : parseInt(value, 10));
-    setCurrentPage(0); // Reset to the first page
+    setCurrentPage(0);
   };
 
   return (
@@ -94,22 +88,22 @@ const SuperAdminTotalLeadContent = () => {
                   Back
                 </button>
               </div>
-              <h1 className="text-2xl text-center ">Total Leads </h1>
+              <h2 className="text-2xl text-center ">Total Leads</h2>
               <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
             </div>
             <div className=" px-2 ">
               <div className="flex justify-between mb-3">
                 <input
                   type="text"
-                  placeholder=" Name,Lead Source,Assigned To,Phone No"
+                  placeholder="Search by Name, Lead Source, Assigned To, Phone No..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="border rounded-2xl p-2 w-25"
+                  className="border rounded-md p-2 w-2/4"
                 />
 
                 <select
                   onChange={handleLeadsPerPageChange}
-                  className="border rounded-2xl p-2 w-1/4"
+                  className="border rounded-md p-2 w-1/4"
                 >
                   <option value={7}>Number of rows: 7</option>
                   <option value={10}>10</option>

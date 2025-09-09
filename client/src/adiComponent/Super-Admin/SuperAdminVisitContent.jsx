@@ -3,9 +3,6 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import SuperAdminSider from "./SuperAdminSider";
-import MainHeader from "../../components/MainHeader";
-import Pagination from "../comp/pagination";
 import ReactPaginate from "react-paginate";
 
 const SuperAdminVisitContent = () => {
@@ -110,11 +107,11 @@ const SuperAdminVisitContent = () => {
                     placeholder=" Name,Visit Type,Assigned To"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="border rounded-2xl p-2 w-25"
+                    className="border rounded-md p-2 w-2/4"
                   />
                   <select
                     onChange={handleLeadsPerPageChange}
-                    className="border rounded-2xl p-2 w-1/4"
+                    className="border rounded-md p-2 w-1/4"
                   >
                     <option value={7}>Number of rows: 7</option>
                     <option value={10}>10</option>
@@ -127,22 +124,22 @@ const SuperAdminVisitContent = () => {
                   <table className="min-w-full  border border-gray-300">
                     <thead className="bg-gray-100">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-bold text-cyan-600 uppercase tracking-wider">
                           S.no
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-bold text-cyan-600 uppercase tracking-wider">
                           Lead Id
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-bold text-cyan-600 uppercase tracking-wider">
                           Name
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-bold text-cyan-600 uppercase tracking-wider">
                           Assigned To
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-bold text-cyan-600 uppercase tracking-wider">
                           Visit
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-bold text-cyan-600 uppercase tracking-wider">
                           Visit Date
                         </th>
                       </tr>

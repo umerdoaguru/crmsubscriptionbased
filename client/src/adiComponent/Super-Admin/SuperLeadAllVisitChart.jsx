@@ -15,7 +15,7 @@ import moment from "moment";
 import { useSelector } from "react-redux";
 
 const SuperLeadAllVisitChart = () => {
-  const [loading, setLoading] = useState(false); // Properly manage loading state
+  const [loading, setLoading] = useState(false);
   const [visitData, setVisitData] = useState([]); // Correct state variable name
   const [error, setError] = useState(null); // To handle and display errors
   const superadminuser = useSelector((state) => state.auth.user);
@@ -108,8 +108,8 @@ const SuperLeadAllVisitChart = () => {
                 data={visitData}
                 margin={{
                   top: 5,
-                  right: 30,
-                  left: 0,
+                  right: 15,
+                  left: -40,
                   bottom: 5,
                 }}
               >

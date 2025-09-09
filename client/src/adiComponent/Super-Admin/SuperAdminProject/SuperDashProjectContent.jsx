@@ -3,8 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ReactPaginate from "react-paginate";
-import MainHeader from "../../../components/MainHeader";
-import SuperAdminSider from "../SuperAdminSider";
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 const SuperDashProjectContent = () => {
   const [projects, setProjects] = useState([]);
@@ -98,14 +97,14 @@ const SuperDashProjectContent = () => {
               <div className="flex justify-between ">
                 <input
                   type="text"
-                  placeholder="Search by Project Name, ID, or Location"
+                  placeholder="Search by Project Name, ID, or Location..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="border rounded-2xl p-2 w-1/4 mb-3"
+                  className="border border-cyan-600 rounded-md p-2 w-2/4 mb-3"
                 />
                 <select
                   onChange={handleLeadsPerPageChange}
-                  className="border rounded-2xl p-2 w-1/4 mb-3"
+                  className="border rounded-md p-2 w-1/4 mb-3"
                 >
                   <option value={5}>Number of rows: 5</option>
                   <option value={10}>10</option>
@@ -145,12 +144,12 @@ const SuperDashProjectContent = () => {
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {index + 1 + currentPage * projectsPerPage}
                       </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800 hover:text-cyan-700 font-bold capitalize ">
                         <Link
                           to={`/super-admin-project-units/${project.main_project_id}`}
-                          className="inline-block"
+                          className="flex items-center gap-1"
                         >
-                          {project.project_name}
+                          {project.project_name} <FaExternalLinkAlt />
                         </Link>
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">

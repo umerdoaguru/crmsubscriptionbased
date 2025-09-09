@@ -2,8 +2,6 @@ import { useState } from "react";
 import React from "react";
 import Sidebar from "../../utils/Sidebar";
 import Topbar from "../../utils/Topbar";
-import SuperReportsContent from "../../adiComponent/Super-Admin/SuperReportsContent";
-import SuperunitsContent from "../../adiComponent/Super-Admin/SuperAdminProject/SuperunitsContent";
 import SuperUnitsDetailsContent from "../../adiComponent/Super-Admin/SuperAdminProject/SuperUnitsDetailsContent";
 
 const SuperUnitsDetails = () => {

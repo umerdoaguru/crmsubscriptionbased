@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import MainHeader from "../MainHeader";
-import Sider from "../Sider";
 import cogoToast from "cogo-toast";
+import { motion } from "framer-motion";
 
 const ImportLeadsAdminContent = () => {
   const adminuser = useSelector((state) => state.auth.user);
@@ -31,16 +30,13 @@ const ImportLeadsAdminContent = () => {
   useEffect(() => {
     fetchEmployees();
     fetchProjects();
-    fetchProjectUnits();
   }, []);
 
   const fetchEmployees = async () => {
     try {
       const res = await axios.get(
         `https://crm-generalize.dentalguru.software/api/employee/${userId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setEmployees(res.data);
     } catch (err) {
@@ -52,9 +48,7 @@ const ImportLeadsAdminContent = () => {
     try {
       const res = await axios.get(
         `https://crm-generalize.dentalguru.software/api/all-project/${userId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setProjects(res.data);
     } catch (err) {
@@ -66,9 +60,7 @@ const ImportLeadsAdminContent = () => {
     try {
       const res = await axios.get(
         `https://crm-generalize.dentalguru.software/api/super-admin-project-unit/${projectId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setProjectUnits(res.data);
     } catch (err) {
@@ -78,21 +70,17 @@ const ImportLeadsAdminContent = () => {
 
   const handleProjectChange = (e) => {
     const projectId = parseInt(e.target.value, 10);
-    console.log(projects);
-
     const proj = projects.find((p) => p.main_project_id === projectId);
     setSelectedProjectId(projectId);
-
     setSelectedProjectName(proj?.project_name || "");
     setSelectedUnitType("");
     fetchProjectUnits(projectId);
   };
 
   const handleEmployeeChange = (e) => {
-    const employeeId = parseInt(e.target.value, 10); // Convert to number
+    const employeeId = parseInt(e.target.value, 10);
     const emp = employees.find((emp) => emp.employeeId === employeeId);
     setSelectedEmployee(employeeId);
-
     setSelectedEmployeeName(emp?.name || "");
   };
 
@@ -139,10 +127,7 @@ const ImportLeadsAdminContent = () => {
           },
         }
       );
-
       cogoToast.success(res.data.message || "Leads imported successfully");
-
-      // Clear form
       setFile(null);
       setFileKey(Date.now());
       setSelectedEmployee("");
@@ -162,116 +147,168 @@ const ImportLeadsAdminContent = () => {
   };
 
   return (
-    <>
-      <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
-          <div className="mt-[2rem]">
-            <div className=" text-center mx-2">
-              <center className="text-2xl text-center font-medium">
-                Import Data
-              </center>
-              <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
+    <div className="flex mt-20">
+      <div className="w-full min-h-screen bg-gradient-to-br from-cyan-50 via-white to-indigo-50 p-4">
+        <motion.div
+          className="bg-white/80 backdrop-blur-lg shadow-2xl rounded-3xl p-8 w-full max-w-3xl mx-auto border border-gray-100"
+          initial={{ opacity: 0, y: 50, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          whileHover={{ scale: 1.01 }}
+        >
+          <motion.h2
+            className="text-4xl font-extrabold text-cyan-700 tracking-tight mb-4"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            Import Data
+          </motion.h2>
+          {/* <div className="mx-auto h-[3px] w-20 bg-cyan-600 mb-6 rounded-full"></div> */}
 
-              <div className="">
-                <label>Upload File only .xlsx,.csv</label>
-                <br />
-                <input
-                  type="file"
-                  accept=".xlsx,.csv"
-                  onChange={(e) => setFile(e.target.files[0])}
-                  className="border rounded-2xl p-2 xl:w-1/4 w-full"
-                  key={fileKey}
-                />
-              </div>
-              <a
-                href="/sample_leads.xlsx"
-                download
-                className="text-cyan-600 underline hover:text-cyan-800"
+          {/* File Upload */}
+          <motion.div
+            className="mb-6 text-left"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
+            <label className="block text-gray-700 font-semibold mb-2">
+              Upload File (.xlsx, .csv)
+            </label>
+            <input
+              type="file"
+              accept=".xlsx,.csv"
+              onChange={(e) => setFile(e.target.files[0])}
+              className="border-2 border-dashed border-cyan-400 rounded-2xl px-4 py-3 w-full focus:ring-2 focus:ring-cyan-500 transition cursor-pointer hover:border-cyan-600 hover:bg-cyan-50"
+              key={fileKey}
+            />
+            <a
+              href="/sample_leads.xlsx"
+              download
+              className="inline-block mt-3 text-cyan-600 font-semibold hover:text-cyan-800 transition"
+            >
+              Download Sample Excel File
+            </a>
+          </motion.div>
+
+          {/* Employee */}
+          <motion.div
+            className="mb-6 text-left"
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+          >
+            <label className="block text-gray-700 font-semibold mb-2">
+              Select Employee
+            </label>
+            <select
+              value={selectedEmployee}
+              onChange={handleEmployeeChange}
+              className="border rounded-xl px-4 py-3 w-full focus:ring-2 focus:ring-cyan-500 transition hover:bg-cyan-50"
+            >
+              <option value="">Select</option>
+              {employees.map((emp) => (
+                <option key={emp.employeeId} value={emp.employeeId}>
+                  {emp.name}
+                </option>
+              ))}
+            </select>
+          </motion.div>
+
+          {/* Project */}
+          <motion.div
+            className="mb-6 text-left"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+          >
+            <label className="block text-gray-700 font-semibold mb-2">
+              Select Project
+            </label>
+            <select
+              value={selectedProjectId}
+              onChange={handleProjectChange}
+              className="border rounded-xl px-4 py-3 w-full focus:ring-2 focus:ring-cyan-500 transition hover:bg-cyan-50"
+            >
+              <option value="">Select</option>
+              {projects.map((proj) => (
+                <option key={proj.main_project_id} value={proj.main_project_id}>
+                  {proj.project_name}
+                </option>
+              ))}
+            </select>
+          </motion.div>
+
+          {/* Unit Type */}
+          {projectUnits.length > 0 && (
+            <motion.div
+              className="mb-6 text-left"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
+            >
+              <label className="block text-gray-700 font-semibold mb-2">
+                Select Unit Type
+              </label>
+              <select
+                value={selectedUnitType}
+                onChange={handleUnitChange}
+                className="border rounded-xl px-4 py-3 w-full focus:ring-2 focus:ring-cyan-500 transition hover:bg-cyan-50"
               >
-                Download Sample Excel File
-              </a>
+                <option value="">Select</option>
+                {projectUnits.map((unit) => (
+                  <option key={unit.unit_id} value={unit.unit_type}>
+                    {unit.unit_type}
+                  </option>
+                ))}
+              </select>
+            </motion.div>
+          )}
 
-              <div className="mb-3 mt-2">
-                <label>Select Employee</label>
-                <br />
-                <select
-                  value={selectedEmployee}
-                  onChange={handleEmployeeChange}
-                  className="border rounded-2xl p-2 xl:w-1/4 w-full"
-                >
-                  <option value="">Select</option>
-                  {employees.map((emp) => (
-                    <option key={emp.employeeId} value={emp.employeeId}>
-                      {emp.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+          {/* Date */}
+          <motion.div
+            className="mb-6 text-left"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+          >
+            <label className="block text-gray-700 font-semibold mb-2">
+              Assigned Date
+            </label>
+            <input
+              type="date"
+              value={assignedDate}
+              onChange={(e) => setAssignedDate(e.target.value)}
+              className="border rounded-xl px-4 py-3 w-full focus:ring-2 focus:ring-cyan-500 transition hover:bg-cyan-50"
+            />
+          </motion.div>
 
-              <div className="mb-3">
-                <label>Select Project</label>
-                <br />
-                <select
-                  value={selectedProjectId}
-                  onChange={handleProjectChange}
-                  className="border rounded-2xl p-2 xl:w-1/4 w-full"
-                >
-                  <option value="">Select</option>
-                  {projects.map((proj) => (
-                    <option
-                      key={proj.main_project_id}
-                      value={proj.main_project_id}
-                    >
-                      {proj.project_name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+          {/* Submit */}
+          <motion.button
+            className="bg-gradient-to-r from-cyan-500 to-cyan-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:from-cyan-600 hover:to-cyan-800 transition-all w-full"
+            onClick={handleSubmit}
+            disabled={loading}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {loading ? "Uploading..." : "Import Leads"}
+          </motion.button>
 
-              {projectUnits.length > 0 && (
-                <div className="mb-3">
-                  <label>Select Unit Type</label>
-                  <br />
-                  <select
-                    value={selectedUnitType}
-                    onChange={handleUnitChange}
-                    className="border rounded-2xl p-2 xl:w-1/4 w-full"
-                  >
-                    <option value="">Select</option>
-                    {projectUnits.map((unit) => (
-                      <option key={unit.unit_id} value={unit.unit_type}>
-                        {unit.unit_type}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              <div className="mb-3">
-                <label>Assigned Date</label>
-                <br />
-                <input
-                  type="date"
-                  value={assignedDate}
-                  onChange={(e) => setAssignedDate(e.target.value)}
-                  className="border rounded-2xl p-2 xl:w-1/4 w-full"
-                />
-              </div>
-
-              <button
-                className="bg-cyan-600 text-white px-4 py-2 rounded"
-                onClick={handleSubmit}
-                disabled={loading}
-              >
-                {loading ? "Uploading..." : "Import Leads"}
-              </button>
-
-              {message && <p className="mt-3 text-green-600">{message}</p>}
-            </div>
-          </div>
-        </div>
+          {/* Message */}
+          {message && (
+            <motion.p
+              className="mt-4 text-green-600 font-semibold"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4 }}
+            >
+              {message}
+            </motion.p>
+          )}
+        </motion.div>
       </div>
-    </>
+    </div>
   );
 };
 

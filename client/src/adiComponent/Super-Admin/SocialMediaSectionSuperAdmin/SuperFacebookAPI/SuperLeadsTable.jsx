@@ -212,10 +212,6 @@ const SuperLeadsTable = () => {
     }
   };
 
-  // const extractFieldValue = (fieldData, fieldName) => {
-  //   const field = fieldData.find((item) => item.name === fieldName);
-  //   return field ? field.values[0] : "";
-  // };
 
   const closePopup = () => {
     setShowPopup(false);
@@ -244,18 +240,6 @@ const SuperLeadsTable = () => {
     fetchLeadassigned();
   }, [gotId]);
 
-  // const saveIntoDB = async () => {
-  //   try {
-  //     // Fetch leads from Meta API via backend
-  //     const response = await axios.post('https://crm-generalize.dentalguru.software/api/leads/fetch', {
-  //       formId: gotId,
-  //     });
-  //     setLoading(true);
-  //     fetchLeadsByFormId();
-  //   } catch (err) {
-  //     console.error('Error fetching leads:', err);
-  //   }
-  // }
 
   useEffect(() => {
     saveIntoDB();

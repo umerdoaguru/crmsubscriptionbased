@@ -20,33 +20,86 @@ const Topbar = ({ isSidebarOpen }) => {
 
   const role = user?.roles;
   const isLoggedIn = !!user;
-  // const isAdmin = role === "admin";
 
-  // const pages = [
-  //   // visible when logged in
-  //   ...(isLoggedIn ? [{ name: "Dashboard", path: "/dashboard" }] : []),
+  // Example: role can be "admin", "employee", or "superadmin"
+  const isAdmin = role === "Admin";
+  const isEmployee = role === "employee" || role === "Employee";
+  const isSuperAdmin = role === "Super-Admin";
 
-  //   // admin-only
-  //   ...(isAdmin
-  //     ? [
-  //         { name: "Students", path: "/admin-students" },
-  //         { name: "Teachers", path: "/admin-teachers" },
-  //         { name: "Classes", path: "/admin-classes" },
-  //         { name: "Fees Management", path: "/admin-fees-management" },
-  //         { name: "Reports", path: "/admin-reports" },
-  //       ]
-  //     : []),
+  const pages = [
+    // Visible when logged in (generic dashboard by role)
+    ...(isLoggedIn
+      ? [
+          {
+            name: "Dashboard",
+            path: isAdmin
+              ? "/admin-dashboard"
+              : isEmployee
+              ? "/employees-dashboard"
+              : isSuperAdmin
+              ? "/super-admin-dashboard"
+              : "/",
+          },
+        ]
+      : []),
 
-  //   // any logged-in role
-  //   ...(isLoggedIn
-  //     ? [
-  //         { name: "Attendance", path: "/admin-attendance" },
-  //         { name: "Results", path: "/admin-results" },
-  //         { name: "Exams", path: "/admin-exams" },
-  //         { name: "Profile", path: "/profile" },
-  //       ]
-  //     : []),
-  // ];
+    // -------- ADMIN ROUTES --------
+    ...(isAdmin
+      ? [
+          { name: "Leads", path: "/leads" },
+          { name: "Social Media Leads", path: "/main-social-media-leads" },
+          { name: "Import Data", path: "/admin-import-data" },
+          { name: "Reports", path: "/admin-report" },
+          { name: "Data Export", path: "/data-export" },
+          { name: "Projects", path: "/admin-project" },
+          { name: "Employee Management", path: "/employee-management" },
+          { name: "Profile", path: "/admin-profile" },
+          { name: "Total Leads", path: "/admin-total-leads" },
+          { name: "Total Visits", path: "/admin-total-visit" },
+          { name: "Closed Deals", path: "/admin-total-closed" },
+          { name: "Sold Units", path: "/employee-sold-units" },
+        ]
+      : []),
+
+    // -------- EMPLOYEE ROUTES --------
+    ...(isEmployee
+      ? [
+          { name: "Leads", path: "/employee-leads" },
+          { name: "Reports", path: "/employee-report" },
+          { name: "Data Export", path: "/employee-data-export" },
+          { name: "Profile", path: "/employee-profile" },
+          { name: "Total Leads", path: "/employees-total-leads" },
+          { name: "Visits", path: "/visit-data" },
+          { name: "Closed Deals", path: "/close-data" },
+          { name: "Sold Units", path: "/employee-sold" },
+        ]
+      : []),
+
+    // -------- SUPERADMIN ROUTES --------
+    ...(isSuperAdmin
+      ? [
+          { name: "Employee Leads", path: "/super-admin-employee-leads" },
+          {
+            name: "Social Media Leads",
+            path: "/main-social-media-super-admin-leads",
+          },
+          { name: "Import Data", path: "/super-admin-import-data" },
+          { name: "Reports", path: "/super-admin-reporting" },
+          { name: "Data Export", path: "/super-admin-data-export" },
+          { name: "Projects", path: "/Super-admin-project" },
+          {
+            name: "Employee Management",
+            path: "/super-admin-employee-management",
+          },
+          { name: "Admin Management", path: "/super-admin-AdminManagement" },
+          { name: "Profile", path: "/super-admin-profile" },
+          { name: "Total Leads", path: "/super-admin-total-lead" },
+          { name: "Total Visits", path: "/super-admin-total-visit" },
+          { name: "Closed Deals", path: "/super-admin-close-data" },
+          { name: "Sold Units", path: "/super-admin-Sold-Units" },
+        ]
+      : []),
+  ];
 
   // console.log(selectedBranch);
 
@@ -71,17 +124,17 @@ const Topbar = ({ isSidebarOpen }) => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" / ");
 
-  // useEffect(() => {
-  //   const timeout = setTimeout(() => {
-  //     const lowerQuery = query.toLowerCase().trim();
-  //     setFilteredPages(
-  //       lowerQuery
-  //         ? pages.filter((page) => page.name.toLowerCase().includes(lowerQuery))
-  //         : []
-  //     );
-  //   }, 300); // Debounce input
-  //   return () => clearTimeout(timeout);
-  // }, [query]);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const lowerQuery = query.toLowerCase().trim();
+      setFilteredPages(
+        lowerQuery
+          ? pages.filter((page) => page.name.toLowerCase().includes(lowerQuery))
+          : []
+      );
+    }, 300); // Debounce input
+    return () => clearTimeout(timeout);
+  }, [query]);
 
   const handleSelect = (path) => {
     navigate(path);

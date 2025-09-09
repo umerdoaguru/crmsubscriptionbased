@@ -1,20 +1,9 @@
 import React, { useEffect, useState } from "react";
-
-import { Link } from "react-router-dom";
 import axios from "axios";
-import { SiMoneygram } from "react-icons/si";
-import { MdOutlineNextWeek } from "react-icons/md";
-import { GiFiles, GiMoneyStack } from "react-icons/gi";
+import { GiFiles } from "react-icons/gi";
 import { useSelector } from "react-redux";
-
-import Employees from "../../components/DataExport/Employees";
 import { FaCheckCircle, FaClipboardList } from "react-icons/fa";
-
-import SuperAdminSider from "./SuperAdminSider";
-import MainHeader from "../../components/MainHeader";
-
 import SuperLeadData from "./SuperDataExport/SuperLeadData";
-import SuperEmployees from "./SuperDataExport/SuperEmployees";
 import SuperVisitData from "./SuperDataExport/SuperVisitData";
 import SuperCloseData from "./SuperDataExport/SuperCloseDateData";
 import SuperSoldnit from "./SuperDataExport/SuperSolddUnit";
@@ -332,9 +321,8 @@ function SuperDataExportContent() {
             </div>
 
             {/* Conditionally render the selected component */}
-            <div className=" h-[calc(100vh-10rem)]  overflow-y-auto ">
+            <div className="">
               {selectedComponent === "LeadData" && <SuperLeadData />}
-              {/* {selectedComponent === "EmployeeData" && <SuperEmployees />} */}
               {selectedComponent === "VisitData" && <SuperVisitData />}
               {selectedComponent === "ClosedData" && <SuperCloseData />}
               {selectedComponent === "SoldData" && <SuperSoldnit />}

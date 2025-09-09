@@ -1,87 +1,69 @@
 import React from "react";
 import moment from "moment";
 import { useSelector } from "react-redux";
+import { motion } from "framer-motion";
+
 function AdminProfileContent() {
   const Admin = useSelector((state) => state.auth.user);
-  console.log(Admin);
+
+  const infoFields = [
+    { label: "ID", value: Admin?.id },
+    { label: "Name", value: Admin?.name },
+    { label: "Email", value: Admin?.email },
+    { label: "Role", value: Admin?.roles },
+    { label: "User ID", value: Admin?.user_id },
+    {
+      label: "Created Date",
+      value: moment(Admin?.created_date).format("DD/MM/YYYY"),
+    },
+  ];
 
   return (
-    <>
-      <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
-          <div className="container">
-            <div className="flex flex-col  lg:flex-row mt-14">
-              <div className="flex-grow md:p-4 mt-14 lg:mt-0 sm:ml-0">
-                <center className="text-2xl text-center mt-8 font-medium">
-                  Admin Profile
-                </center>
-                <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
-                <div className="flex flex-wrap  mb-4">
-                  <div className="w-full md:w-2/3 md:mx-0 mx-3">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                      <div>
-                        <label className="text-cyan-600 font-semibold">
-                          ID
-                        </label>
-                        <div className="p-2 bg-gray-100 rounded">
-                          <p className="m-0">{Admin?.id}</p>
-                        </div>
-                      </div>
+    <div className="flex justify-center mt-36 px-4">
+      <motion.div
+        className="w-full max-w-5xl bg-gradient-to-br from-white via-blue-50 to-cyan-100 rounded-3xl shadow-2xl p-8"
+        initial={{ opacity: 0, scale: 0.9, y: 40 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        {/* Header */}
+        <motion.h2
+          className="text-3xl font-bold text-center text-cyan-700"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          Admin Profile
+        </motion.h2>
+        <motion.div
+          className="h-1 w-24 bg-cyan-600 mx-auto my-4 rounded-full"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+        />
 
-                      <div>
-                        <label className="text-cyan-600 font-semibold">
-                          Name
-                        </label>
-                        <div className="p-2 bg-gray-100 rounded">
-                          <p className="m-0">{Admin?.name}</p>
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="text-cyan-600 font-semibold">
-                          Email
-                        </label>
-                        <div className="p-2 bg-gray-100 rounded">
-                          <p className="m-0">{Admin?.email}</p>
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="text-cyan-600 font-semibold">
-                          Role
-                        </label>
-                        <div className="p-2 bg-gray-100 rounded">
-                          <p className="m-0">{Admin?.roles}</p>
-                        </div>
-                      </div>
-                      <div>
-                        <label className="text-cyan-600 font-semibold">
-                          User Id
-                        </label>
-                        <div className="p-2 bg-gray-100 rounded">
-                          <p className="m-0">{Admin?.user_id}</p>
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="text-cyan-600 font-semibold">
-                          Created Date
-                        </label>
-                        <div className="p-2 bg-gray-100 rounded">
-                          <p className="m-0">
-                            {moment(Admin?.created_date).format("DD/MM/YYYY")}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* Profile Info */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+          {infoFields.map((field, idx) => (
+            <motion.div
+              key={idx}
+              className="bg-white rounded-2xl shadow-md p-4 hover:shadow-lg transition cursor-default border border-gray-100"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * idx }}
+              whileHover={{ scale: 1.03 }}
+            >
+              <p className="text-sm text-cyan-600 font-semibold mb-1">
+                {field.label}
+              </p>
+              <p className="text-gray-800 font-medium break-all">
+                {field.value || "—"}
+              </p>
+            </motion.div>
+          ))}
         </div>
-      </div>
-    </>
+      </motion.div>
+    </div>
   );
 }
 

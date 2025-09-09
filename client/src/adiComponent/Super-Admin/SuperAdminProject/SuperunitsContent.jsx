@@ -4,10 +4,9 @@ import cogoToast from "cogo-toast";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
 import { FaTrash, FaEdit } from "react-icons/fa";
-import MainHeader from "../../../components/MainHeader";
-import SuperAdminSider from "../SuperAdminSider";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import SuperUnitAddPopup from "./SuperUnitAddPopup";
 
 const SuperunitsContent = () => {
   const { id } = useParams();
@@ -16,20 +15,11 @@ const SuperunitsContent = () => {
   const [projectsPerPage] = useState(7);
   const [showModal, setShowModal] = useState(false);
   const [editProject, setEditProject] = useState({});
-  const [addform, setaddunit] = useState(false);
+  const [addUnit, setAddUnit] = useState(false);
   const [units, setUnits] = useState([]);
   const navigate = useNavigate();
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-
-  const [unitData, setUnitData] = useState({
-    main_project_id: id || "",
-    unit_type: "",
-    custom_unit_type: "",
-    unit_size: "",
-    total_units: "",
-    base_price: "",
-  });
 
   const fetchUnits = async () => {
     if (!id) return;
@@ -60,52 +50,8 @@ const SuperunitsContent = () => {
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUnitData({ ...unitData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const unitTypeToSend =
-        unitData.unit_type === "Other"
-          ? unitData.custom_unit_type
-          : unitData.unit_type;
-      const payload = { ...unitData, unit_type: unitTypeToSend };
-      delete payload.custom_unit_type;
-
-      await axios.post(
-        "https://crm-generalize.dentalguru.software/api/add-unit",
-        payload,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      cogoToast.success("Unit added successfully!", { position: "top-center" });
-      fetchUnits();
-      setaddunit(false);
-      setUnitData({
-        main_project_id: id || "",
-        unit_type: "",
-        custom_unit_type: "",
-        unit_size: "",
-        total_units: "",
-        base_price: "",
-      });
-    } catch (error) {
-      console.error("Error adding unit:", error);
-      cogoToast.error("Failed to add unit. Please try again.", {
-        position: "top-center",
-      });
-    }
-  };
-
   const handleaddunit = () => {
-    setaddunit((prev) => !prev);
+    setAddUnit(true);
   };
 
   const handleEdit = (unit) => {
@@ -141,22 +87,6 @@ const SuperunitsContent = () => {
       cogoToast.error("An error occurred while updating the unit.");
     }
   };
-
-  // const handleDelete = async (id) => {
-  //   const isConfirmed = window.confirm("Are you sure you want to delete this project?");
-  //   if (!isConfirmed) return;
-
-  //   try {
-  //     const { data } = await axios.delete(`https://crm-generalize.dentalguru.software/api/delete-unit/${id}`);
-  //     cogoToast.success(data.message || "Unit deleted successfully!");
-  //     fetchUnits();
-  //     // Corrected filtering
-  //     setProjects((prev) => prev.filter((unit) => unit.unit_id !== id));
-  //   } catch (error) {
-  //     console.error("Error deleting unit:", error);
-  //     cogoToast.error("An error occurred while deleting the unit.");
-  //   }
-  // };
 
   const handleDelete = async (id) => {
     const isConfirmed = window.confirm(
@@ -226,13 +156,6 @@ const SuperunitsContent = () => {
   const handleCustomLeadSourceChange = (e) => {
     setCustomLeadSource(e.target.value);
   };
-
-  const unitTypeToSend =
-    unitData.unit_type === "Other"
-      ? unitData.custom_unit_type
-      : unitData.unit_type;
-  const payload = { ...unitData, unit_type: unitTypeToSend };
-  delete payload.custom_unit_type;
 
   return (
     <>
@@ -378,150 +301,6 @@ const SuperunitsContent = () => {
                     breakLinkClassName={"page-link"}
                   />
                 </div>
-                {addform && (
-                  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4 z-[9999]">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-                      <button
-                        onClick={() => setaddunit(false)}
-                        className="absolute top-3 right-3 text-gray-600 hover:text-red-500"
-                      >
-                        ✖
-                      </button>
-
-                      <h2 className="text-xl font-semibold mb-4 text-gray-700">
-                        Add New Unit
-                      </h2>
-                      <form
-                        onSubmit={handleSubmit}
-                        className="bg-white p-4 shadow-lg rounded-lg"
-                      >
-                        <div className="grid grid-cols-1 gap-4">
-                          {/* Project ID */}
-                          <div>
-                            <label className="block text-gray-700 font-medium mb-1">
-                              Project ID
-                            </label>
-                            <input
-                              type="number"
-                              name="main_project_id"
-                              value={unitData.main_project_id}
-                              onChange={handleChange}
-                              placeholder="Project ID"
-                              className="p-3 border rounded-lg w-full"
-                              required
-                              readOnly
-                            />
-                          </div>
-
-                          <div>
-                            <label className="block text-gray-700 font-medium mb-1">
-                              Unit Type
-                            </label>
-                            <select
-                              name="unit_type"
-                              value={unitData.unit_type}
-                              onChange={handleChange}
-                              className="w-full p-2 border rounded"
-                            >
-                              <option value="">Select Unit Type</option>
-                              {combinedLeadSources.map((source) => (
-                                <option key={source} value={source}>
-                                  {source}
-                                </option>
-                              ))}
-                            </select>
-                            {unitData.unit_type === "Other" && (
-                              <input
-                                type="text"
-                                name="custom_unit_type"
-                                value={unitData.custom_unit_type}
-                                onChange={handleChange}
-                                placeholder="Enter custom unit type"
-                                className="mt-2 w-full px-3 py-2 border border-gray-300 rounded"
-                              />
-                            )}
-                          </div>
-
-                          {/* Unit Size */}
-                          <div>
-                            <label className="block text-gray-700 font-medium mb-1">
-                              Unit Area
-                            </label>
-                            <input
-                              type="number"
-                              name="unit_size"
-                              value={unitData.unit_size}
-                              onChange={handleChange}
-                              placeholder="e.g., 500sqft, 4000sqft"
-                              className="p-3 border rounded-lg w-full"
-                              required
-                              min={0}
-                              onKeyDown={(e) => {
-                                if (e.key === "-" || e.key === "Subtract") {
-                                  e.preventDefault();
-                                }
-                              }}
-                            />
-                          </div>
-
-                          {/* Total Units */}
-                          <div>
-                            <label className="block text-gray-700 font-medium mb-1">
-                              Total Units
-                            </label>
-                            <input
-                              type="number"
-                              name="total_units"
-                              value={unitData.total_units}
-                              onChange={handleChange}
-                              placeholder="Total Units"
-                              className="p-3 border rounded-lg w-full"
-                              required
-                              min={0}
-                              onKeyDown={(e) => {
-                                if (e.key === "-" || e.key === "Subtract") {
-                                  e.preventDefault();
-                                }
-                              }}
-                            />
-                          </div>
-
-                          {/* Base Price */}
-                          <div>
-                            <label className="block text-gray-700 font-medium mb-1">
-                              Base Price
-                            </label>
-                            <input
-                              type="number"
-                              name="base_price"
-                              value={unitData.base_price}
-                              onChange={handleChange}
-                              placeholder="Base Price"
-                              className="p-3 border rounded-lg w-full"
-                              required
-                              min={0}
-                              onKeyDown={(e) => {
-                                if (e.key === "-" || e.key === "Subtract") {
-                                  e.preventDefault();
-                                }
-                              }}
-                            />
-                          </div>
-
-                          {/* Submit Button */}
-                          <div className="mt-4">
-                            <button
-                              type="submit"
-                              className="w-full bg-cyan-600 text-white py-3 rounded-lg hover:bg-cyan-700 transition shadow-md"
-                            >
-                              Add Unit
-                            </button>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                )}
 
                 {showModal && editProject && (
                   <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999]">
@@ -632,6 +411,12 @@ const SuperunitsContent = () => {
           </div>
         </div>
       </div>
+      <SuperUnitAddPopup
+        isOpen={addUnit}
+        onClose={() => setAddUnit(false)}
+        combinedLeadSources={combinedLeadSources}
+        fetchUnits={fetchUnits}
+      />
     </>
   );
 };
