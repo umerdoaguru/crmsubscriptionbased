@@ -1,0 +1,18 @@
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+PassengerAppRoot "/home/dentalgu/crm-generalize.dentalguru.software"
+PassengerBaseURI "/"
+PassengerNodejs "/home/dentalgu/nodevenv/crm-generalize.dentalguru.software/20/bin/node"
+PassengerAppType node
+PassengerStartupFile app.js
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION BEGIN
+<IfModule Litespeed>
+SetEnv DATABASE dentalgu_crm_generalize	
+SetEnv JWT_SECRET crmdemowebApp
+SetEnv PASSWORD crmguru@123
+SetEnv PORT https://crm-generalize.dentalguru.software/
+SetEnv USER dentalgu_crmguru
+SetEnv localhost localhost
+SetEnv ACCESS_TOKEN EAAMAWRBboPIBOxVXzPhwnMZCxxZBo06BuwF9HhNge5eXpWVBhaAnlcgWLI42Cun8piZCUdnZCuv3L4ZCoPFEO8jueRyYk7rc5tUMmlOwhPdZBDZB4FgVkbiIGPfXv0QNf7xghEUiaqKz4DGA77ciFSwKfrSpQhbYWIwZCRJmdlcy2OitUN9wzavy
+</IfModule>
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION END
