@@ -98,8 +98,14 @@ const getAllPlanDetailsByPlanId = (req, res) => {
 
 const createCompanyProfile = (req, res) => {
   try {
-    const { company_name, industry, moblie_no, email_id, company_address } =
-      req.body;
+    const {
+      company_name,
+      industry,
+      moblie_no,
+      email_id,
+      company_address,
+      cp_subscription_id,
+    } = req.body;
     const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
 
     const checkQuery = `SELECT * FROM company_profile WHERE email_id = ?`;
@@ -118,7 +124,7 @@ const createCompanyProfile = (req, res) => {
       }
 
       const insertQuery = `INSERT INTO company_profile 
-        (company_name, industry, moblie_no, email_id, company_address, company_created_at) 
+        (company_name, industry, moblie_no, email_id, company_address, cp_subscription_id, company_created_at) 
         VALUES (?,?,?,?,?, ?)`;
       const insertParams = [
         company_name,
@@ -126,6 +132,7 @@ const createCompanyProfile = (req, res) => {
         moblie_no,
         email_id,
         company_address,
+        cp_subscription_id,
         dateTime,
       ];
 
@@ -160,9 +167,8 @@ const createCompanyProfile = (req, res) => {
 const saveSubscription = (req, res) => {
   try {
     const {
-      sub_org_id,
-      sub_plan_id,
-      sub_cycle_id,
+      sub_transaction_id,
+      sub_pricing_id,
       start_date,
       end_date,
       sub_status,
@@ -170,17 +176,15 @@ const saveSubscription = (req, res) => {
     const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
 
     const insertQuery = `INSERT INTO subscriptions 
-        (sub_org_id,
-      sub_plan_id,
-      sub_cycle_id,
+        (sub_transaction_id,
+      sub_pricing_id,
       start_date,
       end_date,
       sub_status,sub_created_at) 
-        VALUES (?,?,?,?,?, ?, ?)`;
+        VALUES (?,?,?,?,?, ?)`;
     const insertParams = [
-      sub_org_id,
-      sub_plan_id,
-      sub_cycle_id,
+      sub_transaction_id,
+      sub_pricing_id,
       start_date,
       end_date,
       sub_status,
@@ -274,6 +278,40 @@ const addNewCompanyStaff = (req, res) => {
   }
 };
 
+const addSubscriptionTransactions = (req, res) => {
+  try {
+    const { transaction_ref, trans_email, trans_amount, trans_status } =
+      req.body;
+
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+    const insertQuery = `INSERT INTO subscription_transactions 
+          ( transaction_ref, trans_email, trans_amount, trans_paid_at, trans_status, trans_created_at) 
+          VALUES (?,?,?,?,?,?)`;
+
+    const insertParams = [
+      transaction_ref,
+      trans_email,
+      trans_amount,
+      dateTime,
+      trans_status,
+      dateTime,
+    ];
+
+    db.query(insertQuery, insertParams, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+      return res.status(201).json({
+        success: true,
+        message: "Transaction added successfully",
+        staff_id: result.insertId,
+      });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
 module.exports = {
   insertNewPlan,
   insertBillingCycle,
@@ -283,4 +321,5 @@ module.exports = {
   createCompanyProfile,
   saveSubscription,
   addNewCompanyStaff,
+  addSubscriptionTransactions,
 };

@@ -206,6 +206,7 @@ const {
   createCompanyProfile,
   saveSubscription,
   addNewCompanyStaff,
+  addSubscriptionTransactions,
 } = require("../controllers/ControllerNine");
 
 // ========== Router Begins =====================
@@ -638,5 +639,6 @@ router.get("/getAllPlanDetailsByPlanId/:planId", getAllPlanDetailsByPlanId);
 router.post("/createCompanyProfile", createCompanyProfile);
 router.post("/saveSubscription", saveSubscription);
 router.post("/addNewCompanyStaff", addNewCompanyStaff);
+router.post("/addSubscriptionTransactions", addSubscriptionTransactions);
 
 module.exports = router;
