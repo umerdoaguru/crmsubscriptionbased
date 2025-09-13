@@ -5,6 +5,10 @@ const JWT = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const axios = require("axios");
 const moment = require("moment-timezone");
+const crypto = require("crypto");
+const dotenv = require("dotenv");
+const razorpay = require("../config/razorpay");
+dotenv.config();
 
 const insertNewPlan = (req, res) => {
   try {
@@ -312,6 +316,122 @@ const addSubscriptionTransactions = (req, res) => {
   }
 };
 
+const createRazorTransaction = async (req, res) => {
+  try {
+    const { amount } = req.body;
+
+    const options = {
+      amount: amount,
+      currency: "INR",
+      receipt: "receipt_" + Date.now(),
+    };
+
+    const order = await razorpay.orders.create(options);
+
+    res.json({
+      success: true,
+      orderId: order.id,
+      currency: order.currency,
+      amount: order.amount,
+    });
+  } catch (error) {
+    console.error("❌ Order creation failed:", error);
+    res.status(500).json({ success: false, message: "Order creation failed" });
+  }
+};
+
+const verifyRazorPayment = (req, res) => {
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      trans_email,
+      trans_amount,
+      sub_pricing_id, // from frontend (selectedCycle.pricing_id)
+      duration_days, // from frontend (selectedCycle.duration_days)
+    } = req.body;
+
+    // Step 1: Verify signature
+    const sign = razorpay_order_id + "|" + razorpay_payment_id;
+    const expectedSign = crypto
+      .createHmac("sha256", process.env.RAZORPAY_SECRET)
+      .update(sign.toString())
+      .digest("hex");
+
+    if (expectedSign !== razorpay_signature) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid signature" });
+    }
+
+    // Step 2: Insert into subscription_transactions
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+    const insertTransactionQuery = `
+      INSERT INTO subscription_transactions 
+      (transaction_ref, trans_email, trans_amount, trans_paid_at, trans_status, trans_created_at) 
+      VALUES (?,?,?,?,?,?)
+    `;
+
+    const transactionParams = [
+      razorpay_payment_id,
+      trans_email,
+      trans_amount,
+      dateTime,
+      "success",
+      dateTime,
+    ];
+
+    db.query(insertTransactionQuery, transactionParams, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+
+      const transactionId = result.insertId;
+
+      // Step 3: Insert into subscriptions
+      const startDate = moment().tz("Asia/Kolkata").format("YYYY-MM-DD");
+      const endDate = moment()
+        .tz("Asia/Kolkata")
+        .add(duration_days, "days")
+        .format("YYYY-MM-DD");
+
+      const insertSubQuery = `
+        INSERT INTO subscriptions 
+        (sub_transaction_id, sub_pricing_id, start_date, end_date, sub_status, sub_created_at) 
+        VALUES (?,?,?,?,?,?)
+      `;
+
+      const subParams = [
+        transactionId,
+        sub_pricing_id,
+        startDate,
+        endDate,
+        "active",
+        dateTime,
+      ];
+
+      db.query(insertSubQuery, subParams, (subErr, subResult) => {
+        if (subErr) {
+          return res
+            .status(400)
+            .json({ success: false, message: subErr.message });
+        }
+
+        return res.json({
+          success: true,
+          message: "✅ Payment verified, transaction & subscription saved",
+          transaction_id: transactionId,
+          subscription_id: subResult.insertId,
+        });
+      });
+    });
+  } catch (error) {
+    console.error("❌ Payment verification failed:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 module.exports = {
   insertNewPlan,
   insertBillingCycle,
@@ -322,4 +442,6 @@ module.exports = {
   saveSubscription,
   addNewCompanyStaff,
   addSubscriptionTransactions,
+  createRazorTransaction,
+  verifyRazorPayment,
 };

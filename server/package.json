@@ -27,6 +27,7 @@
     "mysql2": "^3.6.5",
     "nodemailer": "^6.9.15",
     "nodemon": "^3.0.1",
+    "razorpay": "^2.9.6",
     "server": "file:",
     "xlsx": "^0.18.5"
   }

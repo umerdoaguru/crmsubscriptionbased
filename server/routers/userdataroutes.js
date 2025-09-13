@@ -207,6 +207,8 @@ const {
   saveSubscription,
   addNewCompanyStaff,
   addSubscriptionTransactions,
+  createRazorTransaction,
+  verifyRazorPayment,
 } = require("../controllers/ControllerNine");
 
 // ========== Router Begins =====================
@@ -640,5 +642,7 @@ router.post("/createCompanyProfile", createCompanyProfile);
 router.post("/saveSubscription", saveSubscription);
 router.post("/addNewCompanyStaff", addNewCompanyStaff);
 router.post("/addSubscriptionTransactions", addSubscriptionTransactions);
+router.post("/createRazorTransaction", createRazorTransaction);
+router.post("/verifyRazorPayment", verifyRazorPayment);
 
 module.exports = router;
