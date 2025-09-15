@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import logoTwo from "../assets/favicon_one.png";
 import logoOne from "../assets/CRMGuruLogo.png";
-
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -15,10 +14,9 @@ const Topbar = ({ isSidebarOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [query, setQuery] = useState("");
-  const [branchData, setBranchData] = useState([]);
   const [filteredPages, setFilteredPages] = useState([]);
 
-  const role = user?.roles;
+  const role = user?.staff_role;
   const isLoggedIn = !!user;
 
   // Example: role can be "admin", "employee", or "superadmin"
@@ -101,23 +99,6 @@ const Topbar = ({ isSidebarOpen }) => {
       : []),
   ];
 
-  // console.log(selectedBranch);
-
-  const fetchBranchData = async () => {
-    try {
-      const { data } = await axios.get(
-        `https://school-management.newdreamindia.com/api/v1/admin/getSchoolBranch`
-      );
-      setBranchData(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchBranchData();
-  }, []);
-
   const pageTitle = location.pathname
     ?.split("/")
     .filter(Boolean)
@@ -151,15 +132,15 @@ const Topbar = ({ isSidebarOpen }) => {
   };
 
   const navigateToProfile = () => {
-    if (role === "Super-Admin") {
+    if (role === "superadmin") {
       navigate("/super-admin-profile");
     }
 
-    if (role === "Admin") {
+    if (role === "admin") {
       navigate("/admin-profile");
     }
 
-    if (role === "Employee") {
+    if (role === "employee") {
       navigate("/employee-profile");
     }
   };
@@ -220,7 +201,7 @@ const Topbar = ({ isSidebarOpen }) => {
             onClick={navigateToProfile}
             className="bg-cyan-600 text-white text-xl font-bold w-10 h-10 p-6 flex items-center justify-center rounded-full"
           >
-            {getInitials(user?.name)}
+            {getInitials(user?.staff_name)}
           </button>
         </div>
       </div>

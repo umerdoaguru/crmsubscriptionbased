@@ -12,7 +12,7 @@ import SuperAdminEditLeadPopup from "./SuperAdminEditLeadPopup";
 function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;
+  const userId = superadminuser.staff_id;
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [filterDate, setFilterDate] = useState("");

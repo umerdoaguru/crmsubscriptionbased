@@ -10,21 +10,20 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import styled from "styled-components";
 import moment from "moment";
 import { useSelector } from "react-redux";
 
 const SuperLeadAllVisitChart = () => {
   const [loading, setLoading] = useState(false);
-  const [visitData, setVisitData] = useState([]); // Correct state variable name
-  const [error, setError] = useState(null); // To handle and display errors
+  const [visitData, setVisitData] = useState([]);
+  const [error, setError] = useState(null);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;
+  const userId = superadminuser.staff_id;
 
   useEffect(() => {
     const fetchLeadsData = async () => {
-      setLoading(true); // Start loading
+      setLoading(true);
 
       try {
         const response = await axios.get(

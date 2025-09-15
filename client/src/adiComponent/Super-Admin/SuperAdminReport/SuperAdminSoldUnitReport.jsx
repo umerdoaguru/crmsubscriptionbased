@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 function SoldAdminSoldUnitReport() {
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
-  const [duration, setDuration] = useState("all"); // Default duration filter
+  const [duration, setDuration] = useState("all");
   const [selectedColumns, setSelectedColumns] = useState([
     "lead_id",
     "project_name",
@@ -22,7 +22,7 @@ function SoldAdminSoldUnitReport() {
   const leadsPerPage = 6;
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;
+  const userId = superadminuser.staff_id;
 
   // Fetch leads from the API without appending an ID
   useEffect(() => {

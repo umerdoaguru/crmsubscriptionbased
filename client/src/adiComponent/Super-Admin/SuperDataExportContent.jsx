@@ -15,11 +15,11 @@ function SuperDataExportContent() {
   const [employee, setEmployee] = useState([]);
   const [quotation, setQuotation] = useState([]);
   const [invoice, setInvoice] = useState([]);
-  const [selectedComponent, setSelectedComponent] = useState("LeadData"); // Set 'LeadData' as default
+  const [selectedComponent, setSelectedComponent] = useState("LeadData");
 
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;
+  const userId = superadminuser.staff_id;
 
   useEffect(() => {
     fetchLeads();
@@ -67,7 +67,13 @@ function SuperDataExportContent() {
   const fetchQuotation = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/quotation-data`
+        `https://crm-generalize.dentalguru.software/api/quotation-data`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setQuotation(response.data);
     } catch (error) {

@@ -16,7 +16,7 @@ const SuperDealClosedGraph = () => {
   const [dealStatusData, setDealStatusData] = useState([]);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;
+  const userId = superadminuser.staff_id;
 
   // Function to format the date to "DD MMM" format
   const formatDate = (dateString) => {
@@ -37,7 +37,7 @@ const SuperDealClosedGraph = () => {
       const date = new Date(today);
       date.setDate(today.getDate() - i);
       const formattedDay = formatDate(date);
-      const formattedDate = date.toISOString().split("T")[0]; // Format date as "YYYY-MM-DD"
+      const formattedDate = date.toISOString().split("T")[0];
 
       // Filter leads that match the `d_closeDate` for this specific day
       const matchedLeads = fetchedData.filter(
@@ -50,12 +50,12 @@ const SuperDealClosedGraph = () => {
 
       // Push the day and the number of closed deals for that day
       data.push({
-        day: formattedDay, // Day in "DD MMM" format
-        Close_Deal: matchedLeads.length, // Count the number of matched leads
+        day: formattedDay,
+        Close_Deal: matchedLeads.length,
       });
     }
 
-    return data.reverse(); // Keep the data in chronological order from oldest to newest
+    return data.reverse();
   };
 
   // Fetch data from the API

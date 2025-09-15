@@ -1,69 +1,135 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import moment from "moment";
+import axios from "axios";
+import UpdateProfilePopup from "./UpdateProfilePopup";
+import ChangePasswordPopup from "./ChangePasswordPopup";
 
-function SuperAdminProfileContent() {
+const SuperAdminProfileContent = () => {
   const superAdmin = useSelector((state) => state.auth.user);
+  const [profileData, setProfileData] = useState([]);
+  const [updateModal, setUpdateModal] = useState(false);
+  const [passwordModal, setPasswordModal] = useState(false);
+  const [selected, setSelected] = useState(null);
+
+  const openPopupWindow = (data) => {
+    setSelected(data);
+    setUpdateModal(true);
+  };
+
+  const changePopupWindow = (data) => {
+    setSelected(data);
+    setPasswordModal(true);
+  };
+
+  const fetchEmployeeData = async () => {
+    try {
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getEmployeeDetails/${superAdmin?.staff_id}`
+      );
+      setProfileData(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchEmployeeData();
+  }, []);
+
+  console.log(profileData);
 
   const infoFields = [
-    { label: "User ID", value: superAdmin?.id },
-    { label: "Name", value: superAdmin?.name },
-    { label: "Email", value: superAdmin?.email },
-    { label: "Role", value: superAdmin?.roles },
+    { label: "User ID", value: profileData[0]?.staff_id },
+    { label: "Name", value: profileData[0]?.staff_name },
+    { label: "Email", value: profileData[0]?.staff_email },
+    { label: "Role", value: profileData[0]?.staff_role },
+    { label: "Phone", value: profileData[0]?.staff_phone },
     {
       label: "Created Date",
-      value: moment(superAdmin?.created_date).format("DD/MM/YYYY"),
+      value: moment(profileData[0]?.staff_created_date).format("DD/MM/YYYY"),
     },
   ];
 
   return (
-    <div className="flex justify-center mt-36 px-4">
-      <motion.div
-        className="w-full max-w-5xl bg-gradient-to-br from-white via-blue-50 to-cyan-100 rounded-3xl shadow-2xl p-8"
-        initial={{ opacity: 0, scale: 0.9, y: 40 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-      >
-        {/* Header */}
-        <motion.h2
-          className="text-3xl font-bold text-center text-cyan-700"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          Super Admin Profile
-        </motion.h2>
+    <>
+      <div className="flex justify-center mt-36 px-4">
         <motion.div
-          className="h-1 w-28 bg-cyan-600 mx-auto my-4 rounded-full"
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-        />
-
-        {/* Profile Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-          {infoFields.map((field, idx) => (
-            <motion.div
-              key={idx}
-              className="bg-white rounded-2xl shadow-md p-4 hover:shadow-lg transition cursor-default border border-gray-100"
-              initial={{ opacity: 0, y: 20 }}
+          className="w-full max-w-5xl bg-gradient-to-br from-white via-blue-50 to-cyan-100 rounded-3xl shadow-2xl p-8"
+          initial={{ opacity: 0, scale: 0.9, y: 40 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          {/* Header with Button */}
+          <div className="flex items-center justify-between">
+            {/* Left side - Heading */}
+            <motion.h2
+              className="text-3xl font-bold text-cyan-700"
+              initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * idx }}
-              whileHover={{ scale: 1.03 }}
+              transition={{ delay: 0.2 }}
             >
-              <p className="text-sm text-cyan-600 font-semibold mb-1">
-                {field.label}
-              </p>
-              <p className="text-gray-800 font-medium break-all">
-                {field.value || "—"}
-              </p>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-    </div>
+              Super Admin Profile
+            </motion.h2>
+
+            {/* Right side - Buttons */}
+            <div className="flex gap-3">
+              <motion.button
+                className="px-5 py-2 bg-cyan-600 text-white font-medium rounded-lg shadow hover:bg-cyan-700 transition"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => openPopupWindow(profileData[0])}
+              >
+                Update Profile
+              </motion.button>
+
+              <motion.button
+                className="px-5 py-2 bg-cyan-600 text-white font-medium rounded-lg shadow hover:bg-cyan-700 transition"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => changePopupWindow(profileData[0])}
+              >
+                Change Password
+              </motion.button>
+            </div>
+          </div>
+
+          {/* Profile Info */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+            {infoFields.map((field, idx) => (
+              <motion.div
+                key={idx}
+                className="bg-white rounded-2xl shadow-md p-4 hover:shadow-lg transition cursor-default border border-gray-100"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 * idx }}
+                whileHover={{ scale: 1.03 }}
+              >
+                <p className="text-sm text-cyan-600 font-semibold mb-1">
+                  {field.label}
+                </p>
+                <p className="text-gray-800 font-medium break-all">
+                  {field.value || "—"}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+      <UpdateProfilePopup
+        isOpen={updateModal}
+        onClose={() => setUpdateModal(false)}
+        selected={selected}
+        fetchEmployeeData={fetchEmployeeData}
+      />
+      <ChangePasswordPopup
+        isOpen={passwordModal}
+        onClose={() => setPasswordModal(false)}
+        selected={selected}
+      />
+    </>
   );
-}
+};
 
 export default SuperAdminProfileContent;

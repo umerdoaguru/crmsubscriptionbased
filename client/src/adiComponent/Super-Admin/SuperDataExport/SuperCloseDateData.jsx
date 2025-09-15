@@ -50,7 +50,7 @@ const SuperCloseData = () => {
   }, []);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;
+  const userId = superadminuser.staff_id;
 
   const fetchLeads = async () => {
     try {

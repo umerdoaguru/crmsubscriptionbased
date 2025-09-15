@@ -17,7 +17,7 @@ const SuperLeadGraph = () => {
   const [error, setError] = useState(null);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;
+  const userId = superadminuser.staff_id;
   useEffect(() => {
     const fetchLeadsData = async () => {
       try {
@@ -39,7 +39,7 @@ const SuperLeadGraph = () => {
 
         const filteredLeads = allLeads.filter((lead) => {
           const leadDate = moment(lead.createdTime, "YYYY-MM-DD HH:mm:ss");
-          return leadDate.isBetween(startDate, today, undefined, "[]"); // Check date range
+          return leadDate.isBetween(startDate, today, undefined, "[]");
         });
 
         // Group by date

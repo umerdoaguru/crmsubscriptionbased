@@ -5,78 +5,13 @@ import SuperLeadReport from "./SuperAdminReport/SuperLeadReport";
 import SuperVisitReport from "./SuperAdminReport/SuperVisitReport";
 import SuperClosedDealReport from "./SuperAdminReport/SuperClosedDealReport";
 import SoldAdminSoldUnitReport from "./SuperAdminReport/SuperAdminSoldUnitReport";
+import { SiGoogleads } from "react-icons/si";
+import { FaHouseChimney } from "react-icons/fa6";
+import { FaHandshake } from "react-icons/fa";
+import { RiCommunityFill } from "react-icons/ri";
 
 const SuperReportsContent = () => {
-  const [leads, setLeads] = useState([]);
-  const [visit, setVisit] = useState([]);
-  const [employee, setEmployee] = useState([]);
-  const [quotation, setQuotation] = useState([]);
-  const [invoice, setInvoice] = useState([]);
   const [selectedComponent, setSelectedComponent] = useState("LeadData");
-  const UserId = useSelector((state) => state.auth.user.id);
-
-  useEffect(() => {
-    fetchLeads();
-    fetchEmployee();
-    fetchQuotation();
-    fetchInvoice();
-    fetchVisit();
-  }, []);
-
-  const fetchLeads = async () => {
-    try {
-      const response = await axios.get(
-        "https://crm-generalize.dentalguru.software/api/leads"
-      );
-      setLeads(response.data);
-    } catch (error) {
-      console.error("Error fetching leads:", error);
-    }
-  };
-
-  const fetchEmployee = async () => {
-    try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employee`
-      );
-      setEmployee(response.data);
-    } catch (error) {
-      console.error("Error fetching employee data:", error);
-    }
-  };
-
-  const fetchQuotation = async () => {
-    try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/quotation-data`
-      );
-      setQuotation(response.data);
-    } catch (error) {
-      console.error("Error fetching quotations:", error);
-    }
-  };
-
-  const fetchInvoice = async () => {
-    try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/invoice-data`
-      );
-      setInvoice(response.data);
-    } catch (error) {
-      console.error("Error fetching invoices:", error);
-    }
-  };
-
-  const fetchVisit = async () => {
-    try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-all-visit`
-      );
-      setVisit(response.data);
-    } catch (error) {
-      console.error("Error fetching visits:", error);
-    }
-  };
 
   return (
     <>
@@ -108,7 +43,7 @@ const SuperReportsContent = () => {
                         : "text-cyan-600"
                     }`}
                   >
-                    📊
+                    <SiGoogleads />
                   </div>
                   <p className="text-lg font-semibold">Leads</p>
                 </div>
@@ -131,7 +66,7 @@ const SuperReportsContent = () => {
                         : "text-cyan-600"
                     }`}
                   >
-                    🏡
+                    <FaHouseChimney />
                   </div>
                   <h5 className="text-lg font-semibold">Site Visit</h5>
                 </div>
@@ -154,7 +89,7 @@ const SuperReportsContent = () => {
                         : "text-cyan-600"
                     }`}
                   >
-                    🤝
+                    <FaHandshake />
                   </div>
                   <h5 className="text-lg font-semibold">Closed Deal</h5>
                 </div>
@@ -177,7 +112,7 @@ const SuperReportsContent = () => {
                         : "text-cyan-600"
                     }`}
                   >
-                    🏢
+                    <RiCommunityFill />
                   </div>
                   <h5 className="text-lg font-semibold">Sold Units</h5>
                 </div>

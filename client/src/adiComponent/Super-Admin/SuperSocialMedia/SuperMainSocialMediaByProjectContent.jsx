@@ -7,7 +7,7 @@ function SuperMainSocialMediaByProjectContent() {
   const [projects, setProjects] = useState([]);
   const user = useSelector((state) => state.auth.user);
   const token = user?.token;
-  const userId = user.id;
+  const userId = user.staff_id;
 
   useEffect(() => {
     const fetchProjectDetail = async () => {

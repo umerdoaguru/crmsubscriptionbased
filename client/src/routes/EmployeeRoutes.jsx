@@ -81,7 +81,7 @@ function EmployeeRoutes() {
       <div style={{ overflow: "hidden" }}>
         <Routes>
           <Route path="/" element={<EmployeeDashboard />} />
-          <Route path="/employees-dashboard" element={<EmployeeDashboard />} />
+          <Route path="/dashboard" element={<EmployeeDashboard />} />
           <Route path="/employee-leads" element={<EmployeeLead />} />
           <Route path="/employee-report" element={<EmployeeReport />} />
           <Route

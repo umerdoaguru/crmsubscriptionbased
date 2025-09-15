@@ -432,6 +432,232 @@ const verifyRazorPayment = (req, res) => {
   }
 };
 
+const OneOnlylogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
+    const checkUserQuery = "SELECT * FROM company_staff WHERE staff_email = ?";
+    db.query(checkUserQuery, [email], async (err, results) => {
+      if (err) {
+        return res
+          .status(500)
+          .send({ success: false, message: "DB error", error: err.message });
+      }
+
+      if (results.length === 0) {
+        return res.status(404).send({
+          success: false,
+          message: "Email is not registered",
+        });
+      }
+
+      const user = results[0];
+
+      // compare passwords
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) {
+        return res.status(401).send({
+          success: false,
+          message: "Invalid password",
+        });
+      }
+
+      const token = JWT.sign({ id: user.user_id }, process.env.JWT_SECRET, {
+        expiresIn: "7d",
+      });
+
+      res.status(200).send({
+        success: true,
+        message: "Login successfully",
+        user: {
+          ...user,
+          token,
+        },
+      });
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error in login",
+      error: error.message,
+    });
+  }
+};
+
+const sendOtpOnlyOne = (req, res) => {
+  const { email } = req.body;
+
+  const selectQuery = "SELECT * FROM company_staff WHERE staff_email = ?";
+
+  db.query(selectQuery, email, (err, result) => {
+    if (err) {
+      return res.status(400).json({ success: false, message: err.message });
+    } else {
+      if (!result || result.length === 0) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Email not found" });
+      } else {
+        // Random OTP generation
+        function generateOTP(length) {
+          const chars = "0123456789";
+          let otp = "";
+
+          for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * chars.length);
+            otp += chars[randomIndex];
+          }
+
+          return otp;
+        }
+
+        const OTP = generateOTP(6);
+
+        try {
+          const transporter = nodemailer.createTransport({
+            host: "mail.dentalguru.software",
+            port: 465,
+            secure: true, // Use SSL
+            auth: {
+              user: "crminfo@dentalguru.software",
+              pass: "crmdentalguru@123",
+            },
+          });
+
+          const mailOptions = {
+            from: "crminfo@dentalguru.software",
+            to: email,
+            subject: "CRMGuru User Password Reset OTP",
+            text: `Your OTP for password reset is: ${OTP}`,
+          };
+
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              return res
+                .status(500)
+                .json("An error occurred while sending the email.");
+            } else {
+              const updateQuery =
+                "INSERT INTO otpcollections (email, code) VALUES (?, ?) ON DUPLICATE KEY UPDATE code = VALUES(code)";
+              db.query(updateQuery, [email, OTP], (upErr, upResult) => {
+                if (upErr) {
+                  return res
+                    .status(400)
+                    .json({ success: false, message: upErr.message });
+                }
+                return res
+                  .status(200)
+                  .json({ message: "OTP sent successfully" });
+              });
+            }
+          });
+        } catch (error) {
+          return res.status(500).json("An error occurred.");
+        }
+      }
+    }
+  });
+};
+
+const getEmployeeDetails = (req, res) => {
+  try {
+    const staffId = req.params.staffId;
+    const selectQuery = `select * from company_staff staff_id = ?`;
+    db.query(selectQuery, staffId, (err, result) => {
+      if (err) {
+        res.status(400).json({ success: false, message: err.message });
+      }
+      res.status(200).send(result);
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const updateEmployeeDetails = (req, res) => {
+  try {
+    const staffId = req.params.staffId;
+    const {
+      staff_role,
+      staff_name,
+      staff_email,
+      staff_phone,
+      staff_password,
+      staff_status,
+    } = req.body;
+
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+    let fields = [];
+    let values = [];
+
+    if (staff_role) {
+      fields.push("staff_role = ?");
+      values.push(staff_role);
+    }
+    if (staff_name) {
+      fields.push("staff_name = ?");
+      values.push(staff_name);
+    }
+    if (staff_email) {
+      fields.push("staff_email = ?");
+      values.push(staff_email);
+    }
+    if (staff_phone) {
+      fields.push("staff_phone = ?");
+      values.push(staff_phone);
+    }
+    if (staff_password) {
+      fields.push("staff_password = ?");
+      values.push(staff_password);
+    }
+    if (staff_status) {
+      fields.push("staff_status = ?");
+      values.push(staff_status);
+    }
+
+    fields.push("staff_updated_at = ?");
+    values.push(dateTime);
+
+    if (fields.length === 0) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No fields provided for update" });
+    }
+
+    const updateQuery = `UPDATE company_staff SET ${fields.join(
+      ", "
+    )} WHERE staff_id = ?`;
+    values.push(staffId);
+
+    db.query(updateQuery, values, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+
+      if (result.affectedRows === 0) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Employee not found" });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "Employee details updated successfully",
+      });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   insertNewPlan,
   insertBillingCycle,
@@ -444,4 +670,8 @@ module.exports = {
   addSubscriptionTransactions,
   createRazorTransaction,
   verifyRazorPayment,
+  OneOnlylogin,
+  sendOtpOnlyOne,
+  getEmployeeDetails,
+  updateEmployeeDetails,
 };

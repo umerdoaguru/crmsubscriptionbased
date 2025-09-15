@@ -27,7 +27,7 @@ const SuperSoldnit = () => {
   ]);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;
+  const userId = superadminuser.staff_id;
 
   useEffect(() => {
     fetchEmployeeUnitSold();
@@ -74,7 +74,7 @@ const SuperSoldnit = () => {
   const fetchSoldUnits = async () => {
     try {
       const response = await axios.get(
-        "https://crm-generalize.dentalguru.software/api/super-admin-unit-sold",
+        `https://crm-generalize.dentalguru.software/api/super-admin-unit-sold/${userId}`,
         {
           headers: {
             "Content-Type": "application/json",

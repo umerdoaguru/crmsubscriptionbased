@@ -44,7 +44,7 @@ function SuperLeadData() {
 
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;
+  const userId = superadminuser.staff_id;
   useEffect(() => {
     fetchLeads();
     fetchEmployees();
@@ -196,7 +196,7 @@ function SuperLeadData() {
   };
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       {/* <Sider /> */}
       <div className="container 2xl:w-[95%] ">
         <h1 className="text-2xl text-center mt-[2rem] font-medium">

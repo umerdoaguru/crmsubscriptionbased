@@ -13,8 +13,7 @@ const SuperVisitData = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const leadsPerPage = 6; // Default leads per page
-  const EmpId = useSelector((state) => state.auth.user.id);
+  const leadsPerPage = 6;
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [selectedColumns, setSelectedColumns] = useState([
@@ -45,7 +44,7 @@ const SuperVisitData = () => {
   ]);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;
+  const userId = superadminuser.staff_id;
 
   // Fetch leads from the API
   useEffect(() => {

@@ -64,7 +64,7 @@ function AdminRoutes() {
       <Routes>
         {/* Admin routes */}
         <Route path="/" element={<AdminDashboard />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/dashboard" element={<AdminDashboard />} />
         <Route path="/leads" element={<AdminLeads />} />
         <Route
           path="/main-social-media-leads"

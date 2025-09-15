@@ -44,7 +44,7 @@ function SuperAdminRoutes() {
     <>
       <Routes>
         <Route path="/" element={<SuperDash />} />
-        <Route path="/super-admin-dashboard" element={<SuperDash />} />
+        <Route path="/dashboard" element={<SuperDash />} />
         <Route
           path="/super-admin-employee-leads"
           element={<SuperEmployeeLeads />}

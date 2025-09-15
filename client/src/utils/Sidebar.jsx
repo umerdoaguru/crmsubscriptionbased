@@ -23,17 +23,17 @@ import logoOne from "../assets/CRMGuruLogo.png";
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const user = useSelector((state) => state.auth.user);
-  console.log(user?.roles);
+  console.log(user?.staff_role);
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const menuItems = [
-    ...(user?.roles === "Super-Admin"
+    ...(user?.staff_role === "superadmin"
       ? [
           {
             name: "Dashboard",
-            path: "/super-admin-dashboard",
+            path: "/dashboard",
             icon: <MdDashboard />,
           },
 
@@ -72,19 +72,19 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             path: "/super-admin-employee-management",
             icon: <IoIosPeople />,
           },
-          {
-            name: "Admin Management",
-            path: "/super-admin-AdminManagement",
-            icon: <RiAdminFill />,
-          },
+          // {
+          //   name: "Admin Management",
+          //   path: "/super-admin-AdminManagement",
+          //   icon: <RiAdminFill />,
+          // },
         ]
       : []),
 
-    ...(user?.roles === "Admin"
+    ...(user?.staff_role === "admin"
       ? [
           {
             name: "Dashboard",
-            path: "/admin-dashboard",
+            path: "/dashboard",
             icon: <MdDashboard />,
           },
 
@@ -128,11 +128,11 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
         ]
       : []),
 
-    ...(user?.roles === "Employee"
+    ...(user?.staff_role === "employee"
       ? [
           {
             name: "Dashboard",
-            path: "/employees-dashboard",
+            path: "/dashboard",
             icon: <MdDashboard />,
           },
 
@@ -173,11 +173,6 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-md font-bold text-cyan-600">
           {isSidebarOpen ? (
-            // user?.roles === "admin" ? (
-            //   "Admin Dashboard"
-            // ) : (
-            //   "CRMGuru"
-            // )
             <>
               <img src={logoOne} alt="logo" srcset="" className="h-10 w-36" />
             </>

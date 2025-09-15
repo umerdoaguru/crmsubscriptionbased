@@ -9,13 +9,11 @@ import * as XLSX from "xlsx";
 const SuperVisitReport = () => {
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const leadsPerPage = 6; // Default leads per page
-  const EmpId = useSelector((state) => state.auth.user.id);
+  const leadsPerPage = 6;
+  const EmpId = useSelector((state) => state.auth.user.staff_id);
   const [employees, setEmployees] = useState([]);
-  const [duration, setDuration] = useState("all"); // Default is "all"
+  const [duration, setDuration] = useState("all");
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [selectedColumns, setSelectedColumns] = useState([
     "lead_no",
@@ -49,7 +47,7 @@ const SuperVisitReport = () => {
 
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;
+  const userId = superadminuser.staff_id;
   // Fetch leads from the API
   useEffect(() => {
     fetchLeads();

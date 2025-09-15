@@ -43,7 +43,7 @@ function SuperLeadReport() {
   const leadsPerPage = 6;
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;
+  const userId = superadminuser.staff_id;
   // Fetch leads and employees from the API
   useEffect(() => {
     fetchLeads();

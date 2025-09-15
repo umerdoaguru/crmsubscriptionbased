@@ -15,8 +15,12 @@ const Overview2 = () => {
   const [selectedComponent, setSelectedComponent] = useState("LeadData"); // Set 'LeadData' as default
   const [visit, setVisit] = useState([]);
   const superadminuser = useSelector((state) => state.auth.user);
+  console.log(superadminuser);
+
   const token = superadminuser.token;
-  const userId = superadminuser.id;
+  const userId = superadminuser.staff_id;
+  console.log(userId);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [project, setProjects] = useState([]);
@@ -36,12 +40,14 @@ const Overview2 = () => {
       setLeads(response.data);
     } catch (error) {
       if (error?.response?.status === 401) {
-        navigate("/main_page_crm");
+        navigate("/");
         dispatch(logoutUser());
         cogoToast.error("Token is expired Please Login Again !!");
       }
     }
   };
+
+  console.log(leads);
 
   const fetchEmployee = async () => {
     try {
@@ -73,7 +79,6 @@ const Overview2 = () => {
       );
       console.log(response.data);
       setVisit(response.data);
-      // Ensure proper comparison with 'Created', trim any spaces and normalize the case
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
@@ -124,7 +129,6 @@ const Overview2 = () => {
     employeesoldunit();
   }, []);
 
-  const employeeCount = employee.length;
   const leadCount = leads.length;
   const closedCount = leads.filter(
     (lead) => lead.deal_status === "close"
@@ -143,10 +147,7 @@ const Overview2 = () => {
       <div className="flex flex-wrap justify-around">
         <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-3 ">
           <Link to="/Super-admin-project">
-            <div
-              className="shadow-lg rounded-lg overflow-hidden cursor-pointer text-gray-600 border-1" // Change background color if active
-              //   onClick={() => setSelectedComponent('LeadData')}  // Set selected component
-            >
+            <div className="shadow-lg rounded-lg overflow-hidden cursor-pointer text-gray-600 border-1">
               <div className="p-4 flex flex-col items-center text-center">
                 <div className=" text-3xl text-cyan-600">
                   <AiOutlineProject />
@@ -166,10 +167,7 @@ const Overview2 = () => {
 
         <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-3 ">
           <Link to="/super-admin-total-lead">
-            <div
-              className="shadow-lg rounded-lg overflow-hidden cursor-pointer text-gray-600 border-1" // Change background color if active
-              //   onClick={() => setSelectedComponent('LeadData')}  // Set selected component
-            >
+            <div className="shadow-lg rounded-lg overflow-hidden cursor-pointer text-gray-600 border-1">
               <div className="p-4 flex flex-col items-center text-center">
                 <div className=" text-3xl text-cyan-600">
                   <GiFiles />
@@ -206,29 +204,6 @@ const Overview2 = () => {
             </div>
           </Link>
         </div>
-
-        {/* <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-3">
-          <Link to="/super-admin-total-employee">
-            <div
-              className="shadow-lg rounded-lg overflow-hidden cursor-pointer text-gray-600" // Change background color if active
-              //   onClick={() => setSelectedComponent('EmployeeData')}  // Set selected component
-            >
-              <div className="p-4 flex flex-col items-center text-center">
-                <div className=" text-3xl text-cyan-600">
-                  <SiMoneygram />
-                </div>
-                <div className="mt-2">
-                  <h5 className="text-gray-800 text-xl font-semibold ">
-                    Total Employees{" "}
-                  </h5>
-                  <p className="text-gray-800 text-xl font-semibold ">
-                    {employeeCount}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </Link>
-        </div> */}
 
         {/* Card for Closed Data */}
         <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-3">

@@ -209,6 +209,10 @@ const {
   addSubscriptionTransactions,
   createRazorTransaction,
   verifyRazorPayment,
+  OneOnlylogin,
+  sendOtpOnlyOne,
+  getEmployeeDetails,
+  updateEmployeeDetails,
 } = require("../controllers/ControllerNine");
 
 // ========== Router Begins =====================
@@ -644,5 +648,9 @@ router.post("/addNewCompanyStaff", addNewCompanyStaff);
 router.post("/addSubscriptionTransactions", addSubscriptionTransactions);
 router.post("/createRazorTransaction", createRazorTransaction);
 router.post("/verifyRazorPayment", verifyRazorPayment);
+router.post("/OneOnlylogin", OneOnlylogin);
+router.post("/sendOtpOnlyOne", sendOtpOnlyOne);
+router.get("/getEmployeeDetails/:staffId", getEmployeeDetails);
+router.put("/updateEmployeeDetails/:staffId", updateEmployeeDetails);
 
 module.exports = router;

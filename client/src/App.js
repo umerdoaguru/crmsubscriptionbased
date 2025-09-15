@@ -22,6 +22,11 @@ import EmployeeResetPassword from "./components/EmployeeModule/EmployeeResetPass
 import AdminResetPassword from "./components/AdminResetPassword";
 import SuperAdminResetPassword from "./components/SuperAdminResetPassword";
 import GoogleOAuthCallback from "./components/GoogleOAuthCallback";
+import SuperDash from "./pages/superAdmin/SuperDash";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import EmployeeDashboard from "./pages/Employees/EmployeeDashboard";
+import OneLoginOnly from "./utils/OneLoginOnly";
+import ResetPasswordOnly from "./utils/ResetPasswordOnly";
 
 function App() {
   const user = useSelector((state) => state.auth.user);
@@ -32,9 +37,12 @@ function App() {
       <div style={{ overflow: "hidden" }}>
         <Routes>
           {/* main page routes */}
-          <Route path="/main_page_crm" element={<Landingpage />} />
+          {/* <Route path="/main_page_crm" element={<Landingpage />} /> */}
 
           {/* Common routes */}
+          <Route path="/" element={<OneLoginOnly />} />
+          <Route path="/reset-password" element={<ResetPasswordOnly />} />
+
           <Route path="/SuperAdmin-login" element={<SuperAdminLogin />} />
           <Route
             path="/google-oauth-callback"
@@ -56,18 +64,33 @@ function App() {
             element={<SuperAdminResetPassword />}
           />
 
-          {user?.roles === "Super-Admin" ? (
+          {user?.staff_role === "superadmin" ? (
             <Route path="/*" element={<SuperAdminRoutes />} />
-          ) : user?.roles === "Admin" ? (
+          ) : user?.staff_role === "admin" ? (
             <Route path="/*" element={<AdminRoutes />} />
-          ) : user?.roles === "Employee" ? (
+          ) : user?.staff_role === "employee" ? (
             <Route path="/*" element={<EmployeeRoutes />} />
           ) : (
-            <Route path="/" element={<Navigate to="/main_page_crm" />} />
+            <Route path="/" element={<OneLoginOnly />} />
           )}
 
+          {/* <Route
+            path="/dashboard"
+            element={
+              user?.staff_role === "superadmin" ? (
+                <SuperDash />
+              ) : user?.staff_role === "admin" ? (
+                <AdminDashboard />
+              ) : user?.staff_role === "employee" ? (
+                <EmployeeDashboard />
+              ) : (
+                <OneLoginOnly />
+              )
+            }
+          /> */}
+
           {/* Catch-all route to redirect unauthorized users */}
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="*" element={<OneLoginOnly />} />
 
           <Route path="/admincrmdoaguru" element={<Registration />} />
         </Routes>

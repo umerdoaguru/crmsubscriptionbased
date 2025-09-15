@@ -7,9 +7,9 @@ import { loginUser } from "../store/UserSlice";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { FaCrown, FaArrowLeft } from "react-icons/fa";
 import { MdEmail, MdLock } from "react-icons/md";
-import GoogleOAuthButton from "./GoogleOAuthButton";
+// import GoogleOAuthButton from "./GoogleOAuthButton";
 
-function SuperAdminLogin() {
+const OneLoginOnly = () => {
   const [formData, setFormData] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -28,14 +28,11 @@ function SuperAdminLogin() {
         "https://crm-generalize.dentalguru.software/api/OneOnlylogin",
         formData
       );
-      if (res.data.success) {
-        dispatch(loginUser(res.data.user));
-        cogoToast.success(res.data.message);
+      dispatch(loginUser(res.data.user));
+      cogoToast.success(res.data.message);
+      console.log(res.data);
 
-        navigate("/super-admin-dashboard");
-      } else {
-        cogoToast.error(res.data.message);
-      }
+      navigate("/dashboard");
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -72,9 +69,9 @@ function SuperAdminLogin() {
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl mb-4 shadow-lg">
               <FaCrown className="text-2xl text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">Super Admin</h1>
+            <h1 className="text-3xl font-bold text-white mb-2">CRMGuru</h1>
             <p className="text-purple-200 text-sm">
-              Access your administrative dashboard
+              Access your CRMGuru dashboard
             </p>
           </div>
 
@@ -123,7 +120,7 @@ function SuperAdminLogin() {
                 />
                 <button
                   type="button"
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white transition-colors duration-300"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-black/60 hover:text-black transition-colors duration-300"
                   onClick={togglePasswordVisibility}
                 >
                   {showPassword ? (
@@ -154,7 +151,7 @@ function SuperAdminLogin() {
             {/* Forgot Password */}
             <div className="text-center">
               <Link
-                to="/superadmin-reset-password"
+                to="/reset-password"
                 className="text-purple-300 hover:text-white text-sm transition-colors duration-300 hover:underline"
               >
                 Forgot your password?
@@ -162,15 +159,7 @@ function SuperAdminLogin() {
             </div>
           </form>
 
-          {/* Divider */}
-          <div className="flex items-center my-6">
-            <div className="flex-1 h-px bg-white/20"></div>
-            <span className="px-4 text-white/60 text-sm">or</span>
-            <div className="flex-1 h-px bg-white/20"></div>
-          </div>
-
-          {/* Google OAuth Section */}
-          <GoogleOAuthButton />
+          {/* <GoogleOAuthButton /> */}
         </div>
 
         {/* Footer */}
@@ -190,6 +179,6 @@ function SuperAdminLogin() {
       </div>
     </div>
   );
-}
+};
 
-export default SuperAdminLogin;
+export default OneLoginOnly;
