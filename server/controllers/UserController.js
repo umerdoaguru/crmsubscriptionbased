@@ -6,7 +6,7 @@ const JWT = require("jsonwebtoken");
 const Quotation = async (req, res) => {
   try {
     const { quotation_name, services } = req.body;
-    const { employeeId, employee_name, lead_id } = req.body; 
+    const { employeeId, employee_name, lead_id } = req.body;
 
     if (!quotation_name || !services || services.length === 0) {
       return res
@@ -176,7 +176,9 @@ const getAllQuotation = async (req, res) => {
 
     res.status(200).json({ message: "Successfull", data: allQuotations });
   } catch (error) {
-    res.status(500).json({ message: "Internal Server Error", success: false, error });
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", success: false, error });
   }
 };
 
@@ -203,9 +205,34 @@ const GetQuotationName = async (req, res) => {
 
 const UpdateQuotationName = async (req, res) => {
   try {
-    const { quotationId } = req.params; 
-    const {customer_name, contact_number, alternate_number, address, adhaar_number, pan_number, project_name, unit_number, dimension, rate, variant, total_deal, booking_amount, booking_amount_words, payment_mode, finance_bank, duration, balance_amount, balance_amount_words, payment_due_date1, payment_due_date2, payment_due_date3,
-      payment_due_date4, registry_charges, p1p2_charges, remarks
+    const { quotationId } = req.params;
+    const {
+      customer_name,
+      contact_number,
+      alternate_number,
+      address,
+      adhaar_number,
+      pan_number,
+      project_name,
+      unit_number,
+      dimension,
+      rate,
+      variant,
+      total_deal,
+      booking_amount,
+      booking_amount_words,
+      payment_mode,
+      finance_bank,
+      duration,
+      balance_amount,
+      balance_amount_words,
+      payment_due_date1,
+      payment_due_date2,
+      payment_due_date3,
+      payment_due_date4,
+      registry_charges,
+      p1p2_charges,
+      remarks,
     } = req.body;
 
     const sql = `
@@ -216,19 +243,45 @@ const UpdateQuotationName = async (req, res) => {
 
     // Execute the update query asynchronously
     await new Promise((resolve, reject) => {
-      db.query(sql, [
-        customer_name, contact_number, alternate_number, address, adhaar_number, pan_number,
-        project_name, unit_number, dimension, rate, variant, total_deal, booking_amount,
-        booking_amount_words, payment_mode, finance_bank, duration, balance_amount,
-        balance_amount_words, payment_due_date1, payment_due_date2, payment_due_date3,
-        payment_due_date4, registry_charges, p1p2_charges, remarks, quotationId
-      ], (err, results) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(results);
+      db.query(
+        sql,
+        [
+          customer_name,
+          contact_number,
+          alternate_number,
+          address,
+          adhaar_number,
+          pan_number,
+          project_name,
+          unit_number,
+          dimension,
+          rate,
+          variant,
+          total_deal,
+          booking_amount,
+          booking_amount_words,
+          payment_mode,
+          finance_bank,
+          duration,
+          balance_amount,
+          balance_amount_words,
+          payment_due_date1,
+          payment_due_date2,
+          payment_due_date3,
+          payment_due_date4,
+          registry_charges,
+          p1p2_charges,
+          remarks,
+          quotationId,
+        ],
+        (err, results) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(results);
+          }
         }
-      });
+      );
     });
 
     res.status(200).json({ message: "Quotation updated successfully" });
@@ -237,10 +290,9 @@ const UpdateQuotationName = async (req, res) => {
   }
 };
 
-
 const CopyQuotationData = async (req, res) => {
   try {
-    const { quotationId } = req.params; 
+    const { quotationId } = req.params;
     const sqlQuotation = "SELECT * FROM quotations_information WHERE id = ?";
 
     const [quotation] = await new Promise((resolve, reject) => {
@@ -253,7 +305,7 @@ const CopyQuotationData = async (req, res) => {
       });
     });
 
-        if (!quotation) {
+    if (!quotation) {
       return res.status(404).json({ error: "Quotation not found" });
     }
 
@@ -264,7 +316,8 @@ const CopyQuotationData = async (req, res) => {
       [newQuotationName, quotation.user_id]
     );
 
-    const sqlgetId = "SELECT * FROM quotations_information WHERE customer_name = ?";
+    const sqlgetId =
+      "SELECT * FROM quotations_information WHERE customer_name = ?";
     const [getId] = await new Promise((resolve, reject) => {
       db.query(sqlgetId, [newQuotationName], (err, results) => {
         if (err) {
@@ -291,7 +344,7 @@ const CopyQuotationData = async (req, res) => {
     const sqlServices =
       "INSERT INTO services_data (quotation_id, quotation_name, service_type, service_name, service_description, actual_price, offer_price, subscription_frequency) VALUES ?";
     const servicesValues = services.map((service) => [
-      newQuotationId, 
+      newQuotationId,
       newQuotationName,
       service.service_type,
       service.service_name,
@@ -330,7 +383,8 @@ const CopyQuotationData = async (req, res) => {
         newQuotationId,
       ]);
 
-const insertNotesQuery ="INSERT INTO notes (note_text, quotation_id) VALUES ?";
+      const insertNotesQuery =
+        "INSERT INTO notes (note_text, quotation_id) VALUES ?";
 
       db.query(insertNotesQuery, [notesValues], (err, result) => {
         if (err) {
@@ -356,11 +410,12 @@ Quotationviaid = (req, res) => {
     FROM quotations_information qd 
     WHERE qd.id = ?
   `;
-  
 
     db.query(getQuery, quotation_id, (error, result) => {
       if (error) {
-        res.status(500).json({ error: error, message: "Internal Server Error" });
+        res
+          .status(500)
+          .json({ error: error, message: "Internal Server Error" });
       } else {
         res.status(200).json(result);
       }
@@ -369,7 +424,6 @@ Quotationviaid = (req, res) => {
     res.status(500).json({ error: error, message: "Internal Server Error" });
   }
 };
-
 
 const addServices = async (req, res) => {
   try {
@@ -578,34 +632,45 @@ const getnotes_text = (req, res) => {
 
 const createLead = (req, res) => {
   const {
+    lead_org_id,
     lead_no,
     name,
     phone,
     assignedTo,
     leadSource,
     employeeId,
-    project_name,main_project_id,unit_type,unit_id,address,
+    project_name,
+    main_project_id,
+    unit_type,
+    unit_id,
+    address,
     createdTime,
     actual_date,
     assignedBy,
-    user_id
+    user_id,
   } = req.body;
   console.log(user_id);
-  
-  const sql = `INSERT INTO leads (lead_no, name, phone, assignedTo, leadSource, employeeId,project_name,main_project_id,unit_type,unit_id,address,createdTime,actual_date,assignedBy,user_id) VALUES (?,?,?,?,?,?,?, ?,?, ?,?, ?, ?,?,?)`;
+
+  const sql = `INSERT INTO leads (lead_org_id, lead_no, name, phone, assignedTo, leadSource, employeeId,project_name,main_project_id,unit_type,unit_id,address,createdTime,actual_date,assignedBy,user_id) VALUES (?,?,?,?,?,?,?, ?,?, ?,?, ?, ?,?,?,?)`;
   db.query(
     sql,
     [
+      lead_org_id,
       lead_no,
       name,
       phone,
       assignedTo,
       leadSource,
       employeeId,
-      project_name,main_project_id,unit_type,unit_id,address,
+      project_name,
+      main_project_id,
+      unit_type,
+      unit_id,
+      address,
       createdTime,
       actual_date,
-      assignedBy,user_id
+      assignedBy,
+      user_id,
     ],
     (err, results) => {
       if (err) {
@@ -653,7 +718,7 @@ const getvisit = (req, res) => {
 
 const getLeads = (req, res) => {
   const { userId } = req.params;
-  const sql = "SELECT * FROM leads WHERE user_id = ? ORDER BY lead_id DESC"; 
+  const sql = "SELECT * FROM leads WHERE user_id = ? ORDER BY lead_id DESC";
   db.query(sql, [userId], (err, results) => {
     if (err) {
       res.status(500).json({ error: "Error fetching data" });
@@ -662,7 +727,6 @@ const getLeads = (req, res) => {
     }
   });
 };
-
 
 const updateLead = async (req, res) => {
   try {
@@ -677,7 +741,9 @@ const updateLead = async (req, res) => {
       createdTime,
       actual_date,
       project_name,
-      main_project_id,unit_type,unit_id,
+      main_project_id,
+      unit_type,
+      unit_id,
       address,
     } = req.body;
 
@@ -696,8 +762,10 @@ const updateLead = async (req, res) => {
           createdTime,
           actual_date,
           project_name,
-          main_project_id,unit_type,unit_id,
-          address, 
+          main_project_id,
+          unit_type,
+          unit_id,
+          address,
           leadId,
         ],
         (err, results) => {
@@ -732,24 +800,28 @@ const deleteLead = (req, res) => {
     const sqlLeads = `DELETE FROM leads WHERE lead_id = ?`;
     db.query(sqlLeads, [leadId], (err, leadResults) => {
       if (err) {
-        return res.status(500).json({ error: "Error deleting from leads table" });
+        return res
+          .status(500)
+          .json({ error: "Error deleting from leads table" });
       }
 
       if (leadResults.affectedRows === 0) {
         return res.status(404).json({ error: "Lead not found" });
       }
 
-      res.status(200).json({ success: true, message: "Lead data successfully deleted from both tables" });
+      res.status(200).json({
+        success: true,
+        message: "Lead data successfully deleted from both tables",
+      });
     });
   });
 };
 
-
 const employeeData = (req, res) => {
-  const {id} = req.params
+  const { id } = req.params;
   const sql = `SELECT * FROM employee WHERE user_id = ?`;
 
-  db.query(sql,[id], (err, results) => {
+  db.query(sql, [id], (err, results) => {
     if (err) {
       res.status(500).json({ error: "Error fetchinf data " });
     } else {
@@ -891,7 +963,7 @@ const getAllUsers = async (req, res) => {
 
 const updateQuotationStatus = async (req, res) => {
   try {
-    const { id, status } = req.body; 
+    const { id, status } = req.body;
 
     if (!id || !status) {
       return res.status(400).json({
@@ -905,9 +977,9 @@ const updateQuotationStatus = async (req, res) => {
     const updateStatus = await new Promise((resolve, reject) => {
       db.query(sql, [status, id], (err, result) => {
         if (err) {
-          return reject(err); 
+          return reject(err);
         }
-        resolve(result); 
+        resolve(result);
       });
     });
 
@@ -926,34 +998,62 @@ const updateQuotationStatus = async (req, res) => {
     res.status(500).json({
       message: "Internal Server Error",
       success: false,
-      error: error.message, 
+      error: error.message,
     });
   }
 };
 
-const quotationInformationForm = async (req, res) =>{
+const quotationInformationForm = async (req, res) => {
   const formData = req.body;
 
   const query = `INSERT INTO quotations_information (customer_name, contact_number, alternate_number, address, adhaar_number, pan_number,
     project_name, unit_number, dimension, rate, variant, total_deal, booking_amount, booking_amount_words, payment_mode, finance_bank, duration, balance_amount, balance_amount_words, payment_due_date1, payment_due_date2, payment_due_date3, payment_due_date4, registry_charges, p1p2_charges, remarks, employeeId, employee_name, lead_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   const values = [
-    formData.customerName, formData.contactNumber, formData.alternateNumber, formData.address, formData.adhaarNumber, formData.panNumber, formData.projectName, formData.unitNumber, formData.dimension, formData.rate, formData.variant, formData.totalDeal, formData.bookingAmount,
-    formData.bookingAmountWords, formData.paymentMode, formData.financeBank, formData.duration, formData.balanceAmount, formData.balanceAmountWords, formData.paymentDueDate1, formData.paymentDueDate2, 
-    formData.paymentDueDate3, formData.paymentDueDate4, formData.registryCharges, formData.p1p2Charges, formData.remarks, formData.employeeId, formData.employee_name, formData.lead_id];
- 
+    formData.customerName,
+    formData.contactNumber,
+    formData.alternateNumber,
+    formData.address,
+    formData.adhaarNumber,
+    formData.panNumber,
+    formData.projectName,
+    formData.unitNumber,
+    formData.dimension,
+    formData.rate,
+    formData.variant,
+    formData.totalDeal,
+    formData.bookingAmount,
+    formData.bookingAmountWords,
+    formData.paymentMode,
+    formData.financeBank,
+    formData.duration,
+    formData.balanceAmount,
+    formData.balanceAmountWords,
+    formData.paymentDueDate1,
+    formData.paymentDueDate2,
+    formData.paymentDueDate3,
+    formData.paymentDueDate4,
+    formData.registryCharges,
+    formData.p1p2Charges,
+    formData.remarks,
+    formData.employeeId,
+    formData.employee_name,
+    formData.lead_id,
+  ];
+
   db.query(query, values, (err, result) => {
     if (err) {
-      res.status(500).json({ message: 'Error saving data' });
+      res.status(500).json({ message: "Error saving data" });
       return;
     }
-    res.status(200).json({ message: 'Data saved successfully', id: result.insertId });
+    res
+      .status(200)
+      .json({ message: "Data saved successfully", id: result.insertId });
   });
-
 };
 
 const getLeadsByIdVisit = (req, res) => {
-  const employeeId = req.params.employeeId; 
+  const employeeId = req.params.employeeId;
 
   const sql = `
     SELECT 
@@ -1043,32 +1143,25 @@ const getLeadsVisit = (req, res) => {
   });
 };
 
-
-
 const addProject = (req, res) => {
-  const {
-    projectName, location, total_area,user_id
-  } = req.body;
-  console.log(projectName, location, total_area,user_id);
-  
-  if (!projectName ||!location || !total_area ) {
+  const { project_org_id, user_id, projectName, location, total_area } =
+    req.body;
+
+  if (!project_org_id || !projectName || !location || !total_area || !user_id) {
     return res.status(400).json({ error: "Required fields are missing." });
   }
 
   const query = `
     INSERT INTO projects (
-      project_name, location, total_area,user_id 
-    ) VALUES (?, ?, ?,?)
+      project_org_id, user_id, project_name, location, total_area
+    ) VALUES (?, ?, ?,?, ?)
   `;
 
-  const values = [
-    projectName, location, total_area,user_id
-  ];
+  const values = [project_org_id, user_id, projectName, location, total_area];
 
   db.query(query, values, (err, result) => {
     if (err) {
-      console.error("Error inserting data into database:", err);
-      return res.status(500).json({ error: "Failed to add project." });
+      return res.status(500).json({ success: false, message: err.message });
     }
 
     res.status(200).json({ message: "Project added successfully." });
@@ -1076,16 +1169,17 @@ const addProject = (req, res) => {
 };
 
 const getAllProjects = (req, res) => {
-  const {userId} = req.params;
-  const query = "SELECT * FROM projects WHERE user_id = ?"; 
+  const { userId, orgId } = req.params;
+  const query =
+    "SELECT * FROM projects WHERE user_id = ? and project_org_id = ?";
 
-  db.query(query,[userId], (err, results) => {
+  db.query(query, [userId, orgId], (err, results) => {
     if (err) {
       console.error("Error fetching projects from database:", err);
       return res.status(500).json({ error: "Failed to fetch projects." });
     }
 
-    res.status(200).json(results);
+    res.status(200).send(results);
   });
 };
 
@@ -1128,10 +1222,10 @@ const deleteProject = async (req, res) => {
       );
     });
 
-    if (leadsResult.length > 0 && req.query.confirm !== 'true') {
+    if (leadsResult.length > 0 && req.query.confirm !== "true") {
       return res.status(400).json({
         message:
-          "This project is allocated. Are you sure you want to delete it? Click OK to confirm, or Cancel to abort."
+          "This project is allocated. Are you sure you want to delete it? Click OK to confirm, or Cancel to abort.",
       });
     }
 
@@ -1158,69 +1252,85 @@ const deleteProject = async (req, res) => {
 
 const updateUnit = async (req, res) => {
   const unit_id = req.params.id;
-  const { unit_type, unit_size, total_units, base_price,main_project_id } = req.body;
+  const { unit_type, unit_size, total_units, base_price, main_project_id } =
+    req.body;
 
-  const sql = `UPDATE units SET unit_type = ?, unit_size = ?,                  total_units = ?, base_price = ?, main_project_id = ? WHERE unit_id = ?`; 
+  const sql = `UPDATE units SET unit_type = ?, unit_size = ?,                  total_units = ?, base_price = ?, main_project_id = ? WHERE unit_id = ?`;
 
-  db.query(sql, [unit_type, unit_size, total_units, base_price,main_project_id, unit_id], async (err, result) => {
-    if (err) {
-      return res.status(500).json({ message: "Server error", error: err });
-    }
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "Unit not found" });
-    }
-
-    try {
-      const currentUnitsResult = await new Promise((resolve, reject) => {
-        db.query(
-          `SELECT COUNT(*) AS count FROM unit_data WHERE unit_id = ?`, 
-          [unit_id], 
-          (err, result) => {
-            if (err) reject(err);
-            else resolve(result[0].count);
-          }
-        );
-      });
-
-      const currentTotalUnits = currentUnitsResult;
-
-      if (total_units > currentTotalUnits) {
-        const unitsToAdd = total_units - currentTotalUnits;
-        const unitDataValues = [];
-
-        for (let i = currentTotalUnits + 1; i <= total_units; i++) {
-          unitDataValues.push([i, unit_type, unit_id, unit_size, base_price,main_project_id, 'pending']);
-        }
-
-        const insertQuery = `INSERT INTO unit_data (unit_number, unit_type, unit_id, unit_size, base_price,main_project_id, status) VALUES ?`;
-        await new Promise((resolve, reject) => {
-          db.query(insertQuery, [unitDataValues], (err, result) => {
-            if (err) reject(err);
-            else resolve(result);
-          });
-        });
-
-      } else if (total_units < currentTotalUnits) {
-        const deleteQuery = `DELETE FROM unit_data WHERE unit_id = ? AND unit_number > ?`;
-        await new Promise((resolve, reject) => {
-          db.query(deleteQuery, [unit_id, total_units], (err, result) => {
-            if (err) reject(err);
-            else resolve(result);
-          });
-        });
+  db.query(
+    sql,
+    [unit_type, unit_size, total_units, base_price, main_project_id, unit_id],
+    async (err, result) => {
+      if (err) {
+        return res.status(500).json({ message: "Server error", error: err });
       }
 
-      res.status(200).json({ message: "Unit and unit_data updated successfully" });
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "Unit not found" });
+      }
 
-    } catch (err) {
-      res.status(500).json({ message: "Error updating unit_data", error: err });
+      try {
+        const currentUnitsResult = await new Promise((resolve, reject) => {
+          db.query(
+            `SELECT COUNT(*) AS count FROM unit_data WHERE unit_id = ?`,
+            [unit_id],
+            (err, result) => {
+              if (err) reject(err);
+              else resolve(result[0].count);
+            }
+          );
+        });
+
+        const currentTotalUnits = currentUnitsResult;
+
+        if (total_units > currentTotalUnits) {
+          const unitsToAdd = total_units - currentTotalUnits;
+          const unitDataValues = [];
+
+          for (let i = currentTotalUnits + 1; i <= total_units; i++) {
+            unitDataValues.push([
+              i,
+              unit_type,
+              unit_id,
+              unit_size,
+              base_price,
+              main_project_id,
+              "pending",
+            ]);
+          }
+
+          const insertQuery = `INSERT INTO unit_data (unit_number, unit_type, unit_id, unit_size, base_price,main_project_id, status) VALUES ?`;
+          await new Promise((resolve, reject) => {
+            db.query(insertQuery, [unitDataValues], (err, result) => {
+              if (err) reject(err);
+              else resolve(result);
+            });
+          });
+        } else if (total_units < currentTotalUnits) {
+          const deleteQuery = `DELETE FROM unit_data WHERE unit_id = ? AND unit_number > ?`;
+          await new Promise((resolve, reject) => {
+            db.query(deleteQuery, [unit_id, total_units], (err, result) => {
+              if (err) reject(err);
+              else resolve(result);
+            });
+          });
+        }
+
+        res
+          .status(200)
+          .json({ message: "Unit and unit_data updated successfully" });
+      } catch (err) {
+        res
+          .status(500)
+          .json({ message: "Error updating unit_data", error: err });
+      }
     }
-  });
+  );
 };
 
 const addUnit = async (req, res) => {
-  const { main_project_id, unit_type, unit_size, total_units, base_price } = req.body;
+  const { main_project_id, unit_type, unit_size, total_units, base_price } =
+    req.body;
 
   if (!main_project_id || !unit_type || !unit_size || !total_units) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -1231,22 +1341,33 @@ const addUnit = async (req, res) => {
 
   try {
     const result = await new Promise((resolve, reject) => {
-      db.query(insertUnitQuery, [main_project_id, unit_type, unit_size, total_units, base_price], (err, result) => {
-        if (err) reject(err);
-        else resolve(result);
-      });
+      db.query(
+        insertUnitQuery,
+        [main_project_id, unit_type, unit_size, total_units, base_price],
+        (err, result) => {
+          if (err) reject(err);
+          else resolve(result);
+        }
+      );
     });
 
     const unit_id = result.insertId;
 
     const unitDataInsertQuery = `INSERT INTO unit_data (unit_number, unit_type, main_project_id, unit_id, unit_size, base_price, status) VALUES ?`;
-     
 
     const unitDataValues = [];
     for (let i = 1; i <= total_units; i++) {
-      unitDataValues.push([i, unit_type, main_project_id, unit_id, unit_size, base_price, 'pending']);
+      unitDataValues.push([
+        i,
+        unit_type,
+        main_project_id,
+        unit_id,
+        unit_size,
+        base_price,
+        "pending",
+      ]);
     }
-    
+
     await new Promise((resolve, reject) => {
       db.query(unitDataInsertQuery, [unitDataValues], (err, result) => {
         if (err) reject(err);
@@ -1257,10 +1378,13 @@ const addUnit = async (req, res) => {
     res.status(200).json({
       message: "Unit and unit data added successfully",
       unit_id: unit_id,
-      data: { main_project_id, unit_type, unit_size, total_units, base_price }
+      data: { main_project_id, unit_type, unit_size, total_units, base_price },
     });
   } catch (err) {
-    res.status(500).json({ message: "Failed to add unit", error: err.message || "Unknown error" });
+    res.status(500).json({
+      message: "Failed to add unit",
+      error: err.message || "Unknown error",
+    });
   }
 };
 
@@ -1278,7 +1402,7 @@ const editUnitdetails = (req, res) => {
     if (err) {
       return res.status(500).json({ message: "Server error", error: err });
     }
-    
+
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Unit not found for update" });
     }
@@ -1308,30 +1432,38 @@ const deleteUnit = async (req, res) => {
       );
     });
 
-    if (leadsResult.length > 0 && req.query.confirm !== 'true') {
+    if (leadsResult.length > 0 && req.query.confirm !== "true") {
       return res.status(400).json({
         message:
-          "This unit is allocated. Are you sure you want to delete it? Click OK to confirm, or Cancel to abort."
+          "This unit is allocated. Are you sure you want to delete it? Click OK to confirm, or Cancel to abort.",
       });
     }
 
     await new Promise((resolve, reject) => {
-      db.query("DELETE FROM unit_data WHERE unit_id = ?", [unit_id], (err, result) => {
-        if (err) return reject(err);
-        resolve(result);
-      });
+      db.query(
+        "DELETE FROM unit_data WHERE unit_id = ?",
+        [unit_id],
+        (err, result) => {
+          if (err) return reject(err);
+          resolve(result);
+        }
+      );
     });
 
     const deleteResult = await new Promise((resolve, reject) => {
-      db.query("DELETE FROM units WHERE unit_id = ?", [unit_id], (err, result) => {
-        if (err) return reject(err);
-        resolve(result);
-      });
+      db.query(
+        "DELETE FROM units WHERE unit_id = ?",
+        [unit_id],
+        (err, result) => {
+          if (err) return reject(err);
+          resolve(result);
+        }
+      );
     });
 
     if (deleteResult.affectedRows > 0) {
       res.status(200).json({
-        message: "Unit and its detailed data deleted successfully"
+        message: "Unit and its detailed data deleted successfully",
       });
     } else {
       res.status(404).json({ message: "Unit not found" });
@@ -1343,105 +1475,110 @@ const deleteUnit = async (req, res) => {
 const getUnits = async (req, res) => {
   const { main_project_id, unit_type } = req.query;
 
-  let query = 'SELECT * FROM units ORDER BY unit_id DESC;';
+  let query = "SELECT * FROM units ORDER BY unit_id DESC;";
   let queryParams = [];
 
   if (main_project_id || unit_type) {
-      query += ' WHERE';
+    query += " WHERE";
+    if (main_project_id) {
+      query += " main_project_id = ?";
+      queryParams.push(main_project_id);
+    }
+    if (unit_type) {
       if (main_project_id) {
-          query += ' main_project_id = ?';
-          queryParams.push(main_project_id);
+        query += " AND";
       }
-      if (unit_type) {
-          if (main_project_id) {
-              query += ' AND';
-          }
-          query += ' unit_type = ?';
-          queryParams.push(unit_type);
-      }
+      query += " unit_type = ?";
+      queryParams.push(unit_type);
+    }
   }
 
   try {
-      const result = await new Promise((resolve, reject) => {
-          db.query(query, queryParams, (err, result) => {
-              if (err) {
-                  reject(err);
-              } else {
-                  resolve(result);
-              }
-          });
+    const result = await new Promise((resolve, reject) => {
+      db.query(query, queryParams, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
       });
+    });
 
-      if (result.length === 0) {
-          return res.status(404).json({ message: 'No units found' });
-      }
+    if (result.length === 0) {
+      return res.status(404).json({ message: "No units found" });
+    }
 
-      res.status(200).json({
-          message: 'Units retrieved successfully',
-          data: result
-      });
+    res.status(200).json({
+      message: "Units retrieved successfully",
+      data: result,
+    });
   } catch (err) {
-      res.status(500).json({
-          message: 'Failed to fetch units',
-          error: err.message || 'Unknown error'
-      });
+    res.status(500).json({
+      message: "Failed to fetch units",
+      error: err.message || "Unknown error",
+    });
   }
 };
 
 const getUnitById = async (req, res) => {
-  const project_id = req.params.id; 
+  const project_id = req.params.id;
 
   if (!project_id) {
-      return res.status(400).json({ message: 'project_id is required in the URL' });
+    return res
+      .status(400)
+      .json({ message: "project_id is required in the URL" });
   }
 
-  const query = 'SELECT * FROM projects WHERE main_project_id = ?'; // `main_project_id` primary key hai
+  const query = "SELECT * FROM projects WHERE main_project_id = ?"; // `main_project_id` primary key hai
 
   try {
-      const result = await new Promise((resolve, reject) => {
-          db.query(query, [project_id], (err, result) => {
-              if (err) {
-                  reject(err);
-              } else {
-                  resolve(result);
-              }
-          });
+    const result = await new Promise((resolve, reject) => {
+      db.query(query, [project_id], (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
       });
+    });
 
-      if (result.length === 0) {
-          return res.status(404).json({ message: 'Project not found' });
-      }
+    if (result.length === 0) {
+      return res.status(404).json({ message: "Project not found" });
+    }
 
-      res.status(200).json({
-          message: 'Project retrieved successfully',
-          data: result[0]
-      });
+    res.status(200).json({
+      message: "Project retrieved successfully",
+      data: result[0],
+    });
   } catch (err) {
-      res.status(500).json({
-          message: 'Failed to fetch project',
-          error: err.message || 'Unknown error'
-      });
+    res.status(500).json({
+      message: "Failed to fetch project",
+      error: err.message || "Unknown error",
+    });
   }
 };
 
-
 const getUnitsdistributeById = (req, res) => {
-  const { id } = req.params; 
+  const { id } = req.params;
 
   if (!id) {
-      return res.status(400).json({ message: "main_project_id is required" });
+    return res.status(400).json({ message: "main_project_id is required" });
   }
 
   const query = "SELECT * FROM units WHERE main_project_id = ?";
   db.query(query, [id], (err, results) => {
-      if (err) {
-          return res.status(500).json({ message: "Database error", error: err.message });
-      }
+    if (err) {
+      return res
+        .status(500)
+        .json({ message: "Database error", error: err.message });
+    }
 
-      if (results.length === 0) {
-          return res.status(404).json({ message: "No units found for this project" });
-      }
-      return res.status(200).json({data: results});
+    if (results.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No units found for this project" });
+    }
+    return res.status(200).json({ data: results });
   });
 };
 
@@ -1449,41 +1586,53 @@ const getUnitsByProject = async (req, res) => {
   const main_project_id = req.query.main_project_id;
 
   if (!main_project_id) {
-      return res.status(400).json({ message: 'main_project_id is required as a query parameter' });
+    return res
+      .status(400)
+      .json({ message: "main_project_id is required as a query parameter" });
   }
 
-  const query = 'SELECT * FROM units WHERE main_project_id = ?';
+  const query = "SELECT * FROM units WHERE main_project_id = ?";
 
   try {
-      const result = await new Promise((resolve, reject) => {
-          db.query(query, [main_project_id], (err, result) => {
-              if (err) {
-                  reject(err);
-              } else {
-                  resolve(result);
-              }
-          });
+    const result = await new Promise((resolve, reject) => {
+      db.query(query, [main_project_id], (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
       });
+    });
 
-      if (result.length === 0) {
-          return res.status(404).json({ message: 'No units found for this project' });
-      }
+    if (result.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No units found for this project" });
+    }
 
-      res.status(200).json({
-          message: 'Units for project retrieved successfully',
-          data: result
-      });
+    res.status(200).json({
+      message: "Units for project retrieved successfully",
+      data: result,
+    });
   } catch (err) {
-      res.status(500).json({
-          message: 'Failed to fetch units for project',
-          error: err.message || 'Unknown error'
-      });
+    res.status(500).json({
+      message: "Failed to fetch units for project",
+      error: err.message || "Unknown error",
+    });
   }
 };
 
 const updateUnitmanualy = async (req, res) => {
   const unit_id = req.params.unit_id;
-  const { unit_type, unit_size, total_units, units_sold, base_price, additional_costs, amenities } = req.body;
+  const {
+    unit_type,
+    unit_size,
+    total_units,
+    units_sold,
+    base_price,
+    additional_costs,
+    amenities,
+  } = req.body;
 
   const units_remaining = total_units - units_sold;
 
@@ -1499,107 +1648,122 @@ const updateUnitmanualy = async (req, res) => {
                   WHERE unit_id = ?`;
 
   try {
-      const result = await new Promise((resolve, reject) => {
-          db.query(query, [unit_type, unit_size, total_units, units_sold, units_remaining, base_price, additional_costs, amenities, unit_id], (err, result) => {
-              if (err) {
-                  reject(err);
-              } else {
-                  resolve(result);
-              }
-          });
-      });
-
-      if (result.affectedRows === 0) {
-          return res.status(404).json({ message: 'Unit not found for update' });
-      }
-
-      res.status(200).json({
-          message: 'Unit updated successfully',
-          data: {
-              unit_id,
-              unit_type,
-              unit_size,
-              total_units,
-              units_sold,
-              units_remaining,
-              base_price,
-              additional_costs,
-              amenities
+    const result = await new Promise((resolve, reject) => {
+      db.query(
+        query,
+        [
+          unit_type,
+          unit_size,
+          total_units,
+          units_sold,
+          units_remaining,
+          base_price,
+          additional_costs,
+          amenities,
+          unit_id,
+        ],
+        (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
           }
-      });
+        }
+      );
+    });
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Unit not found for update" });
+    }
+
+    res.status(200).json({
+      message: "Unit updated successfully",
+      data: {
+        unit_id,
+        unit_type,
+        unit_size,
+        total_units,
+        units_sold,
+        units_remaining,
+        base_price,
+        additional_costs,
+        amenities,
+      },
+    });
   } catch (err) {
-      res.status(500).json({
-          message: 'Failed to update unit',
-          error: err.message || 'Unknown error'
-      });
+    res.status(500).json({
+      message: "Failed to update unit",
+      error: err.message || "Unknown error",
+    });
   }
 };
 
 const getUnitByProjectId = async (req, res) => {
-  const main_project_id = req.params.id; 
+  const main_project_id = req.params.id;
 
   if (!main_project_id) {
-      return res.status(400).json({ message: 'main_project_id is required in the URL' });
+    return res
+      .status(400)
+      .json({ message: "main_project_id is required in the URL" });
   }
 
-  const query = 'SELECT * FROM units WHERE main_project_id = ?'; // `main_project_id` primary key hai
+  const query = "SELECT * FROM units WHERE main_project_id = ?"; // `main_project_id` primary key hai
 
   try {
-      const result = await new Promise((resolve, reject) => {
-          db.query(query, [main_project_id], (err, result) => {
-              if (err) {
-                  reject(err);
-              } else {
-                  resolve(result);
-              }
-          });
+    const result = await new Promise((resolve, reject) => {
+      db.query(query, [main_project_id], (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
       });
+    });
 
-      if (result.length === 0) {
-          return res.status(404).json({ message: 'Project unit not found' });
-      }
+    if (result.length === 0) {
+      return res.status(404).json({ message: "Project unit not found" });
+    }
 
-      res.status(200).json(result);
+    res.status(200).json(result);
   } catch (err) {
-      res.status(500).json({
-          message: 'Failed to fetch project unit',
-          error: err.message || 'Unknown error'
-      });
+    res.status(500).json({
+      message: "Failed to fetch project unit",
+      error: err.message || "Unknown error",
+    });
   }
 };
 
 const getUnitDetailsById = async (req, res) => {
   const unit_id = req.params.id;
   if (!unit_id) {
-      return res.status(400).json({message: 'unit_id is required in the URL'});
+    return res.status(400).json({ message: "unit_id is required in the URL" });
   }
 
-  const query = 'SELECT * FROM unit_data WHERE unit_id = ?'; 
+  const query = "SELECT * FROM unit_data WHERE unit_id = ?";
 
   try {
-      const result = await new Promise((resolve, reject) => {
-          db.query(query, [unit_id], (err, result) => {
-              if (err) {
-                  reject(err);
-              } else {
-                  resolve(result);
-              }
-          });
+    const result = await new Promise((resolve, reject) => {
+      db.query(query, [unit_id], (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
       });
+    });
 
-      if (result.length === 0) {
-          return res.status(404).json({ message: 'Unit not found' });
-      }
+    if (result.length === 0) {
+      return res.status(404).json({ message: "Unit not found" });
+    }
 
-      res.status(200).json(result);
+    res.status(200).json(result);
   } catch (err) {
-      res.status(500).json({
-          message: 'Failed to fetch unit details',
-          error: err.message || 'Unknown error'
-      });
+    res.status(500).json({
+      message: "Failed to fetch unit details",
+      error: err.message || "Unknown error",
+    });
   }
-}
-
+};
 
 module.exports = {
   Quotation,
@@ -1628,7 +1792,9 @@ module.exports = {
   getAllUsers,
   deleteProfile,
   getAllQuotation,
-  updateQuotationStatus,getLeadsByIdVisit,getLeadsVisit,
+  updateQuotationStatus,
+  getLeadsByIdVisit,
+  getLeadsVisit,
   quotationInformationForm,
   addProject,
   getAllProjects,

@@ -14,18 +14,16 @@ const Superprojectshow = () => {
   const [editProject, setEditProject] = useState({});
   const [addProject, setAddProject] = useState();
 
-  // const [addunits, setUnits] = useState(false);
-
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;
+  const userId = superadminuser.staff_id;
 
   const [formData, setFormData] = useState({
+    project_org_id: superadminuser.staff_org_id,
+    user_id: userId,
     projectName: "",
-    // projectId: "",
     location: "",
     total_area: "",
-    user_id: userId,
   });
 
   const handleChange = (e) => {
@@ -49,10 +47,11 @@ const Superprojectshow = () => {
         setProjects((prevProjects) => [newProject, ...prevProjects]);
         fetchProjects();
         setFormData({
+          project_org_id: superadminuser.staff_org_id,
+          user_id: userId,
           projectName: "",
           location: "",
           total_area: "",
-          user_id: userId,
         });
       } else {
         cogoToast.error("Failed to add project.", { position: "top-right" });
@@ -76,7 +75,7 @@ const Superprojectshow = () => {
   const fetchProjects = async () => {
     try {
       const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${userId}/${superadminuser.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -84,26 +83,12 @@ const Superprojectshow = () => {
           },
         }
       );
-      setProjects(data.reverse());
+      setProjects(data);
     } catch (error) {
       console.error("Error fetching projects:", error);
       cogoToast.error("An error occurred while fetching the projects.");
     }
   };
-
-  // const handleDelete = async (id) => {
-
-  //   const isConfirmed = window.confirm("Are you sure you want to delete this project?");
-  //   if (!isConfirmed) return;
-  //   try {
-  //     const { data } = await axios.delete(`https://crm-generalize.dentalguru.software/api/delete-project/${id}`);
-  //     cogoToast.success(data.message || "Project deleted successfully!");
-  //     setProjects((prev) => prev.filter((project) => project.main_project_id !== id));
-  //   } catch (error) {
-  //     console.error("Error deleting project:", error);
-  //     cogoToast.error("An error occurred while deleting the project.");
-  //   }
-  // };
 
   const handleDelete = async (id) => {
     const isConfirmed = window.confirm(

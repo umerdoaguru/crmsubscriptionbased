@@ -126,8 +126,8 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employee-super-admin/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getEmployeeByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -135,7 +135,7 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
           },
         }
       );
-      setEmployees(response.data);
+      setEmployees(data);
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
@@ -161,7 +161,7 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   const fetchProjectsUnit = async (main_project_id) => {
     try {
       if (!main_project_id) {
-        setProjectUnit([]); // Reset if no project is selected
+        setProjectUnit([]);
         return;
       }
 
@@ -176,13 +176,13 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
       );
 
       if (response.data.length > 0) {
-        setProjectUnit(response.data); // Store fetched unit types
+        setProjectUnit(response.data);
       } else {
-        setProjectUnit([]); // Reset if no units found
+        setProjectUnit([]);
       }
     } catch (error) {
       console.error("Error fetching units:", error);
-      setProjectUnit([]); // Reset in case of error
+      setProjectUnit([]);
     }
   };
 
@@ -202,18 +202,11 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
       if (response.status === 200) {
         cogoToast.success("AnswerRemark updated successfully!");
         fetchLeads();
-        closeModal(); // Close the modal
+        closeModal();
       }
     } catch (error) {
       console.error("Error updating AnswerRemark:", error);
     }
-  };
-
-  const handleSearch = (value) => {
-    if (value === " ") {
-      return;
-    }
-    setSearchTerm(value);
   };
 
   const applyFilters = () => {
@@ -1122,5 +1115,3 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
 }
 
 export default SuperEmployeeLeadsContent;
-
-const Wrapper = styled.div``;

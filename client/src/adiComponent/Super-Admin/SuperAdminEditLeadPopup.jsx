@@ -20,12 +20,15 @@ const SuperAdminEditLeadPopup = ({
 }) => {
   const modalRef = useRef();
   const EmpId = useSelector((state) => state.auth.user);
+  console.log(EmpId);
+
   const token = EmpId?.token;
-  const userId = EmpId.user_id;
+  const userId = EmpId.staff_id;
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [customLeadSource, setCustomLeadSource] = useState("");
   const [currentLead, setCurrentLead] = useState({
+    lead_org_id: EmpId?.staff_org_id,
     lead_no: "",
     assignedTo: "",
     employeeId: "",
@@ -53,6 +56,7 @@ const SuperAdminEditLeadPopup = ({
       });
     } else {
       setCurrentLead({
+        lead_org_id: EmpId?.staff_org_id,
         lead_no: "",
         assignedTo: "",
         employeeId: "",
@@ -97,23 +101,39 @@ const SuperAdminEditLeadPopup = ({
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
     setCurrentLead((prevLead) => {
-      const updated = { ...prevLead, [name]: value };
+      let updated = { ...prevLead };
+
+      if (name === "phone") {
+        const onlyNumbers = value.replace(/\D/g, "");
+        if (onlyNumbers.length <= 10) {
+          updated[name] = onlyNumbers;
+        }
+        return updated;
+      }
+
+      updated = { ...updated, [name]: value };
+
       if (name === "createdTime") updated.actual_date = value;
+
       if (name === "assignedTo") {
         const emp = employees.find((e) => e.name === value);
         updated.employeeId = emp?.employeeId || "";
         updated.employeephone = emp?.phone || "";
       }
+
       if (name === "project_name") {
         const proj = projects.find((p) => p.project_name === value);
         updated.main_project_id = proj?.main_project_id || "";
         fetchProjectsUnit(proj?.main_project_id || "");
       }
+
       if (name === "unit_type") {
         const unit = projectunit.find((u) => u.unit_type === value);
         updated.unit_id = unit?.unit_id || "";
       }
+
       return updated;
     });
   };
@@ -125,7 +145,6 @@ const SuperAdminEditLeadPopup = ({
   // Form validation
   const validateForm = () => {
     let errs = {};
-    if (!currentLead.lead_no) errs.lead_no = "Lead number is required";
     if (!currentLead.assignedTo) errs.assignedTo = "Assigned To is required";
     if (!currentLead.name) errs.name = "Name is required";
     if (!currentLead.createdTime) errs.createdTime = "Date is required";
@@ -211,22 +230,23 @@ const SuperAdminEditLeadPopup = ({
               onSubmit={saveChanges}
               className="grid grid-cols-1 md:grid-cols-2 gap-3"
             >
-              {/* Lead Number */}
+              {/* Name */}
               <div>
                 <label className="text-sm font-medium text-gray-600">
-                  Lead Number
+                  Name
                 </label>
                 <input
-                  type="number"
-                  name="lead_no"
-                  value={currentLead.lead_no}
+                  type="text"
+                  name="name"
+                  placeholder="Write name"
+                  value={currentLead.name}
                   onChange={handleInputChange}
                   className={`mt-1 w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-400 ${
-                    errors.lead_no ? "border-red-500" : "border-gray-300"
+                    errors.name ? "border-red-500" : "border-gray-300"
                   }`}
                 />
-                {errors.lead_no && (
-                  <p className="text-red-500 text-xs mt-1">{errors.lead_no}</p>
+                {errors.name && (
+                  <p className="text-red-500 text-xs mt-1">{errors.name}</p>
                 )}
               </div>
 
@@ -245,8 +265,8 @@ const SuperAdminEditLeadPopup = ({
                 >
                   <option value="">Select Employee</option>
                   {employees.map((emp) => (
-                    <option key={emp.employee_id} value={emp.name}>
-                      {emp.name}
+                    <option key={emp.staff_id} value={emp.staff_id}>
+                      {emp.staff_name}
                     </option>
                   ))}
                 </select>
@@ -276,25 +296,6 @@ const SuperAdminEditLeadPopup = ({
                 )}
               </div>
 
-              {/* Name */}
-              <div>
-                <label className="text-sm font-medium text-gray-600">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={currentLead.name}
-                  onChange={handleInputChange}
-                  className={`mt-1 w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-400 ${
-                    errors.name ? "border-red-500" : "border-gray-300"
-                  }`}
-                />
-                {errors.name && (
-                  <p className="text-red-500 text-xs mt-1">{errors.name}</p>
-                )}
-              </div>
-
               {/* Phone */}
               <div>
                 <label className="text-sm font-medium text-gray-600">
@@ -304,6 +305,7 @@ const SuperAdminEditLeadPopup = ({
                   type="text"
                   name="phone"
                   value={currentLead.phone}
+                  placeholder="Enter mobile number"
                   onChange={handleInputChange}
                   className={`mt-1 w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-400 ${
                     errors.phone ? "border-red-500" : "border-gray-300"
@@ -414,6 +416,7 @@ const SuperAdminEditLeadPopup = ({
                 <textarea
                   type="text"
                   name="address"
+                  placeholder="Enter address"
                   value={currentLead.address}
                   onChange={handleInputChange}
                   className={`mt-1 w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-400 ${

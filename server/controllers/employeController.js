@@ -8,9 +8,9 @@ const getEmployeeInvoice = async (req, res) => {
     const result = await new Promise((resolve, reject) => {
       db.query(sql, [id], (err, results) => {
         if (err) {
-          reject(err); 
+          reject(err);
         } else {
-          resolve(results); 
+          resolve(results);
         }
       });
     });
@@ -45,7 +45,7 @@ const updateOnlyLeadStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { lead_status } = req.body;
-    
+
     const sql = `UPDATE leads SET lead_status = ? WHERE lead_id = ?`;
 
     await new Promise((resolve, reject) => {
@@ -63,7 +63,6 @@ const updateOnlyLeadStatus = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error", error: err });
   }
 };
-
 
 const updateOnlyQuotationStatus = async (req, res) => {
   try {
@@ -161,20 +160,14 @@ const getEmployeeQuotation = async (req, res) => {
 const employeeProfile = async (req, res) => {
   try {
     const { id } = req.params;
-    const sql =
-      "SELECT employeeId, name, email, phone, position,user_id, createdTime FROM employee WHERE employeeId = ?";
+    const sql = "SELECT * company_staff WHERE staff_id = ?";
 
-    const result = await new Promise((resolve, reject) => {
-      db.query(sql, [id], (err, results) => {
-        if (err) {
-          reject(err); // Reject the promise with the error
-        } else {
-          resolve(results); // Resolve the promise with the results
-        }
-      });
+    db.query(sql, id, (err, result) => {
+      if (err) {
+        res.status(400).json({ success: false, message: err.message });
+      }
+      res.status(200).send(result);
     });
-
-    res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ message: "Internal Server Error", error: err });
   }
@@ -225,7 +218,7 @@ const getLeadQuotation = async (req, res) => {
         }
       });
     });
-    
+
     res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ message: "Internal Server Error", error: err });
@@ -246,7 +239,7 @@ const getEmployeeVisit = async (req, res) => {
         }
       });
     });
-    
+
     res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ message: "Internal Server Erro, error: errr" });
@@ -293,7 +286,7 @@ const createVisit = (req, res) => {
 
 const updateVisit = (req, res) => {
   const {
-    id, 
+    id,
     project_name,
     lead_id,
     name,
@@ -324,7 +317,17 @@ const updateVisit = (req, res) => {
 
   db.query(
     sql,
-    [project_name, lead_id, name, employeeId, employee_name, visit, visit_date, report, id],
+    [
+      project_name,
+      lead_id,
+      name,
+      employeeId,
+      employee_name,
+      visit,
+      visit_date,
+      report,
+      id,
+    ],
     (err, results) => {
       if (err) {
         res.status(500).json({ error: "Error updating visit data" });
@@ -362,9 +365,7 @@ const deleteVisit = (req, res) => {
   });
 };
 
-
-
-const getEmployeeFollow_Up= async (req, res) => {
+const getEmployeeFollow_Up = async (req, res) => {
   try {
     const { id } = req.params;
     const sql = "SELECT * FROM follow_up_leads WHERE lead_id = ?";
@@ -372,20 +373,18 @@ const getEmployeeFollow_Up= async (req, res) => {
     const result = await new Promise((resolve, reject) => {
       db.query(sql, [id], (err, results) => {
         if (err) {
-          reject(err); 
+          reject(err);
         } else {
           resolve(results);
         }
       });
     });
-   
+
     res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ message: "Internal Server Erro, error: errr" });
   }
 };
-
-
 
 const createFollow_Up = (req, res) => {
   const {
@@ -396,8 +395,7 @@ const createFollow_Up = (req, res) => {
     employee_name,
     follow_up_type,
     follow_up_date,
-    report
-  
+    report,
   } = req.body;
 
   const sql = `INSERT INTO follow_up_leads (project_name, lead_id, name,
@@ -405,7 +403,16 @@ const createFollow_Up = (req, res) => {
 
   db.query(
     sql,
-    [project_name, lead_id, name, employeeId, employee_name,  follow_up_type,follow_up_date,report],
+    [
+      project_name,
+      lead_id,
+      name,
+      employeeId,
+      employee_name,
+      follow_up_type,
+      follow_up_date,
+      report,
+    ],
     (err, results) => {
       if (err) {
         res.status(500).json({ error: "Error inserting data" });
@@ -421,7 +428,7 @@ const createFollow_Up = (req, res) => {
 
 const updateFollow_Up = (req, res) => {
   const {
-    id, 
+    id,
     project_name,
     lead_id,
     name,
@@ -429,7 +436,7 @@ const updateFollow_Up = (req, res) => {
     employee_name,
     follow_up_type,
     follow_up_date,
-    report
+    report,
   } = req.body;
 
   // Basic validation
@@ -452,16 +459,27 @@ const updateFollow_Up = (req, res) => {
 
   db.query(
     sql,
-    [project_name, lead_id, name, employeeId, employee_name,  follow_up_type,follow_up_date, report, id],
+    [
+      project_name,
+      lead_id,
+      name,
+      employeeId,
+      employee_name,
+      follow_up_type,
+      follow_up_date,
+      report,
+      id,
+    ],
     (err, results) => {
       if (err) {
         res.status(500).json({ error: "Error updating Follow Up data" });
       } else if (results.affectedRows === 0) {
         res.status(404).json({ error: "Follow Up not found" });
       } else {
-        res
-          .status(200)
-          .json({ success: true, message: "Follow Up data updated successfully" });
+        res.status(200).json({
+          success: true,
+          message: "Follow Up data updated successfully",
+        });
       }
     }
   );
@@ -498,13 +516,13 @@ const getEmployeebyidvisit = async (req, res) => {
     const result = await new Promise((resolve, reject) => {
       db.query(sql, [id], (err, results) => {
         if (err) {
-          reject(err); 
+          reject(err);
         } else {
-          resolve(results); 
+          resolve(results);
         }
       });
     });
-   
+
     res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ message: "Internal Server Erro, error: errr" });
@@ -525,7 +543,7 @@ const AllgetEmployeebyvisit = async (req, res) => {
         }
       });
     });
-    
+
     res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ message: "Internal Server Erro, error: errr" });
@@ -535,12 +553,12 @@ const AllgetEmployeebyvisit = async (req, res) => {
 const updateOnlyVisitStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { visit,visit_date } = req.body;
+    const { visit, visit_date } = req.body;
 
     const sql = `UPDATE leads SET visit = ?, visit_date = ? WHERE lead_id = ?`;
 
     await new Promise((resolve, reject) => {
-      db.query(sql, [visit,visit_date, id], (err, result) => {
+      db.query(sql, [visit, visit_date, id], (err, result) => {
         if (err) {
           reject(err);
         } else {
@@ -578,13 +596,17 @@ const updateOnlyFollowUpStatus = async (req, res) => {
   }
 };
 
-
-
-
 const createRemark = async (req, res) => {
   try {
-    const {project_name, lead_id, name, employee_name, employeeId, remark_status, date } = req.body;
-    
+    const {
+      project_name,
+      lead_id,
+      name,
+      employee_name,
+      employeeId,
+      remark_status,
+      date,
+    } = req.body;
 
     if (!lead_id || !remark_status || !date) {
       return res
@@ -601,7 +623,15 @@ const createRemark = async (req, res) => {
     const resultRemark = await new Promise((resolve, reject) => {
       db.query(
         sqlRemark,
-        [project_name, lead_id, name, employee_name, employeeId, remark_status, date],
+        [
+          project_name,
+          lead_id,
+          name,
+          employee_name,
+          employeeId,
+          remark_status,
+          date,
+        ],
         (err, result) => {
           if (err) {
             reject(err);
@@ -624,13 +654,17 @@ const createRemark = async (req, res) => {
       WHERE lead_id = ?`;
 
     await new Promise((resolve, reject) => {
-      db.query(sqlUpdateLeads, [remarkId, remark_status, lead_id], (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
+      db.query(
+        sqlUpdateLeads,
+        [remarkId, remark_status, lead_id],
+        (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
         }
-      });
+      );
     });
 
     res.status(200).json({
@@ -645,12 +679,11 @@ const createRemark = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
-
 };
 
 const updateRemark = (req, res) => {
   const {
-    id, 
+    id,
     project_name,
     lead_id,
     name,
@@ -672,7 +705,16 @@ const updateRemark = (req, res) => {
 
   db.query(
     sql,
-    [project_name, lead_id, name, employee_name, employeeId, remark_status, date, id], 
+    [
+      project_name,
+      lead_id,
+      name,
+      employee_name,
+      employeeId,
+      remark_status,
+      date,
+      id,
+    ],
     (err, results) => {
       if (err) {
         return res.status(500).json({ error: "Error updating remark data" });
@@ -686,7 +728,6 @@ const updateRemark = (req, res) => {
     }
   );
 };
-
 
 const deleteRemark = (req, res) => {
   const { id } = req.params;
@@ -711,7 +752,7 @@ const deleteRemark = (req, res) => {
   });
 };
 
-const getEmployeeRemark= async (req, res) => {
+const getEmployeeRemark = async (req, res) => {
   try {
     const { id } = req.params;
     const sql = "SELECT * FROM remark WHERE lead_id = ?";
@@ -719,19 +760,18 @@ const getEmployeeRemark= async (req, res) => {
     const result = await new Promise((resolve, reject) => {
       db.query(sql, [id], (err, results) => {
         if (err) {
-          reject(err); 
+          reject(err);
         } else {
-          resolve(results); 
+          resolve(results);
         }
       });
     });
-  
+
     res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ message: "Internal Server Erro, error: errr" });
   }
 };
-
 
 const updateOnlyRemarkStatus = async (req, res) => {
   try {
@@ -778,39 +818,40 @@ const updateOnlyRemarkAnswerStatus = async (req, res) => {
   }
 };
 
-
-const updateOnlyRemarkAnswer = async (req, res) =>{
+const updateOnlyRemarkAnswer = async (req, res) => {
   try {
-  const { lead_id, answer_remark, remark_id } = req.body;
+    const { lead_id, answer_remark, remark_id } = req.body;
 
-  const sqlUpdateLeads = `UPDATE leads SET answer_remark = ? WHERE lead_id = ?`;
-  const sqlUpdateRemark = `UPDATE remark SET answer_remark = ? WHERE id = ?`;
+    const sqlUpdateLeads = `UPDATE leads SET answer_remark = ? WHERE lead_id = ?`;
+    const sqlUpdateRemark = `UPDATE remark SET answer_remark = ? WHERE id = ?`;
 
-  await new Promise((resolve, reject) => {
-    db.query(sqlUpdateLeads, [answer_remark, lead_id], (err, result) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(result);
-      }
+    await new Promise((resolve, reject) => {
+      db.query(sqlUpdateLeads, [answer_remark, lead_id], (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
     });
-  });
 
-  await new Promise((resolve, reject) => {
-    db.query(sqlUpdateRemark, [answer_remark, remark_id], (err, result) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(result);
-      }
+    await new Promise((resolve, reject) => {
+      db.query(sqlUpdateRemark, [answer_remark, remark_id], (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
     });
-  });
 
-  res.status(200).json({ message: "Answer Remark status updated successfully in both tables" });
-} catch (error) {
-  res.status(500).json({ message: "Internal Server Error", error });
-}}
-
+    res.status(200).json({
+      message: "Answer Remark status updated successfully in both tables",
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error", error });
+  }
+};
 
 const createEmployeeUnitSold = (req, res) => {
   const {
@@ -842,7 +883,7 @@ const createEmployeeUnitSold = (req, res) => {
 
   db.query(
     sql,
-    [ 
+    [
       lead_id,
       name,
       employeeId,
@@ -852,7 +893,9 @@ const createEmployeeUnitSold = (req, res) => {
       unit_status,
       main_project_id,
       project_name,
-      date,user_id],
+      date,
+      user_id,
+    ],
     (err, results) => {
       if (err) {
         res.status(500).json({ error: "Error inserting data" });
@@ -878,7 +921,7 @@ const updateEmployeeUnitSold = (req, res) => {
     unit_status,
     main_project_id,
     project_name,
-    date
+    date,
   } = req.body;
 
   // Basic validation
@@ -903,7 +946,7 @@ const updateEmployeeUnitSold = (req, res) => {
 
   db.query(
     sql,
-    [ 
+    [
       lead_id,
       name,
       employeeId,
@@ -913,14 +956,19 @@ const updateEmployeeUnitSold = (req, res) => {
       unit_status,
       main_project_id,
       project_name,
-      date, id],
+      date,
+      id,
+    ],
     (err, results) => {
       if (err) {
         res.status(500).json({ error: "Error updating Unit Sold data" });
       } else if (results.affectedRows === 0) {
         res.status(404).json({ error: "Unit Sold not found" });
       } else {
-        res.status(200).json({ success: true, message: "Unit Sold data updated successfully" });
+        res.status(200).json({
+          success: true,
+          message: "Unit Sold data updated successfully",
+        });
       }
     }
   );
@@ -942,11 +990,12 @@ const deleteEmployeeUnitSold = (req, res) => {
     } else if (results.affectedRows === 0) {
       res.status(404).json({ error: "Unit Sold not found" });
     } else {
-      res.status(200).json({ success: true, message: "Unit Sold deleted successfully" });
+      res
+        .status(200)
+        .json({ success: true, message: "Unit Sold deleted successfully" });
     }
   });
 };
-
 
 const getEmployeeUnitSold = async (req, res) => {
   try {
@@ -956,13 +1005,13 @@ const getEmployeeUnitSold = async (req, res) => {
     const result = await new Promise((resolve, reject) => {
       db.query(sql, [userId], (err, results) => {
         if (err) {
-          reject(err); 
+          reject(err);
         } else {
-          resolve(results); 
+          resolve(results);
         }
       });
     });
-   
+
     res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ message: "Internal Server Erro, error: errr" });
@@ -977,13 +1026,13 @@ const getEmployeeUnitSoldById = async (req, res) => {
     const result = await new Promise((resolve, reject) => {
       db.query(sql, [id], (err, results) => {
         if (err) {
-          reject(err); 
+          reject(err);
         } else {
-          resolve(results); 
+          resolve(results);
         }
       });
     });
-  
+
     res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ message: "Internal Server Erro, error: errr" });
@@ -997,19 +1046,18 @@ const getEmployeeUnitSoldByLeadId = async (req, res) => {
     const result = await new Promise((resolve, reject) => {
       db.query(sql, [id], (err, results) => {
         if (err) {
-          reject(err); 
+          reject(err);
         } else {
-          resolve(results); 
+          resolve(results);
         }
       });
     });
-    
+
     res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ message: "Internal Server Erro, error: errr" });
   }
 };
-
 
 const getUnitDataByUnitId = async (req, res) => {
   try {
@@ -1019,13 +1067,13 @@ const getUnitDataByUnitId = async (req, res) => {
     const result = await new Promise((resolve, reject) => {
       db.query(sql, [id], (err, results) => {
         if (err) {
-          reject(err); 
+          reject(err);
         } else {
-          resolve(results); 
+          resolve(results);
         }
       });
     });
- 
+
     res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ message: "Internal Server Erro, error: errr" });
@@ -1054,16 +1102,15 @@ const updateOnlyUnitDataStatusById = async (req, res) => {
   }
 };
 
-
 const updateOnlyUnitStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { unit_number,unit_status } = req.body;
+    const { unit_number, unit_status } = req.body;
 
     const sql = `UPDATE leads SET unit_number = ?, unit_status = ? WHERE lead_id = ?`;
 
     await new Promise((resolve, reject) => {
-      db.query(sql, [unit_number,unit_status, id], (err, result) => {
+      db.query(sql, [unit_number, unit_status, id], (err, result) => {
         if (err) {
           reject(err);
         } else {
@@ -1077,8 +1124,6 @@ const updateOnlyUnitStatus = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error", error: err });
   }
 };
-
-
 
 module.exports = {
   getEmployeeInvoice,
@@ -1102,8 +1147,10 @@ module.exports = {
   AllgetEmployeebyvisit,
   updateOnlyVisitStatus,
   updateOnlyFollowUpStatus,
-  createRemark,updateRemark,
-  deleteRemark,getEmployeeRemark,
+  createRemark,
+  updateRemark,
+  deleteRemark,
+  getEmployeeRemark,
   updateOnlyRemarkStatus,
   updateOnlyRemarkAnswer,
   updateOnlyRemarkAnswerStatus,

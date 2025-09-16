@@ -23,7 +23,7 @@ const SuperAdEmployeemanagementContent = () => {
   const [editingIndex, setEditingIndex] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 7;
@@ -34,8 +34,8 @@ const SuperAdEmployeemanagementContent = () => {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/getAllEmployees-super-admin/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getEmployeeByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -43,13 +43,14 @@ const SuperAdEmployeemanagementContent = () => {
           },
         }
       );
-      const { employees } = response.data;
-      console.log(employees);
-      setEmployees(employees || []); // Ensure employees is always an array
+
+      setEmployees(data);
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
   };
+
+  console.log(employees);
 
   const handleKeyPress = (e) => {
     if (e.target.name === "phone") {
@@ -59,44 +60,6 @@ const SuperAdEmployeemanagementContent = () => {
       ) {
         e.preventDefault();
       }
-    }
-  };
-
-  const validateForm = async () => {
-    const errors = {};
-
-    if (!newEmployee.name) errors.name = "Name is required";
-
-    if (!newEmployee.email) errors.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(newEmployee.email))
-      errors.email = "Email is invalid";
-
-    if (!newEmployee.password) errors.password = "Password is required";
-
-    // Validate Position
-    if (!newEmployee.position) errors.position = "Position is required";
-
-    // Validate Phone
-    if (!newEmployee.phone) errors.phone = "Phone number is required";
-    else if (!/^\d{10}$/.test(newEmployee.phone))
-      errors.phone = "Phone number must be 10 digits";
-
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const isEmailTaken = async (email) => {
-    try {
-      const response = await axios.get(
-        "https://crm-generalize.dentalguru.software/api/checkEmail",
-        {
-          params: { email },
-        }
-      );
-      return response.data.exists;
-    } catch (error) {
-      console.error("Error checking email:", error);
-      return false; // Assuming email check fails means it's not taken
     }
   };
 
@@ -125,17 +88,6 @@ const SuperAdEmployeemanagementContent = () => {
     navigate(`/super-admin-employee-single/${employeeId}`);
   };
 
-  const cancelButton = () => {
-    setNewEmployee({
-      name: "",
-      email: "",
-      password: "",
-      position: "",
-      phone: "",
-    });
-    setShowForm(false);
-    setValidationErrors({});
-  };
   const pageCount = Math.ceil(employees.length / itemsPerPage);
 
   // Pagination logic
@@ -187,26 +139,26 @@ const SuperAdEmployeemanagementContent = () => {
                   <tbody>
                     {currentemployee.length > 0 ? (
                       currentemployee
-                        .filter((employee) => employee && employee.name) // Ensure employee and employee.name exist
+                        .filter((employee) => employee && employee.staff_name)
                         .map((employee, index) => (
                           <tr
-                            key={employee.employeeId}
+                            key={employee.staff_id}
                             className="border-b border-gray-200 cursor-pointer hover:text-cyan-600"
                             onClick={() =>
-                              handleEmployeeClick(employee.employeeId)
-                            } // Navigate on row click
+                              handleEmployeeClick(employee.staff_id)
+                            }
                           >
                             <td className="px-4 py-4 sm:px-6">
-                              {employee.name}
+                              {employee.staff_name}
                             </td>
                             <td className="px-4 py-4 sm:px-6">
-                              {employee.email}
+                              {employee.staff_email}
                             </td>
                             <td className="px-4 py-4 sm:px-6">
-                              {employee.position}
+                              {employee.staff_role}
                             </td>
                             <td className="px-4 py-4 sm:px-6">
-                              {employee.phone}
+                              {employee.staff_phone}
                             </td>
                             <td className="px-4 py-4 sm:px-6">
                               <div className="flex space-x-2 sm:space-x-4">
@@ -214,7 +166,7 @@ const SuperAdEmployeemanagementContent = () => {
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleEditEmployee(employee);
-                                  }} // Now index is available
+                                  }}
                                   className="text-cyan-500 transition duration-200 hover:text-cyan-600"
                                 >
                                   <BsPencilSquare size={20} />
@@ -222,7 +174,7 @@ const SuperAdEmployeemanagementContent = () => {
                                 <button
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleDeleteEmployee(employee.employeeId);
+                                    handleDeleteEmployee(employee.staff_id);
                                   }}
                                   className="text-red-500 transition duration-200 hover:text-red-600"
                                 >

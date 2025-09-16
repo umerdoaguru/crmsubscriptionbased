@@ -213,6 +213,7 @@ const {
   sendOtpOnlyOne,
   getEmployeeDetails,
   updateEmployeeDetails,
+  getEmployeeByOrg,
 } = require("../controllers/ControllerNine");
 
 // ========== Router Begins =====================
@@ -457,7 +458,7 @@ router.get(
 );
 
 router.get(
-  "/super-admin-all-project/:userId",
+  "/super-admin-all-project/:userId/:orgId",
   authenticateSuperAdmin,
   getAllProjects
 );
@@ -652,5 +653,6 @@ router.post("/OneOnlylogin", OneOnlylogin);
 router.post("/sendOtpOnlyOne", sendOtpOnlyOne);
 router.get("/getEmployeeDetails/:staffId", getEmployeeDetails);
 router.put("/updateEmployeeDetails/:staffId", updateEmployeeDetails);
+router.get("/getEmployeeByOrg/:orgId", getEmployeeByOrg);
 
 module.exports = router;

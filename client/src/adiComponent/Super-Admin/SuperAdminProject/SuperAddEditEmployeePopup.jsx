@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import cogoToast from "cogo-toast";
 import { useSelector } from "react-redux";
-import { IoCloseSharp } from "react-icons/io5";
+import { IoCloseSharp, IoEye, IoEyeOff } from "react-icons/io5";
 
 const SuperAddEditEmployeePopup = ({
   isOpen,
@@ -13,18 +13,20 @@ const SuperAddEditEmployeePopup = ({
   fetchEmployees,
 }) => {
   const modalRef = useRef();
+  const [showPassword, setShowPassword] = useState(false);
   const EmpId = useSelector((state) => state.auth.user);
   const token = EmpId?.token;
   const userId = EmpId.user_id;
   const [loading, setLoading] = useState(false);
   const [customLeadSource, setCustomLeadSource] = useState("");
   const [newEmployee, setNewEmployee] = useState({
-    name: "",
-    email: "",
-    password: "",
-    position: "",
-    phone: "",
-    user_id: userId,
+    staff_org_id: EmpId?.staff_org_id,
+    staff_role: "",
+    staff_name: "",
+    staff_email: "",
+    staff_phone: "",
+    staff_password: "",
+    staff_status: "",
   });
 
   console.log(editingIndex);
@@ -33,21 +35,23 @@ const SuperAddEditEmployeePopup = ({
   useEffect(() => {
     if (editingIndex !== null) {
       setNewEmployee({
-        name: editingIndex?.name,
-        email: editingIndex?.email,
-        password: editingIndex?.password,
-        position: editingIndex?.position,
-        phone: editingIndex?.phone,
-        user_id: userId,
+        staff_org_id: EmpId?.staff_org_id,
+        staff_role: editingIndex?.staff_role,
+        staff_name: editingIndex?.staff_name,
+        staff_email: editingIndex?.staff_email,
+        staff_phone: editingIndex?.staff_phone,
+        staff_password: "",
+        staff_status: editingIndex?.staff_status,
       });
     } else {
       setNewEmployee({
-        name: "",
-        email: "",
-        password: "",
-        position: "",
-        phone: "",
-        user_id: userId,
+        staff_org_id: EmpId?.staff_org_id,
+        staff_role: "",
+        staff_name: "",
+        staff_email: "",
+        staff_phone: "",
+        staff_password: "",
+        staff_status: "",
       });
     }
   }, [editingIndex]);
@@ -77,16 +81,12 @@ const SuperAddEditEmployeePopup = ({
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (name === "phone") {
+    if (name === "staff_phone") {
       const numericValue = value.replace(/[^0-9]/g, "").slice(0, 10);
       setNewEmployee((prev) => ({ ...prev, [name]: numericValue }));
     } else {
       setNewEmployee((prev) => ({ ...prev, [name]: value }));
     }
-  };
-
-  const handleCustomLeadSourceChange = (e) => {
-    setCustomLeadSource(e.target.value);
   };
 
   const handleSaveEmployee = async (e) => {
@@ -96,29 +96,28 @@ const SuperAddEditEmployeePopup = ({
       let response;
       if (editingIndex !== null) {
         response = await axios.put(
-          `https://crm-generalize.dentalguru.software/api/updateEmployee/${editingIndex?.employeeId}`,
+          `https://crm-generalize.dentalguru.software/api/updateEmployeeDetails/${editingIndex?.staff_id}`,
           newEmployee
         );
         setLoading(false);
         cogoToast.success("Employee data updated successfully");
       } else {
-        // Add new employee
         response = await axios.post(
-          "https://crm-generalize.dentalguru.software/api/addEmployee",
+          "https://crm-generalize.dentalguru.software/api/addNewCompanyStaff",
           newEmployee
         );
         setLoading(false);
         cogoToast.success("Employee data saved successfully");
       }
 
-      // cogoToast.success(response.data.message);
-
       setNewEmployee({
-        name: "",
-        email: "",
-        password: "",
-        position: "",
-        phone: "",
+        staff_org_id: EmpId?.staff_org_id,
+        staff_role: "",
+        staff_name: "",
+        staff_email: "",
+        staff_phone: "",
+        staff_password: "",
+        staff_status: "",
       });
 
       fetchEmployees();
@@ -179,8 +178,8 @@ const SuperAddEditEmployeePopup = ({
                   <input
                     required
                     type="text"
-                    name="name"
-                    value={newEmployee.name}
+                    name="staff_name"
+                    value={newEmployee.staff_name}
                     onChange={handleInputChange}
                     placeholder="Name"
                     className={`p-2 border rounded-lg`}
@@ -198,8 +197,8 @@ const SuperAddEditEmployeePopup = ({
                   <input
                     required
                     type="email"
-                    name="email"
-                    value={newEmployee.email}
+                    name="staff_email"
+                    value={newEmployee.staff_email}
                     onChange={handleInputChange}
                     placeholder="Email"
                     className={`p-2 border rounded-lg`}
@@ -207,7 +206,7 @@ const SuperAddEditEmployeePopup = ({
                 </div>
 
                 {/* Password */}
-                <div className="flex flex-col">
+                <div className="flex flex-col relative">
                   <label
                     htmlFor="password"
                     className="block mb-1 text-sm font-medium"
@@ -215,14 +214,25 @@ const SuperAddEditEmployeePopup = ({
                     Password
                   </label>
                   <input
-                    required
-                    type="text"
-                    name="password"
-                    value={newEmployee.password}
+                    required={editingIndex === null}
+                    type={showPassword ? "text" : "password"}
+                    name="staff_password"
+                    value={newEmployee.staff_password}
                     onChange={handleInputChange}
                     placeholder="Password"
-                    className={`p-2 border rounded-lg`}
+                    className="p-2 border rounded-lg pr-10"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
+                  >
+                    {showPassword ? (
+                      <IoEyeOff size={20} />
+                    ) : (
+                      <IoEye size={20} />
+                    )}
+                  </button>
                 </div>
 
                 {/* Position */}
@@ -231,17 +241,20 @@ const SuperAddEditEmployeePopup = ({
                     htmlFor="position"
                     className="block mb-1 text-sm font-medium"
                   >
-                    Position
+                    Employee Role
                   </label>
-                  <input
+
+                  <select
                     required
-                    type="text"
-                    name="position"
-                    value={newEmployee.position}
+                    name="staff_role"
+                    value={newEmployee.staff_role}
                     onChange={handleInputChange}
-                    placeholder="Position"
                     className={`p-2 border rounded-lg `}
-                  />
+                  >
+                    <option value="">--select--</option>
+                    <option value="admin">Admin</option>
+                    <option value="employee">Employee</option>
+                  </select>
                 </div>
 
                 {/* Phone */}
@@ -255,12 +268,34 @@ const SuperAddEditEmployeePopup = ({
                   <input
                     required
                     type="text"
-                    name="phone"
-                    value={newEmployee.phone}
+                    name="staff_phone"
+                    value={newEmployee.staff_phone}
                     onChange={handleInputChange}
-                    placeholder="Phone"
+                    placeholder="Enter Phone"
                     className={`p-2 border rounded-lg `}
                   />
+                </div>
+                {/* Position */}
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="position"
+                    className="block mb-1 text-sm font-medium"
+                  >
+                    Employee Status
+                  </label>
+
+                  <select
+                    required
+                    name="staff_status"
+                    value={newEmployee.staff_status}
+                    onChange={handleInputChange}
+                    className={`p-2 border rounded-lg `}
+                  >
+                    <option value="">--select--</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="suspended">Suspended</option>
+                  </select>
                 </div>
               </div>
 

@@ -581,7 +581,7 @@ const getEmployeeDetails = (req, res) => {
   }
 };
 
-const updateEmployeeDetails = (req, res) => {
+const updateEmployeeDetails = async (req, res) => {
   try {
     const staffId = req.params.staffId;
     const {
@@ -615,8 +615,9 @@ const updateEmployeeDetails = (req, res) => {
       values.push(staff_phone);
     }
     if (staff_password) {
+      const hashedPassword = await bcrypt.hash(staff_password, 10);
       fields.push("staff_password = ?");
-      values.push(staff_password);
+      values.push(hashedPassword);
     }
     if (staff_status) {
       fields.push("staff_status = ?");
@@ -658,6 +659,21 @@ const updateEmployeeDetails = (req, res) => {
   }
 };
 
+const getEmployeeByOrg = (req, res) => {
+  try {
+    const orgId = req.params.orgId;
+    const selectQuery = `select * from company_staff where staff_org_id = ?`;
+    db.query(selectQuery, orgId, (err, result) => {
+      if (err) {
+        res.status(400).json({ success: false, message: err.message });
+      }
+      res.status(200).send(result);
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 module.exports = {
   insertNewPlan,
   insertBillingCycle,
@@ -674,4 +690,5 @@ module.exports = {
   sendOtpOnlyOne,
   getEmployeeDetails,
   updateEmployeeDetails,
+  getEmployeeByOrg,
 };

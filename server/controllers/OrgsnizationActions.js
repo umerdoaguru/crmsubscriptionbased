@@ -10,8 +10,10 @@ const getAllOrganizations = async (req, res) => {
     const getAllOrgsQuery = "SELECT * FROM organization";
 
     db.query(getAllOrgsQuery, (err, result) => {
-if (err) {
-return res.status(500).json({success: false, message: "Internal server error"});
+      if (err) {
+        return res
+          .status(500)
+          .json({ success: false, message: "Internal server error" });
       }
 
       if (result.length === 0) {
@@ -159,19 +161,20 @@ const addOrganization = async (req, res) => {
 
 const addEmployee = async (req, res) => {
   try {
-    const { name, email, password, position, phone,user_id } = req.body;
+    const { name, email, password, position, phone, user_id } = req.body;
 
     // Validations for required fields
     if (!name || !email) {
       return res.status(400).json({ message: "Name and email are required" });
     }
 
-    // Query to check if an employee with the same email already exists
-    const checkEmailQuery = `SELECT * FROM employee WHERE email = ?`;
+    const checkEmailQuery = `SELECT * FROM company_staff WHERE staff_email = ?`;
 
     db.query(checkEmailQuery, [email], (emailErr, emailResult) => {
       if (emailErr) {
-        return res.status(500).json({ message: "Internal server error" , error: emailErr});
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: emailErr });
       }
 
       if (emailResult.length > 0) {
@@ -201,14 +204,16 @@ const addEmployee = async (req, res) => {
         (insertErr, insertResult) => {
           if (insertErr) {
             console.error("Error inserting employee:", insertErr);
-            return res.status(500).json({ message: "Internal server error" , error: emailErr});
+            return res
+              .status(500)
+              .json({ message: "Internal server error", error: emailErr });
           }
 
           // Employee added successfully
           return res.status(201).json({
             success: true,
             message: "Employee added successfully",
-            employeeId: insertResult.insertId, 
+            employeeId: insertResult.insertId,
           });
         }
       );
@@ -222,13 +227,12 @@ const addEmployee = async (req, res) => {
   }
 };
 
-
 const getAllEmployees = async (req, res) => {
-  const {id} = req.params
+  const { id } = req.params;
   try {
     const getAllEmployeesQuery = "SELECT * FROM employee WHERE user_id = ?";
 
-    db.query(getAllEmployeesQuery,[id], (err, results) => {
+    db.query(getAllEmployeesQuery, [id], (err, results) => {
       if (err) {
         return res.status(500).json({ error: "Internal server error" });
       }
@@ -288,14 +292,7 @@ const updateEmployee = async (req, res) => {
 
     const query = ` UPDATE employee SET name = ?, email = ?, password = ?, position = ?, phone = ?  WHERE employeeId = ?`;
 
-    const params = [
-      name,
-      email,
-      password,
-      position || null,
-      phone || null,
-      id,
-    ];
+    const params = [name, email, password, position || null, phone || null, id];
 
     db.query(query, params, (err, results) => {
       if (err) {
@@ -351,7 +348,9 @@ const updateSingleEmployee = async (req, res) => {
     db.query(query, params, (err, results) => {
       if (err) {
         console.error("Error updating employee:", err);
-        return res.status(500).json({ message: "Internal server error", error: err });
+        return res
+          .status(500)
+          .json({ message: "Internal server error", error: err });
       }
 
       if (results.affectedRows === 0) {
@@ -517,11 +516,11 @@ const updateOrganization = async (req, res) => {
 };
 
 const getAllAdmins = async (req, res) => {
-  const {id}  = req.params
+  const { id } = req.params;
   try {
     const getAllAdminsQuery = "SELECT * FROM admins WHERE user_id = ?";
 
-    db.query(getAllAdminsQuery,[id], (err, results) => {
+    db.query(getAllAdminsQuery, [id], (err, results) => {
       if (err) {
         return res.status(500).json({ error: "Internal server error" });
       }
@@ -569,7 +568,7 @@ const getAdminById = async (req, res) => {
 };
 
 const addAdmin = async (req, res) => {
-  const { name, email, password, position, phone,user_id } = req.body;
+  const { name, email, password, position, phone, user_id } = req.body;
 
   try {
     const checkEmailQuery = `SELECT * FROM admins WHERE email = ?`;
@@ -593,7 +592,7 @@ const addAdmin = async (req, res) => {
 
       db.query(
         addAdminQuery,
-        [name, email, password, position, phone,user_id],
+        [name, email, password, position, phone, user_id],
         (err, results) => {
           if (err) {
             return res.status(500).json({ error: "Internal server error" });
@@ -615,7 +614,6 @@ const addAdmin = async (req, res) => {
   }
 };
 
-
 const updateAdmin = async (req, res) => {
   const { admin_id } = req.params;
   const { name, email, position, phone, password } = req.body;
@@ -631,10 +629,9 @@ const updateAdmin = async (req, res) => {
       WHERE admin_id = ?
     `;
 
-
     db.query(
       updateAdminQuery,
-      [name, email, position, phone, password, admin_id], 
+      [name, email, position, phone, password, admin_id],
       (err, results) => {
         if (err) {
           return res.status(500).json({ error: "Internal server error" });
@@ -667,7 +664,7 @@ const deleteAdmin = async (req, res) => {
   }
 
   try {
-    const deleteAdminQuery = "DELETE FROM admins WHERE admin_id = ?"; 
+    const deleteAdminQuery = "DELETE FROM admins WHERE admin_id = ?";
     db.query(deleteAdminQuery, [admin_id], (err, results) => {
       if (err) {
         return res.status(500).json({ error: "Database error", details: err });
