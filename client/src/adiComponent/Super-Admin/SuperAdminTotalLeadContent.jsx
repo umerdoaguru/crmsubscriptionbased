@@ -15,7 +15,7 @@ const SuperAdminTotalLeadContent = () => {
   const navigate = useNavigate();
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;
+  const userId = superadminuser.staff_id;
   useEffect(() => {
     fetchLeads();
   }, []);
@@ -23,7 +23,7 @@ const SuperAdminTotalLeadContent = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -37,6 +37,8 @@ const SuperAdminTotalLeadContent = () => {
       console.error("Error fetching leads:", error);
     }
   };
+
+  console.log(leads);
 
   useEffect(() => {
     let filtered = leads;
@@ -169,7 +171,7 @@ const SuperAdminTotalLeadContent = () => {
                         {lead.leadSource}
                       </td>
                       <td className="px-2 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.assignedTo}
+                        {lead.staff_name}
                       </td>
 
                       <td className="px-2 py-4 border-b border-gray-200 text-gray-800">

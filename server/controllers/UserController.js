@@ -718,12 +718,13 @@ const getvisit = (req, res) => {
 
 const getLeads = (req, res) => {
   const { userId } = req.params;
-  const sql = "SELECT * FROM leads WHERE user_id = ? ORDER BY lead_id DESC";
+  const sql =
+    "SELECT * FROM leads join company_staff on company_staff.staff_id = leads.assignedTo WHERE leads.lead_org_id = ? ORDER BY lead_id DESC";
   db.query(sql, [userId], (err, results) => {
     if (err) {
-      res.status(500).json({ error: "Error fetching data" });
+      res.status(500).json({ success: false, message: err.message });
     } else {
-      res.status(200).json(results);
+      res.status(200).send(results);
     }
   });
 };

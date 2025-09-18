@@ -27,15 +27,15 @@ function SuperSocialMediaLeadsContent() {
             </h2>
             <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
 
-            <div className="flex flex-wrap justify-around mt-5">
+            <div className="flex flex-wrap justify-center mt-5 mb-3">
               <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3 ">
                 <div
                   className={` shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "FacebookData"
                       ? "bg-cyan-600 text-white"
                       : ""
-                  }`} // Change background color if active
-                  onClick={() => setSelectedComponent("FacebookData")} // Set selected component
+                  }`}
+                  onClick={() => setSelectedComponent("FacebookData")}
                 >
                   <div className="p-4 flex flex-col items-center text-center">
                     <div
@@ -70,6 +70,48 @@ function SuperSocialMediaLeadsContent() {
                   </div>
                 </div>
               </div>
+              {/* <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3 ">
+                <div
+                  className={` shadow-lg rounded-lg overflow-hidden cursor-pointer ${
+                    selectedComponent === "WebsiteData"
+                      ? "bg-cyan-600 text-white"
+                      : ""
+                  }`}
+                  onClick={() => setSelectedComponent("WebsiteData")}
+                >
+                  <div className="p-4 flex flex-col items-center text-center">
+                    <div
+                      className={`text-3xl ${
+                        selectedComponent === "WebsiteData"
+                          ? "text-white"
+                          : "text-gray-700"
+                      }`}
+                    >
+                      <GiFiles />
+                    </div>
+                    <div className="mt-2">
+                      <h5
+                        className={`text-xl font-semibold ${
+                          selectedComponent === "WebsiteData"
+                            ? "text-white"
+                            : "text-gray-800"
+                        }`}
+                      >
+                        Website Leads Data
+                      </h5>
+                      <p
+                        className={`${
+                          selectedComponent === "WebsiteData"
+                            ? "text-white"
+                            : "text-gray-600"
+                        }`}
+                      >
+                        {}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div> */}
             </div>
 
             {/* Conditionally render the selected component */}

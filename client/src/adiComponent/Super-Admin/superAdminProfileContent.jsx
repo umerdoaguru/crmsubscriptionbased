@@ -13,6 +13,8 @@ const SuperAdminProfileContent = () => {
   const [passwordModal, setPasswordModal] = useState(false);
   const [selected, setSelected] = useState(null);
 
+  console.log(superAdmin);
+
   const openPopupWindow = (data) => {
     setSelected(data);
     setUpdateModal(true);
@@ -52,6 +54,21 @@ const SuperAdminProfileContent = () => {
     },
   ];
 
+  const heading = () => {
+    let headText = "";
+    if (superAdmin?.staff_role === "superadmin") {
+      headText = "Super Admin Profile";
+    } else if (superAdmin?.staff_role === "admin") {
+      headText = "Admin Profile";
+    } else {
+      headText = "Employee Profile";
+    }
+    return headText;
+  };
+
+  const headerText = heading();
+  console.log(headerText);
+
   return (
     <>
       <div className="flex justify-center mt-36 px-4">
@@ -70,7 +87,7 @@ const SuperAdminProfileContent = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              Super Admin Profile
+              {headerText}
             </motion.h2>
 
             {/* Right side - Buttons */}

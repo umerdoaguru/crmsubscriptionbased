@@ -54,7 +54,7 @@ const SuperUnitsDetailsContent = () => {
       )
     : units;
 
-  const itemsPerPage = 10;
+  const itemsPerPage = 6;
   const offset = currentPage * itemsPerPage;
   const currentItems = filteredUnits.slice(offset, offset + itemsPerPage);
   const pageCount = Math.ceil(filteredUnits.length / itemsPerPage);
@@ -96,7 +96,7 @@ const SuperUnitsDetailsContent = () => {
     <>
       <div className="flex mt-20">
         <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
-          <div className="mt-[2rem]">
+          <div className="mt-[0.5rem]">
             <button
               onClick={() => navigate(-1)}
               className="bg-cyan-600 text-white px-3 py-1 rounded-lg hover:bg-cyan-700 transition-colors"
@@ -104,12 +104,12 @@ const SuperUnitsDetailsContent = () => {
               Back
             </button>
           </div>
-          <h2 className="text-2xl text-center mt-[1rem]">Units Details</h2>
+          <h2 className="text-2xl text-center mt-[0.5rem]">Units Details</h2>
           <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
           <div className="flex min-h-screen overflow-hidden">
             {/* Main Content */}
             <div className="flex-1 max-w-full">
-              <div className="p-4 mt-6 bg-white rounded-lg shadow-lg mx-7 mb-2">
+              <div className="p-4 mt-2 bg-white rounded-lg shadow-lg mx-7 mb-2">
                 {/* Filter Buttons */}
                 <div className="flex justify-between items-center">
                   <h3 className="mb-4 text-lg font-semibold mt-2">

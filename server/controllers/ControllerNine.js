@@ -674,6 +674,19 @@ const getEmployeeByOrg = (req, res) => {
   }
 };
 
+const getAllEmployeeData = (req, res) => {
+  const { orgId } = req.params;
+  const sql = `SELECT * FROM company_staff WHERE staff_org_id = ?`;
+
+  db.query(sql, [orgId], (err, results) => {
+    if (err) {
+      res.status(500).json({ success: false, message: err.message });
+    } else {
+      res.status(200).send(results);
+    }
+  });
+};
+
 module.exports = {
   insertNewPlan,
   insertBillingCycle,
@@ -691,4 +704,5 @@ module.exports = {
   getEmployeeDetails,
   updateEmployeeDetails,
   getEmployeeByOrg,
+  getAllEmployeeData,
 };

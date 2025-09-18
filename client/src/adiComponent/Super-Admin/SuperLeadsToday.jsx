@@ -17,7 +17,7 @@ const SuperLeadsToday = () => {
     const fetchLeads = async () => {
       try {
         const response = await fetch(
-          `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
+          `https://crm-generalize.dentalguru.software/api/leads-super-admin/${superadminuser?.staff_org_id}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -59,9 +59,7 @@ const SuperLeadsToday = () => {
             <thead>
               <tr>
                 <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Lead Number
-                </th>
+
                 <th className="px-6 py-3 border-b-2 border-gray-300">Name</th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">Phone</th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
@@ -88,9 +86,7 @@ const SuperLeadsToday = () => {
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {currentPage * leadsPerPage + index + 1}
                     </td>
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.lead_no}
-                    </td>
+
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.name}
                     </td>
@@ -98,7 +94,7 @@ const SuperLeadsToday = () => {
                       {lead.phone}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.assignedTo}
+                      {lead.staff_name}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.leadSource}

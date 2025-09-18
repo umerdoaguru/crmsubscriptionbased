@@ -14,7 +14,7 @@ const SuperDashProjectContent = () => {
   const navigate = useNavigate();
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;
+  const userId = superadminuser.staff_id;
   useEffect(() => {
     fetchProjects();
   }, []);
@@ -22,7 +22,7 @@ const SuperDashProjectContent = () => {
   const fetchProjects = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${userId}/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -35,6 +35,8 @@ const SuperDashProjectContent = () => {
       console.error("Error fetching projects:", error);
     }
   };
+
+  console.log(projects);
 
   useEffect(() => {
     let filtered = projects;

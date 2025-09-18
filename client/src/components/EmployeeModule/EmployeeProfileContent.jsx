@@ -12,13 +12,17 @@ const EmployeeProfileContent = () => {
 
   const [user, setUser] = useState([]);
   const EmpId = useSelector((state) => state.auth.user);
+  console.log(EmpId);
+
+  const userId = employeeId ? employeeId : EmpId?.staff_id;
+  console.log(userId);
 
   const token = EmpId?.token;
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
         const response = await axios.get(
-          `https://crm-generalize.dentalguru.software/api/employeeProfile/${employeeId}`,
+          `https://crm-generalize.dentalguru.software/api/employeeProfile/${userId}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -35,6 +39,8 @@ const EmployeeProfileContent = () => {
 
     fetchEmployee();
   }, [EmpId]);
+
+  console.log(user);
 
   const onBack = () => {
     navigate(-1);
@@ -72,7 +78,9 @@ const EmployeeProfileContent = () => {
                     Employee ID
                   </label>
                   <div className="p-3 mt-1 bg-gray-50 border rounded-xl shadow-sm">
-                    <p className="text-gray-800 font-medium">{user.staff_id}</p>
+                    <p className="text-gray-800 font-medium">
+                      {user?.staff_id}
+                    </p>
                   </div>
                 </div>
 
@@ -83,7 +91,7 @@ const EmployeeProfileContent = () => {
                   </label>
                   <div className="p-3 mt-1 bg-gray-50 border rounded-xl shadow-sm">
                     <p className="text-gray-800 font-medium">
-                      {user.staff_name}
+                      {user?.staff_name}
                     </p>
                   </div>
                 </div>
@@ -95,7 +103,7 @@ const EmployeeProfileContent = () => {
                   </label>
                   <div className="p-3 mt-1 bg-gray-50 border rounded-xl shadow-sm">
                     <p className="text-gray-800 font-medium">
-                      {user.staff_email}
+                      {user?.staff_email}
                     </p>
                   </div>
                 </div>
@@ -107,7 +115,7 @@ const EmployeeProfileContent = () => {
                   </label>
                   <div className="p-3 mt-1 bg-gray-50 border rounded-xl shadow-sm">
                     <p className="text-gray-800 font-medium">
-                      {user.staff_phone}
+                      {user?.staff_phone}
                     </p>
                   </div>
                 </div>
@@ -119,7 +127,7 @@ const EmployeeProfileContent = () => {
                   </label>
                   <div className="p-3 mt-1 bg-gray-50 border rounded-xl shadow-sm">
                     <p className="text-gray-800 font-medium">
-                      {user.staff_role}
+                      {user?.staff_role}
                     </p>
                   </div>
                 </div>
@@ -131,7 +139,7 @@ const EmployeeProfileContent = () => {
                   </label>
                   <div className="p-3 mt-1 bg-gray-50 border rounded-xl shadow-sm">
                     <p className="text-gray-800 font-medium">
-                      {moment(user.staff_created_at).format("DD/MM/YYYY")}
+                      {moment(user?.staff_created_at).format("DD/MM/YYYY")}
                     </p>
                   </div>
                 </div>

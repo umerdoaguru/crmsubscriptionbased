@@ -33,7 +33,7 @@ function SuperDataExportContent() {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -126,9 +126,7 @@ function SuperDataExportContent() {
       console.error("Error fetching quotations:", error);
     }
   };
-  const leadCount = leads.filter(
-    (lead) => lead.lead_status === "completed"
-  ).length;
+
   const employeeCount = employee.length;
 
   const visitCount = leads.filter((lead) =>
@@ -187,7 +185,7 @@ function SuperDataExportContent() {
                             : "text-gray-600"
                         }`}
                       >
-                        {leadCount}
+                        {leads?.length}
                       </p>
                     </div>
                   </div>

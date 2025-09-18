@@ -30,7 +30,7 @@ const SuperAdminEditLeadPopup = ({
   const [currentLead, setCurrentLead] = useState({
     lead_org_id: EmpId?.staff_org_id,
     lead_no: "",
-    assignedTo: "",
+    assignedTo: 0,
     employeeId: "",
     employeephone: "",
     createdTime: "",
@@ -58,7 +58,7 @@ const SuperAdminEditLeadPopup = ({
       setCurrentLead({
         lead_org_id: EmpId?.staff_org_id,
         lead_no: "",
-        assignedTo: "",
+        assignedTo: 0,
         employeeId: "",
         employeephone: "",
         createdTime: "",

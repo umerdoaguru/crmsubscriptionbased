@@ -31,7 +31,6 @@ function SuperLeadReport() {
     "payment_mode",
     "reason",
     "registry",
-
     "project_name",
     "visit",
     "visit_date",
@@ -53,7 +52,7 @@ function SuperLeadReport() {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -68,10 +67,12 @@ function SuperLeadReport() {
     }
   };
 
+  console.log(leads);
+
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employee-super-admin/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getAllEmployeeData/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -79,7 +80,7 @@ function SuperLeadReport() {
           },
         }
       );
-      setEmployees(response.data);
+      setEmployees(data);
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
@@ -113,12 +114,13 @@ function SuperLeadReport() {
     let filtered = leads;
 
     if (selectedEmployee) {
-      filtered = filtered.filter(
-        (lead) => lead.assignedTo === selectedEmployee
-      );
+      filtered = filtered.filter((lead) => {
+        console.log(lead.assignedTo, selectedEmployee);
+        return lead.assignedTo === Number(selectedEmployee);
+      });
     }
 
-    filtered = filtered.filter((lead) => lead.lead_status === "completed");
+    // filtered = filtered.filter((lead) => lead.lead_status === "completed");
     filtered = filterByDuration(filtered, duration);
 
     setFilteredLeads(filtered);
@@ -128,7 +130,6 @@ function SuperLeadReport() {
   // Excel download function
   const downloadExcel = () => {
     const columnMapping = {
-      lead_no: "Lead Number",
       assignedTo: "Assigned To",
       name: "Name",
       phone: "Phone",
@@ -172,9 +173,9 @@ function SuperLeadReport() {
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
               ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-              : "pending"; // If invalid or missing, set as "PENDING"
+              : "pending";
         } else {
-          formattedLead[newKey] = lead[col]; // Assign other fields normally
+          formattedLead[newKey] = lead[col];
         }
       });
 
@@ -200,6 +201,8 @@ function SuperLeadReport() {
     setCurrentPage(data.selected);
   };
 
+  console.log(currentLeads);
+
   return (
     <>
       <div className="container 2xl:w-[95%] ">
@@ -213,8 +216,8 @@ function SuperLeadReport() {
             >
               <option value="">Select Employee</option>
               {employees.map((employee) => (
-                <option key={employee.id} value={employee.name}>
-                  {employee.name}
+                <option key={employee.staff_id} value={employee.staff_id}>
+                  {employee.staff_name}
                 </option>
               ))}
             </select>
@@ -245,9 +248,9 @@ function SuperLeadReport() {
             <thead>
               <tr>
                 <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
+                {/* <th className="px-6 py-3 border-b-2 border-gray-300">
                   Lead Number
-                </th>
+                </th> */}
                 <th className="px-6 py-3 border-b-2 border-gray-300">Name</th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Assigned To
@@ -284,14 +287,14 @@ function SuperLeadReport() {
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {index + 1 + currentPage * leadsPerPage}
                     </td>
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                    {/* <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.lead_no}
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.name}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.assignedTo}
+                      {lead.staff_name}
                     </td>
 
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">

@@ -86,7 +86,7 @@ function EmployeeLeadContent() {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.staff_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -672,7 +672,7 @@ function EmployeeLeadContent() {
                             {lead.leadSource}
                           </td>
                           <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words">
-                            {lead.assignedTo}
+                            {lead.staff_name}
                           </td>
                           <td className="px-2 sm:px-4 py-3 border-b border-gray-200 font-semibold">
                             {lead.lead_status}

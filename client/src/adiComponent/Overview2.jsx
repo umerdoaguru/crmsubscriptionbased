@@ -12,7 +12,7 @@ import cogoToast from "cogo-toast";
 const Overview2 = () => {
   const [leads, setLeads] = useState([]);
   const [employee, setEmployee] = useState([]);
-  const [selectedComponent, setSelectedComponent] = useState("LeadData"); // Set 'LeadData' as default
+  const [selectedComponent, setSelectedComponent] = useState("LeadData");
   const [visit, setVisit] = useState([]);
   const superadminuser = useSelector((state) => state.auth.user);
   console.log(superadminuser);
@@ -87,7 +87,7 @@ const Overview2 = () => {
   const fetchProjects = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${userId}/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",

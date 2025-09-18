@@ -3,7 +3,6 @@ import moment from "moment";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
-import styled from "styled-components";
 import cogoToast from "cogo-toast";
 import Super_Single_Lead_Profile from "./Super_Single_Lead_Profile";
 import { useSelector } from "react-redux";
@@ -13,6 +12,8 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
   const userId = superadminuser.staff_id;
+  console.log(superadminuser);
+
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [filterDate, setFilterDate] = useState("");
@@ -102,6 +103,8 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
     fetchLeads();
   }, [token]);
 
+  console.log(projects);
+
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
@@ -144,7 +147,7 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   const fetchProjects = async () => {
     try {
       const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${userId}/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -459,6 +462,7 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
     "Affiliate Marketing",
     "Direct Mail",
     "Online Directories",
+    "others",
   ];
 
   const [dynamicLeadSources, setDynamicLeadSources] = useState([]);

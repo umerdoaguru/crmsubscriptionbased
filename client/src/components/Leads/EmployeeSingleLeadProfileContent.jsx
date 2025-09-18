@@ -216,6 +216,8 @@ function EmployeeSingleLeadProfileContent() {
     }
   };
 
+  console.log(leads);
+
   const fetchVisit = async () => {
     try {
       const response = await axios.get(

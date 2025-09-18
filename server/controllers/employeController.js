@@ -24,7 +24,7 @@ const getEmployeeInvoice = async (req, res) => {
 const getEmployeeLeads = async (req, res) => {
   try {
     const { id } = req.params;
-    const sql = "SELECT * FROM leads WHERE employeeId = ?";
+    const sql = `SELECT * FROM leads join company_staff on company_staff.staff_id = leads.assignedTo WHERE leads.assignedTo = ?`;
 
     const result = await new Promise((resolve, reject) => {
       db.query(sql, [id], (err, results) => {

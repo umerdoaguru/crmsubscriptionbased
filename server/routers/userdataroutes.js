@@ -214,6 +214,7 @@ const {
   getEmployeeDetails,
   updateEmployeeDetails,
   getEmployeeByOrg,
+  getAllEmployeeData,
 } = require("../controllers/ControllerNine");
 
 // ========== Router Begins =====================
@@ -654,5 +655,6 @@ router.post("/sendOtpOnlyOne", sendOtpOnlyOne);
 router.get("/getEmployeeDetails/:staffId", getEmployeeDetails);
 router.put("/updateEmployeeDetails/:staffId", updateEmployeeDetails);
 router.get("/getEmployeeByOrg/:orgId", getEmployeeByOrg);
+router.get("/getAllEmployeeData/:orgId", getAllEmployeeData);
 
 module.exports = router;

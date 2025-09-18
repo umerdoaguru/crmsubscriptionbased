@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 const SuperAdminImportDataContent = () => {
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;
+  const userId = superadminuser.staff_id;
 
   const [file, setFile] = useState(null);
   const [employees, setEmployees] = useState([]);
@@ -34,11 +34,11 @@ const SuperAdminImportDataContent = () => {
 
   const fetchEmployees = async () => {
     try {
-      const res = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employee-super-admin/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getAllEmployeeData/${superadminuser?.staff_org_id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setEmployees(res.data);
+      setEmployees(data);
     } catch (err) {
       console.error("Error fetching employees:", err);
     }
@@ -46,11 +46,11 @@ const SuperAdminImportDataContent = () => {
 
   const fetchProjects = async () => {
     try {
-      const res = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${userId}/${superadminuser?.staff_org_id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setProjects(res.data);
+      setProjects(data);
     } catch (err) {
       console.error("Error fetching projects:", err);
     }
@@ -69,19 +69,13 @@ const SuperAdminImportDataContent = () => {
   };
 
   const handleProjectChange = (e) => {
-    const projectId = parseInt(e.target.value, 10);
-    const proj = projects.find((p) => p.main_project_id === projectId);
+    const projectId = Number(e.target.value);
+    const proj = projects.find((p) => Number(p.main_project_id) === projectId);
     setSelectedProjectId(projectId);
     setSelectedProjectName(proj?.project_name || "");
     setSelectedUnitType("");
+    setSelectedUnitId("");
     fetchProjectUnits(projectId);
-  };
-
-  const handleEmployeeChange = (e) => {
-    const employeeId = parseInt(e.target.value, 10);
-    const emp = employees.find((emp) => emp.employeeId === employeeId);
-    setSelectedEmployee(employeeId);
-    setSelectedEmployeeName(emp?.name || "");
   };
 
   const handleUnitChange = (e) => {
@@ -89,6 +83,15 @@ const SuperAdminImportDataContent = () => {
     const unit = projectUnits.find((u) => u.unit_type === unitType);
     setSelectedUnitType(unitType);
     setSelectedUnitId(unit?.unit_id || "");
+  };
+
+  const handleEmployeeChange = (e) => {
+    const selectedId = e.target.value;
+    const emp = employees.find(
+      (emp) => Number(emp.staff_id) === Number(selectedId)
+    );
+    setSelectedEmployee(selectedId);
+    setSelectedEmployeeName(emp?.staff_name || "");
   };
 
   const handleSubmit = async () => {
@@ -100,14 +103,16 @@ const SuperAdminImportDataContent = () => {
       !assignedDate
     ) {
       cogoToast.warn("Please fill all fields and upload a file.");
+      setFileKey(Date.now()); // force reset input
       return;
     }
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("lead_org_id", superadminuser?.staff_org_id);
     formData.append("user_id", userId);
     formData.append("employeeId", selectedEmployee);
-    formData.append("assignedTo", selectedEmployeeName);
+    formData.append("assignedTo", selectedEmployee);
     formData.append("main_project_id", selectedProjectId);
     formData.append("project_name", selectedProjectName);
     formData.append("unit_type", selectedUnitType);
@@ -130,7 +135,7 @@ const SuperAdminImportDataContent = () => {
 
       cogoToast.success(res.data.message || "Leads imported successfully");
 
-      // reset form
+      // Reset form
       setFile(null);
       setFileKey(Date.now());
       setSelectedEmployee("");
@@ -186,7 +191,7 @@ const SuperAdminImportDataContent = () => {
               key={fileKey}
             />
             <a
-              href="/sample_leads.xlsx"
+              href="/sample_leads_file.xlsx"
               download
               className="inline-block mt-3 text-cyan-600 font-semibold hover:text-cyan-800 transition"
             >
@@ -211,8 +216,8 @@ const SuperAdminImportDataContent = () => {
             >
               <option value="">Select</option>
               {employees.map((emp) => (
-                <option key={emp.employeeId} value={emp.employeeId}>
-                  {emp.name}
+                <option key={emp.staff_id} value={emp.staff_id}>
+                  {emp.staff_name}
                 </option>
               ))}
             </select>
@@ -288,11 +293,16 @@ const SuperAdminImportDataContent = () => {
 
           {/* Submit */}
           <motion.button
-            className="bg-gradient-to-r from-cyan-500 to-cyan-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:from-cyan-600 hover:to-cyan-800 transition-all w-full"
+            className={`bg-gradient-to-r from-cyan-500 to-cyan-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg w-full transition-all 
+              ${
+                loading
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:from-cyan-600 hover:to-cyan-800"
+              }`}
             onClick={handleSubmit}
             disabled={loading}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={!loading ? { scale: 1.02 } : {}}
+            whileTap={!loading ? { scale: 0.95 } : {}}
           >
             {loading ? "Uploading..." : "Import Leads"}
           </motion.button>

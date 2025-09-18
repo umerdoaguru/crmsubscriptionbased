@@ -24,7 +24,7 @@ const EmployeeOverview = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.staff_id}`,
         {
           headers: {
             "Content-Type": "application/json",
