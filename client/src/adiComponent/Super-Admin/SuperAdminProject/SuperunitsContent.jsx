@@ -7,11 +7,11 @@ import { FaTrash, FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import SuperUnitAddPopup from "./SuperUnitAddPopup";
+import SuperUnitUpdatePopup from "./SuperUnitUpdatePopup";
 
 const SuperunitsContent = () => {
   const { id } = useParams();
   const [currentPage, setCurrentPage] = useState(0);
-  const [projects, setProjects] = useState([]);
   const [projectsPerPage] = useState(7);
   const [showModal, setShowModal] = useState(false);
   const [editProject, setEditProject] = useState({});
@@ -20,6 +20,12 @@ const SuperunitsContent = () => {
   const navigate = useNavigate();
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
+  const [selected, setSelected] = useState();
+
+  const openUpdateModal = (data) => {
+    setSelected(data);
+    setShowModal(true);
+  };
 
   const fetchUnits = async () => {
     if (!id) return;
@@ -49,6 +55,8 @@ const SuperunitsContent = () => {
       setUnits([]);
     }
   };
+
+  console.log(units);
 
   const handleaddunit = () => {
     setAddUnit(true);
@@ -95,27 +103,10 @@ const SuperunitsContent = () => {
     if (!isConfirmed) return;
 
     try {
-      let response;
-      try {
-        response = await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/delete-unit/${id}`
-        );
-      } catch (error) {
-        if (error.response && error.response.status === 400) {
-          const userConfirmed = window.confirm(error.response.data.message);
-          if (!userConfirmed) return;
-          response = await axios.delete(
-            `https://crm-generalize.dentalguru.software/api/delete-unit/${id}?confirm=true`
-          );
-        } else {
-          throw error;
-        }
-      }
-
-      const { data } = response;
-      cogoToast.success(data.message || "Unit deleted successfully!");
+      const res = await axios.delete(
+        `https://crm-generalize.dentalguru.software/api/delete-unit/${id}`
+      );
       fetchUnits();
-      setProjects((prev) => prev.filter((unit) => unit.unit_id !== id));
     } catch (error) {
       console.error("Error deleting unit:", error);
       cogoToast.error("An error occurred while deleting the unit.");
@@ -196,27 +187,27 @@ const SuperunitsContent = () => {
                           S.No
                         </th>
                         <th className="px-6 py-3 border-b border-gray-300 text-left">
-                          Unit ID
-                        </th>
-                        <th className="px-6 py-3 border-b border-gray-300 text-left">
-                          Unit Type
+                          Unit Number
                         </th>
                         <th className="px-6 py-3 border-b border-gray-300 text-left">
                           Unit Area
                         </th>
                         <th className="px-6 py-3 border-b border-gray-300 text-left">
-                          Total Units
+                          Unit Type
                         </th>
 
                         <th className="px-6 py-3 border-b border-gray-300 text-left">
                           Base Price
                         </th>
+                        <th className="px-6 py-3 border-b border-gray-300 text-left">
+                          Status
+                        </th>
                         <th className="px-6 py-3 border-b-2 border-gray-300">
                           Action
                         </th>
-                        <th className="px-6 py-3 border-b-2 border-gray-300">
+                        {/* <th className="px-6 py-3 border-b-2 border-gray-300">
                           Unit Detail
-                        </th>
+                        </th> */}
                       </tr>
                     </thead>
                     <tbody>
@@ -229,19 +220,21 @@ const SuperunitsContent = () => {
                             <td className="px-6 py-4">
                               {currentPage * projectsPerPage + index + 1}
                             </td>
-                            <td className="px-6 py-4">{unit.unit_id}</td>
+                            <td className="px-6 py-4">{unit.unit_number}</td>
+                            <td className="px-6 py-4">{unit.unit_area} sqft</td>
                             <td className="px-6 py-4">{unit.unit_type}</td>
-                            <td className="px-6 py-4">{unit.unit_size} sqft</td>
-                            <td className="px-6 py-4">{unit.total_units}</td>
-                            {/* <td className="px-6 py-4">{unit.units_sold}</td> */}
-                            {/* <td className="px-6 py-4 font-semibold"> {unit.total_units - unit.units_sold}</td> */}
+
                             <td className="px-6 py-4 font-semibold">
                               {" "}
                               {unit.base_price}
                             </td>
+                            <td className="px-6 py-4 font-semibold">
+                              {" "}
+                              {unit.unit_status}
+                            </td>
                             <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                               <button
-                                onClick={() => handleEdit(unit)}
+                                onClick={() => openUpdateModal(unit)}
                                 className="mr-2 text-cyan-600 hover:text-cyan-800"
                               >
                                 <FaEdit />
@@ -253,7 +246,7 @@ const SuperunitsContent = () => {
                                 <FaTrash />
                               </button>
                             </td>
-                            <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                            {/* <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                               <Link
                                 to={`/Super-admin-unit-Detail-Dash/${unit.unit_id}`}
                                 className="inline-block"
@@ -262,7 +255,7 @@ const SuperunitsContent = () => {
                                   Detail
                                 </button>
                               </Link>
-                            </td>
+                            </td> */}
                           </tr>
                         ))
                       ) : (
@@ -301,111 +294,6 @@ const SuperunitsContent = () => {
                     breakLinkClassName={"page-link"}
                   />
                 </div>
-
-                {showModal && editProject && (
-                  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999]">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                      <h2 className="text-xl font-semibold mb-4 text-gray-700">
-                        Edit Unit
-                      </h2>
-
-                      {/* Unit Type */}
-                      <div className="mb-3">
-                        <label className="block text-gray-600 mb-1">
-                          Unit Type
-                        </label>
-                        <input
-                          type="text"
-                          value={editProject.unit_type || ""}
-                          onChange={(e) =>
-                            setEditProject({
-                              ...editProject,
-                              unit_type: e.target.value,
-                            })
-                          }
-                          className="border p-2 w-full rounded focus:ring focus:ring-cyan-300"
-                          placeholder="Enter unit type"
-                          disabled
-                        />
-                      </div>
-
-                      {/* Unit Size */}
-                      <div className="mb-3">
-                        <label className="block text-gray-600 mb-1">
-                          Unit Area
-                        </label>
-                        <input
-                          type="text"
-                          value={editProject.unit_size || ""}
-                          onChange={(e) =>
-                            setEditProject({
-                              ...editProject,
-                              unit_size: e.target.value,
-                            })
-                          }
-                          className="border p-2 w-full rounded focus:ring focus:ring-cyan-300"
-                          placeholder="Enter unit size"
-                          disabled
-                        />
-                      </div>
-
-                      {/* Total Units */}
-                      <div className="mb-3">
-                        <label className="block text-gray-600 mb-1">
-                          Total Units
-                        </label>
-                        <input
-                          type="text"
-                          value={editProject.total_units || ""}
-                          onChange={(e) =>
-                            setEditProject({
-                              ...editProject,
-                              total_units: e.target.value,
-                            })
-                          }
-                          className="border p-2 w-full rounded focus:ring focus:ring-cyan-300"
-                          placeholder="Enter total units"
-                        />
-                      </div>
-
-                      {/* Base Price */}
-                      <div className="mb-3">
-                        <label className="block text-gray-600 mb-1">
-                          Base Price
-                        </label>
-                        <input
-                          type="text"
-                          value={editProject.base_price || ""}
-                          onChange={(e) =>
-                            setEditProject({
-                              ...editProject,
-                              base_price: e.target.value,
-                            })
-                          }
-                          className="border p-2 w-full rounded focus:ring focus:ring-cyan-300"
-                          placeholder="Enter base price"
-                          disabled
-                        />
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex justify-end">
-                        <button
-                          onClick={() => setShowModal(false)}
-                          className="mr-2 bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 transition"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          onClick={handleUpdate}
-                          className="bg-cyan-500 text-white px-4 py-2 rounded hover:bg-cyan-600 transition"
-                        >
-                          Update
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -416,6 +304,13 @@ const SuperunitsContent = () => {
         onClose={() => setAddUnit(false)}
         combinedLeadSources={combinedLeadSources}
         fetchUnits={fetchUnits}
+      />
+      <SuperUnitUpdatePopup
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        combinedLeadSources={combinedLeadSources}
+        fetchUnits={fetchUnits}
+        selected={selected}
       />
     </>
   );

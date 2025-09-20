@@ -3,15 +3,13 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
-import ReactPaginate from "react-paginate";
-import MainHeader from "../MainHeader";
-import EmployeeeSider from "../EmployeeModule/EmployeeSider";
 import cogoToast from "cogo-toast";
+import toast from "react-hot-toast";
 
 const ViewAllVisitContent = () => {
   const [visit, setVisit] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage] = useState(10); // Number of items per page
+  const [itemsPerPage] = useState(10);
   const [filterText, setFilterText] = useState("");
   const [sortAsc, setSortAsc] = useState(true);
   const [render, setRender] = useState(false);
@@ -20,6 +18,7 @@ const ViewAllVisitContent = () => {
   const [modalData, setModalData] = useState(null);
   const navigate = useNavigate();
   const EmpId = useSelector((state) => state.auth.user);
+  const [loading, setLoading] = useState(false);
 
   const token = EmpId?.token;
   useEffect(() => {
@@ -28,7 +27,7 @@ const ViewAllVisitContent = () => {
 
   const fetchvisit = async () => {
     try {
-      const response = await axios.get(
+      const { data } = await axios.get(
         `https://crm-generalize.dentalguru.software/api/employe-visit/${id}`,
         {
           headers: {
@@ -37,12 +36,13 @@ const ViewAllVisitContent = () => {
           },
         }
       );
-      setVisit(response.data);
-      console.log(response);
+      setVisit(data);
     } catch (error) {
       console.error("Error fetching visit:", error);
     }
   };
+
+  console.log(visit);
 
   const handleDelete = async (visit) => {
     const isConfirmed = window.confirm(
@@ -52,59 +52,11 @@ const ViewAllVisitContent = () => {
     if (!isConfirmed) return;
 
     try {
-      // Delete the visit
-      const deleteResponse = await axios.delete(
-        `https://crm-generalize.dentalguru.software/api/employe-visit/${visit.id}`
+      const res = await axios.delete(
+        `https://crm-generalize.dentalguru.software/api/employe-visit/${visit?.visit_id}`
       );
-
-      if (deleteResponse.status === 200) {
-        console.log("Visit deleted successfully");
-      } else {
-        console.error("Failed to delete visit:", deleteResponse.data);
-        cogoToast.error("Failed to delete visit.");
-        return;
-      }
-
-      // Update visit status
-      const updateVisitResponse = await axios.put(
-        `https://crm-generalize.dentalguru.software/api/updateVisitStatus/${visit.lead_id}`,
-        { visit: "pending" }
-      );
-
-      if (updateVisitResponse.status === 200) {
-        console.log(
-          "Visit status updated successfully:",
-          updateVisitResponse.data
-        );
-      } else {
-        console.error("Error updating visit status:", updateVisitResponse.data);
-        cogoToast.error("Failed to update visit status.");
-        return;
-      }
-
-      // Update lead status
-      const updateLeadStatusResponse = await axios.put(
-        `https://crm-generalize.dentalguru.software/api/updateOnlyLeadStatus/${visit.lead_id}`,
-        { lead_status: "pending" }
-      );
-
-      if (updateLeadStatusResponse.status === 200) {
-        console.log(
-          "Lead status updated successfully:",
-          updateLeadStatusResponse.data
-        );
-        cogoToast.success("Visit deleted and statuses updated successfully!");
-      } else {
-        console.error(
-          "Error updating lead status:",
-          updateLeadStatusResponse.data
-        );
-        cogoToast.error("Failed to update lead status.");
-        return;
-      }
-
-      // Trigger UI update
-      setRender((prevRender) => !prevRender);
+      cogoToast.success("visit data deleted successfully");
+      fetchvisit();
     } catch (error) {
       console.error("Error occurred during the deletion process:", error);
       cogoToast.error("An error occurred. Please try again.");
@@ -131,34 +83,18 @@ const ViewAllVisitContent = () => {
   };
 
   // Function to send the PUT request to update the visit data
-  const updateVisit = async () => {
+  const updateVisit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.put(
-        `https://crm-generalize.dentalguru.software/api/employe-visit`,
+        `https://crm-generalize.dentalguru.software/api/employe-visit/${modalData?.visit_id}`,
         modalData
       );
       if (response.status === 200) {
         cogoToast.success("Visit updated successfully!");
-        setRender(!render); // Refresh the list after updating
-
-        closeModal(); // Close the modal
-        // Second API call: Update visit status
-        const updateResponse = await axios.put(
-          `https://crm-generalize.dentalguru.software/api/updateVisitStatus/${modalData.lead_id}`,
-          { visit: modalData.visit, visit_date: modalData.visit_date }
-        );
-
-        if (updateResponse.status === 200) {
-          console.log(
-            "Visit status updated successfully:",
-            updateResponse.data
-          );
-          cogoToast.success("Visit status updated successfully");
-        } else {
-          console.error("Error updating visit status:", updateResponse.data);
-          cogoToast.error("Failed to update visit status.");
-          return; // Exit if this step fails
-        }
+        setRender(!render);
+        closeModal();
       }
     } catch (error) {
       console.error("Error updating visit:", error);
@@ -170,7 +106,7 @@ const ViewAllVisitContent = () => {
   };
 
   const filteredvisit = visit.filter((visit) =>
-    visit.name.toLowerCase().includes(filterText.toLowerCase())
+    visit?.name?.toLowerCase().includes(filterText.toLowerCase())
   );
 
   const offset = currentPage * itemsPerPage;
@@ -178,7 +114,7 @@ const ViewAllVisitContent = () => {
   const pageCount = Math.ceil(filteredvisit.length / itemsPerPage);
 
   const handleBackClick = () => {
-    navigate(-1); // -1 navigates to the previous page in history
+    navigate(-1);
   };
 
   return (
@@ -215,17 +151,17 @@ const ViewAllVisitContent = () => {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Name
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Assigned To
-                        </th>
+                        </th> */}
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Visit
+                          Visit Details
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Visit Date
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Report
+                          Status
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Action
@@ -247,11 +183,11 @@ const ViewAllVisitContent = () => {
                           <td className="px-6 py-4 whitespace-nowrap">
                             {visit.name}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          {/* <td className="px-6 py-4 whitespace-nowrap">
                             {visit.employee_name}
-                          </td>
+                          </td> */}
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {visit.visit}
+                            {visit.visit_details}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             {moment(visit.visit_date)
@@ -259,7 +195,7 @@ const ViewAllVisitContent = () => {
                               .toUpperCase()}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {visit.report}
+                            {visit.vis_status}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <button
@@ -286,98 +222,96 @@ const ViewAllVisitContent = () => {
                     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
                       <div className="bg-white p-6 rounded-lg shadow-lg w-[500px]">
                         <h2 className="text-xl mb-4 font-bold">Edit Visit</h2>
-                        <form>
-                          <div className="mb-4">
-                            <label className="block text-gray-700">
-                              Project Name:
-                            </label>
-                            <input
-                              type="text"
-                              name="project_name"
-                              value={modalData.project_name || ""}
-                              onChange={handleInputChange}
-                              className="w-full px-3 py-2 border border-gray-300 rounded"
-                              disabled
-                            />
-                          </div>
-                          <div className="mb-4">
-                            <label className="block text-gray-700">
-                              Lead ID:
-                            </label>
-                            <input
-                              type="text"
-                              name="lead_id"
-                              value={modalData.lead_id || ""}
-                              onChange={handleInputChange}
-                              className="w-full px-3 py-2 border border-gray-300 rounded"
-                              disabled
-                            />
-                          </div>
-
-                          <div className="mb-4">
-                            <label className="block text-gray-700">Name:</label>
-                            <input
-                              type="text"
-                              name="name"
-                              value={modalData.name || ""}
-                              onChange={handleInputChange}
-                              className="w-full px-3 py-2 border border-gray-300 rounded"
-                              disabled
-                            />
-                          </div>
-
-                          <div className="mb-4">
-                            <label className="block text-gray-700">
-                              Visit:
-                            </label>
-                            <input
-                              type="text"
-                              name="visit"
-                              value={modalData.visit || ""}
-                              onChange={handleInputChange}
-                              className="w-full px-3 py-2 border border-gray-300 rounded"
-                            />
-                          </div>
-
-                          <div className="mb-4">
-                            <label className="block text-gray-700">
-                              Visit Date:
+                        <form onSubmit={updateVisit} className="space-y-4">
+                          {/* Visit Date */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700">
+                              Visit Date
                             </label>
                             <input
                               type="date"
                               name="visit_date"
-                              value={modalData.visit_date || ""}
+                              value={modalData.visit_date}
                               onChange={handleInputChange}
-                              className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
+                              className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
+                              required
                             />
                           </div>
 
-                          <div className="mb-4">
-                            <label className="block text-gray-700">
-                              Report:
+                          {/* Visit Type */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700">
+                              Visit Type
                             </label>
-                            <textarea
-                              name="report"
-                              value={modalData.report || ""}
+                            <select
+                              name="visit_type"
+                              value={modalData.visit_type}
                               onChange={handleInputChange}
-                              className="w-full px-3 py-2 border border-gray-300 rounded"
-                            ></textarea>
+                              className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-cyan-500"
+                              required
+                            >
+                              <option value="">Select Visit Type</option>
+                              <option value="Fresh">Fresh</option>
+                              <option value="Re-visit">Re-Visit</option>
+                              <option value="Self">Self</option>
+                              <option value="Associative">Associative</option>
+                              <option value="other">Other</option>
+                            </select>
                           </div>
 
-                          <div className="flex justify-end">
-                            <button
-                              type="button"
-                              onClick={updateVisit}
-                              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
+                          {/* visit details */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700">
+                              Visit Details
+                            </label>
+                            <textarea
+                              type="text"
+                              name="visit_details"
+                              value={modalData.visit_details}
+                              onChange={handleInputChange}
+                              className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
+                              required
+                            />
+                          </div>
+
+                          {/* Visit Status */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700">
+                              Visit Status
+                            </label>
+                            <select
+                              name="vis_status"
+                              value={modalData.vis_status}
+                              onChange={handleInputChange}
+                              className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-cyan-500"
+                              required
                             >
-                              Update
-                            </button>
+                              <option value="">Select Visit Status</option>
+                              <option value="Pending">Pending</option>
+                              <option value="Done">Done</option>
+                              <option value="Cancelled">Cancelled</option>
+                            </select>
+                          </div>
+
+                          {/* Buttons */}
+                          <div className="flex justify-end gap-3 pt-2">
                             <button
                               type="button"
-                              onClick={closeModal}
                               className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
+                              onClick={() => setIsModalOpen(false)}
                             >
                               Cancel
+                            </button>
+                            <button
+                              type="submit"
+                              disabled={loading}
+                              className={`px-4 py-2 rounded text-white ${
+                                loading
+                                  ? "bg-gray-600"
+                                  : "bg-cyan-600 hover:bg-cyan-700"
+                              }`}
+                            >
+                              {loading ? "Saving..." : "Save"}
                             </button>
                           </div>
                         </form>

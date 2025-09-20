@@ -55,7 +55,7 @@ function EmployeeLeadData() {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.staff_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -81,7 +81,7 @@ function EmployeeLeadData() {
     }
 
     // Filter by lead_status 'completed'
-    filtered = filtered.filter((lead) => lead.lead_status === "completed");
+    // filtered = filtered.filter((lead) => lead.lead_status === "completed");
 
     setFilteredLeads(filtered);
     setCurrentPage(0); // Reset to first page on filter change
@@ -90,7 +90,6 @@ function EmployeeLeadData() {
   const downloadExcel = () => {
     const columnMapping = {
       project_name: "Project Name",
-      lead_no: "Lead Number",
       assignedTo: "Assigned To",
       name: "Name",
       phone: "Phone",
@@ -133,16 +132,15 @@ function EmployeeLeadData() {
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
               ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-              : "pending"; // If invalid or missing, set as "PENDING"
+              : "pending";
         } else {
-          formattedLead[newKey] = lead[col]; // Assign other fields normally
+          formattedLead[newKey] = lead[col];
         }
       });
 
       return formattedLead;
     });
 
-    // Ensure we handle empty reports gracefully
     if (completedLeads.length === 0) {
       alert("No data available for the selected date range.");
       return;
@@ -216,9 +214,9 @@ function EmployeeLeadData() {
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Project Name
                 </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
+                {/* <th className="px-6 py-3 border-b-2 border-gray-300">
                   Lead Number
-                </th>
+                </th> */}
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Assigned To
                 </th>
@@ -258,11 +256,11 @@ function EmployeeLeadData() {
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.project_name}
                     </td>
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                    {/* <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.lead_no}
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.assignedTo}
+                      {lead.staff_name}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.name}

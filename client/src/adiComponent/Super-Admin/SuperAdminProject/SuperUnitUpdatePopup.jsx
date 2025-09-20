@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { IoCloseSharp } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 
-const SuperUnitAddPopup = ({ isOpen, onClose, fetchUnits }) => {
+const SuperUnitUpdatePopup = ({ isOpen, onClose, fetchUnits, selected }) => {
   const { id } = useParams();
   const modalRef = useRef();
   const EmpId = useSelector((state) => state.auth.user);
@@ -16,15 +16,28 @@ const SuperUnitAddPopup = ({ isOpen, onClose, fetchUnits }) => {
 
   const [loading, setLoading] = useState(false);
   const [unitData, setUnitData] = useState({
-    unit_org_id: orgId || "",
-    unit_project_id: id,
+    unit_org_id: selected?.unit_org_id,
+    unit_project_id: selected?.unit_project_id,
     unit_number: "",
     unit_area: "",
     unit_type: "",
     custom_unit_type: "",
     base_price: "",
-    unit_status: "Available",
+    unit_status: "",
   });
+
+  useEffect(() => {
+    setUnitData({
+      unit_org_id: selected?.unit_org_id,
+      unit_project_id: selected?.unit_project_id,
+      unit_number: selected?.unit_number,
+      unit_area: selected?.unit_area,
+      unit_type: selected?.unit_type,
+      custom_unit_type: selected?.custom_unit_type,
+      base_price: selected?.base_price,
+      unit_status: selected?.unit_status,
+    });
+  }, [selected]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -52,13 +65,12 @@ const SuperUnitAddPopup = ({ isOpen, onClose, fetchUnits }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post(
-        "https://crm-generalize.dentalguru.software/api/add-unit",
+      await axios.put(
+        `https://crm-generalize.dentalguru.software/api/edit-unit/${selected?.unit_id}`,
         unitData,
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -66,20 +78,18 @@ const SuperUnitAddPopup = ({ isOpen, onClose, fetchUnits }) => {
       cogoToast.success("Unit added successfully!");
       fetchUnits();
       setUnitData({
-        unit_org_id: orgId || "",
-        unit_project_id: id,
+        unit_org_id: selected?.unit_org_id,
+        unit_project_id: selected?.unit_project_id,
         unit_number: "",
         unit_area: "",
         unit_type: "",
         custom_unit_type: "",
         base_price: "",
-        unit_status: "Available",
+        unit_status: "",
       });
       onClose();
     } catch (error) {
-      cogoToast.error(
-        error.response?.data?.message || "Failed to add unit. Please try again."
-      );
+      cogoToast.error("Failed to add unit. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -111,7 +121,7 @@ const SuperUnitAddPopup = ({ isOpen, onClose, fetchUnits }) => {
             </button>
 
             <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
-              Add New Unit
+              Update Unit Details
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -130,7 +140,6 @@ const SuperUnitAddPopup = ({ isOpen, onClose, fetchUnits }) => {
                     className="p-3 border rounded-lg w-full"
                   />
                 </div>
-
                 {/* Unit Type */}
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
@@ -141,7 +150,6 @@ const SuperUnitAddPopup = ({ isOpen, onClose, fetchUnits }) => {
                     value={unitData.unit_type}
                     onChange={handleChange}
                     className="w-full p-3 border rounded-lg"
-                    required
                   >
                     <option value="">Select Unit Type</option>
                     <option value="Flat">Flat</option>
@@ -161,7 +169,7 @@ const SuperUnitAddPopup = ({ isOpen, onClose, fetchUnits }) => {
                   )}
                 </div>
 
-                {/* Unit Area */}
+                {/* Unit Size */}
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Unit Area (sqft)
@@ -205,7 +213,6 @@ const SuperUnitAddPopup = ({ isOpen, onClose, fetchUnits }) => {
                   />
                 </div>
 
-                {/* Unit Status */}
                 <div>
                   <label className="block text-gray-700 font-semibold mb-1">
                     Unit Status
@@ -242,4 +249,4 @@ const SuperUnitAddPopup = ({ isOpen, onClose, fetchUnits }) => {
   );
 };
 
-export default SuperUnitAddPopup;
+export default SuperUnitUpdatePopup;

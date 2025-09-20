@@ -20,7 +20,6 @@ function TotalEmpLeadContent() {
   useEffect(() => {
     fetchLeads();
 
-    // Cleanup function to avoid memory leaks
     return () => {
       setLeads([]);
     };
@@ -29,7 +28,7 @@ function TotalEmpLeadContent() {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.staff_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -44,7 +43,7 @@ function TotalEmpLeadContent() {
   };
 
   const handleBackClick = () => {
-    navigate(-1); // Go back to the previous page
+    navigate(-1);
   };
   useEffect(() => {
     let filtered = leads;
@@ -182,7 +181,7 @@ function TotalEmpLeadContent() {
                           {lead.leadSource}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.assignedTo}
+                          {lead.staff_name}
                         </td>
 
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">

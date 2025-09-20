@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import img from "../../images/lead_profile.png";
 import cogoToast from "cogo-toast";
-import UpdateLeadField from "../EmployeeModule/updateLeadField";
 import { useSelector } from "react-redux";
 import VisitCreationPopup from "./VisitCreationPopup";
 import FollowUpCreationPopUp from "./FollowUpCreationPopUp";
@@ -62,114 +61,6 @@ function EmployeeSingleLeadProfileContent() {
   const [employeeunitsoldCreated, setemployeeunitsoldCreated] = useState(false);
   const [remarkCreated, setRemarkCreated] = useState(false);
 
-  // const leads = [{ /* lead data */ }];
-
-  const fieldConfig = [
-    {
-      name: "lead_status",
-      label: "Lead Status",
-      type: "select",
-      options: [
-        { value: "", label: "Select Lead Status" },
-        { value: "pending", label: "Pending" },
-        { value: "active lead", label: "Active lead" },
-
-        { value: "calling done", label: "Calling Done" },
-        { value: "site visit done", label: "Site Visit Done" },
-        { value: "interested", label: "Interested" },
-        { value: "not-interested", label: "Not-Interested" },
-        { value: "completed", label: "Completed" },
-      ],
-    },
-
-    {
-      name: "deal_status",
-      label: "Deal Status",
-      type: "select",
-      options: [
-        { value: "", label: "Select Deal Status" },
-        { value: "pending", label: "Pending" },
-        { value: "close", label: "Close" },
-        { value: "cancelled", label: "Cancelled" },
-      ],
-    },
-    {
-      name: "meeting_status",
-      label: "Meeting_Status",
-      type: "select",
-      options: [
-        { value: "", label: "Select Deal Status" },
-        { value: "pending", label: "Pending" },
-        { value: "done by manager", label: "Done By Manager" },
-        { value: "done by director", label: "Done By Director" },
-      ],
-    },
-    {
-      name: "d_closeDate",
-      label: "Deal Close Date",
-      type: "date", // Changed to "date" for consistency
-    },
-
-    {
-      name: "reason",
-      label: "Reason",
-      type: "select",
-      options: [
-        { value: "", label: "Select Reason" },
-        { value: "pending", label: "Pending" },
-        { value: "price", label: "Price" },
-        { value: "budget", label: "Budget" },
-        { value: "distance", label: "Distance" },
-        { value: "other", label: "Other" }, // Add "Other" option
-      ],
-    },
-
-    {
-      name: "follow_up_status",
-      label: "Follow Up Status",
-      type: "select",
-      options: [
-        { value: "", label: "Select Follow Up Status" },
-        { value: "pending", label: "Pending" },
-        { value: "in progress", label: "In Progress" },
-        { value: "done", label: "Done" },
-      ],
-    },
-
-    {
-      name: "booking_amount",
-      label: "Booking Amount",
-      type: "text",
-    },
-
-    {
-      name: "payment_mode",
-      label: "Payment Mode",
-      type: "select",
-      options: [
-        { value: "", label: "Select Payment Mode" },
-        { value: "pending", label: "Pending" },
-        { value: "credit-card", label: "Credit Card" },
-        { value: "debit-card", label: "Debit Card" },
-        { value: "net-banking", label: "Net Banking" },
-        { value: "upi", label: "UPI" },
-        { value: "cash", label: "Cash" },
-      ],
-    },
-
-    {
-      name: "registry",
-      label: "Registry",
-      type: "select",
-      options: [
-        { value: "", label: "Select Payment Mode" },
-        { value: "pending", label: "Pending" },
-        { value: "in progress", label: "In Progress" },
-        { value: "done", label: "Done" },
-      ],
-    },
-  ];
-
   useEffect(() => {
     fetchLeads();
     fetchVisit();
@@ -195,12 +86,10 @@ function EmployeeSingleLeadProfileContent() {
       console.log(response.data);
       setLeads(response.data);
 
-      // Debugging: Log the exact value of the quotation field
       response.data.forEach((lead) => {
         console.log("Lead Quotation Status (raw):", lead.quotation);
       });
 
-      // Ensure proper comparison with 'Created', trim any spaces and normalize the case
       const hasCreatedQuotation = response.data.some(
         (lead) =>
           lead.quotation && lead.quotation.trim().toLowerCase() === "created"
@@ -209,7 +98,7 @@ function EmployeeSingleLeadProfileContent() {
       console.log(
         "Has created quotation (normalized check)?",
         hasCreatedQuotation
-      ); // Debugging
+      );
       setQuotationCreated(hasCreatedQuotation);
     } catch (error) {
       console.error("Error fetching quotations:", error);
@@ -220,7 +109,7 @@ function EmployeeSingleLeadProfileContent() {
 
   const fetchVisit = async () => {
     try {
-      const response = await axios.get(
+      const { data } = await axios.get(
         `https://crm-generalize.dentalguru.software/api/employe-visit/${id}`,
         {
           headers: {
@@ -229,19 +118,14 @@ function EmployeeSingleLeadProfileContent() {
           },
         }
       );
-      console.log(response.data);
-      setVisit(response.data);
-      // Ensure proper comparison with 'Created', trim any spaces and normalize the case
-      const hasCreatedvisit = response.data.some(
-        (lead) =>
-          (lead.visit && lead.visit.trim().toLowerCase() === "fresh") ||
-          "repeated"
-      );
-      setVisitCreated(hasCreatedvisit);
+      console.log(data);
+      setVisit(data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
   };
+
+  console.log(visit);
 
   const fetchFollowUp = async () => {
     try {
@@ -291,7 +175,7 @@ function EmployeeSingleLeadProfileContent() {
         }
       );
       console.log(response.data);
-      setRemarkCreated(response.data.length > 0); // Check if remarks exist
+      setRemarkCreated(response.data.length > 0);
     } catch (error) {
       console.error("Error fetching remarks:", error);
     }
@@ -315,7 +199,7 @@ function EmployeeSingleLeadProfileContent() {
     }
   };
   const handleBackClick = () => {
-    navigate(-1); // -1 navigates to the previous page in history
+    navigate(-1);
   };
 
   const handleQuotation = async (lead) => {
@@ -324,7 +208,7 @@ function EmployeeSingleLeadProfileContent() {
   };
 
   const handleViewQuotation = (lead) => {
-    console.log("Lead Object:", lead); // Log the lead object
+    console.log("Lead Object:", lead);
     const name = lead.name;
     console.log("Lead Name:", name); // Log the name
     navigate(`/View_quotations/${lead.lead_id}`);
@@ -336,10 +220,9 @@ function EmployeeSingleLeadProfileContent() {
     setCurrentLead((prevState) => ({ ...prevState, [name]: value }));
 
     if (name === "reason") {
-      // Check if "Other" is selected
       setIsOtherReason(value === "other");
       if (value !== "other") {
-        setCurrentLead((prevState) => ({ ...prevState, customReason: "" })); // Clear custom reason if not "Other"
+        setCurrentLead((prevState) => ({ ...prevState, customReason: "" }));
       }
     }
   };
@@ -376,7 +259,7 @@ function EmployeeSingleLeadProfileContent() {
       ...currentLead,
       reason: isOtherReason
         ? currentLead.customReason || leads[0]?.reason
-        : currentLead.reason, // Use the default value if untouched
+        : currentLead.reason,
     };
     try {
       if (currentLead.deal_status == "close") {
@@ -395,7 +278,6 @@ function EmployeeSingleLeadProfileContent() {
         }
       }
       setLoading(true);
-      // Send updated data to the backend using Axios
       const response = await axios.put(
         `https://crm-generalize.dentalguru.software/api/updateLeadStatus/${currentLead.lead_id}`,
         leadData
@@ -405,7 +287,7 @@ function EmployeeSingleLeadProfileContent() {
         console.log("Updated successfully:", response.data);
         cogoToast.success("Lead status updated successfully");
         setRender(!render);
-        closePopup(); // Close the popup on success
+        closePopup();
         fetchLeads();
         setLoading(false);
       } else {
@@ -426,8 +308,6 @@ function EmployeeSingleLeadProfileContent() {
 
   const totalVisit = visit.length;
   console.log(totalVisit);
-
-  // This is for not select future date
 
   return (
     <>
@@ -452,14 +332,14 @@ function EmployeeSingleLeadProfileContent() {
                 {leads.map((lead, index) => (
                   <div className="w-full lg:w-2/3 ">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                      <div>
+                      {/* <div>
                         <label className="text-cyan-600 font-semibold">
                           Lead Number
                         </label>
                         <div className="p-2 bg-gray-100 rounded">
                           <p className="m-0">{lead.lead_no}</p>
                         </div>
-                      </div>
+                      </div> */}
 
                       <div>
                         <label className="text-cyan-600 font-semibold">
@@ -475,7 +355,7 @@ function EmployeeSingleLeadProfileContent() {
                           Assigned To
                         </label>
                         <div className="p-2 bg-gray-100 rounded">
-                          <p className="m-0">{lead.assignedTo}</p>
+                          <p className="m-0">{lead.staff_name}</p>
                         </div>
                       </div>
 
@@ -561,7 +441,7 @@ function EmployeeSingleLeadProfileContent() {
 
                 {/* Right Section for View Buttons */}
                 <div className="flex flex-wrap gap-2">
-                  {visitCreated ? (
+                  {visit?.length > 0 ? (
                     <button
                       onClick={handleViewVisit}
                       className="bg-green-500 text-white px-4 py-2 rounded w-full sm:w-auto"
@@ -621,9 +501,9 @@ function EmployeeSingleLeadProfileContent() {
                 <table className="min-w-full whitespace-nowrap bg-white border">
                   <thead>
                     <tr>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
+                      {/* <th className="px-6 py-3 border-b-2 border-gray-300">
                         Lead Number
-                      </th>
+                      </th> */}
                       <th className="px-6 py-3 border-b-2 border-gray-300">
                         Assigned To
                       </th>
@@ -660,9 +540,7 @@ function EmployeeSingleLeadProfileContent() {
                       <th className="px-6 py-3 border-b-2 border-gray-300">
                         Deal Status
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Employee ID
-                      </th>
+
                       <th className="px-6 py-3 border-b-2 border-gray-300">
                         Follow-Up Status
                       </th>
@@ -693,12 +571,7 @@ function EmployeeSingleLeadProfileContent() {
                       <th className="px-6 py-3 border-b-2 border-gray-300">
                         Unit Status
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Visit
-                      </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Visit Date
-                      </th>
+
                       <th className="px-6 py-3 border-b-2 border-gray-300">
                         Close Date
                       </th>
@@ -719,11 +592,11 @@ function EmployeeSingleLeadProfileContent() {
                         key={lead.id}
                         className={index % 2 === 0 ? "bg-gray-100" : ""}
                       >
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                        {/* <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                           {lead.lead_no}
-                        </td>
+                        </td> */}
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.assignedTo}
+                          {lead.staff_name}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                           {lead.name}
@@ -759,9 +632,6 @@ function EmployeeSingleLeadProfileContent() {
                           {lead.deal_status}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.employeeId}
-                        </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                           {lead.follow_up_status}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
@@ -791,16 +661,7 @@ function EmployeeSingleLeadProfileContent() {
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                           {lead.unit_status}
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.visit}
-                        </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 ">
-                          {lead.visit_date === "pending"
-                            ? "pending"
-                            : moment(lead.visit_date)
-                                .format("DD MMM YYYY")
-                                .toUpperCase()}
-                        </td>
+
                         <td className="px-6 py-4 border-b border-gray-200 font-semibold text-gray-800">
                           {lead.d_closeDate === "pending"
                             ? "pending"

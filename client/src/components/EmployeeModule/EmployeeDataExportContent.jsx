@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { SiMoneygram } from "react-icons/si";
-import { MdOutlineNextWeek } from "react-icons/md";
 import { GiFiles, GiMoneyStack } from "react-icons/gi";
 import { FaClipboardList, FaCheckCircle } from "react-icons/fa"; // Import icons for Visit and Closed Data
 import { useSelector } from "react-redux";
@@ -11,7 +9,6 @@ import EmployeeQuotationData from "./EmployeeDataExport/EmployeeQuotationData";
 import EmployeeInvoiceData from "./EmployeeDataExport/EmployeeInvoiceData";
 import EmployeeVisitData from "./EmployeeDataExport/EmployeeVisitData";
 import EmployeeCloseData from "./EmployeeDataExport/EmployeeCloseData";
-import Employee_Single_Lead_Profile from "../Leads/EmployeeSingleLeadProfileContent";
 import EmployeeSoldData from "./EmployeeDataExport/EmployeeSoldData";
 
 function EmployeeDataExportContent() {
@@ -29,7 +26,7 @@ function EmployeeDataExportContent() {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.staff_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -97,9 +94,9 @@ function EmployeeDataExportContent() {
     }
   };
 
-  const leadCount = leads.filter(
-    (lead) => lead.lead_status === "completed"
-  ).length;
+  // const leadCount = leads.filter(
+  //   (lead) => lead.lead_status === "completed"
+  // ).length;
 
   const visitCount = leads.filter((lead) =>
     ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
@@ -165,7 +162,7 @@ function EmployeeDataExportContent() {
                             : "text-gray-600"
                         }`}
                       >
-                        {leadCount}
+                        {leads?.length}
                       </p>
                     </div>
                   </div>

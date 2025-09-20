@@ -47,16 +47,15 @@ const EmployeeCloseGraph = () => {
           item.deal_status?.trim().toLowerCase() === "close"
       );
 
-      console.log(`Date: ${formattedDate}, Leads: ${matchedLeads.length}`);
+      // console.log(`Date: ${formattedDate}, Leads: ${matchedLeads.length}`);
 
-      // Push the day and the number of closed deals for that day
       data.push({
-        day: formattedDay, // Day in "DD MMM" format
-        Close_Deal: matchedLeads.length, // Count the number of matched leads
+        day: formattedDay,
+        Close_Deal: matchedLeads.length,
       });
     }
 
-    return data.reverse(); // Keep the data in chronological order from oldest to newest
+    return data.reverse();
   };
 
   // Fetch data from the API

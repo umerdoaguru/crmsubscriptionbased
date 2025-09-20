@@ -10,9 +10,7 @@ const SuperAdminEditLeadPopup = ({
   onClose,
   employees,
   combinedLeadSources,
-  projectunit,
   projects,
-  fetchProjectsUnit,
   fetchLeads,
   isEditing,
   selectedLead,
@@ -20,24 +18,25 @@ const SuperAdminEditLeadPopup = ({
 }) => {
   const modalRef = useRef();
   const EmpId = useSelector((state) => state.auth.user);
-  console.log(EmpId);
 
   const token = EmpId?.token;
-  const userId = EmpId.staff_id;
+  const userId = EmpId?.staff_id;
+
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [customLeadSource, setCustomLeadSource] = useState("");
+  const [projectUnit, setProjectUnit] = useState([]); // will hold fetched units
   const [currentLead, setCurrentLead] = useState({
     lead_org_id: EmpId?.staff_org_id,
     lead_no: "",
-    assignedTo: 0,
+    assignedTo: "",
     employeeId: "",
     employeephone: "",
     createdTime: "",
     name: "",
     phone: "",
+    lead_email: "",
     leadSource: "",
-    project_name: "",
     main_project_id: "",
     unit_type: "",
     unit_id: "",
@@ -45,6 +44,34 @@ const SuperAdminEditLeadPopup = ({
     actual_date: "",
     user_id: userId,
   });
+
+  // fetch units for selected project
+  const fetchProjectsUnit = async (projectId) => {
+    if (!projectId) {
+      setProjectUnit([]);
+      return;
+    }
+    try {
+      const response = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/super-admin-project-unit/${projectId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (Array.isArray(response.data) && response.data.length > 0) {
+        setProjectUnit(response.data);
+      } else {
+        setProjectUnit([]);
+      }
+    } catch (error) {
+      console.error("Error fetching units:", error);
+      setProjectUnit([]);
+    }
+  };
 
   // Reset lead data when editing
   useEffect(() => {
@@ -54,25 +81,27 @@ const SuperAdminEditLeadPopup = ({
         employeephone: "",
         user_id: userId,
       });
+      // also fetch units for its current project if editing existing lead
+      if (selectedLead.main_project_id) {
+        fetchProjectsUnit(selectedLead.main_project_id);
+      }
     } else {
       setCurrentLead({
         lead_org_id: EmpId?.staff_org_id,
         lead_no: "",
-        assignedTo: 0,
-        employeeId: "",
-        employeephone: "",
+        assignedTo: "",
         createdTime: "",
         name: "",
         phone: "",
+        lead_email: "",
         leadSource: "",
-        project_name: "",
         main_project_id: "",
         unit_type: "",
-        unit_id: "",
+        unit_id: 0,
         address: "",
         actual_date: "",
-        user_id: userId,
       });
+      setProjectUnit([]);
     }
   }, [selectedLead, isEditing]);
 
@@ -115,22 +144,16 @@ const SuperAdminEditLeadPopup = ({
 
       updated = { ...updated, [name]: value };
 
-      if (name === "createdTime") updated.actual_date = value;
-
-      if (name === "assignedTo") {
-        const emp = employees.find((e) => e.name === value);
-        updated.employeeId = emp?.employeeId || "";
-        updated.employeephone = emp?.phone || "";
-      }
-
-      if (name === "project_name") {
-        const proj = projects.find((p) => p.project_name === value);
-        updated.main_project_id = proj?.main_project_id || "";
-        fetchProjectsUnit(proj?.main_project_id || "");
+      if (name === "main_project_id") {
+        // when project changes, clear unit fields and fetch new units
+        updated.main_project_id = value;
+        updated.unit_type = "";
+        updated.unit_id = "";
+        fetchProjectsUnit(value);
       }
 
       if (name === "unit_type") {
-        const unit = projectunit.find((u) => u.unit_type === value);
+        const unit = projectUnit.find((u) => u.unit_type === value);
         updated.unit_id = unit?.unit_id || "";
       }
 
@@ -142,26 +165,10 @@ const SuperAdminEditLeadPopup = ({
     setCustomLeadSource(e.target.value);
   };
 
-  // Form validation
-  const validateForm = () => {
-    let errs = {};
-    if (!currentLead.assignedTo) errs.assignedTo = "Assigned To is required";
-    if (!currentLead.name) errs.name = "Name is required";
-    if (!currentLead.createdTime) errs.createdTime = "Date is required";
-    if (!currentLead.phone) errs.phone = "Phone number is required";
-    else if (!/^\d{10}$/.test(currentLead.phone))
-      errs.phone = "Phone number must be 10 digits";
-    if (!currentLead.leadSource) errs.leadSource = "Lead Source is required";
-    if (!currentLead.project_name) errs.project_name = "Project is required";
-    if (!currentLead.address) errs.address = "Address is required";
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
-  };
-
   // Save lead
   const saveChanges = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+
     const leadData = {
       ...currentLead,
       leadSource:
@@ -213,7 +220,7 @@ const SuperAdminEditLeadPopup = ({
             transition={{ duration: 0.25 }}
             className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl mx-3 p-6"
           >
-            {/* Header with Close Button */}
+            {/* Header */}
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-cyan-700">
                 {isEditing ? "Edit Lead" : "Add Lead"}
@@ -245,9 +252,6 @@ const SuperAdminEditLeadPopup = ({
                     errors.name ? "border-red-500" : "border-gray-300"
                   }`}
                 />
-                {errors.name && (
-                  <p className="text-red-500 text-xs mt-1">{errors.name}</p>
-                )}
               </div>
 
               {/* Assigned To */}
@@ -270,11 +274,6 @@ const SuperAdminEditLeadPopup = ({
                     </option>
                   ))}
                 </select>
-                {errors.assignedTo && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.assignedTo}
-                  </p>
-                )}
               </div>
 
               {/* Date */}
@@ -289,11 +288,6 @@ const SuperAdminEditLeadPopup = ({
                   onChange={handleInputChange}
                   className="mt-1 w-full px-3 py-2 border rounded-lg bg-gray-100 focus:outline-none"
                 />
-                {errors.createdTime && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.createdTime}
-                  </p>
-                )}
               </div>
 
               {/* Phone */}
@@ -311,9 +305,21 @@ const SuperAdminEditLeadPopup = ({
                     errors.phone ? "border-red-500" : "border-gray-300"
                   }`}
                 />
-                {errors.phone && (
-                  <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
-                )}
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="text-sm font-medium text-gray-600">
+                  Email
+                </label>
+                <input
+                  type="text"
+                  name="lead_email"
+                  value={currentLead.lead_email}
+                  placeholder="Enter email"
+                  onChange={handleInputChange}
+                  className="mt-1 w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-400"
+                />
               </div>
 
               {/* Lead Source */}
@@ -344,11 +350,6 @@ const SuperAdminEditLeadPopup = ({
                     className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg"
                   />
                 )}
-                {errors.leadSource && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.leadSource}
-                  </p>
-                )}
               </div>
 
               {/* Project */}
@@ -357,28 +358,22 @@ const SuperAdminEditLeadPopup = ({
                   Project Name
                 </label>
                 <select
-                  name="project_name"
-                  value={currentLead.project_name}
+                  name="main_project_id"
+                  value={currentLead.main_project_id}
                   onChange={handleInputChange}
                   className={`mt-1 w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-400 ${
-                    errors.project_name ? "border-red-500" : "border-gray-300"
+                    errors.main_project_id
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 >
                   <option value="">Select Project</option>
                   {projects.map((proj) => (
-                    <option
-                      key={proj.main_project_id}
-                      value={proj.project_name}
-                    >
+                    <option key={proj.project_id} value={proj.project_id}>
                       {proj.project_name}
                     </option>
                   ))}
                 </select>
-                {errors.project_name && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.project_name}
-                  </p>
-                )}
               </div>
 
               {/* Unit Type */}
@@ -388,27 +383,22 @@ const SuperAdminEditLeadPopup = ({
                     Unit Type
                   </label>
                   <select
-                    name="unit_type"
-                    value={currentLead.unit_type}
+                    name="unit_id"
+                    value={currentLead.unit_id}
                     onChange={handleInputChange}
                     className="mt-1 w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-400"
                   >
                     <option value="">Select Unit Type</option>
-                    {projectunit.map((u) => (
-                      <option key={u.unit_id} value={u.unit_type}>
-                        {u.unit_type}
+                    {projectUnit.map((u) => (
+                      <option key={u.unit_id} value={u.unit_id}>
+                        {`${u.unit_number} - ${u.unit_type} - ${u.base_price}`}
                       </option>
                     ))}
                   </select>
-                  {errors.unit_type && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.unit_type}
-                    </p>
-                  )}
                 </div>
               )}
 
-              {/* Address - full width */}
+              {/* Address */}
               <div className="md:col-span-2">
                 <label className="text-sm font-medium text-gray-600">
                   Address
@@ -423,12 +413,9 @@ const SuperAdminEditLeadPopup = ({
                     errors.address ? "border-red-500" : "border-gray-300"
                   }`}
                 />
-                {errors.address && (
-                  <p className="text-red-500 text-xs mt-1">{errors.address}</p>
-                )}
               </div>
 
-              {/* Buttons - full width row */}
+              {/* Buttons */}
               <div className="md:col-span-2 flex justify-end gap-3 pt-4">
                 <button
                   type="button"

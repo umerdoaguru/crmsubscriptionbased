@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 import ReactPaginate from "react-paginate";
 import * as XLSX from "xlsx";
 import styled from "styled-components";
-import MainHeader from "../../MainHeader";
 import EmployeeSider from "../EmployeeSider";
 
 const EmployeeQuotationData = () => {

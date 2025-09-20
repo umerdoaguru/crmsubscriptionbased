@@ -1,4 +1,5 @@
 const { db } = require("../db");
+const moment = require("moment-timezone");
 
 const getEmployeeInvoice = async (req, res) => {
   try {
@@ -228,19 +229,14 @@ const getLeadQuotation = async (req, res) => {
 const getEmployeeVisit = async (req, res) => {
   try {
     const { id } = req.params;
-    const sql = "SELECT * FROM visit WHERE lead_id = ?";
-
-    const result = await new Promise((resolve, reject) => {
-      db.query(sql, [id], (err, results) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(results);
-        }
-      });
+    const sql =
+      "SELECT * FROM visit join leads on leads.lead_id = visit.vis_lead_id WHERE visit.vis_lead_id = ?";
+    db.query(sql, id, (err, result) => {
+      if (err) {
+        res.status(400).json({ success: false, message: err.message });
+      }
+      res.status(200).send(result);
     });
-
-    res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ message: "Internal Server Erro, error: errr" });
   }
@@ -248,98 +244,94 @@ const getEmployeeVisit = async (req, res) => {
 
 const createVisit = (req, res) => {
   const {
-    project_name,
-    lead_id,
-    name,
-    employeeId,
-    employee_name,
-    visit,
+    party_name,
+    party_contact,
+    party_email,
+    vis_staff_id,
+    vis_lead_id,
+    visit_details,
     visit_date,
+    vis_status,
   } = req.body;
 
-  const sql = `INSERT INTO visit (
-    project_name,
-    lead_id,
-    name,
-    employeeId,
-    employee_name,
-    visit,
-    visit_date
-   
-  ) VALUES (?,?,?,?,?,?,?)`;
+  const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
 
-  db.query(
-    sql,
-    [project_name, lead_id, name, employeeId, employee_name, visit, visit_date],
-    (err, results) => {
-      if (err) {
-        res.status(500).json({ error: "Error inserting data" });
-      } else {
-        res.status(201).json({
-          success: true,
-          message: "Visit data successfully submitted",
-        });
-      }
+  const sql = `INSERT INTO visit (party_name, party_contact, party_email, vis_staff_id, vis_lead_id, visit_details, visit_date, vis_status, vis_created_at) VALUES (?,?,?,?,?,?,?, ?, ?)`;
+
+  const insertParams = [
+    party_name,
+    party_contact,
+    party_email,
+    vis_staff_id,
+    vis_lead_id,
+    visit_details,
+    visit_date,
+    vis_status,
+    dateTime,
+  ];
+
+  db.query(sql, insertParams, (err, results) => {
+    if (err) {
+      res.status(500).json({ success: false, message: err.message });
+    } else {
+      res.status(201).json({
+        success: true,
+        message: "Visit data successfully submitted",
+      });
     }
-  );
+  });
 };
 
 const updateVisit = (req, res) => {
-  const {
-    id,
-    project_name,
-    lead_id,
-    name,
-    employeeId,
-    employee_name,
-    visit,
-    visit_date,
-    report,
-  } = req.body;
+  const visId = req.params.visId;
+  const { visit_details, visit_type, visit_date, vis_status } = req.body;
+  const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
 
-  // Basic validation
-  if (!id || !project_name || !visit || !visit_date || !report) {
-    return res
-      .status(400)
-      .json({ error: "Please provide all required fields." });
+  let fields = [];
+  let values = [];
+
+  if (visit_details !== undefined) {
+    fields.push("visit_details = ?");
+    values.push(visit_details);
+  }
+  if (visit_type !== undefined) {
+    fields.push("visit_type = ?");
+    values.push(visit_type);
+  }
+  if (visit_date !== undefined) {
+    fields.push("visit_date = ?");
+    values.push(visit_date);
+  }
+  if (vis_status !== undefined) {
+    fields.push("vis_status = ?");
+    values.push(vis_status);
   }
 
-  const sql = `UPDATE visit SET 
-    project_name = ?,
-    lead_id = ?, 
-    name = ?, 
-    employeeId = ?, 
-    employee_name = ?, 
-    visit = ?, 
-    visit_date = ?, 
-    report = ? 
-    WHERE id = ?`;
+  fields.push("vis_updated_at = ?");
+  values.push(dateTime);
 
-  db.query(
-    sql,
-    [
-      project_name,
-      lead_id,
-      name,
-      employeeId,
-      employee_name,
-      visit,
-      visit_date,
-      report,
-      id,
-    ],
-    (err, results) => {
-      if (err) {
-        res.status(500).json({ error: "Error updating visit data" });
-      } else if (results.affectedRows === 0) {
-        res.status(404).json({ error: "Visit not found" });
-      } else {
-        res
-          .status(200)
-          .json({ success: true, message: "Visit data updated successfully" });
-      }
+  values.push(visId);
+
+  if (fields.length === 1) {
+    return res.status(400).json({ error: "No fields provided to update" });
+  }
+
+  const sql = `UPDATE visit SET ${fields.join(", ")} WHERE visit_id = ?`;
+
+  db.query(sql, values, (err, results) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ error: "Error updating visit data", details: err.message });
+    } else if (results.affectedRows === 0) {
+      return res.status(404).json({ error: "Visit not found" });
+    } else {
+      return res.status(200).json({
+        success: true,
+        message: "Visit data updated successfully",
+      });
     }
-  );
+  });
 };
 
 const deleteVisit = (req, res) => {

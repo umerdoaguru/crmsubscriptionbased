@@ -127,6 +127,8 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
     }
   };
 
+  console.log(leads);
+
   const fetchEmployees = async () => {
     try {
       const { data } = await axios.get(
@@ -147,7 +149,7 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   const fetchProjects = async () => {
     try {
       const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${userId}/${superadminuser?.staff_org_id}`,
+        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",

@@ -16,7 +16,7 @@ const EmployeeLeadsReport = () => {
   useEffect(() => {
     const fetchLeads = async () => {
       try {
-        const response = await axios.get(
+        const { data } = await axios.get(
           `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.staff_id}`,
           {
             headers: {
@@ -25,18 +25,18 @@ const EmployeeLeadsReport = () => {
             },
           }
         );
-        const data = response.data;
-        const today = new Date();
-        const todayStr = today.toISOString().split("T")[0];
+        // const data = response.data;
+        // const today = new Date();
+        // const todayStr = today.toISOString().split("T")[0];
 
-        const filteredLeads = data.filter((lead) => {
-          const leadDate = new Date(lead.createdTime)
-            .toISOString()
-            .split("T")[0];
-          return leadDate === todayStr;
-        });
+        // const filteredLeads = data.filter((lead) => {
+        //   const leadDate = new Date(lead.createdTime)
+        //     .toISOString()
+        //     .split("T")[0];
+        //   return leadDate === todayStr;
+        // });
 
-        setLeads(filteredLeads);
+        setLeads(data);
       } catch (error) {
         console.error("Error fetching leads:", error);
       }

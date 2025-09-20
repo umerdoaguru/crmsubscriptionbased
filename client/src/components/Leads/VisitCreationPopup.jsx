@@ -2,6 +2,8 @@ import React, { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import cogoToast from "cogo-toast";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const VisitCreationPopup = ({
   isOpen,
@@ -11,16 +13,20 @@ const VisitCreationPopup = ({
   leads,
 }) => {
   const modalRef = useRef();
+  const { id } = useParams();
   const [loading, setLoading] = useState(false);
+  const user = useSelector((state) => state.auth.user);
+
   const [visitLead, setVisitLead] = useState({
-    project_name: "",
-    lead_id: "",
-    name: "",
-    employeeId: "",
-    employee_name: "",
-    visit: "",
+    vis_staff_id: user?.staff_id,
+    vis_lead_id: id,
+    visit_details: "",
+    visit_type: "",
     visit_date: "",
+    vis_status: "",
   });
+
+  console.log(id);
 
   const handleInputChangeVisit = (e) => {
     const { name, value } = e.target;
@@ -32,74 +38,18 @@ const VisitCreationPopup = ({
 
   const saveVisit = async (e) => {
     e.preventDefault();
-    if (!visitLead.visit) {
-      cogoToast.error("Please select a visit type.");
-      return;
-    }
-    if (!visitLead.visit_date) {
-      cogoToast.error("Please select a visit date.");
-      return;
-    }
 
-    console.log("Visit data:", visitLead);
     setLoading(true);
     try {
       // First API call: Create a visit
       const response = await axios.post(
         `https://crm-generalize.dentalguru.software/api/employe-visit`,
-        {
-          project_name: leads[0].project_name,
-          lead_id: leads[0].lead_id,
-          name: leads[0].name,
-          employeeId: leads[0].employeeId,
-          employee_name: leads[0].assignedTo,
-          visit: visitLead.visit,
-          visit_date: visitLead.visit_date,
-        }
+        visitLead
       );
 
       if (response.status === 201) {
         console.log("Visit created successfully:", response.data);
         cogoToast.success("Visit created successfully");
-
-        // Second API call: Update visit status
-        const updateResponse = await axios.put(
-          `https://crm-generalize.dentalguru.software/api/updateVisitStatus/${leads[0].lead_id}`,
-          { visit: visitLead.visit, visit_date: visitLead.visit_date }
-        );
-
-        if (updateResponse.status === 200) {
-          console.log(
-            "Visit status updated successfully:",
-            updateResponse.data
-          );
-          cogoToast.success("Visit status updated successfully");
-        } else {
-          console.error("Error updating visit status:", updateResponse.data);
-          cogoToast.error("Failed to update visit status.");
-          return; // Exit if this step fails
-        }
-
-        // Third API call: Update lead status
-        const updateLeadStatusResponse = await axios.put(
-          `https://crm-generalize.dentalguru.software/api/updateOnlyLeadStatus/${leads[0].lead_id}`,
-          { lead_status: "site visit done" }
-        );
-
-        if (updateLeadStatusResponse.status === 200) {
-          console.log(
-            "Lead status updated successfully:",
-            updateLeadStatusResponse.data
-          );
-          cogoToast.success("Lead status updated successfully");
-        } else {
-          console.error(
-            "Error updating lead status:",
-            updateLeadStatusResponse.data
-          );
-          cogoToast.error("Failed to update lead status.");
-          return; // Exit if this step fails
-        }
 
         fetchVisit();
         fetchLeads();
@@ -159,70 +109,6 @@ const VisitCreationPopup = ({
 
             {/* Form */}
             <form onSubmit={saveVisit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Project Name
-                </label>
-                <input
-                  type="text"
-                  name="project_name"
-                  value={leads[0].project_name}
-                  onChange={handleInputChangeVisit}
-                  className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
-                  required
-                />
-              </div>
-
-              {/* Lead Number */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Lead Number
-                </label>
-                <input
-                  type="number"
-                  name="lead_no"
-                  value={leads[0].lead_no}
-                  onChange={handleInputChangeVisit}
-                  className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
-                  required
-                />
-              </div>
-
-              {/* Name */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={leads[0].name}
-                  onChange={handleInputChangeVisit}
-                  className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
-                  required
-                />
-              </div>
-
-              {/* Visit Type */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Visit
-                </label>
-                <select
-                  name="visit"
-                  value={visitLead.visit}
-                  onChange={handleInputChangeVisit}
-                  className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-cyan-500"
-                  required
-                >
-                  <option value="">Select Visit Type</option>
-                  <option value="fresh">Fresh</option>
-                  <option value="re-visit">Re-Visit</option>
-                  <option value="self">Self</option>
-                  <option value="associative">Associative</option>
-                </select>
-              </div>
-
               {/* Visit Date */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -236,6 +122,61 @@ const VisitCreationPopup = ({
                   className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
                   required
                 />
+              </div>
+
+              {/* Visit Type */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Visit Type
+                </label>
+                <select
+                  name="visit_type"
+                  value={visitLead.visit_type}
+                  onChange={handleInputChangeVisit}
+                  className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-cyan-500"
+                  required
+                >
+                  <option value="">Select Visit Type</option>
+                  <option value="Fresh">Fresh</option>
+                  <option value="Re-visit">Re-Visit</option>
+                  <option value="Self">Self</option>
+                  <option value="Associative">Associative</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              {/* visit details */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Visit Details
+                </label>
+                <textarea
+                  type="text"
+                  name="visit_details"
+                  value={visitLead.visit_details}
+                  onChange={handleInputChangeVisit}
+                  className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
+                  required
+                />
+              </div>
+
+              {/* Visit Status */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Visit Status
+                </label>
+                <select
+                  name="vis_status"
+                  value={visitLead.vis_status}
+                  onChange={handleInputChangeVisit}
+                  className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-cyan-500"
+                  required
+                >
+                  <option value="">Select Visit Status</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Done">Done</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
               </div>
 
               {/* Buttons */}

@@ -51,7 +51,7 @@ function EmpLeadReport() {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.staff_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -95,7 +95,7 @@ function EmpLeadReport() {
   useEffect(() => {
     let filtered = leads;
 
-    filtered = filtered.filter((lead) => lead.lead_status === "completed");
+    // filtered = filtered.filter((lead) => lead.lead_status === "completed");
     filtered = filterByDuration(filtered, duration);
 
     setFilteredLeads(filtered);
@@ -213,9 +213,7 @@ function EmpLeadReport() {
                 <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
                   Project Name
                 </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
-                  Lead Number
-                </th>
+
                 <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap">
                   Assigned To
                 </th>
@@ -258,11 +256,11 @@ function EmpLeadReport() {
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.project_name}
                     </td>
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                    {/* <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.lead_no}
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.assignedTo}
+                      {lead.staff_name}
                     </td>
 
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
