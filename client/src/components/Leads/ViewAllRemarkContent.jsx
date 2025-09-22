@@ -4,8 +4,6 @@ import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import cogoToast from "cogo-toast";
-import EmployeeeSider from "../EmployeeModule/EmployeeSider";
-import MainHeader from "../MainHeader";
 
 const ViewAllRemarkContent = () => {
   const [remarks, setRemarks] = useState([]);
@@ -42,6 +40,8 @@ const ViewAllRemarkContent = () => {
     }
   };
 
+  console.log(remarks);
+
   const handleDelete = async (remark) => {
     const isConfirmed = window.confirm(
       "Are you sure you want to delete this remark?"
@@ -51,41 +51,12 @@ const ViewAllRemarkContent = () => {
     try {
       // Delete the remark
       const deleteResponse = await axios.delete(
-        `https://crm-generalize.dentalguru.software/api/remarks/${remark.id}`
+        `https://crm-generalize.dentalguru.software/api/remarks/${remark.remark_id}`
       );
-      if (deleteResponse.status === 200) {
-        console.log("Remark deleted successfully");
 
-        // Update remark_status in the leads table
-        const updateResponse = await axios.put(
-          `https://crm-generalize.dentalguru.software/api/updateOnlyRemarkStatus/${remark.lead_id}`,
-          { remark_status: "pending" }
-        );
-
-        // Update answer_remark in the leads table
-        const updateAnswerResponse = await axios.put(
-          `https://crm-generalize.dentalguru.software/api/updateOnlyRemarkAnswerStatus/${remark.lead_id}`,
-          { answer_remark: "pending" }
-        );
-
-        if (
-          updateResponse.status === 200 &&
-          updateAnswerResponse.status === 200
-        ) {
-          console.log(
-            "Remark status and answer remark updated successfully in leads table"
-          );
-        } else {
-          console.error(
-            "Failed to update status or answer remark in leads table"
-          );
-        }
-      } else {
-        console.error("Failed to delete remark");
-      }
-
-      // Re-render the component or refresh data
+      console.log("Remark deleted successfully");
       setRender((prevRender) => !prevRender);
+      fetchRemarks();
     } catch (error) {
       console.error(
         "Error occurred while deleting remark or updating statuses:",
@@ -114,26 +85,13 @@ const ViewAllRemarkContent = () => {
   const updateRemark = async () => {
     try {
       const response = await axios.put(
-        `https://crm-generalize.dentalguru.software/api/remarks`,
+        `https://crm-generalize.dentalguru.software/api/remarks/${id}`,
         modalData
       );
-      if (response.status === 200) {
-        cogoToast.success("Remark updated successfully!");
-        const updateResponse = await axios.put(
-          `https://crm.one-realty.in/api/updateOnlyRemarkStatus/${modalData.lead_id}`,
-          { remark_status: modalData.remark_status }
-        );
-
-        if (updateResponse.status === 200) {
-          console.log("Remark status  updated successfully in leads table");
-        } else {
-          console.error(
-            "Failed to update status or answer remark in leads table"
-          );
-        }
-        setRender(!render);
-        closeModal();
-      }
+      cogoToast.success("Remark updated successfully!");
+      fetchRemarks();
+      setRender(!render);
+      closeModal();
     } catch (error) {
       console.error("Error updating remark:", error);
     }
@@ -144,7 +102,7 @@ const ViewAllRemarkContent = () => {
   };
 
   const filteredRemarks = remarks.filter((remark) =>
-    remark.name.toLowerCase().includes(filterText.toLowerCase())
+    remark?.name?.toLowerCase().includes(filterText.toLowerCase())
   );
 
   const offset = currentPage * itemsPerPage;
@@ -185,9 +143,9 @@ const ViewAllRemarkContent = () => {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Name
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Assigned To
-                        </th>
+                        </th> */}
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Remark Status
                         </th>
@@ -212,14 +170,14 @@ const ViewAllRemarkContent = () => {
                             {remark.project_name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {remark.lead_id}
+                            {remark.remark_lead_id}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             {remark.name}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          {/* <td className="px-6 py-4 whitespace-nowrap">
                             {remark.employee_name}
-                          </td>
+                          </td> */}
                           <td className="px-6 py-4 whitespace-nowrap">
                             {remark.remark_status}
                           </td>
@@ -227,9 +185,7 @@ const ViewAllRemarkContent = () => {
                             {remark.answer_remark}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {moment(remark.date)
-                              .format("DD MMM YYYY")
-                              .toUpperCase()}
+                            {remark.remark_date}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <button
@@ -263,55 +219,75 @@ const ViewAllRemarkContent = () => {
                               type="text"
                               name="project_name"
                               value={modalData.project_name || ""}
-                              onChange={handleInputChange}
+                              // onChange={handleInputChange}
                               className="w-full px-3 py-2 border border-gray-300 rounded"
                               disabled
                             />
                           </div>
-                          <div className="mb-4">
-                            <label className="block text-gray-700">
-                              Lead ID:
-                            </label>
-                            <input
-                              type="text"
-                              name="lead_id"
-                              value={modalData.lead_id || ""}
-                              onChange={handleInputChange}
-                              className="w-full px-3 py-2 border border-gray-300 rounded"
-                              disabled
-                            />
-                          </div>
+
                           <div className="mb-4">
                             <label className="block text-gray-700">Name:</label>
                             <input
                               type="text"
                               name="name"
                               value={modalData.name || ""}
-                              onChange={handleInputChange}
+                              // onChange={handleInputChange}
                               className="w-full px-3 py-2 border border-gray-300 rounded"
                               disabled
                             />
                           </div>
+
                           <div className="mb-4">
                             <label className="block text-gray-700">
                               Remark Status:
                             </label>
-                            <input
-                              type="text"
+                            <select
                               name="remark_status"
-                              value={modalData.remark_status || ""}
+                              placeholder=""
+                              value={modalData.remark_status}
                               onChange={handleInputChange}
-                              className="w-full px-3 py-2 border border-gray-300 rounded"
-                            />
+                              className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
+                            >
+                              <option value="">--select--</option>
+                              <option value="Pending">Pending</option>
+                              <option value="Fresh-Lead">Fresh Lead</option>
+                              <option value="Contacted">Contacted</option>
+                              <option value="Interested">Interested</option>
+                              <option value="Site Visit Scheduled">
+                                Site Visit Scheduled
+                              </option>
+                              <option value="Site Visited">Site Visited</option>
+                              <option value="In Discussion">
+                                In Discussion
+                              </option>
+                              <option value="Converted">Converted</option>
+                              <option value="Not Interested">
+                                Not Interested
+                              </option>
+                              <option value="Invalid Lead">Invalid Lead</option>
+                              <option value="Lost">Lost</option>
+                            </select>
                           </div>
                           <div className="mb-4">
                             <label className="block text-gray-700">Date:</label>
                             <input
                               type="date"
                               name="date"
-                              value={modalData.date || ""}
+                              value={modalData.remark_date || ""}
                               onChange={handleInputChange}
                               className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
+                            />
+                          </div>
+                          <div className="mb-4">
+                            <label className="block text-gray-700">
+                              Answer Remark:
+                            </label>
+                            <textarea
+                              type="text"
+                              name="answer_remark"
+                              value={modalData.answer_remark || ""}
+                              onChange={handleInputChange}
+                              className="w-full px-3 py-2 border border-gray-300 rounded"
                             />
                           </div>
                           <div className="flex justify-end">

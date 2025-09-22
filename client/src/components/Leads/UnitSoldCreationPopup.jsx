@@ -19,16 +19,27 @@ const UnitSoldCreationPopup = ({
   const userId = EmpId.user_id;
   const [loading, setLoading] = useState(false);
   const [unitsold, setUnitSold] = useState({
-    lead_id: "",
-    name: "",
-    employee_name: "",
-    employeeId: "",
-    unit_no: "",
-    unit_id: "",
-    unit_status: "",
-    main_project_id: "",
-    date: "",
+    esu_lead_id: leads[0]?.lead_id,
+    esu_staff_id: leads[0]?.staff_id,
+    esu_unit_id: leads[0]?.unit_id,
+    esu_project_id: leads[0]?.project_id,
+    esu_sold_date: "",
+    esu_notes: "",
   });
+
+  console.log(leads);
+
+  useEffect(() => {
+    setUnitSold({
+      ...unitsold,
+      esu_lead_id: leads[0]?.lead_id,
+      esu_staff_id: leads[0]?.staff_id,
+      esu_unit_id: leads[0]?.unit_id,
+      esu_project_id: leads[0]?.project_id,
+    });
+  }, [leads]);
+
+  console.log(unitsold);
 
   const handleInputChangeUnitSold = (e) => {
     const { name, value } = e.target;
@@ -42,71 +53,18 @@ const UnitSoldCreationPopup = ({
 
   const saveUnitSold = async (e) => {
     e.preventDefault();
-    if (!unitsold.unit_status) {
-      cogoToast.error("Please select a unitsold status.");
-      return;
-    }
-
-    if (!unitsold.date) {
-      cogoToast.error("Please select a date.");
-      return;
-    }
     setLoading(true);
     try {
       const response = await axios.post(
         `https://crm-generalize.dentalguru.software/api/unit-sold`,
-        {
-          project_name: leads[0].project_name,
-          main_project_id: leads[0].main_project_id,
-          lead_id: leads[0].lead_id,
-          name: leads[0].name,
-          employee_name: leads[0].assignedTo,
-          employeeId: leads[0].employeeId,
-          unit_id: leads[0].unit_id,
-          unit_no: unitsold.unit_no,
-          unit_status: unitsold.unit_status,
-          date: unitsold.date,
-          user_id: userId,
-        }
+        unitsold
       );
-
-      if (response.status === 201) {
-        const putResponse = await axios.put(
-          `https://crm-generalize.dentalguru.software/api/unit-data/${unitsold.unit_no}`,
-          { unit_status: unitsold.unit_status }
-        );
-
-        if (putResponse.status === 200) {
-          console.log("Unit Status updated successfully:", putResponse.data);
-        } else {
-          console.error("Error updating Unit Status:", putResponse.data);
-          setLoading(false);
-          cogoToast.error("Failed to update the lead Unit Status.");
-        }
-        const putResponseUnit = await axios.put(
-          `https://crm-generalize.dentalguru.software/api/updateOnlyUnitStatus/${leads[0].lead_id}`,
-          { unit_number: unitsold.unit_no, unit_status: unitsold.unit_status }
-        );
-
-        if (putResponseUnit.status === 200) {
-          console.log(
-            "Unit of Lead Status updated successfully:",
-            putResponseUnit.data
-          );
-        } else {
-          console.error("Error updating Unit Status:", putResponseUnit.data);
-          setLoading(false);
-          cogoToast.error("Failed to update the lead Unit Status.");
-        }
-
-        cogoToast.success("UnitSold Save successfully");
-
-        fetchUnitdata();
-        fetchLeads();
-        fetchUnitSoldEmployee();
-        setLoading(false);
-        onClose();
-      }
+      cogoToast.success("UnitSold Save successfully");
+      fetchUnitdata();
+      fetchLeads();
+      fetchUnitSoldEmployee();
+      setLoading(false);
+      onClose();
     } catch (error) {
       console.error("Request failed:", error);
       setLoading(false);
@@ -165,21 +123,8 @@ const UnitSoldCreationPopup = ({
                   type="text"
                   name="project_name"
                   value={leads[0].project_name}
-                  onChange={handleInputChangeUnitSold}
-                  className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
-                />
-              </div>
-
-              {/* Lead Number */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Lead Number
-                </label>
-                <input
-                  type="number"
-                  name="lead_no"
-                  value={leads[0].lead_no}
-                  onChange={handleInputChangeUnitSold}
+                  // onChange={handleInputChangeUnitSold}
+                  disabled
                   className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
                 />
               </div>
@@ -193,7 +138,8 @@ const UnitSoldCreationPopup = ({
                   type="text"
                   name="name"
                   value={leads[0].name}
-                  onChange={handleInputChangeUnitSold}
+                  // onChange={handleInputChangeUnitSold}
+                  disabled
                   className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
                 />
               </div>
@@ -203,55 +149,42 @@ const UnitSoldCreationPopup = ({
                 <label className="block text-sm font-medium text-gray-700">
                   Unit Number
                 </label>
-                <select
-                  name="unit_no"
-                  value={unitsold.unit_no}
-                  onChange={handleInputChangeUnitSold}
-                  className="border rounded-2xl p-2 w-full"
-                >
-                  <option value="">Select Unit Number</option>
-                  {unitdata.map((unit) => (
-                    <option
-                      key={unit.id}
-                      value={unit.unit_number}
-                      disabled={unit.status === "sold"} // Disable sold units
-                    >
-                      {unit.status === "sold"
-                        ? `Sold ${unit.unit_number}`
-                        : `Unit ${unit.unit_number} (Available)`}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Unit Status */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Unit Status
-                </label>
-                <select
-                  name="unit_status"
-                  value={unitsold.unit_status}
-                  onChange={handleInputChangeUnitSold}
-                  className="border rounded-2xl p-2 w-full"
-                >
-                  <option value="">Select Unit Status Type</option>
-                  <option value="sold">Sold</option>
-                </select>
+                <input
+                  type="text"
+                  name="project_name"
+                  value={leads[0].unit_number}
+                  // onChange={handleInputChangeUnitSold}
+                  disabled
+                  className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
+                />
               </div>
 
               {/* Date */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Date
+                  Sold Date
                 </label>
                 <input
                   type="date"
-                  name="date"
-                  value={unitsold.date}
+                  name="esu_sold_date"
+                  value={unitsold.esu_sold_date}
                   onChange={handleInputChangeUnitSold}
                   className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
                   max={today}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Notes
+                </label>
+                <textarea
+                  type="text"
+                  name="esu_notes"
+                  value={unitsold.esu_notes}
+                  onChange={handleInputChangeUnitSold}
+                  className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
+                  placeholder="Write notes here"
                 />
               </div>
 

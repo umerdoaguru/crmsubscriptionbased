@@ -87,7 +87,7 @@ const Overview2 = () => {
   const fetchProjects = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${userId}/${superadminuser?.staff_org_id}`,
+        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",

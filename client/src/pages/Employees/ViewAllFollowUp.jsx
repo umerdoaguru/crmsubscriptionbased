@@ -2,9 +2,6 @@ import { useState } from "react";
 import React from "react";
 import Sidebar from "../../utils/Sidebar";
 import Topbar from "../../utils/Topbar";
-import EmployeeLeadContent from "../../components/EmployeeModule/EmployeeLeadContent";
-import EmployeeSingleLeadProfileContent from "../../components/Leads/EmployeeSingleLeadProfileContent";
-import ViewAllVisitContent from "../../components/Leads/ViewAllVisitContent";
 import ViewAllFollowUpContent from "../../components/Leads/ViewAllFollowUpContent";
 
 const ViewAllFollowUp = () => {

@@ -11,7 +11,6 @@ const ViewAllVisitContent = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10);
   const [filterText, setFilterText] = useState("");
-  const [sortAsc, setSortAsc] = useState(true);
   const [render, setRender] = useState(false);
   const { id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);

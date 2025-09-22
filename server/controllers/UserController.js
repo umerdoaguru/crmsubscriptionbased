@@ -687,7 +687,7 @@ const createLead = (req, res) => {
 const getleadbyid = (req, res) => {
   try {
     const { id } = req.params;
-    const getQuery = `SELECT * FROM leads join company_staff on company_staff.staff_id = leads.	assignedTo WHERE leads.lead_id = ?`;
+    const getQuery = `SELECT * FROM leads join company_staff on company_staff.staff_id = leads.assignedTo join projects on projects.project_id = leads.main_project_id join units on units.unit_project_id = leads.main_project_id WHERE leads.lead_id = ?`;
     db.query(getQuery, [id], (error, result) => {
       if (error) {
         res.status(500).json({ error: "Internal Server Error" });

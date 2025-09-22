@@ -57,7 +57,7 @@ function EmployeeSingleLeadProfileContent() {
 
   const [quotationCreated, setQuotationCreated] = useState(false);
   const [visitCreated, setVisitCreated] = useState(false);
-  const [followCreated, setFollowCreated] = useState(false);
+  const [followCreated, setFollowCreated] = useState([]);
   const [employeeunitsoldCreated, setemployeeunitsoldCreated] = useState(false);
   const [remarkCreated, setRemarkCreated] = useState(false);
 
@@ -129,7 +129,7 @@ function EmployeeSingleLeadProfileContent() {
 
   const fetchFollowUp = async () => {
     try {
-      const response = await axios.get(
+      const { data } = await axios.get(
         `https://crm-generalize.dentalguru.software/api/employe-follow-up/${id}`,
         {
           headers: {
@@ -139,7 +139,7 @@ function EmployeeSingleLeadProfileContent() {
         }
       );
 
-      setFollowCreated(response.data[0]);
+      setFollowCreated(data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
@@ -163,6 +163,8 @@ function EmployeeSingleLeadProfileContent() {
     }
   };
 
+  console.log(followCreated);
+
   const fetchRemark = async () => {
     try {
       const response = await axios.get(
@@ -180,6 +182,8 @@ function EmployeeSingleLeadProfileContent() {
       console.error("Error fetching remarks:", error);
     }
   };
+
+  console.log(remarkCreated);
 
   const fetchUnitdata = async () => {
     try {
@@ -455,7 +459,7 @@ function EmployeeSingleLeadProfileContent() {
                   )}
 
                   {/* Follow Up */}
-                  {followCreated ? (
+                  {followCreated.length > 0 ? (
                     <button
                       onClick={handleViewFollowUp}
                       className="bg-yellow-500 text-white px-4 py-2 rounded w-full sm:w-auto"
@@ -504,9 +508,9 @@ function EmployeeSingleLeadProfileContent() {
                       {/* <th className="px-6 py-3 border-b-2 border-gray-300">
                         Lead Number
                       </th> */}
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
+                      {/* <th className="px-6 py-3 border-b-2 border-gray-300">
                         Assigned To
-                      </th>
+                      </th> */}
                       <th className="px-6 py-3 border-b-2 border-gray-300">
                         Name
                       </th>
@@ -516,51 +520,21 @@ function EmployeeSingleLeadProfileContent() {
                       <th className="px-6 py-3 border-b-2 border-gray-300">
                         Lead Source
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Remark Status
-                      </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Answer Remark
-                      </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Meeting Status
-                      </th>
+
                       <th className="px-6 py-3 border-b-2 border-gray-300">
                         Assigned By
+                      </th>
+
+                      <th className="px-6 py-3 border-b-2 border-gray-300">
+                        Address
                       </th>
                       <th className="px-6 py-3 border-b-2 border-gray-300">
                         Lead Status
                       </th>
                       <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Address
-                      </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Booking Amount
-                      </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Deal Status
-                      </th>
-
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Follow-Up Status
-                      </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Payment Mode
-                      </th>
-
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Reason
-                      </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Registry
-                      </th>
-
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
                         Project Name
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Project Id
-                      </th>
+
                       <th className="px-6 py-3 border-b-2 border-gray-300">
                         Unit Type
                       </th>
@@ -573,14 +547,9 @@ function EmployeeSingleLeadProfileContent() {
                       </th>
 
                       <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Close Date
-                      </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
                         Assigned Date
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Actual Date
-                      </th>
+
                       <th className="px-6 py-3 border-b-2 border-gray-300">
                         Action
                       </th>
@@ -595,9 +564,9 @@ function EmployeeSingleLeadProfileContent() {
                         {/* <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                           {lead.lead_no}
                         </td> */}
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                        {/* <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                           {lead.staff_name}
-                        </td>
+                        </td> */}
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                           {lead.name}
                         </td>
@@ -607,50 +576,22 @@ function EmployeeSingleLeadProfileContent() {
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                           {lead.leadSource}
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.remark_status}
-                        </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.answer_remark}
-                        </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.meeting_status}
-                        </td>
+
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                           {lead.assignedBy}
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.lead_status}
-                        </td>
+
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                           {lead.address}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.booking_amount}
-                        </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.deal_status}
-                        </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.follow_up_status}
-                        </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.payment_mode}
-                        </td>
-
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.reason}
-                        </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.registry}
+                          {lead.lead_status}
                         </td>
 
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                           {lead.project_name}
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.main_project_id}
-                        </td>
+
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                           {lead.unit_type}
                         </td>
@@ -662,13 +603,6 @@ function EmployeeSingleLeadProfileContent() {
                           {lead.unit_status}
                         </td>
 
-                        <td className="px-6 py-4 border-b border-gray-200 font-semibold text-gray-800">
-                          {lead.d_closeDate === "pending"
-                            ? "pending"
-                            : moment(lead.d_closeDate)
-                                .format("DD MMM YYYY")
-                                .toUpperCase()}
-                        </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                           {lead.createdTime
                             ? moment(lead.createdTime)
@@ -676,13 +610,7 @@ function EmployeeSingleLeadProfileContent() {
                                 .toUpperCase()
                             : "N/A"}
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.actual_date
-                            ? moment(lead.actual_date)
-                                .format("DD MMM YYYY")
-                                .toUpperCase()
-                            : "N/A"}
-                        </td>
+
                         <td className="px-6 py-4 border-b border-gray-200">
                           <button
                             className="text-cyan-600 hover:text-cyan-700"

@@ -13,13 +13,22 @@ const RemarkCreationPopup = ({
   const modalRef = useRef();
   const [loading, setLoading] = useState(false);
   const [remark, setRemark] = useState({
-    lead_id: "",
-    name: "",
-    employee_name: "",
-    employeeId: "",
+    remark_lead_id: leads[0]?.lead_id,
+    remark_project_id: leads[0]?.project_id,
+    remark_employeeId: leads[0]?.staff_id,
     remark_status: "",
-    date: "",
+    answer_remark: "",
+    remark_date: "",
   });
+
+  useEffect(() => {
+    setRemark({
+      ...remark,
+      remark_lead_id: leads[0]?.lead_id,
+      remark_project_id: leads[0]?.project_id,
+      remark_employeeId: leads[0]?.staff_id,
+    });
+  }, [leads]);
 
   const handleInputChangeRemark = (e) => {
     const { name, value } = e.target;
@@ -36,7 +45,7 @@ const RemarkCreationPopup = ({
       return;
     }
 
-    if (!remark.date) {
+    if (!remark.remark_date) {
       cogoToast.error("Please select a date.");
       return;
     }
@@ -44,28 +53,14 @@ const RemarkCreationPopup = ({
     try {
       const response = await axios.post(
         `https://crm-generalize.dentalguru.software/api/remarks`,
-        {
-          project_name: leads[0].project_name,
-          lead_id: leads[0].lead_id,
-          name: leads[0].name,
-          employee_name: leads[0].assignedTo,
-          employeeId: leads[0].employeeId,
-          remark_status: remark.remark_status,
-          date: remark.date,
-        }
+        remark
       );
+      cogoToast.success("Remark created and lead updated successfully");
 
-      if (response.status === 200) {
-        cogoToast.success("Remark created and lead updated successfully");
-
-        fetchRemark();
-        fetchLeads();
-        setLoading(false);
-        onClose();
-      } else {
-        setLoading(false);
-        cogoToast.error("Failed to create remark and update lead.");
-      }
+      fetchRemark();
+      fetchLeads();
+      setLoading(false);
+      onClose();
     } catch (error) {
       console.error("Request failed:", error);
       setLoading(false);
@@ -115,44 +110,17 @@ const RemarkCreationPopup = ({
 
             {/* Form */}
             <form onSubmit={saveRemark} className="space-y-4">
-              {/* Project Name */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Project Name
-                </label>
-                <input
-                  type="text"
-                  name="project_name"
-                  value={leads[0].project_name}
-                  onChange={handleInputChangeRemark}
-                  className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
-                />
-              </div>
-
-              {/* Lead ID */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Lead ID
-                </label>
-                <input
-                  type="number"
-                  name="lead_id"
-                  value={leads[0].lead_id}
-                  onChange={handleInputChangeRemark}
-                  className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
-                />
-              </div>
-
               {/* Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Name
+                  Answer Remark
                 </label>
                 <input
                   type="text"
-                  name="name"
-                  value={leads[0].name}
+                  name="answer_remark"
+                  value={remark.answer_remark}
                   onChange={handleInputChangeRemark}
+                  placeholder="Answer remark"
                   className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
                 />
               </div>
@@ -162,24 +130,38 @@ const RemarkCreationPopup = ({
                 <label className="block text-sm font-medium text-gray-700">
                   Remark Status
                 </label>
-                <input
-                  type="text"
+                <select
                   name="remark_status"
+                  placeholder=""
                   value={remark.remark_status}
                   onChange={handleInputChangeRemark}
                   className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
-                />
+                >
+                  <option value="">--select--</option>
+                  <option value="Fresh-Lead">Fresh Lead</option>
+                  <option value="Contacted">Contacted</option>
+                  <option value="Interested">Interested</option>
+                  <option value="Site Visit Scheduled">
+                    Site Visit Scheduled
+                  </option>
+                  <option value="Site Visited">Site Visited</option>
+                  <option value="In Discussion">In Discussion</option>
+                  <option value="Converted">Converted</option>
+                  <option value="Not Interested">Not Interested</option>
+                  <option value="Invalid Lead">Invalid Lead</option>
+                  <option value="Lost">Lost</option>
+                </select>
               </div>
 
               {/* Date */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Date
+                  Remark Date
                 </label>
                 <input
                   type="date"
-                  name="date"
-                  value={remark.date}
+                  name="remark_date"
+                  value={remark.remark_date}
                   onChange={handleInputChangeRemark}
                   className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
                 />

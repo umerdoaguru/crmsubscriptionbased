@@ -102,6 +102,8 @@ function EmployeeLeadContent() {
     }
   };
 
+  console.log(leads);
+
   const handleUpdate = async (lead) => {
     try {
       // Send updated data to the backend using Axios

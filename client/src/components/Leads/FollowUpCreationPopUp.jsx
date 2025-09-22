@@ -13,14 +13,15 @@ const FollowUpCreationPopUp = ({
   const modalRef = useRef();
   const [loading, setLoading] = useState(false);
   const [follow_up, setFollow_Up] = useState({
-    lead_id: "",
-    name: "",
-    employeeId: "",
-    employee_name: "",
+    fu_project_id: leads[0]?.project_id,
+    fu_lead_id: leads[0]?.lead_id,
+    fu_employeeId: leads[0]?.staff_id,
     follow_up_type: "",
     follow_up_date: "",
-    report: "",
+    follow_up_report: "",
   });
+
+  console.log(leads[0]?.project_id);
 
   const handleInputChangeFollowUp = (e) => {
     const { name, value } = e.target;
@@ -29,6 +30,17 @@ const FollowUpCreationPopUp = ({
       [name]: value,
     }));
   };
+
+  console.log(follow_up);
+
+  useEffect(() => {
+    setFollow_Up({
+      ...follow_up,
+      fu_project_id: leads[0]?.project_id,
+      fu_lead_id: leads[0]?.lead_id,
+      fu_employeeId: leads[0]?.staff_id,
+    });
+  }, [leads]);
 
   const saveFollowUp = async (e) => {
     e.preventDefault();
@@ -41,55 +53,24 @@ const FollowUpCreationPopUp = ({
       cogoToast.error("Please select a folllow up date.");
       return;
     }
-    if (!follow_up.report) {
+    if (!follow_up.follow_up_report) {
       cogoToast.error("Please Enter a report.");
       return;
     }
     setLoading(true);
     try {
-      // Send updated data to the backend using Axios
       const response = await axios.post(
         `https://crm-generalize.dentalguru.software/api/employe-follow-up`,
-        {
-          project_name: leads[0].project_name,
-          lead_id: leads[0].lead_id,
-          name: leads[0].name,
-          employeeId: leads[0].employeeId,
-          employee_name: leads[0].assignedTo,
-          follow_up_type: follow_up.follow_up_type,
-          follow_up_date: follow_up.follow_up_date,
-          report: follow_up.report,
-        }
+        follow_up
       );
 
-      if (response.status === 201) {
-        console.log("Follow-up created successfully:", response.data);
-        cogoToast.success("Follow-up created successfully");
+      console.log("Follow-up created successfully:", response.data);
+      cogoToast.success("Follow-up created successfully");
 
-        // Update the Follow Up status after saving the Follow Up
-        const putResponse = await axios.put(
-          `https://crm-generalize.dentalguru.software/api/updateOnlyFollowUpStatus/${leads[0].lead_id}`,
-          { follow_up_status: "in progress" }
-        );
-
-        if (putResponse.status === 200) {
-          console.log("Status updated successfully:", putResponse.data);
-        } else {
-          console.error("Error updating status:", putResponse.data);
-          cogoToast.error("Failed to update the lead status.");
-        }
-
-        // Close the popup on success
-
-        fetchFollowUp();
-        fetchLeads();
-        setLoading(false);
-        onClose();
-      } else {
-        console.error("Error creating follow-up:", response.data);
-        cogoToast.error("Failed to create follow-up.");
-        setLoading(false);
-      }
+      fetchFollowUp();
+      fetchLeads();
+      setLoading(false);
+      onClose();
     } catch (error) {
       console.error("Request failed:", error);
       cogoToast.error("Failed to create follow-up.");
@@ -148,39 +129,22 @@ const FollowUpCreationPopUp = ({
                   type="text"
                   name="project_name"
                   value={leads[0].project_name}
-                  onChange={handleInputChangeFollowUp}
+                  disabled
                   className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
-                  required
-                />
-              </div>
-
-              {/* Lead Number */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Lead Number
-                </label>
-                <input
-                  type="number"
-                  name="lead_no"
-                  value={leads[0].lead_no}
-                  onChange={handleInputChangeFollowUp}
-                  className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
-                  required
                 />
               </div>
 
               {/* Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Name
+                  Lead Name
                 </label>
                 <input
                   type="text"
                   name="name"
                   value={leads[0].name}
-                  onChange={handleInputChangeFollowUp}
+                  disabled
                   className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
-                  required
                 />
               </div>
 
@@ -224,10 +188,10 @@ const FollowUpCreationPopUp = ({
                 <label className="block text-sm font-medium text-gray-700">
                   Report
                 </label>
-                <input
+                <textarea
                   type="text"
-                  name="report"
-                  value={follow_up.report}
+                  name="follow_up_report"
+                  value={follow_up.follow_up_report}
                   onChange={handleInputChangeFollowUp}
                   className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
                   required

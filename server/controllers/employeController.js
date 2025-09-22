@@ -25,7 +25,7 @@ const getEmployeeInvoice = async (req, res) => {
 const getEmployeeLeads = async (req, res) => {
   try {
     const { id } = req.params;
-    const sql = `SELECT * FROM leads join company_staff on company_staff.staff_id = leads.assignedTo WHERE leads.assignedTo = ?`;
+    const sql = `SELECT * FROM leads join company_staff on company_staff.staff_id = leads.assignedTo join projects on projects.project_id = leads.main_project_id WHERE leads.assignedTo = ?`;
 
     const result = await new Promise((resolve, reject) => {
       db.query(sql, [id], (err, results) => {
@@ -230,7 +230,7 @@ const getEmployeeVisit = async (req, res) => {
   try {
     const { id } = req.params;
     const sql =
-      "SELECT * FROM visit join leads on leads.lead_id = visit.vis_lead_id WHERE visit.vis_lead_id = ?";
+      "SELECT * FROM visit join leads on leads.lead_id = visit.vis_lead_id join projects on projects.project_id = leads.main_project_id WHERE visit.vis_lead_id = ?";
     db.query(sql, id, (err, result) => {
       if (err) {
         res.status(400).json({ success: false, message: err.message });
@@ -360,7 +360,8 @@ const deleteVisit = (req, res) => {
 const getEmployeeFollow_Up = async (req, res) => {
   try {
     const { id } = req.params;
-    const sql = "SELECT * FROM follow_up_leads WHERE lead_id = ?";
+    const sql =
+      "SELECT * FROM follow_up_leads join projects on projects.project_id = follow_up_leads.fu_project_id join leads on leads.lead_id = follow_up_leads.fu_lead_id WHERE fu_lead_id = ?";
 
     const result = await new Promise((resolve, reject) => {
       db.query(sql, [id], (err, results) => {
@@ -380,101 +381,104 @@ const getEmployeeFollow_Up = async (req, res) => {
 
 const createFollow_Up = (req, res) => {
   const {
-    project_name,
-    lead_id,
-    name,
-    employeeId,
-    employee_name,
+    fu_project_id,
+    fu_lead_id,
+    fu_employeeId,
     follow_up_type,
     follow_up_date,
-    report,
+    follow_up_report,
   } = req.body;
 
-  const sql = `INSERT INTO follow_up_leads (project_name, lead_id, name,
-    employeeId, employee_name, follow_up_type, follow_up_date, report) VALUES(?,?,?,?,?,?,?,?)`;
+  const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
 
-  db.query(
-    sql,
-    [
-      project_name,
-      lead_id,
-      name,
-      employeeId,
-      employee_name,
-      follow_up_type,
-      follow_up_date,
-      report,
-    ],
-    (err, results) => {
-      if (err) {
-        res.status(500).json({ error: "Error inserting data" });
-      } else {
-        res.status(201).json({
-          success: true,
-          message: "Follow Up data successfully submitted",
-        });
-      }
+  const sql = `INSERT INTO follow_up_leads (fu_project_id,
+    fu_lead_id,
+    fu_employeeId,
+    follow_up_type,
+    follow_up_date,
+    follow_up_report,
+    follow_created_at,) VALUES(?,?,?,?,?,?,?)`;
+
+  const insertParams = [
+    fu_project_id,
+    fu_lead_id,
+    fu_employeeId,
+    follow_up_type,
+    follow_up_date,
+    follow_up_report,
+    dateTime,
+  ];
+
+  db.query(sql, insertParams, (err, results) => {
+    if (err) {
+      res.status(500).json({ error: "Error inserting data" });
+    } else {
+      res.status(201).json({
+        success: true,
+        message: "Follow Up data successfully submitted",
+      });
     }
-  );
+  });
 };
 
 const updateFollow_Up = (req, res) => {
-  const {
-    id,
-    project_name,
-    lead_id,
-    name,
-    employeeId,
-    employee_name,
-    follow_up_type,
-    follow_up_date,
-    report,
-  } = req.body;
+  try {
+    const fid = req.params.fid;
+    const { follow_up_type, follow_up_date, follow_up_report } = req.body;
 
-  // Basic validation
-  if (!id || !project_name || !follow_up_type || !follow_up_date || !report) {
-    return res
-      .status(400)
-      .json({ error: "Please provide all required fields." });
-  }
+    // current timestamp
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
 
-  const sql = `UPDATE follow_up_leads SET 
-    project_name = ?,
-    lead_id = ?, 
-    name = ?, 
-    employeeId = ?, 
-    employee_name = ?, 
-    follow_up_type = ?, 
-   follow_up_date = ?,
-    report = ? 
-    WHERE id = ?`;
+    // Build dynamic SET clause
+    let fields = [];
+    let values = [];
 
-  db.query(
-    sql,
-    [
-      project_name,
-      lead_id,
-      name,
-      employeeId,
-      employee_name,
-      follow_up_type,
-      follow_up_date,
-      report,
-      id,
-    ],
-    (err, results) => {
-      if (err) {
-        res.status(500).json({ error: "Error updating Follow Up data" });
-      } else if (results.affectedRows === 0) {
-        res.status(404).json({ error: "Follow Up not found" });
-      } else {
-        res.status(200).json({
-          success: true,
-          message: "Follow Up data updated successfully",
-        });
-      }
+    if (follow_up_type !== undefined) {
+      fields.push("follow_up_type = ?");
+      values.push(follow_up_type);
     }
-  );
+
+    if (follow_up_date !== undefined) {
+      fields.push("follow_up_date = ?");
+      values.push(follow_up_date);
+    }
+
+    if (follow_up_report !== undefined) {
+      fields.push("follow_up_report = ?");
+      values.push(follow_up_report);
+    }
+
+    // Always update follow_updated_at
+    fields.push("follow_updated_at = ?");
+    values.push(dateTime);
+
+    if (fields.length === 1) {
+      // only updated_at added, no other fields to update
+      return res.status(400).json({ error: "No fields provided to update" });
+    }
+
+    const sql = `UPDATE follow_up_leads SET ${fields.join(
+      ", "
+    )} WHERE follow_up_id = ?`;
+    values.push(fid);
+
+    db.query(sql, values, (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Error updating Follow Up data" });
+      }
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ error: "Follow Up not found" });
+      }
+      return res.status(200).json({
+        success: true,
+        message: "Follow Up data updated successfully",
+      });
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Server error occurred" });
+  }
 };
 
 const deleteFollow_Up = (req, res) => {
@@ -591,82 +595,39 @@ const updateOnlyFollowUpStatus = async (req, res) => {
 const createRemark = async (req, res) => {
   try {
     const {
-      project_name,
-      lead_id,
-      name,
-      employee_name,
-      employeeId,
+      remark_lead_id,
+      remark_project_id,
+      remark_employeeId,
       remark_status,
-      date,
+      answer_remark,
+      remark_date,
+      remark_created_at,
     } = req.body;
-
-    if (!lead_id || !remark_status || !date) {
-      return res
-        .status(400)
-        .json({ error: "Lead ID, remark status, and date are required." });
-    }
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
 
     // Insert remark
     const sqlRemark = `
       INSERT INTO remark (
-        project_name, lead_id, name, employee_name, employeeId, remark_status, date
+       remark_lead_id, remark_project_id, remark_employeeId, remark_status,	answer_remark, remark_date, 	remark_created_at
       ) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
-    const resultRemark = await new Promise((resolve, reject) => {
-      db.query(
-        sqlRemark,
-        [
-          project_name,
-          lead_id,
-          name,
-          employee_name,
-          employeeId,
-          remark_status,
-          date,
-        ],
-        (err, result) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(result);
-          }
-        }
-      );
-    });
+    const insertParams = [
+      remark_lead_id,
+      remark_project_id,
+      remark_employeeId,
+      remark_status,
+      answer_remark,
+      remark_date,
+      dateTime,
+    ];
 
-    // Get the newly created remark ID
-    const remarkId = resultRemark.insertId;
-
-    // Update the leads table with the new remarks_id
-    const sqlUpdateLeads = `
-      UPDATE leads SET 
-        remark_id = ?, 
-        remark_status = ?,
-        answer_remark = 'pending'
-      WHERE lead_id = ?`;
-
-    await new Promise((resolve, reject) => {
-      db.query(
-        sqlUpdateLeads,
-        [remarkId, remark_status, lead_id],
-        (err, result) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(result);
-          }
-        }
-      );
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "Remark created and lead updated successfully",
-      remark: {
-        id: remarkId,
-        lead_id,
-        remark_status,
-      },
+    db.query(sqlRemark, insertParams, (err, result) => {
+      if (err) {
+        res.status(400).json({ success: false, message: err.message });
+      }
+      res
+        .status(200)
+        .json({ success: true, message: "remark created successfully" });
     });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -674,51 +635,58 @@ const createRemark = async (req, res) => {
 };
 
 const updateRemark = (req, res) => {
-  const {
-    id,
-    project_name,
-    lead_id,
-    name,
-    employee_name,
-    employeeId,
-    remark_status,
-    date,
-  } = req.body;
+  try {
+    const rid = req.params.rid;
+    const { remark_status, answer_remark, remark_date } = req.body;
 
-  const sql = `UPDATE remark SET 
-    project_name = ?,
-    lead_id = ?, 
-    name = ?, 
-    employee_name = ?, 
-    employeeId = ?, 
-    remark_status = ?, 
-    date = ? 
-    WHERE id = ?`;
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
 
-  db.query(
-    sql,
-    [
-      project_name,
-      lead_id,
-      name,
-      employee_name,
-      employeeId,
-      remark_status,
-      date,
-      id,
-    ],
-    (err, results) => {
-      if (err) {
-        return res.status(500).json({ error: "Error updating remark data" });
-      } else if (results.affectedRows === 0) {
-        return res.status(404).json({ error: "Remark not found" });
-      } else {
-        return res
-          .status(200)
-          .json({ success: true, message: "Remark updated successfully" });
-      }
+    // Dynamic SET clause
+    let fields = [];
+    let values = [];
+
+    if (remark_status !== undefined) {
+      fields.push("remark_status = ?");
+      values.push(remark_status);
     }
-  );
+
+    if (answer_remark !== undefined) {
+      fields.push("answer_remark = ?");
+      values.push(answer_remark);
+    }
+
+    if (remark_date !== undefined) {
+      fields.push("remark_date = ?");
+      values.push(remark_date);
+    }
+
+    // Always update remark_updated_at
+    fields.push("remark_updated_at = ?");
+    values.push(dateTime);
+
+    if (fields.length === 0) {
+      return res.status(400).json({ error: "No fields provided to update" });
+    }
+
+    const sql = `UPDATE remark SET ${fields.join(", ")} WHERE remark_id = ?`;
+    values.push(rid);
+
+    db.query(sql, values, (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Error updating remark data" });
+      }
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ error: "Remark not found" });
+      }
+      return res
+        .status(200)
+        .json({ success: true, message: "Remark updated successfully" });
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Server error" });
+  }
 };
 
 const deleteRemark = (req, res) => {
@@ -747,19 +715,15 @@ const deleteRemark = (req, res) => {
 const getEmployeeRemark = async (req, res) => {
   try {
     const { id } = req.params;
-    const sql = "SELECT * FROM remark WHERE lead_id = ?";
+    const sql =
+      "SELECT * FROM remark join projects on projects.project_id = remark.remark_project_id join leads on leads.lead_id = remark.remark_lead_id WHERE remark.remark_lead_id = ?";
 
-    const result = await new Promise((resolve, reject) => {
-      db.query(sql, [id], (err, results) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(results);
-        }
-      });
+    db.query(sql, id, (err, result) => {
+      if (err) {
+        res.status(400).json({ success: false, message: err.message });
+      }
+      res.status(200).send(result);
     });
-
-    res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ message: "Internal Server Erro, error: errr" });
   }
@@ -846,59 +810,69 @@ const updateOnlyRemarkAnswer = async (req, res) => {
 };
 
 const createEmployeeUnitSold = (req, res) => {
-  const {
-    lead_id,
-    name,
-    employeeId,
-    employee_name,
-    unit_id,
-    unit_no,
-    unit_status,
-    main_project_id,
-    project_name,
-    date,
-    user_id,
-  } = req.body;
+  try {
+    const {
+      esu_lead_id,
+      esu_staff_id,
+      esu_unit_id,
+      esu_project_id,
+      esu_sold_date,
+      esu_notes,
+    } = req.body;
 
-  const sql = `INSERT INTO employee_sold_units (
-    lead_id,
-    name,
-    employeeId,
-    employee_name,
-    unit_id,
-    unit_no,
-    unit_status,
-    main_project_id,
-    project_name,
-    date,user_id
-  ) VALUES (?,?,?,?,?,?,?,?,?,?,?)`;
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
 
-  db.query(
-    sql,
-    [
-      lead_id,
-      name,
-      employeeId,
-      employee_name,
-      unit_id,
-      unit_no,
-      unit_status,
-      main_project_id,
-      project_name,
-      date,
-      user_id,
-    ],
-    (err, results) => {
-      if (err) {
-        res.status(500).json({ error: "Error inserting data" });
-      } else {
-        res.status(201).json({
-          success: true,
-          message: "Unit Number data successfully submitted",
+    const insertSql = `INSERT INTO employee_sold_units (
+      esu_lead_id,
+      esu_staff_id,
+      esu_unit_id,
+      esu_project_id,
+      esu_sold_date,
+      esu_notes,
+      esu_created_at
+    ) VALUES (?,?,?,?,?,?,?)`;
+
+    db.query(
+      insertSql,
+      [
+        esu_lead_id,
+        esu_staff_id,
+        esu_unit_id,
+        esu_project_id,
+        esu_sold_date,
+        esu_notes,
+        dateTime,
+      ],
+      (err, results) => {
+        if (err) {
+          return res.status(500).json({
+            success: false,
+            message: "Error inserting data",
+            error: err.message,
+          });
+        }
+
+        const updateSql = `UPDATE units SET unit_status = ? WHERE unit_id = ?`;
+        db.query(updateSql, ["sold", esu_unit_id], (err2, result2) => {
+          if (err2) {
+            return res.status(500).json({
+              success: false,
+              message: "Error updating unit status",
+              error: err2.message,
+            });
+          }
+
+          res.status(201).json({
+            success: true,
+            message:
+              "Unit Number data successfully submitted and unit status updated",
+          });
         });
       }
-    }
-  );
+    );
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
 };
 
 const updateEmployeeUnitSold = (req, res) => {

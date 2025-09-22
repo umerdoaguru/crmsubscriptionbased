@@ -3,17 +3,13 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
-import ReactPaginate from "react-paginate";
-import MainHeader from "../MainHeader";
-import EmployeeeSider from "../EmployeeModule/EmployeeSider";
 import cogoToast from "cogo-toast";
 
 const ViewAllFollowUpContent = () => {
   const [follow_up, setFollow_Up] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage] = useState(10); // Number of items per page
+  const [itemsPerPage] = useState(10);
   const [filterText, setFilterText] = useState("");
-  const [sortAsc, setSortAsc] = useState(true);
   const [render, setRender] = useState(false);
   const { id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,7 +24,7 @@ const ViewAllFollowUpContent = () => {
 
   const fetchFollowUp = async () => {
     try {
-      const response = await axios.get(
+      const { data } = await axios.get(
         `https://crm-generalize.dentalguru.software/api/employe-follow-up/${id}`,
         {
           headers: {
@@ -37,12 +33,13 @@ const ViewAllFollowUpContent = () => {
           },
         }
       );
-      setFollow_Up(response.data);
-      console.log(response);
+      setFollow_Up(data);
     } catch (error) {
       console.error("Error fetching visit:", error);
     }
   };
+
+  console.log(follow_up);
 
   const handleDelete = async (followup) => {
     const isConfirmed = window.confirm(
@@ -51,24 +48,9 @@ const ViewAllFollowUpContent = () => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/employe-follow-up/${followup.id}`
+          `https://crm-generalize.dentalguru.software/api/employe-follow-up/${followup.follow_up_id}`
         );
-        if (response.status === 200) {
-          console.log("follow up deleted successfully");
-          const putResponse = await axios.put(
-            `https://crm-generalize.dentalguru.software/api/updateOnlyFollowUpStatus/${follow_up[0].lead_id}`,
-            { follow_up_status: "pending" }
-          );
-
-          if (putResponse.status === 200) {
-            console.log("Status updated successfully:", putResponse.data);
-          } else {
-            console.error("Error updating status:", putResponse.data);
-            cogoToast.error("Failed to update the lead status.");
-          }
-        }
-
-        console.log(response);
+        fetchFollowUp();
         setRender(!render);
       } catch (error) {
         console.error("Error deleting visit:", error);
@@ -94,17 +76,16 @@ const ViewAllFollowUpContent = () => {
     });
   };
 
-  // Function to send the PUT request to update the visit data
   const updateVisit = async () => {
     try {
       const response = await axios.put(
-        `https://crm-generalize.dentalguru.software/api/employe-follow-up`,
+        `https://crm-generalize.dentalguru.software/api/employe-follow-up/${modalData?.follow_up_id}`,
         modalData
       );
       if (response.status === 200) {
         cogoToast.success("Follow Up updated successfully!");
-        setRender(!render); // Refresh the list after updating
-        closeModal(); // Close the modal
+        setRender(!render);
+        closeModal();
       }
     } catch (error) {
       console.error("Error updating visit:", error);
@@ -116,7 +97,7 @@ const ViewAllFollowUpContent = () => {
   };
 
   const filteredfollowup = follow_up.filter((follow) =>
-    follow.name.toLowerCase().includes(filterText.toLowerCase())
+    follow?.name?.toLowerCase()?.includes(filterText.toLowerCase())
   );
 
   const offset = currentPage * itemsPerPage;
@@ -124,7 +105,7 @@ const ViewAllFollowUpContent = () => {
   const pageCount = Math.ceil(filteredfollowup.length / itemsPerPage);
 
   const handleBackClick = () => {
-    navigate(-1); // -1 navigates to the previous page in history
+    navigate(-1);
   };
 
   return (
@@ -161,9 +142,9 @@ const ViewAllFollowUpContent = () => {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Name
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Assigned To
-                        </th>
+                        </th> */}
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Follow Up Type
                         </th>
@@ -193,9 +174,9 @@ const ViewAllFollowUpContent = () => {
                           <td className="px-6 py-4 whitespace-nowrap">
                             {followup.name}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          {/* <td className="px-6 py-4 whitespace-nowrap">
                             {followup.employee_name}
-                          </td>
+                          </td> */}
                           <td className="px-6 py-4 whitespace-nowrap">
                             {followup.follow_up_type}
                           </td>
@@ -205,7 +186,7 @@ const ViewAllFollowUpContent = () => {
                               .toUpperCase()}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {followup.report}
+                            {followup.follow_up_report}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <button
@@ -305,8 +286,8 @@ const ViewAllFollowUpContent = () => {
                               Report:
                             </label>
                             <textarea
-                              name="report"
-                              value={modalData.report || ""}
+                              name="follow_up_report"
+                              value={modalData.follow_up_report || ""}
                               onChange={handleInputChange}
                               className="w-full px-3 py-2 border border-gray-300 rounded"
                             ></textarea>

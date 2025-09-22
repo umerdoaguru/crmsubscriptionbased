@@ -687,6 +687,40 @@ const getAllEmployeeData = (req, res) => {
   });
 };
 
+const updateOnlyLeadStatusEmployeeEnd = (req, res) => {
+  const { id } = req.params;
+  const { lead_status } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ message: "Lead ID is required" });
+  }
+
+  if (!lead_status) {
+    return res.status(400).json({ message: "Lead status is required" });
+  }
+
+  const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+  const sql = `UPDATE leads 
+               SET lead_status = ?, lead_updated_at = ? 
+               WHERE lead_id = ?`;
+
+  db.query(sql, [lead_status, dateTime, id], (err, result) => {
+    if (err) {
+      console.error("Error updating lead status:", err);
+      return res
+        .status(500)
+        .json({ message: "Internal Server Error", error: err.message });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Lead not found" });
+    }
+
+    return res.status(200).json({ message: "Lead updated successfully" });
+  });
+};
+
 module.exports = {
   insertNewPlan,
   insertBillingCycle,
@@ -705,4 +739,5 @@ module.exports = {
   updateEmployeeDetails,
   getEmployeeByOrg,
   getAllEmployeeData,
+  updateOnlyLeadStatusEmployeeEnd,
 };

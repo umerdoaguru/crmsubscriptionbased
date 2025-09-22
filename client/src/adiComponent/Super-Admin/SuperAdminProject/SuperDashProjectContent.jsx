@@ -22,7 +22,7 @@ const SuperDashProjectContent = () => {
   const fetchProjects = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${userId}/${superadminuser?.staff_org_id}`,
+        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -133,7 +133,7 @@ const SuperDashProjectContent = () => {
                       Location
                     </th>
                     <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
-                      Total Area
+                      Total Units
                     </th>
                   </tr>
                 </thead>
@@ -148,20 +148,20 @@ const SuperDashProjectContent = () => {
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800 hover:text-cyan-700 font-bold capitalize ">
                         <Link
-                          to={`/super-admin-project-units/${project.main_project_id}`}
+                          to={`/super-admin-project-units/${project.project_id}`}
                           className="flex items-center gap-1"
                         >
                           {project.project_name} <FaExternalLinkAlt />
                         </Link>
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {project.main_project_id}
+                        {project.project_id}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {project.location}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {project.total_area}
+                        {project.total_units}
                       </td>
                     </tr>
                   ))}
