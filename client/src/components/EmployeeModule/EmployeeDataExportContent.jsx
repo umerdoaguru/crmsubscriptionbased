@@ -13,12 +13,7 @@ import EmployeeSoldData from "./EmployeeDataExport/EmployeeSoldData";
 
 function EmployeeDataExportContent() {
   const [leads, setLeads] = useState([]);
-  const [quotation, setQuotation] = useState([]);
-  const [invoice, setInvoice] = useState([]);
-
-  const [closedData, setClosedData] = useState([]); // State for Closed Data
-  const [selectedComponent, setSelectedComponent] = useState("LeadData"); // Set 'LeadData' as default
-
+  const [selectedComponent, setSelectedComponent] = useState("LeadData");
   const [visit, setVisit] = useState([]);
   const EmpId = useSelector((state) => state.auth.user);
   const token = EmpId?.token;
@@ -41,44 +36,10 @@ function EmployeeDataExportContent() {
     }
   };
 
-  const fetchQuotation = async () => {
-    try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/get-quotation-byEmploye/${EmpId.id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setQuotation(response.data);
-    } catch (error) {
-      console.error("Error fetching quotations:", error);
-    }
-  };
-
-  const fetchInvoice = async () => {
-    try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/get-employee-invoice/${EmpId.id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setInvoice(response.data);
-    } catch (error) {
-      console.error("Error fetching invoices:", error);
-    }
-  };
-
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employebyid-visit/${EmpId.id}`,
+        `https://crm-generalize.dentalguru.software/api/leads-visits/${EmpId.staff_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -88,30 +49,21 @@ function EmployeeDataExportContent() {
       );
       console.log(response.data);
       setVisit(response.data);
-      // Ensure proper comparison with 'Created', trim any spaces and normalize the case
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
   };
 
-  // const leadCount = leads.filter(
-  //   (lead) => lead.lead_status === "completed"
-  // ).length;
-
-  const visitCount = leads.filter((lead) =>
-    ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
-  ).length;
+  const visitCount = visit?.length;
 
   const closedCount = leads.filter(
-    (lead) => lead.deal_status === "close"
+    (lead) => lead.unit_status === "sold"
   ).length;
 
   const soldUnits = leads.filter((lead) => lead.unit_status === "sold").length;
 
   useEffect(() => {
     fetchLeads();
-    fetchQuotation();
-    fetchInvoice();
     fetchVisit();
   }, []);
 
@@ -310,7 +262,6 @@ function EmployeeDataExportContent() {
               )}
               {selectedComponent === "InvoiceData" && <EmployeeInvoiceData />}
               {selectedComponent === "VisitData" && <EmployeeVisitData />}
-              {/* Replace with your actual Visit Data component */}
               {selectedComponent === "ClosedData" && <EmployeeCloseData />}
               {selectedComponent === "SoldData" && <EmployeeSoldData />}
             </div>

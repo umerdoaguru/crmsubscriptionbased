@@ -9,9 +9,8 @@ const CloseTableContent = () => {
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [currentPage, setCurrentPage] = useState(0); // Current page state
-  const [leadsPerPage, setLeadsPerPage] = useState(7); // Default leads per page
+  const [currentPage, setCurrentPage] = useState(0);
+  const [leadsPerPage, setLeadsPerPage] = useState(7);
   const EmpId = useSelector((state) => state.auth.user);
   const token = EmpId?.token;
   const navigate = useNavigate();
@@ -24,7 +23,7 @@ const CloseTableContent = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.staff_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -34,7 +33,7 @@ const CloseTableContent = () => {
       );
       // Filter out leads where deal_status is not "pending"
       const nonPendingLeads = response.data.filter(
-        (lead) => lead.deal_status == "close"
+        (lead) => lead.unit_status === "sold"
       );
 
       setLeads(nonPendingLeads);
@@ -85,6 +84,9 @@ const CloseTableContent = () => {
     setLeadsPerPage(value === "All" ? Infinity : parseInt(value, 10));
     setCurrentPage(0); // Reset to the first page
   };
+
+  console.log(currentLeads);
+
   return (
     <>
       <div className="flex mt-20">
@@ -134,9 +136,7 @@ const CloseTableContent = () => {
                       <th className="px-6 py-3 border-b-2 border-gray-300">
                         Project Name
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Lead Id
-                      </th>
+
                       <th className="px-6 py-3 border-b-2 border-gray-300">
                         Assigned To
                       </th>
@@ -150,69 +150,53 @@ const CloseTableContent = () => {
                       <th className="px-6 py-3 border-b-2 border-gray-300">
                         Lead Source
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Visit
-                      </th>
 
                       <th className="px-6 py-3 border-b-2 border-gray-300">
-                        FollowUp Status
+                        Unit Status
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Deal Status
-                      </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
+                      {/* <th className="px-6 py-3 border-b-2 border-gray-300">
                         Deal Close Date
-                      </th>
+                      </th> */}
                     </tr>
                   </thead>
                   <tbody>
                     {currentLeads.length > 0 ? (
-                      currentLeads
-                        .filter((lead) => lead.deal_status === "close") // Filter out closed deals
-                        .map((lead, index) => (
-                          <tr
-                            key={lead.id}
-                            className={index % 2 === 0 ? "bg-gray-100" : ""}
-                          >
-                            <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                              {index + 1} {/* Adjusted for pagination */}
-                            </td>
-                            <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                              {lead.project_name}
-                            </td>
-                            <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                              {lead.lead_id}
-                            </td>
-                            <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                              {lead.assignedTo}
-                            </td>
-                            <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                              {lead.name}
-                            </td>
+                      currentLeads.map((lead, index) => (
+                        <tr
+                          key={lead.id}
+                          className={index % 2 === 0 ? "bg-gray-100" : ""}
+                        >
+                          <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                            {index + 1}
+                          </td>
+                          <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                            {lead.project_name}
+                          </td>
 
-                            <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                              {lead.phone}
-                            </td>
-                            <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                              {lead.leadSource}
-                            </td>
-                            <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                              {lead.visit}
-                            </td>
+                          <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                            {lead.staff_name}
+                          </td>
+                          <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                            {lead.name}
+                          </td>
 
-                            <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                              {lead.follow_up_status}
-                            </td>
-                            <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                              {lead.deal_status}
-                            </td>
-                            <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                              {moment(lead.d_closeDate)
-                                .format("DD MMM YYYY")
-                                .toUpperCase()}
-                            </td>
-                          </tr>
-                        ))
+                          <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                            {lead.phone}
+                          </td>
+                          <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                            {lead.leadSource}
+                          </td>
+
+                          <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                            {lead.unit_status}
+                          </td>
+                          {/* <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                            {moment(lead.d_closeDate)
+                              .format("DD MMM YYYY")
+                              .toUpperCase()}
+                          </td> */}
+                        </tr>
+                      ))
                     ) : (
                       <tr>
                         <td colSpan={11} className="py-4 text-center">

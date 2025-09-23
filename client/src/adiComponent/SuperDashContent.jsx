@@ -12,13 +12,6 @@ const SuperDashContent = () => {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-  const getInvoiceData = () => {
-    try {
-      const response = axios.get(
-        "https://crm-generalize.dentalguru.software/api/invoiceData"
-      );
-    } catch (err) {}
-  };
 
   return (
     <>

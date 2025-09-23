@@ -42,13 +42,9 @@ function TotalEmpLeadContent() {
     }
   };
 
-  const handleBackClick = () => {
-    navigate(-1);
-  };
   useEffect(() => {
     let filtered = leads;
 
-    // Filter by search term
     if (searchTerm) {
       const trimmedSearchTerm = searchTerm.toLowerCase().trim();
       filtered = filtered.filter((lead) =>
@@ -57,16 +53,15 @@ function TotalEmpLeadContent() {
         )
       );
     }
-    // Update the filtered leads and reset to the first page
+
     setFilteredLeads(filtered);
-    setCurrentPage(0); // Reset to the first page when the search term changes
+    setCurrentPage(0);
   }, [searchTerm, leads]);
 
   // Pagination logic
   const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-  // const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
 
   const currentLeads =
     leadsPerPage === Infinity
@@ -79,7 +74,7 @@ function TotalEmpLeadContent() {
   const handleLeadsPerPageChange = (e) => {
     const value = e.target.value;
     setLeadsPerPage(value === "All" ? Infinity : parseInt(value, 10));
-    setCurrentPage(0); // Reset to the first page
+    setCurrentPage(0);
   };
 
   return (
@@ -168,8 +163,13 @@ function TotalEmpLeadContent() {
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                           {lead.project_name}
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.lead_id}
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 hover:text-cyan-600">
+                          <Link
+                            to={`/employee-lead-single-data/${lead.lead_id}`}
+                          >
+                            {lead.lead_id}
+                          </Link>
+                          {/* {lead.lead_id} */}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                           {lead.name}

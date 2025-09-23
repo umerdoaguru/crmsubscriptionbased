@@ -32,7 +32,7 @@ function EmployeeSoldUnits() {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/unit-sold/${EmpId.id}`,
+        `https://crm-generalize.dentalguru.software/api/unit-sold/${EmpId.staff_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -41,7 +41,6 @@ function EmployeeSoldUnits() {
         }
       );
       console.log("Fetched Leads:", response.data);
-      // Agar response.data.data available na ho toh response.data use karen
       const fetchedLeads = response.data.data || response.data || [];
       setLeads(fetchedLeads);
       setFilteredLeads(fetchedLeads);
@@ -74,51 +73,59 @@ function EmployeeSoldUnits() {
   }, [selectedEmployee, duration, leads]);
 
   // Excel download function
+  // const downloadExcel = () => {
+  //   const columnMapping = {
+  //     lead_id: "lead id",
+  //     project_name: "Project Name",
+  //     name: "Costumer name",
+  //     unit_no: "unit Id",
+  //     employee_name: "Employee Name",
+  //     unit_status: "Unit Status",
+  //     date: "Date",
+  //   };
+
+  //   const completedLeads = filteredLeads.map((lead) => {
+  //     const formattedLead = {};
+
+  //     selectedColumns.forEach((col) => {
+  //       const newKey = columnMapping[col] || col;
+  //       if (
+  //         [
+  //           "actual_date",
+  //           "createdTime",
+  //           "visit_date",
+  //           "d_closeDate",
+  //           "date",
+  //         ].includes(col)
+  //       ) {
+  //         formattedLead[newKey] =
+  //           lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
+  //             ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
+  //             : "pending";
+  //       } else {
+  //         formattedLead[newKey] = lead[col];
+  //       }
+  //     });
+
+  //     return formattedLead;
+  //   });
+
+  //   const worksheet = XLSX.utils.json_to_sheet(completedLeads);
+  //   const workbook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(
+  //     workbook,
+  //     worksheet,
+  //     `Lead of ${duration} Report`
+  //   );
+  //   XLSX.writeFile(workbook, `Lead of ${duration} Report.xlsx`);
+  // };
+
   const downloadExcel = () => {
-    const columnMapping = {
-      lead_id: "lead id",
-      project_name: "Project Name",
-      name: "Costumer name",
-      unit_no: "unit Id",
-      employee_name: "Employee Name",
-      unit_status: "Unit Status",
-      date: "Date",
-    };
-
-    const completedLeads = filteredLeads.map((lead) => {
-      const formattedLead = {};
-
-      selectedColumns.forEach((col) => {
-        const newKey = columnMapping[col] || col;
-        if (
-          [
-            "actual_date",
-            "createdTime",
-            "visit_date",
-            "d_closeDate",
-            "date",
-          ].includes(col)
-        ) {
-          formattedLead[newKey] =
-            lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
-              ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-              : "pending";
-        } else {
-          formattedLead[newKey] = lead[col];
-        }
-      });
-
-      return formattedLead;
-    });
-
+    const completedLeads = currentLeads.map((lead) => ({ ...lead }));
     const worksheet = XLSX.utils.json_to_sheet(completedLeads);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(
-      workbook,
-      worksheet,
-      `Lead of ${duration} Report`
-    );
-    XLSX.writeFile(workbook, `Lead of ${duration} Report.xlsx`);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Visit Report");
+    XLSX.writeFile(workbook, `Visit of ${duration} Report.xlsx`);
   };
 
   // Pagination logic
@@ -212,10 +219,10 @@ function EmployeeSoldUnits() {
                     {lead.name}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.unit_no}
+                    {lead.unit_number}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.employee_name}
+                    {lead.staff_name}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                     {lead.unit_status}

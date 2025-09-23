@@ -11,7 +11,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import styled from "styled-components";
 
 const EmployeeCloseGraph = () => {
   const [dealStatusData, setDealStatusData] = useState([]);
@@ -19,7 +18,6 @@ const EmployeeCloseGraph = () => {
 
   const token = EmpId?.token;
 
-  // Function to format the date to "DD MMM" format
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("default", {
@@ -28,26 +26,36 @@ const EmployeeCloseGraph = () => {
     });
   };
 
-  // Generate static structure for the past 28 days
   const generateStaticData = (fetchedData) => {
     const data = [];
     const today = new Date();
 
-    // Iterate over the past 28 days
     for (let i = 0; i < 28; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() - i);
       const formattedDay = formatDate(date);
-      const formattedDate = date.toISOString().split("T")[0]; // Format date as "YYYY-MM-DD"
+      const formattedDate = date.toISOString().split("T")[0];
 
-      // Filter leads that match the `d_closeDate` for this specific day
-      const matchedLeads = fetchedData.filter(
-        (item) =>
-          item.d_closeDate.split("T")[0] === formattedDate &&
-          item.deal_status?.trim().toLowerCase() === "close"
-      );
+      console.log(fetchedData[0]?.esu_sold_date === formattedDate);
 
-      // console.log(`Date: ${formattedDate}, Leads: ${matchedLeads.length}`);
+      const matchedLeads = fetchedData.filter((item) => {
+        // log each condition to debug
+        console.log(
+          "Checking item:",
+          item.esu_sold_date,
+          "==",
+          formattedDate,
+          "&&",
+          item.unit_status
+        );
+        return (
+          item.esu_sold_date === formattedDate && item.unit_status === "sold"
+        );
+      });
+
+      console.log("Matched leads:", matchedLeads?.length);
+
+      console.log(matchedLeads);
 
       data.push({
         day: formattedDay,
@@ -62,7 +70,7 @@ const EmployeeCloseGraph = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.staff_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -71,6 +79,7 @@ const EmployeeCloseGraph = () => {
         }
       );
       const data = response.data;
+      console.log(data[0]?.esu_sold_date);
 
       const formattedData = generateStaticData(data);
       console.log("Formatted Data: ", formattedData);
@@ -80,6 +89,8 @@ const EmployeeCloseGraph = () => {
       console.error("Error fetching data:", error);
     }
   };
+
+  console.log(dealStatusData);
 
   useEffect(() => {
     fetchData();

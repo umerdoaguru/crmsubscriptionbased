@@ -9,8 +9,6 @@ const VisitTableContent = () => {
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [leadsPerPage, setLeadsPerPage] = useState(7);
   const EmpId = useSelector((state) => state.auth.user);
@@ -22,8 +20,8 @@ const VisitTableContent = () => {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/leads-visits/${EmpId.staff_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -31,11 +29,8 @@ const VisitTableContent = () => {
           },
         }
       );
-      const nonPendingLeads = response.data.filter((lead) =>
-        ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
-      );
-      setLeads(nonPendingLeads);
-      setFilteredLeads(nonPendingLeads); // Initial data set for filtering
+
+      setLeads(data);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
@@ -47,22 +42,21 @@ const VisitTableContent = () => {
     if (searchTerm) {
       const trimmedSearchTerm = searchTerm.toLowerCase().trim();
       filtered = filtered.filter((lead) =>
-        ["project_name", "name", "employee_name", "visit"].some((key) =>
+        ["project_name", "name", "staff_name"].some((key) =>
           lead[key]?.toLowerCase().trim().includes(trimmedSearchTerm)
         )
       );
     }
 
-    // Update the filtered leads and reset to the first page
     setFilteredLeads(filtered);
-    setCurrentPage(0); // Reset to the first page when the search term changes
+    setCurrentPage(0);
   }, [searchTerm, leads]);
 
   // Pagination logic
   const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-  // const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
+
   const currentLeads =
     leadsPerPage === Infinity
       ? filteredLeads
@@ -125,9 +119,7 @@ const VisitTableContent = () => {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Project Name
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Lead Id
-                      </th>
+
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Name
                       </th>
@@ -135,7 +127,10 @@ const VisitTableContent = () => {
                         Assigned To
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Visit
+                        Visit Type
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Visit Details
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Visit Date
@@ -154,24 +149,21 @@ const VisitTableContent = () => {
                           <td className="px-6 py-4 whitespace-nowrap">
                             {visit.project_name}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {visit.lead_id}
-                          </td>
+
                           <td className="px-6 py-4 whitespace-nowrap">
                             {visit.name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {visit.assignedTo}
+                            {visit.staff_name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {visit.visit}
+                            {visit.visit_type}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {visit.visit_details}
                           </td>
                           <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                            {visit.visit_date === "pending"
-                              ? "pending"
-                              : moment(visit.visit_date)
-                                  .format("DD MMM YYYY")
-                                  .toUpperCase()}
+                            {visit.visit_date}
                           </td>
                         </tr>
                       ))

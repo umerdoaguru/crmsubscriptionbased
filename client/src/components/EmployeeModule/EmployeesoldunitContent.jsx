@@ -25,7 +25,7 @@ const EmployeesoldunitContent = () => {
   const fetchEmployeeSoldUnits = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/unit-sold/${EmpId.id}`,
+        `https://crm-generalize.dentalguru.software/api/unit-sold/${EmpId.staff_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -46,7 +46,7 @@ const EmployeesoldunitContent = () => {
     if (searchTerm) {
       const trimmedSearchTerm = searchTerm.toLowerCase().trim();
       filtered = filtered.filter((lead) =>
-        ["project_name", "name", "employee_name", "visit"].some((key) =>
+        ["project_name", "name", "employee_name"].some((key) =>
           lead[key]?.toLowerCase().trim().includes(trimmedSearchTerm)
         )
       );
@@ -119,9 +119,7 @@ const EmployeesoldunitContent = () => {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         S.no
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Lead Id
-                      </th>
+
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Project Name
                       </th>
@@ -152,27 +150,22 @@ const EmployeesoldunitContent = () => {
                               : index + 1 + currentPage * leadsPerPage}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {employeesoldunit.lead_id}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
                             {employeesoldunit.project_name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             {employeesoldunit.name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {employeesoldunit.unit_no}
+                            {employeesoldunit.unit_number}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {employeesoldunit.employee_name}
+                            {employeesoldunit.staff_name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             {employeesoldunit.unit_status}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {moment(employeesoldunit.date)
-                              .format("DD MMM YYYY")
-                              .toUpperCase()}
+                            {employeesoldunit.esu_sold_date}
                           </td>
                         </tr>
                       ))

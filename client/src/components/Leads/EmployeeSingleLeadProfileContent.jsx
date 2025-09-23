@@ -156,14 +156,13 @@ function EmployeeSingleLeadProfileContent() {
         }
       );
 
-      setUnitEmployeeSoldData(response.data);
+      console.log(response);
+
       setemployeeunitsoldCreated(response.data[0]);
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
   };
-
-  console.log(followCreated);
 
   const fetchRemark = async () => {
     try {
@@ -435,12 +434,26 @@ function EmployeeSingleLeadProfileContent() {
                   >
                     Remark Creation
                   </button>
-                  <button
-                    className="bg-cyan-600 text-white px-4 py-2 rounded w-full sm:w-auto"
-                    onClick={() => setShowPopupUnitSold(true)}
-                  >
-                    Unit Sold Creation
-                  </button>
+                  {employeeunitsoldCreated ? (
+                    <>
+                      <button
+                        className="bg-gray-600 text-white px-4 py-2 rounded w-full sm:w-auto"
+                        disabled
+                        // onClick={() => setShowPopupUnitSold(true)}
+                      >
+                        Unit Sold Created
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className="bg-cyan-600 text-white px-4 py-2 rounded w-full sm:w-auto"
+                        onClick={() => setShowPopupUnitSold(true)}
+                      >
+                        Unit Sold Creation
+                      </button>
+                    </>
+                  )}
                 </div>
 
                 {/* Right Section for View Buttons */}

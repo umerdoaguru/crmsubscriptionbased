@@ -31,7 +31,7 @@ const EmployeeSoldData = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/unit-sold/${EmpId.id}`,
+        `https://crm-generalize.dentalguru.software/api/unit-sold/${EmpId.staff_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -61,60 +61,70 @@ const EmployeeSoldData = () => {
     setFilteredLeads(filtered);
   }, [startDate, endDate, leads]);
 
+  // const downloadExcel = () => {
+  //   const columnMapping = {
+  //     lead_id: "lead id",
+  //     project_name: "Project Name",
+  //     name: "Costumer name",
+  //     unit_no: "unit Id",
+  //     employee_name: "Employee Name",
+  //     unit_status: "Unit Status",
+  //     date: "Date",
+  //   };
+
+  //   const completedLeads = filteredLeads.map((lead) => {
+  //     const formattedLead = {};
+
+  //     selectedColumns.forEach((col) => {
+  //       const newKey = columnMapping[col] || col;
+
+  //       if (
+  //         [
+  //           "actual_date",
+  //           "createdTime",
+  //           "visit_date",
+  //           "d_closeDate",
+  //           "date",
+  //         ].includes(col)
+  //       ) {
+  //         formattedLead[newKey] =
+  //           lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
+  //             ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
+  //             : "pending";
+  //       } else {
+  //         formattedLead[newKey] = lead[col];
+  //       }
+  //     });
+
+  //     return formattedLead;
+  //   });
+  //   // Ensure we handle empty reports gracefully
+  //   if (completedLeads.length === 0) {
+  //     alert("No data available for the selected date range.");
+  //     return;
+  //   }
+
+  //   // Generate the Excel workbook
+  //   const worksheet = XLSX.utils.json_to_sheet(completedLeads);
+  //   const workbook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
+
+  //   // Generate a valid filename
+  //   const filename = ` Lead Report ${
+  //     startDate ? moment(startDate).format("DD-MM-YYYY") : "Start"
+  //   } to ${endDate ? moment(endDate).format("DD-MM-YYYY") : "End"}.xlsx`;
+
+  //   XLSX.writeFile(workbook, filename);
+  // };
+
   const downloadExcel = () => {
-    const columnMapping = {
-      lead_id: "lead id",
-      project_name: "Project Name",
-      name: "Costumer name",
-      unit_no: "unit Id",
-      employee_name: "Employee Name",
-      unit_status: "Unit Status",
-      date: "Date",
-    };
+    const completedLeads = currentLeads.map((lead) => ({ ...lead }));
 
-    const completedLeads = filteredLeads.map((lead) => {
-      const formattedLead = {};
-
-      selectedColumns.forEach((col) => {
-        const newKey = columnMapping[col] || col;
-
-        if (
-          [
-            "actual_date",
-            "createdTime",
-            "visit_date",
-            "d_closeDate",
-            "date",
-          ].includes(col)
-        ) {
-          formattedLead[newKey] =
-            lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
-              ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-              : "pending";
-        } else {
-          formattedLead[newKey] = lead[col];
-        }
-      });
-
-      return formattedLead;
-    });
-    // Ensure we handle empty reports gracefully
-    if (completedLeads.length === 0) {
-      alert("No data available for the selected date range.");
-      return;
-    }
-
-    // Generate the Excel workbook
+    // Generate Excel file
     const worksheet = XLSX.utils.json_to_sheet(completedLeads);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
-
-    // Generate a valid filename
-    const filename = ` Lead Report ${
-      startDate ? moment(startDate).format("DD-MM-YYYY") : "Start"
-    } to ${endDate ? moment(endDate).format("DD-MM-YYYY") : "End"}.xlsx`;
-
-    XLSX.writeFile(workbook, filename);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sold Data Report");
+    XLSX.writeFile(workbook, `Sold Data Report.xlsx`);
   };
 
   const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
@@ -127,6 +137,8 @@ const EmployeeSoldData = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
+
+  console.log(currentLeads);
 
   return (
     <>
@@ -178,7 +190,7 @@ const EmployeeSoldData = () => {
                   Customer Name
                 </th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Unit Id
+                  Unit Number
                 </th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Employee Name
@@ -218,16 +230,16 @@ const EmployeeSoldData = () => {
                       {sold.name}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {sold.unit_no}
+                      {sold.unit_number}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {sold.employee_name}
+                      {sold.staff_name}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {sold.unit_status}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {moment(sold.date).format("DD MMM YYYY").toUpperCase()}
+                      {sold.esu_sold_date}
                     </td>
                   </tr>
                 ))

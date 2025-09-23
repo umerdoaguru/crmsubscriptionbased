@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ReactPaginate from "react-paginate"; // Import ReactPaginate
 import styled from "styled-components"; // Import styled-components for styling
+import { Link } from "react-router-dom";
 
 const EmployeeLeadsReport = () => {
   const [leads, setLeads] = useState([]);
@@ -25,16 +26,6 @@ const EmployeeLeadsReport = () => {
             },
           }
         );
-        // const data = response.data;
-        // const today = new Date();
-        // const todayStr = today.toISOString().split("T")[0];
-
-        // const filteredLeads = data.filter((lead) => {
-        //   const leadDate = new Date(lead.createdTime)
-        //     .toISOString()
-        //     .split("T")[0];
-        //   return leadDate === todayStr;
-        // });
 
         setLeads(data);
       } catch (error) {
@@ -92,8 +83,10 @@ const EmployeeLeadsReport = () => {
                       {currentPage * leadsPerPage + index + 1}
                     </td>
 
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.name}
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800 hover:text-cyan-600">
+                      <Link to={`/employee-lead-single-data/${lead.lead_id}`}>
+                        {lead.name}
+                      </Link>
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.phone}

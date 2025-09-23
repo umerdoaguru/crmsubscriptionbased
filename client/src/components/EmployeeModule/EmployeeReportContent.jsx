@@ -83,7 +83,7 @@ const EmployeeReportContent = () => {
               </div>
 
               {/* Closed Deal */}
-              <div
+              {/* <div
                 className={`transition-all duration-300 transform hover:scale-105 shadow-md rounded-2xl cursor-pointer w-40 sm:w-48 ${
                   selectedComponent === "ClosedData"
                     ? "bg-cyan-600 text-white shadow-lg shadow-cyan-300/50"
@@ -111,7 +111,7 @@ const EmployeeReportContent = () => {
                     Closed Deal
                   </h5>
                 </div>
-              </div>
+              </div> */}
 
               {/* Sold Units */}
               <div

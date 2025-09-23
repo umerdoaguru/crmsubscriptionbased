@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-
 import cogoToast from "cogo-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
 
-function EmployeeLeadContent() {
+function EmployeeLeadContent({ isSidebarOpen }) {
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterDate, setFilterDate] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [startDate, setStartDate] = useState("");
   const [leadSourceFilter, setLeadSourceFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [visitFilter, setVisitFilter] = useState("");
@@ -27,6 +24,11 @@ function EmployeeLeadContent() {
   const [monthFilter, setMonthFilter] = useState("");
   const [yearFilter, setYearFilter] = useState("");
   const [sortOrder, setSortOrder] = useState("desce");
+  const [currentPage, setCurrentPage] = useState(0);
+  const [leadsPerPage, setLeadsPerPage] = useState(10);
+  const navigate = useNavigate();
+  const EmpId = useSelector((state) => state.auth.user);
+  const token = EmpId?.token;
   const uniqueYears = [
     ...new Set(leads.map((lead) => moment(lead.createdTime).format("YYYY"))),
   ];
@@ -66,19 +68,8 @@ function EmployeeLeadContent() {
         )
         .map((lead) => moment(lead.visit_date).format("MMMM"))
     ),
-  ].sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b)); // Sort months in order
+  ].sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b));
 
-  const [endDate, setEndDate] = useState("");
-  const [currentPage, setCurrentPage] = useState(0);
-  const [leadsPerPage, setLeadsPerPage] = useState(10);
-
-  const navigate = useNavigate();
-
-  const EmpId = useSelector((state) => state.auth.user);
-
-  const token = EmpId?.token;
-
-  // Fetch leads from the API
   useEffect(() => {
     fetchLeads();
   }, []);
@@ -106,7 +97,6 @@ function EmployeeLeadContent() {
 
   const handleUpdate = async (lead) => {
     try {
-      // Send updated data to the backend using Axios
       const response = await axios.put(
         `https://crm-generalize.dentalguru.software/api/updateOnlyLeadStatus/${lead.lead_id}`,
         { lead_status: "active lead" }
@@ -142,7 +132,7 @@ function EmployeeLeadContent() {
     if (searchTerm) {
       const trimmedSearchTerm = searchTerm.toLowerCase().trim();
       filtered = filtered.filter((lead) =>
-        ["project_name", "name", "leadSource", "phone", "assignedTo"].some(
+        ["project_name", "name", "leadSource", "phone", "staff_name"].some(
           (key) => lead[key]?.toLowerCase().trim().includes(trimmedSearchTerm)
         )
       );
@@ -312,61 +302,46 @@ function EmployeeLeadContent() {
       <div className="flex mt-20">
         <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
           <div className="flex flex-col overflow-x-hidden">
-            <div className="flex-grow p-2 sm:p-4 mt-2 lg:mt-2 sm:ml-0">
+            <div className="flex-grow p-2 sm:p-4 mt-4 lg:mt-2 sm:ml-0">
               <center className="text-2xl text-center font-medium">
                 Assigned Employee Leads
               </center>
               <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
 
               {/* Button to create a new lead */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
-                <div>
+
+              <div className="grid grid-cols-12 gap-4 mb-4">
+                <div className="col-span-12 sm:col-span-4">
                   <label htmlFor="">Search</label>
                   <input
                     type="text"
-                    placeholder=" Name,Lead Source,Assigned To,Phone No"
+                    placeholder=" Name, Lead Source, Assigned To, Phone No"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className={`border rounded-2xl p-2 w-full ${
+                    className={`border rounded p-2 w-full ${
                       searchTerm ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   />
                 </div>
-                <div>
-                  <label htmlFor="">Filterd Date</label>
+
+                <div className="col-span-12 sm:col-span-2">
+                  <label htmlFor="">Filtered Assigned Date</label>
                   <input
                     type="date"
                     value={filterDate}
                     onChange={(e) => setFilterDate(e.target.value)}
-                    className={`border rounded-2xl p-2 w-full ${
+                    className={`border rounded p-2 w-full ${
                       filterDate ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   />
                 </div>
 
-                <div>
-                  <label htmlFor="">Meeting Status</label>
-                  <select
-                    value={meetingStatusFilter}
-                    onChange={(e) => setMeetingStatusFilter(e.target.value)}
-                    className={`border rounded-2xl p-2 w-full ${
-                      meetingStatusFilter
-                        ? "bg-cyan-600 text-white"
-                        : "bg-white"
-                    }`}
-                  >
-                    <option value="">All Meeting Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="done by director">Done By Director</option>
-                    <option value="done by manager">Done By Manager</option>
-                  </select>
-                </div>
-                <div>
+                <div className="col-span-12 sm:col-span-2">
                   <label htmlFor="">Lead Source Filter</label>
                   <select
                     value={leadSourceFilter}
                     onChange={(e) => setLeadSourceFilter(e.target.value)}
-                    className={`border rounded-2xl p-2 w-full ${
+                    className={`border rounded p-2 w-full ${
                       leadSourceFilter ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   >
@@ -394,160 +369,27 @@ function EmployeeLeadContent() {
                   </select>
                 </div>
 
-                <div>
-                  <label htmlFor="">Deal Filter</label>
-                  <select
-                    value={dealFilter}
-                    onChange={(e) => setDealFilter(e.target.value)}
-                    className={`border rounded-2xl p-2 w-full ${
-                      dealFilter ? "bg-cyan-600 text-white" : "bg-white"
-                    }`}
-                  >
-                    <option value="">All Deal</option>
-                    <option value="pending">Pending</option>
-                    <option value="close">Closed</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="">Lead Status</label>
-                  <select
-                    value={leadStatusFilter}
-                    onChange={(e) => setLeadStatusFilter(e.target.value)}
-                    className={`border rounded-2xl p-2 w-full ${
-                      leadStatusFilter ? "bg-cyan-600 text-white" : "bg-white"
-                    }`}
-                  >
-                    <option value="">All Lead Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="active lead">Active Lead</option>
-                    <option value="calling done">Calling Done</option>
-                    <option value="site visit done">Site Visit Done</option>
-                    <option value="interested">Interested</option>
-                    <option value="not-interested">Not-Interested</option>
-                    <option value="completed">Completed</option>
-                  </select>
-                </div>
-                {leadStatusFilter === "not-interested" && (
-                  <div>
-                    <label htmlFor="">Not Interested</label>
-                    <select
-                      value={leadnotInterestedStatusFilter}
-                      onChange={(e) =>
-                        setLeadnotInterestedStatusFilter(e.target.value)
-                      }
-                      className={`border rounded-2xl p-2 w-full ${
-                        leadnotInterestedStatusFilter
-                          ? "bg-cyan-600 text-white"
-                          : "bg-white"
-                      }`}
-                    >
-                      <option value="">All Not Interested</option>
-                      <option value="price">Price</option>
-                      <option value="budget">Budget</option>
-                      <option value="distance">Distance</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                )}
-                <div>
-                  <label htmlFor="" className="fw-semibold text-cyan-600">
-                    Visit Month Filter
-                  </label>
-                  <select
-                    value={visitmonthFilter}
-                    onChange={(e) => setVisitMonthFilter(e.target.value)}
-                    className={`border rounded-2xl p-2 w-full ${
-                      visitmonthFilter ? "bg-cyan-600 text-white" : "bg-white"
-                    }`}
-                  >
-                    <option value="">All Months</option>
-                    {uniqueVisitMonth.map((visitmonth) => (
-                      <option key={visitmonth} value={visitmonth}>
-                        {visitmonth}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {visitmonthFilter && (
-                  <div>
-                    <label htmlFor="">Visit Filter</label>
-                    <select
-                      value={visitFilter}
-                      onChange={(e) => setVisitFilter(e.target.value)}
-                      className={`border rounded-2xl p-2 w-full ${
-                        visitFilter ? "bg-cyan-600 text-white" : "bg-white"
-                      }`}
-                    >
-                      <option value="">All visit</option>
-                      <option value="fresh">Fresh Visit</option>
-                      <option value="re-visit">Re-Visit</option>
-                      <option value="associative">Associative Visit</option>
-                      <option value="self">Self Visit</option>
-                    </select>
-                  </div>
-                )}
-
-                <div>
-                  <label htmlFor="yearFilter">Leads Year Filter</label>
-                  <select
-                    value={yearFilter}
-                    onChange={(e) => setYearFilter(e.target.value)}
-                    className={`border rounded-2xl p-2 w-full ${
-                      yearFilter ? "bg-cyan-600 text-white" : "bg-white"
-                    }`}
-                  >
-                    <option value="">All Years</option>
-                    {uniqueYears.map((year) => (
-                      <option key={year} value={year}>
-                        {year}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {yearFilter && (
-                  <div>
-                    <label htmlFor="yearFilter">Leads Month Filter</label>
-                    <select
-                      value={monthFilter}
-                      onChange={(e) => setMonthFilter(e.target.value)}
-                      className={`border rounded-2xl p-2 w-full ${
-                        monthFilter ? "bg-cyan-600 text-white" : "bg-white"
-                      }`}
-                    >
-                      <option value="">All Months</option>
-                      {uniqueMonth.map((month) => (
-                        <option key={month} value={month}>
-                          {month}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-
-                <div>
+                <div className="col-span-12 sm:col-span-2">
                   <label htmlFor="">Unit Sold Filter</label>
                   <select
                     value={soldunitFilter}
                     onChange={(e) => setSoldUnitFilter(e.target.value)}
-                    className={`border rounded-2xl p-2 w-full ${
+                    className={`border rounded p-2 w-full ${
                       soldunitFilter ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   >
                     <option value="">All Deal</option>
                     <option value="sold">Sold</option>
+                    <option value="available">Available</option>
                   </select>
                 </div>
 
-                <div className="mt-4">
+                <div className="col-span-12 sm:col-span-2 mt-4">
                   <button
                     onClick={handleReset}
                     className="bg-cyan-600 text-white py-2 px-4 rounded hover:bg-cyan-600 transition-colors"
                   >
-                    Reset Page
+                    Reset
                   </button>
                 </div>
               </div>
@@ -569,7 +411,7 @@ function EmployeeLeadContent() {
                 </h2>
                 <select
                   onChange={handleLeadsPerPageChange}
-                  className="border border-cyan-600 rounded-2xl text-md text-gray-600 p-1 w-full sm:w-1/2 lg:w-1/4"
+                  className="border border-cyan-600 rounded text-md text-gray-600 p-1 w-full sm:w-1/2 lg:w-1/4"
                 >
                   <option value={10}>Number of rows: 10</option>
                   <option value={20}>20</option>
@@ -578,8 +420,12 @@ function EmployeeLeadContent() {
                 </select>
               </div>
 
-              <div className="w-[78rem] overflow-x-auto">
-                <table className="bg-white">
+              <div className={`w-auto overflow-x-auto`}>
+                <table
+                  className={`${
+                    isSidebarOpen ? "w-[78rem]" : "w-[86rem]"
+                  } overflow-x-auto`}
+                >
                   <thead className="bg-gray-200">
                     <tr>
                       <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
@@ -609,24 +455,7 @@ function EmployeeLeadContent() {
                       <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
                         Unit Status
                       </th>
-                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
-                        Visit
-                      </th>
-                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
-                        Visit Date
-                      </th>
-                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
-                        Reason
-                      </th>
-                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
-                        Meeting Status
-                      </th>
-                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
-                        Remark Status
-                      </th>
-                      <th className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap">
-                        Answer Remark
-                      </th>
+
                       <th
                         className="px-2 sm:px-4 py-2 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-gray-700 whitespace-nowrap cursor-pointer"
                         onClick={toggleSortOrder}
@@ -649,12 +478,12 @@ function EmployeeLeadContent() {
                           key={lead.id}
                           className={`${index % 2 === 0 ? "bg-gray-100" : ""} `}
                         >
-                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-600 font-semibold whitespace-normal break-words">
                             {leadsPerPage === Infinity
                               ? index + 1
                               : index + 1 + currentPage * leadsPerPage}
                           </td>
-                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words text-wrap">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-600 font-semibold whitespace-normal break-words text-wrap">
                             {lead.project_name}
                           </td>
                           <td className="px-2 sm:px-4 py-3 border-b border-gray-200 underline font-semibold text-cyan-600">
@@ -664,54 +493,33 @@ function EmployeeLeadContent() {
                               {lead.lead_id}
                             </Link>
                           </td>
-                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words text-wrap">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-600 font-semibold whitespace-normal break-words text-wrap">
                             {lead.name}
                           </td>
-                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-600 font-semibold whitespace-normal break-words">
                             {lead.phone}
                           </td>
-                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-600 font-semibold whitespace-normal break-words">
                             {lead.leadSource}
                           </td>
-                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-600 font-semibold whitespace-normal break-words">
                             {lead.staff_name}
                           </td>
-                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 font-semibold">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 font-semibold text-gray-600">
                             {lead.lead_status}
                           </td>
-                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 font-semibold">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 font-semibold text-gray-600">
                             {lead.unit_status}
                           </td>
-                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 font-semibold">
-                            {lead.visit}
-                          </td>
-                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words text-nowrap">
-                            {lead.visit_date === "pending"
-                              ? "pending"
-                              : moment(lead.visit_date)
-                                  .format("DD MMM YYYY")
-                                  .toUpperCase()}
-                          </td>
-                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 font-semibold">
-                            {lead.reason}
-                          </td>
-                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 font-semibold">
-                            {lead.meeting_status}
-                          </td>
-                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words text-wrap">
-                            {lead.remark_status}
-                          </td>
-                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words text-wrap">
-                            {lead.answer_remark}
-                          </td>
-                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words">
+
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-600 font-semibold whitespace-normal break-words">
                             {moment(lead.createdTime)
                               .format("DD MMM YYYY")
                               .toUpperCase()}
                           </td>
-                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-800 font-semibold whitespace-normal break-words">
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-600 font-semibold whitespace-normal break-words">
                             {lead.lead_status === "active lead" ||
-                            lead.lead_status === "calling done" ||
+                            lead.lead_status === "Calling Done" ||
                             lead.lead_status === "site visit done" ||
                             lead.lead_status === "interested" ||
                             lead.lead_status === "not-interested" ? (

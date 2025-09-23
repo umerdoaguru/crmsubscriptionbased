@@ -15,12 +15,8 @@ const Overview2 = () => {
   const [selectedComponent, setSelectedComponent] = useState("LeadData");
   const [visit, setVisit] = useState([]);
   const superadminuser = useSelector((state) => state.auth.user);
-  console.log(superadminuser);
-
   const token = superadminuser.token;
   const userId = superadminuser.staff_id;
-  console.log(userId);
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [project, setProjects] = useState([]);
@@ -48,23 +44,6 @@ const Overview2 = () => {
   };
 
   console.log(leads);
-
-  const fetchEmployee = async () => {
-    try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employee-super-admin`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setEmployee(response.data);
-    } catch (error) {
-      console.error("Error fetching employee data:", error);
-    }
-  };
 
   const fetchVisit = async () => {
     try {
@@ -124,7 +103,6 @@ const Overview2 = () => {
   useEffect(() => {
     fetchProjects();
     fetchLeads();
-    fetchEmployee();
     fetchVisit();
     employeesoldunit();
   }, []);

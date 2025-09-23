@@ -26,7 +26,7 @@ const EmployeeLead = () => {
           <Topbar isSidebarOpen={isSidebarOpen} />
           <div className=""></div>
 
-          <EmployeeLeadContent />
+          <EmployeeLeadContent isSidebarOpen={isSidebarOpen} />
         </div>
       </div>
     </div>

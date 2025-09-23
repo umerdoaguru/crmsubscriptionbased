@@ -25,7 +25,7 @@ const EmployeeVisitGraph = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
+          `https://crm-generalize.dentalguru.software/api/leads-visits/${EmpId.staff_id}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -33,16 +33,18 @@ const EmployeeVisitGraph = () => {
             },
           }
         );
+        const visitTypes = [
+          ...new Set(response.data.map((lead) => lead.visit_type)),
+        ];
+
         const leadList = response.data.filter((lead) =>
-          ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
+          visitTypes.includes(lead.visit_type)
         );
 
-        // Get the current date and the date 28 days ago
         const today = new Date();
         const pastDate = new Date(today);
-        pastDate.setDate(today.getDate() - 28); // Subtract 28 days
+        pastDate.setDate(today.getDate() - 28);
 
-        // Convert dates to ISO strings for easy comparison
         const formattedToday = today.toISOString().split("T")[0];
         const formattedPastDate = pastDate.toISOString().split("T")[0];
 

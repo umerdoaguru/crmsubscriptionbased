@@ -43,7 +43,6 @@ const EmployeeCloseData = () => {
     "actual_date",
   ]);
   const token = EmpId?.token;
-  // Fetch leads from the API
   useEffect(() => {
     fetchLeads();
   }, []);
@@ -51,7 +50,7 @@ const EmployeeCloseData = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.staff_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -59,15 +58,15 @@ const EmployeeCloseData = () => {
           },
         }
       );
-      // Filter out leads where deal status is "pending"
+
       const nonPendingLeads = response.data.filter(
-        (lead) => lead.deal_status == "close"
+        (lead) => lead.unit_status === "sold"
       );
 
       setLeads(nonPendingLeads);
       console.log(leads);
 
-      setFilteredLeads(nonPendingLeads); // Initial data set for filtering
+      setFilteredLeads(nonPendingLeads);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
@@ -76,10 +75,9 @@ const EmployeeCloseData = () => {
   useEffect(() => {
     let filtered = leads;
 
-    // Filter by date range
     if (startDate && endDate) {
       filtered = filtered.filter((lead) => {
-        const closeDate = moment(lead.d_closeDate, "YYYY-MM-DD", true); // Strict date parsing
+        const closeDate = moment(lead.d_closeDate, "YYYY-MM-DD", true);
         return (
           closeDate.isValid() &&
           closeDate.isBetween(startDate, endDate, undefined, "[]")
@@ -90,82 +88,91 @@ const EmployeeCloseData = () => {
     setFilteredLeads(filtered);
   }, [startDate, endDate, leads]);
 
+  // const downloadExcel = () => {
+  //   const columnMapping = {
+  //     project_name: "Project Name",
+  //     lead_no: "Lead Number",
+  //     assignedTo: "Assigned To",
+  //     name: "Name",
+  //     phone: "Phone",
+  //     leadSource: "Lead Source",
+  //     remark_status: "Remark Status",
+  //     answer_remark: "Answer Remark",
+  //     meeting_status: "Meeting Status",
+  //     assignedBy: "Assigned By",
+  //     lead_status: "Lead Status",
+  //     address: "Address",
+  //     booking_amount: "Booking Amount",
+  //     deal_status: "Deal Status",
+  //     employeeId: "Employee ID",
+  //     follow_up_status: "Follow-up Status",
+  //     payment_mode: "Payment Mode",
+
+  //     reason: "Reason",
+  //     registry: "Registry",
+
+  //     subject: "Project",
+  //     visit: "Visit",
+  //     visit_date: "Visit Date",
+  //     d_closeDate: "Close Date",
+  //     createdTime: "Assigned Date",
+  //     actual_date: "Actual Date",
+  //   };
+
+  //   // Filter and format data for the Excel report
+  //   const completedLeads = filteredLeads.map((lead) => {
+  //     const formattedLead = {};
+
+  //     selectedColumns.forEach((col) => {
+  //       const newKey = columnMapping[col] || col;
+
+  //       if (
+  //         ["actual_date", "createdTime", "visit_date", "d_closeDate"].includes(
+  //           col
+  //         )
+  //       ) {
+  //         // Check if date exists and is valid
+  //         formattedLead[newKey] =
+  //           lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
+  //             ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
+  //             : "pending";
+  //       } else {
+  //         formattedLead[newKey] = lead[col];
+  //       }
+  //     });
+
+  //     return formattedLead;
+  //   });
+
+  //   if (completedLeads.length === 0) {
+  //     alert("No data available for the selected date range.");
+  //     return;
+  //   }
+
+  //   // Generate the Excel workbook
+  //   const worksheet = XLSX.utils.json_to_sheet(completedLeads);
+  //   const workbook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
+
+  //   // Generate a valid filename
+  //   const filename = `Closed Lead Report ${
+  //     startDate ? moment(startDate).format("DD-MM-YYYY") : "Start"
+  //   } to ${endDate ? moment(endDate).format("DD-MM-YYYY") : "End"}.xlsx`;
+
+  //   // Download the Excel file
+  //   XLSX.writeFile(workbook, filename);
+  // };
+
   const downloadExcel = () => {
-    const columnMapping = {
-      project_name: "Project Name",
-      lead_no: "Lead Number",
-      assignedTo: "Assigned To",
-      name: "Name",
-      phone: "Phone",
-      leadSource: "Lead Source",
-      remark_status: "Remark Status",
-      answer_remark: "Answer Remark",
-      meeting_status: "Meeting Status",
-      assignedBy: "Assigned By",
-      lead_status: "Lead Status",
-      address: "Address",
-      booking_amount: "Booking Amount",
-      deal_status: "Deal Status",
-      employeeId: "Employee ID",
-      follow_up_status: "Follow-up Status",
-      payment_mode: "Payment Mode",
+    const completedLeads = currentLeads.map((lead) => ({ ...lead }));
 
-      reason: "Reason",
-      registry: "Registry",
-
-      subject: "Project",
-      visit: "Visit",
-      visit_date: "Visit Date",
-      d_closeDate: "Close Date",
-      createdTime: "Assigned Date",
-      actual_date: "Actual Date",
-    };
-
-    // Filter and format data for the Excel report
-    const completedLeads = filteredLeads.map((lead) => {
-      const formattedLead = {};
-
-      selectedColumns.forEach((col) => {
-        const newKey = columnMapping[col] || col;
-
-        if (
-          ["actual_date", "createdTime", "visit_date", "d_closeDate"].includes(
-            col
-          )
-        ) {
-          // Check if date exists and is valid
-          formattedLead[newKey] =
-            lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
-              ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-              : "pending"; // If invalid or missing, set as "PENDING"
-        } else {
-          formattedLead[newKey] = lead[col]; // Assign other fields normally
-        }
-      });
-
-      return formattedLead;
-    });
-
-    // Ensure we handle empty reports gracefully
-    if (completedLeads.length === 0) {
-      alert("No data available for the selected date range.");
-      return;
-    }
-
-    // Generate the Excel workbook
+    // Generate Excel file
     const worksheet = XLSX.utils.json_to_sheet(completedLeads);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
-
-    // Generate a valid filename
-    const filename = `Closed Lead Report ${
-      startDate ? moment(startDate).format("DD-MM-YYYY") : "Start"
-    } to ${endDate ? moment(endDate).format("DD-MM-YYYY") : "End"}.xlsx`;
-
-    // Download the Excel file
-    XLSX.writeFile(workbook, filename);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Closed Deal Report");
+    XLSX.writeFile(workbook, `Closed Deal Report.xlsx`);
   };
-  // Calculate total number of pages
+
   const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
 
   // Pagination logic
@@ -176,6 +183,8 @@ const EmployeeCloseData = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
+
+  console.log(currentLeads);
 
   return (
     <Wrapper>
@@ -221,9 +230,7 @@ const EmployeeCloseData = () => {
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Project Name
                 </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Lead Number
-                </th>
+
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Assigned To
                 </th>
@@ -235,10 +242,7 @@ const EmployeeCloseData = () => {
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Lead Source
                 </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">Visit</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  FollowUp Status
-                </th>
+
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Deal Status
                 </th>
@@ -267,11 +271,9 @@ const EmployeeCloseData = () => {
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.project_name}
                     </td>
+
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.lead_no}
-                    </td>
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.assignedTo}
+                      {lead.staff_name}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.name}
@@ -283,19 +285,12 @@ const EmployeeCloseData = () => {
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.leadSource}
                     </td>
+
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.visit}
+                      {lead.unit_status}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.follow_up_status}
-                    </td>
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.deal_status}
-                    </td>
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {moment(lead.createdTime)
-                        .format("DD MMM YYYY")
-                        .toUpperCase()}
+                      {lead.esu_sold_date}
                     </td>
                   </tr>
                 ))

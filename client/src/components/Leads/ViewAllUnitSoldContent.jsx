@@ -3,9 +3,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
-import ReactPaginate from "react-paginate";
-import MainHeader from "../MainHeader";
-import EmployeeeSider from "../EmployeeModule/EmployeeSider";
 import cogoToast from "cogo-toast";
 
 const ViewAllUnitSoldContent = () => {
@@ -29,15 +26,9 @@ const ViewAllUnitSoldContent = () => {
     fetchEmployeeUnitSold();
   }, [id, render]);
 
-  useEffect(() => {
-    if (employeeunitsold.length > 0) {
-      fetchUnitdata();
-    }
-  }, [employeeunitsold]); // Runs only when employeeunitsold updates
-
   const fetchEmployeeUnitSold = async () => {
     try {
-      const response = await axios.get(
+      const { data } = await axios.get(
         `https://crm-generalize.dentalguru.software/api/unit-sold-lead-id/${id}`,
         {
           headers: {
@@ -46,71 +37,27 @@ const ViewAllUnitSoldContent = () => {
           },
         }
       );
-      setEmployeeUnitSold(response.data);
-      console.log(response);
+      setEmployeeUnitSold(data);
+      console.log(data);
     } catch (error) {
       console.error("Error fetching visit:", error);
     }
   };
 
-  const fetchUnitdata = async () => {
-    try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/unit-data/${employeeunitsold[0].unit_id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setUnitData(response.data);
-      console.log(unitdata);
-    } catch (error) {
-      console.error("Error fetching Unit Data:", error);
-    }
-  };
-
-  const handleDelete = async (unitsold) => {
+  const handleDelete = async (id) => {
     const isConfirmed = window.confirm(
       "Are you sure you want to delete this Unit Sold?"
     );
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/unit-sold/${unitsold.id}`
+          `https://crm-generalize.dentalguru.software/api/unit-sold/${id}`
         );
-        if (response.status === 200) {
-          console.log("Unit Sold deleted successfully");
-          cogoToast.success("");
-          const putResponse = await axios.put(
-            `https://crm-generalize.dentalguru.software/api/unit-data/${unitsold.unit_no}`,
-            { unit_status: "pending" }
-          );
 
-          if (putResponse.status === 200) {
-            console.log("Unit Status updated successfully:", putResponse.data);
-          } else {
-            console.error("Error updating Unit Status:", putResponse.data);
-            cogoToast.error("Failed to update the lead Unit Status.");
-          }
-          const putResponseUnit = await axios.put(
-            `https://crm-generalize.dentalguru.software/api/updateOnlyUnitStatus/${unitsold.lead_id}`,
-            { unit_number: "pending", unit_status: "pending" }
-          );
-
-          if (putResponseUnit.status === 200) {
-            console.log(
-              "Unit of Lead Status updated successfully:",
-              putResponseUnit.data
-            );
-          } else {
-            console.error("Error updating Unit Status:", putResponseUnit.data);
-            cogoToast.error("Failed to update the lead Unit Status.");
-          }
-        }
-
+        console.log("Unit Sold deleted successfully");
+        cogoToast.success("Unit Sold deleted successfully");
         console.log(response);
+        fetchEmployeeUnitSold();
         setRender(!render);
       } catch (error) {
         console.error("Error deleting visit:", error);
@@ -193,8 +140,8 @@ const ViewAllUnitSoldContent = () => {
           cogoToast.error("Failed to update the lead Unit Status.");
         }
 
-        setRender(!render); // Refresh the list after updating
-        closeModal(); // Close the modal
+        setRender(!render);
+        closeModal();
         setPreviousUnit("");
       }
     } catch (error) {
@@ -207,7 +154,7 @@ const ViewAllUnitSoldContent = () => {
   };
 
   const filteredEmployeeUnitSold = employeeunitsold.filter((unitsold) =>
-    unitsold.name.toLowerCase().includes(filterText.toLowerCase())
+    unitsold?.name?.toLowerCase().includes(filterText.toLowerCase())
   );
 
   const offset = currentPage * itemsPerPage;
@@ -215,11 +162,6 @@ const ViewAllUnitSoldContent = () => {
     offset,
     offset + itemsPerPage
   );
-  const pageCount = Math.ceil(filteredEmployeeUnitSold.length / itemsPerPage);
-
-  const handleBackClick = () => {
-    navigate(-1); // -1 navigates to the previous page in history
-  };
 
   return (
     <>
@@ -237,7 +179,7 @@ const ViewAllUnitSoldContent = () => {
             <div className="w-full px-2 mx-auto p-4">
               <div className="w-full px-2 mt-4">
                 <h2 className="text-2xl font-bold mb-4 text-center">
-                  All Follow Up
+                  All Sold Units
                 </h2>
                 <div className=" overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200 border border-gray-300">
@@ -261,6 +203,10 @@ const ViewAllUnitSoldContent = () => {
                         </th>
 
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Notes
+                        </th>
+
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Action
                         </th>
                       </tr>
@@ -272,7 +218,7 @@ const ViewAllUnitSoldContent = () => {
                             {offset + index + 1}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {unitsold.unit_no}
+                            {unitsold.unit_number}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             {unitsold.project_name}
@@ -282,22 +228,24 @@ const ViewAllUnitSoldContent = () => {
                           </td>
 
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {moment(unitsold.date)
-                              .format("DD MMM YYYY")
-                              .toUpperCase()}
+                            {unitsold.esu_sold_date}
                           </td>
 
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <button
+                            {unitsold.esu_notes}
+                          </td>
+
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {/* <button
                               className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded m-1"
                               onClick={() => openModal(unitsold)}
                             >
                               Edit
-                            </button>
+                            </button> */}
 
                             <button
                               className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded m-1"
-                              onClick={() => handleDelete(unitsold)}
+                              onClick={() => handleDelete(unitsold?.esu_id)}
                             >
                               Delete
                             </button>

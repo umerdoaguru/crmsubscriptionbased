@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { GiFiles, GiMoneyStack } from "react-icons/gi";
 import { Link, useNavigate } from "react-router-dom";
-import { FaClipboardList, FaCheckCircle } from "react-icons/fa"; // Import icons for Visit and Closed Data
+import { FaClipboardList, FaCheckCircle } from "react-icons/fa";
 import { logoutUser } from "../../../store/UserSlice";
 import cogoToast from "cogo-toast";
 
@@ -43,47 +43,12 @@ const EmployeeOverview = () => {
     }
   };
 
-  const fetchQuotation = async () => {
-    try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/get-quotation-byEmploye/${EmpId.id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log(response.data);
-      setQuotation(response.data);
-    } catch (error) {
-      console.error("Error fetching quotations:", error);
-    }
-  };
-
-  const fetchInvoice = async () => {
-    try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/get-employee-invoice/${EmpId.id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setInvoice(response.data);
-    } catch (error) {
-      console.error("Error fetching invoices:", error);
-    }
-  };
-
   console.log(invoice, quotation, leads);
 
   const fetchVisit = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.id}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/leads-visits/${EmpId.staff_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -91,17 +56,19 @@ const EmployeeOverview = () => {
           },
         }
       );
-      console.log(response.data);
-      setVisit(response.data);
+      console.log(data);
+      setVisit(data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
   };
 
+  console.log(visit);
+
   const employeesoldunit = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/unit-sold/${EmpId.id}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/unit-sold/${EmpId.staff_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -109,8 +76,8 @@ const EmployeeOverview = () => {
           },
         }
       );
-      console.log(response.data);
-      setemployeesold(response.data);
+      console.log(data);
+      setemployeesold(data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
@@ -119,22 +86,20 @@ const EmployeeOverview = () => {
   useEffect(() => {
     fetchLeads();
     fetchVisit();
-    fetchQuotation();
-    fetchInvoice();
     employeesoldunit();
   }, []);
 
   const leadCount = leads.length;
 
+  console.log(employeesold);
+
   const soldunit = employeesold.length;
 
   const closedCount = leads.filter(
-    (lead) => lead.deal_status === "close"
+    (lead) => lead.unit_status === "sold"
   ).length;
 
-  const visitCount = leads.filter((lead) =>
-    ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
-  ).length;
+  const visitCount = visit?.length;
 
   return (
     <>

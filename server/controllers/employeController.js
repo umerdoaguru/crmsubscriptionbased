@@ -25,7 +25,7 @@ const getEmployeeInvoice = async (req, res) => {
 const getEmployeeLeads = async (req, res) => {
   try {
     const { id } = req.params;
-    const sql = `SELECT * FROM leads join company_staff on company_staff.staff_id = leads.assignedTo join projects on projects.project_id = leads.main_project_id WHERE leads.assignedTo = ?`;
+    const sql = `SELECT * FROM leads join company_staff on company_staff.staff_id = leads.assignedTo join projects on projects.project_id = leads.main_project_id join units on units.unit_id = leads.unit_id WHERE leads.assignedTo = ?`;
 
     const result = await new Promise((resolve, reject) => {
       db.query(sql, [id], (err, results) => {
@@ -943,24 +943,57 @@ const updateEmployeeUnitSold = (req, res) => {
 const deleteEmployeeUnitSold = (req, res) => {
   const { id } = req.params;
 
-  // Basic validation
   if (!id) {
-    return res.status(400).json({ error: "Unit ID is required" });
+    return res.status(400).json({ success: false, message: "ID is required" });
   }
 
-  const sql = `DELETE FROM  employee_sold_units WHERE id = ?`;
+  try {
+    const checkQuery = `SELECT * FROM employee_sold_units WHERE esu_id = ?`;
+    db.query(checkQuery, [id], (err, result) => {
+      if (err) {
+        return res.status(500).json({ success: false, message: err.message });
+      }
 
-  db.query(sql, [id], (err, results) => {
-    if (err) {
-      res.status(500).json({ error: "Error deleting Unit Sold" });
-    } else if (results.affectedRows === 0) {
-      res.status(404).json({ error: "Unit Sold not found" });
-    } else {
-      res
-        .status(200)
-        .json({ success: true, message: "Unit Sold deleted successfully" });
-    }
-  });
+      if (!result || result.length === 0) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Unit Sold not found" });
+      }
+
+      const unitId = result[0].esu_unit_id;
+
+      const updateQuery = `UPDATE units SET unit_status = ? WHERE unit_id = ?`;
+      db.query(updateQuery, ["available", unitId], (err) => {
+        if (err) {
+          return res.status(500).json({ success: false, message: err.message });
+        }
+
+        const deleteQuery = `DELETE FROM employee_sold_units WHERE esu_id = ?`;
+        db.query(deleteQuery, [id], (err, results) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({ success: false, message: "Error deleting Unit Sold" });
+          }
+
+          if (results.affectedRows === 0) {
+            return res
+              .status(404)
+              .json({ success: false, message: "Unit Sold not found" });
+          }
+
+          return res.status(200).json({
+            success: true,
+            message: "Unit status updated and Unit Sold deleted successfully",
+          });
+        });
+      });
+    });
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
 };
 
 const getEmployeeUnitSold = async (req, res) => {
@@ -987,7 +1020,8 @@ const getEmployeeUnitSold = async (req, res) => {
 const getEmployeeUnitSoldById = async (req, res) => {
   try {
     const { id } = req.params;
-    const sql = "SELECT * FROM  employee_sold_units WHERE employeeId = ?";
+    const sql =
+      "SELECT * FROM employee_sold_units join leads on leads.lead_id = employee_sold_units.esu_lead_id join projects on projects.project_id = leads.main_project_id join company_staff on company_staff.staff_id = employee_sold_units.esu_staff_id join units on units.unit_id = employee_sold_units.esu_unit_id WHERE employee_sold_units.esu_staff_id = ?";
 
     const result = await new Promise((resolve, reject) => {
       db.query(sql, [id], (err, results) => {
@@ -1007,7 +1041,8 @@ const getEmployeeUnitSoldById = async (req, res) => {
 const getEmployeeUnitSoldByLeadId = async (req, res) => {
   try {
     const { id } = req.params;
-    const sql = "SELECT * FROM  employee_sold_units WHERE lead_id = ?";
+    const sql =
+      "SELECT * FROM employee_sold_units join projects on projects.project_id = employee_sold_units.esu_project_id join leads on leads.lead_id = employee_sold_units.esu_lead_id join units on units.unit_id = employee_sold_units.esu_unit_id join company_staff on company_staff.staff_id = employee_sold_units.esu_staff_id WHERE employee_sold_units.esu_lead_id = ?";
 
     const result = await new Promise((resolve, reject) => {
       db.query(sql, [id], (err, results) => {
