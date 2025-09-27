@@ -12,7 +12,7 @@ const SuperCloseData = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const leadsPerPage = 6; // Default leads per page
+  const leadsPerPage = 6;
   const EmpId = useSelector((state) => state.auth.user.id);
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
@@ -43,19 +43,13 @@ const SuperCloseData = () => {
     "actual_date",
   ]);
 
-  // Fetch leads from the API
-  useEffect(() => {
-    fetchLeads();
-    fetchEmployees();
-  }, []);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.staff_id;
 
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/getAllUnitSoldByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -63,13 +57,13 @@ const SuperCloseData = () => {
           },
         }
       );
-      // Filter out leads where deal status is "pending"
+
       const nonPendingLeads = response.data.filter(
-        (lead) => lead.deal_status == "close"
+        (lead) => lead.unit_status === "sold"
       );
 
       setLeads(nonPendingLeads);
-      setFilteredLeads(nonPendingLeads); // Initial data set for filtering
+      setFilteredLeads(nonPendingLeads);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
@@ -78,7 +72,7 @@ const SuperCloseData = () => {
   const fetchEmployees = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employee-super-admin/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/getAllEmployeeData/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -93,12 +87,16 @@ const SuperCloseData = () => {
   };
 
   useEffect(() => {
+    fetchLeads();
+    fetchEmployees();
+  }, []);
+
+  useEffect(() => {
     let filtered = leads;
 
-    // Filter by date range
     if (startDate && endDate) {
       filtered = filtered.filter((lead) => {
-        const closeDate = moment(lead.d_closeDate, "YYYY-MM-DD", true); // Strict date parsing
+        const closeDate = moment(lead.d_closeDate, "YYYY-MM-DD", true);
         return (
           closeDate.isValid() &&
           closeDate.isBetween(startDate, endDate, undefined, "[]")
@@ -106,10 +104,9 @@ const SuperCloseData = () => {
       });
     }
 
-    // Filter by selected employee
     if (selectedEmployee) {
       filtered = filtered.filter(
-        (lead) => lead.assignedTo === selectedEmployee
+        (lead) => lead.assignedTo === Number(selectedEmployee)
       );
     }
 
@@ -143,7 +140,7 @@ const SuperCloseData = () => {
       createdTime: "Assigned Date",
       actual_date: "Actual Date",
     };
-    // Filter and format data for the Excel report
+
     const completedLeads = filteredLeads.map((lead) => {
       const formattedLead = {};
 
@@ -155,36 +152,31 @@ const SuperCloseData = () => {
             col
           )
         ) {
-          // Check if date exists and is valid
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
               ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-              : "pending"; // If invalid or missing, set as "PENDING"
+              : "pending";
         } else {
-          formattedLead[newKey] = lead[col]; // Assign other fields normally
+          formattedLead[newKey] = lead[col];
         }
       });
 
       return formattedLead;
     });
 
-    // Ensure we handle empty reports gracefully
     if (completedLeads.length === 0) {
       alert("No data available for the selected date range.");
       return;
     }
 
-    // Generate the Excel workbook
     const worksheet = XLSX.utils.json_to_sheet(completedLeads);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
 
-    // Generate a valid filename
     const filename = `Closed Lead Report ${
       startDate ? moment(startDate).format("DD-MM-YYYY") : "Start"
     } to ${endDate ? moment(endDate).format("DD-MM-YYYY") : "End"}.xlsx`;
 
-    // Download the Excel file
     XLSX.writeFile(workbook, filename);
   };
 
@@ -247,8 +239,8 @@ const SuperCloseData = () => {
               >
                 <option value="">Select Employee</option>
                 {employees.map((employee) => (
-                  <option key={employee.id} value={employee.name}>
-                    {employee.name}
+                  <option key={employee.staff_id} value={employee.staff_id}>
+                    {employee.staff_name}
                   </option>
                 ))}
               </select>
@@ -271,9 +263,7 @@ const SuperCloseData = () => {
               <thead>
                 <tr>
                   <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    Lead Number
-                  </th>
+
                   <th className="px-6 py-3 border-b-2 border-gray-300">
                     Assigned To
                   </th>
@@ -291,9 +281,7 @@ const SuperCloseData = () => {
                   <th className="px-6 py-3 border-b-2 border-gray-300">
                     Deal Status
                   </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    Closed Deal Date
-                  </th>
+                  <th className="px-6 py-3 border-b-2 border-gray-300">Date</th>
                 </tr>
               </thead>
               <tbody>
@@ -315,11 +303,9 @@ const SuperCloseData = () => {
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {index + 1 + currentPage * leadsPerPage}
                       </td>
+
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.lead_no}
-                      </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.assignedTo}
+                        {lead.staff_name}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.name}
@@ -333,12 +319,10 @@ const SuperCloseData = () => {
                       </td>
 
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.deal_status}
+                        {lead.unit_status}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {moment(lead.d_closeDate)
-                          .format("DD MMM YYYY")
-                          .toUpperCase()}
+                        {lead.unit_updated_at?.split(" ")[0]}
                       </td>
                     </tr>
                   ))

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import moment from "moment";
 import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const SuperLeadsToday = () => {
   const [leads, setLeads] = useState([]);
@@ -13,38 +14,33 @@ const SuperLeadsToday = () => {
   const token = superadminuser.token;
   console.log(token);
 
+  const fetchLeads = async () => {
+    try {
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setLeads(data);
+    } catch (error) {
+      console.error("Error fetching leads:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchLeads = async () => {
-      try {
-        const response = await fetch(
-          `https://crm-generalize.dentalguru.software/api/leads-super-admin/${superadminuser?.staff_org_id}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const data = await response.json();
-        console.log("Fetched leads data:", data);
-
-        const filteredLeads = data.filter((lead) =>
-          moment(lead.createdTime).isSame(moment(), "day")
-        );
-
-        console.log("Fetched leads data:", filteredLeads);
-        setLeads(filteredLeads);
-      } catch (error) {
-        console.error("Error fetching leads:", error);
-      }
-    };
-
     fetchLeads();
   }, []);
 
+  console.log(leads);
+
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-  const currentLeads = leads.slice(indexOfFirstLead, indexOfLastLead);
+  const currentLeads = leads?.slice(indexOfFirstLead, indexOfLastLead);
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
@@ -77,8 +73,8 @@ const SuperLeadsToday = () => {
               </tr>
             </thead>
             <tbody>
-              {currentLeads.length > 0 ? (
-                currentLeads.map((lead, index) => (
+              {currentLeads?.length > 0 ? (
+                currentLeads?.map((lead, index) => (
                   <tr
                     key={lead.id}
                     className={index % 2 === 0 ? "bg-gray-100" : ""}
@@ -128,7 +124,7 @@ const SuperLeadsToday = () => {
             previousLabel={"Previous"}
             nextLabel={"Next"}
             breakLabel={"..."}
-            pageCount={Math.ceil(leads.length / leadsPerPage)}
+            pageCount={Math.ceil(leads?.length / leadsPerPage)}
             marginPagesDisplayed={2}
             pageRangeDisplayed={3}
             onPageChange={handlePageClick}

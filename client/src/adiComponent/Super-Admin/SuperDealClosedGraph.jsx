@@ -18,7 +18,6 @@ const SuperDealClosedGraph = () => {
   const token = superadminuser.token;
   const userId = superadminuser.staff_id;
 
-  // Function to format the date to "DD MMM" format
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("default", {
@@ -27,28 +26,22 @@ const SuperDealClosedGraph = () => {
     });
   };
 
-  // Generate static structure for the past 28 days
   const generateStaticData = (fetchedData) => {
     const data = [];
     const today = new Date();
 
-    // Iterate over the past 28 days
     for (let i = 0; i < 28; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() - i);
       const formattedDay = formatDate(date);
       const formattedDate = date.toISOString().split("T")[0];
 
-      // Filter leads that match the `d_closeDate` for this specific day
       const matchedLeads = fetchedData.filter(
         (item) =>
-          item.d_closeDate.split("T")[0] === formattedDate &&
-          item.deal_status?.trim().toLowerCase() === "close"
+          item.unit_updated_at?.split(" ")[0] === formattedDate &&
+          item.unit_status === "sold"
       );
 
-      console.log(`Date: ${formattedDate}, Leads: ${matchedLeads.length}`);
-
-      // Push the day and the number of closed deals for that day
       data.push({
         day: formattedDay,
         Close_Deal: matchedLeads.length,
@@ -58,11 +51,10 @@ const SuperDealClosedGraph = () => {
     return data.reverse();
   };
 
-  // Fetch data from the API
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -70,10 +62,10 @@ const SuperDealClosedGraph = () => {
           },
         }
       );
-      const data = response.data;
 
+      const data = response.data;
+      console.log(data);
       const formattedData = generateStaticData(data);
-      console.log("Formatted Data: ", formattedData);
 
       setDealStatusData(formattedData);
     } catch (error) {
@@ -84,6 +76,8 @@ const SuperDealClosedGraph = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  console.log(dealStatusData);
 
   return (
     <>

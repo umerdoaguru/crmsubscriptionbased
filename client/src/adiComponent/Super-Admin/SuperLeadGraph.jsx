@@ -22,7 +22,7 @@ const SuperLeadGraph = () => {
     const fetchLeadsData = async () => {
       try {
         const response = await axios.get(
-          `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
+          `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
           {
             headers: {
               "Content-Type": "application/json",

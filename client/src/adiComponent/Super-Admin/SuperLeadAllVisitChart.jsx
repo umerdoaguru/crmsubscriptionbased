@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -10,7 +10,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import moment from "moment";
 import { useSelector } from "react-redux";
 
 const SuperLeadAllVisitChart = () => {
@@ -19,72 +18,50 @@ const SuperLeadAllVisitChart = () => {
   const [error, setError] = useState(null);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.staff_id;
+
+  const fetchLeadsData = async () => {
+    setLoading(true);
+
+    try {
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/leads-all-visits`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setVisitData(data);
+    } catch (error) {
+      console.error("Error fetching leads data:", error);
+      setError("Failed to load leads data");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchLeadsData = async () => {
-      setLoading(true);
-
-      try {
-        const response = await axios.get(
-          `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const allLeads = response.data.filter((lead) =>
-          ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
-        );
-
-        const today = moment();
-        const startDate = moment().subtract(28, "days"); // 28 days range including today
-
-        // Format dates to 'MMM DD' for display
-        const formatDate = (date) => moment(date).format("MMM DD");
-
-        // Filter the data for the last 28 days including today
-        const filteredLeads = allLeads.filter((lead) => {
-          const leadDate = moment(lead.visit_date, "YYYY-MM-DD HH:mm:ss"); // Parse the string
-          return leadDate.isBetween(startDate, today, undefined, "[]"); // Check date range
-        });
-
-        // Group by date
-        const groupedLeads = filteredLeads.reduce((acc, lead) => {
-          const date = formatDate(
-            moment(lead.visit_date, "YYYY-MM-DD HH:mm:ss")
-          );
-          if (!acc[date]) {
-            acc[date] = 0;
-          }
-          acc[date] += 1;
-          return acc;
-        }, {});
-
-        const leadsData = [];
-        for (let i = 0; i <= 27; i++) {
-          const date = moment().subtract(i, "days");
-          const formattedDate = formatDate(date);
-          leadsData.push({
-            createdDate: formattedDate, // Change 'date' to 'createdDate'
-            Leads: groupedLeads[formattedDate] || 0,
-          });
-        }
-
-        leadsData.reverse();
-        setVisitData(leadsData); // Correct state function usage
-      } catch (error) {
-        console.error("Error fetching leads data:", error);
-        setError("Failed to load leads data");
-      } finally {
-        setLoading(false); // Stop loading
-      }
-    };
-
     fetchLeadsData();
   }, []);
+
+  console.log(visitData);
+
+  const chartData = useMemo(() => {
+    const grouped = visitData?.reduce((acc, visit) => {
+      const date = visit.visit_date;
+      if (!date) return acc;
+
+      acc[date] = (acc[date] || 0) + 1;
+      return acc;
+    }, {});
+
+    return Object.entries(grouped).map(([date, count]) => ({
+      createdDate: date,
+      Leads: count,
+    }));
+  }, [visitData]);
 
   return (
     <>
@@ -104,7 +81,7 @@ const SuperLeadAllVisitChart = () => {
               <BarChart
                 width={400}
                 height={300}
-                data={visitData}
+                data={chartData}
                 margin={{
                   top: 5,
                   right: 15,
@@ -114,7 +91,7 @@ const SuperLeadAllVisitChart = () => {
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
-                  dataKey="createdDate" // Use correct data key 'createdDate'
+                  dataKey="createdDate"
                   tick={{
                     fontSize: 12,
                     transform: "translate(-10,0)",
@@ -131,7 +108,7 @@ const SuperLeadAllVisitChart = () => {
                 <Tooltip />
                 <Legend />
                 <Bar
-                  dataKey="Leads" // Corrected to 'Leads' from 'totalVisits'
+                  dataKey="Leads"
                   fill="#0891b2"
                   name="Total Visit"
                   barSize={15}

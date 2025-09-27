@@ -24,16 +24,14 @@ function SuperDataExportContent() {
   useEffect(() => {
     fetchLeads();
     fetchEmployee();
-    fetchQuotation();
-    fetchInvoice();
     fetchVisit();
     employeesoldunit();
   }, []);
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${superadminuser?.staff_org_id}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -41,7 +39,7 @@ function SuperDataExportContent() {
           },
         }
       );
-      setLeads(response.data);
+      setLeads(data);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
@@ -64,37 +62,10 @@ function SuperDataExportContent() {
     }
   };
 
-  const fetchQuotation = async () => {
-    try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/quotation-data`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setQuotation(response.data);
-    } catch (error) {
-      console.error("Error fetching quotations:", error);
-    }
-  };
-
-  const fetchInvoice = async () => {
-    try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/invoice-data`
-      );
-      setInvoice(response.data);
-    } catch (error) {
-      console.error("Error fetching invoices:", error);
-    }
-  };
   const employeesoldunit = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/super-admin-unit-sold/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getAllUnitSoldByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -102,16 +73,16 @@ function SuperDataExportContent() {
           },
         }
       );
-      console.log(response.data);
-      setemployeesold(response.data);
+      console.log(data);
+      setemployeesold(data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
   };
   const fetchVisit = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-all-visit-super-admin`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/leads-all-visits`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -119,23 +90,16 @@ function SuperDataExportContent() {
           },
         }
       );
-      console.log(response.data);
-      setVisit(response.data);
-      // Ensure proper comparison with 'Created', trim any spaces and normalize the case
+      console.log(data);
+      setVisit(data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
   };
 
-  const employeeCount = employee.length;
-
-  const visitCount = leads.filter((lead) =>
-    ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
-  ).length;
-
   const closedCount = leads.filter(
-    (lead) => lead.deal_status === "close"
-  ).length; // Get count for Closed Data
+    (lead) => lead.unit_status === "sold"
+  ).length;
 
   const soldUnits = employeesold.length;
   return (
@@ -229,7 +193,7 @@ function SuperDataExportContent() {
                             : "text-gray-600"
                         }`}
                       >
-                        {visitCount}
+                        {visit?.length}
                       </p>
                     </div>
                   </div>

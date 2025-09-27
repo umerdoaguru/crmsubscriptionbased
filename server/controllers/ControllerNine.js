@@ -473,7 +473,7 @@ const OneOnlylogin = async (req, res) => {
         expiresIn: "7d",
       });
 
-      res.status(200).send({
+      return res.status(200).send({
         success: true,
         message: "Login successfully",
         user: {
@@ -721,6 +721,36 @@ const updateOnlyLeadStatusEmployeeEnd = (req, res) => {
   });
 };
 
+const getAllUnitSoldByOrg = async (req, res) => {
+  try {
+    const orgId = req.params.orgId;
+    const sql =
+      "SELECT * FROM employee_sold_units join projects on projects.project_id = employee_sold_units.esu_project_id join leads on leads.lead_id = employee_sold_units.esu_lead_id join units on units.unit_id = employee_sold_units.esu_unit_id join company_staff on company_staff.staff_id = employee_sold_units.esu_staff_id WHERE projects.project_org_id = ?";
+
+    db.query(sql, orgId, (err, result) => {
+      if (err) {
+        res.status(400).json({ success: false, message: err.message });
+      }
+      res.status(200).send(result);
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Internal Server Erro, error: errr" });
+  }
+};
+
+const getLeadsByOrg = (req, res) => {
+  const { orgId } = req.params;
+  const sql =
+    "SELECT * FROM leads join company_staff on company_staff.staff_id = leads.assignedTo join projects on projects.project_id = leads.main_project_id join units on units.unit_project_id = projects.project_id WHERE leads.lead_org_id = ? ORDER BY lead_id DESC";
+  db.query(sql, [orgId], (err, results) => {
+    if (err) {
+      res.status(500).json({ success: false, message: err.message });
+    } else {
+      res.status(200).send(results);
+    }
+  });
+};
+
 module.exports = {
   insertNewPlan,
   insertBillingCycle,
@@ -740,4 +770,6 @@ module.exports = {
   getEmployeeByOrg,
   getAllEmployeeData,
   updateOnlyLeadStatusEmployeeEnd,
+  getAllUnitSoldByOrg,
+  getLeadsByOrg,
 };

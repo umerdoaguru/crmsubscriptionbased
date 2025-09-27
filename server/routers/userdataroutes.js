@@ -216,6 +216,8 @@ const {
   getEmployeeByOrg,
   getAllEmployeeData,
   updateOnlyLeadStatusEmployeeEnd,
+  getAllUnitSoldByOrg,
+  getLeadsByOrg,
 } = require("../controllers/ControllerNine");
 
 // ========== Router Begins =====================
@@ -661,5 +663,8 @@ router.put(
   "/updateOnlyLeadStatusEmployeeEnd/:id",
   updateOnlyLeadStatusEmployeeEnd
 );
+
+router.get("/getAllUnitSoldByOrg/:orgId", getAllUnitSoldByOrg);
+router.get("/getLeadsByOrg/:orgId", getLeadsByOrg);
 
 module.exports = router;

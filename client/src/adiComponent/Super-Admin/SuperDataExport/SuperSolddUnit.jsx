@@ -37,8 +37,8 @@ const SuperSoldnit = () => {
 
   const fetchEmployeeUnitSold = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/super-admin-unit-sold/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -46,10 +46,9 @@ const SuperSoldnit = () => {
           },
         }
       );
-      console.log("Fetched Leads:", response.data);
-      const fetchedLeads = response.data.data || response.data || [];
-      setLeads(fetchedLeads);
-      setFilteredLeads(fetchedLeads);
+
+      setLeads(data);
+      setFilteredLeads(data);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
@@ -92,7 +91,7 @@ const SuperSoldnit = () => {
   const fetchEmployeeData = async (employeeId) => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/unit-sold/${employeeId}`,
+        `https://crm-generalize.dentalguru.software/api/getAllEmployeeData/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -278,7 +277,7 @@ const SuperSoldnit = () => {
                   Customer Name
                 </th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Unit Id
+                  Unit Number
                 </th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Employee Name
@@ -318,16 +317,16 @@ const SuperSoldnit = () => {
                       {sold.name}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {sold.unit_no}
+                      {sold.unit_number}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {sold.employee_name}
+                      {sold.staff_name}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {sold.unit_status}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {moment(sold.date).format("DD MMM YYYY").toUpperCase()}
+                      {sold.unit_updated_at?.split(" ")[0]}
                     </td>
                   </tr>
                 ))

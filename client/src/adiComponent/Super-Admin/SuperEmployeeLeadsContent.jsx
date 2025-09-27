@@ -12,7 +12,7 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
   const userId = superadminuser.staff_id;
-  console.log(superadminuser);
+  // console.log(superadminuser);
 
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
@@ -51,47 +51,6 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   const [visitmonthFilter, setVisitMonthFilter] = useState("");
   const [yearFilter, setYearFilter] = useState("");
 
-  const uniqueYears = [
-    ...new Set(leads.map((lead) => moment(lead.createdTime).format("YYYY"))),
-  ];
-
-  const monthOrder = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  const uniqueMonth = [
-    ...new Set(
-      leads
-        .filter(
-          (lead) => moment(lead.createdTime).format("YYYY") === yearFilter
-        )
-        .map((lead) => moment(lead.createdTime).format("MMMM"))
-    ),
-  ].sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b)); // Sort by monthOrder
-
-  const uniqueVisitMonth = [
-    ...new Set(
-      leads
-        .filter(
-          (lead) =>
-            lead.visit !== "pending" &&
-            lead.visit_date &&
-            moment(lead.visit_date, moment.ISO_8601, true).isValid()
-        )
-        .map((lead) => moment(lead.visit_date).format("MMMM"))
-    ),
-  ].sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b));
-
   // Fetch leads from the API
   useEffect(() => {
     fetchEmployees();
@@ -108,7 +67,7 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -217,20 +176,11 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   const applyFilters = () => {
     let filtered = [...leads];
 
-    // Sort by date
-    filtered = filtered.sort((a, b) => {
-      if (sortOrder === "desce") {
-        return new Date(b.createdTime) - new Date(a.createdTime);
-      } else {
-        return new Date(a.createdTime) - new Date(b.createdTime);
-      }
-    });
-
     // Filter by search term
     if (searchTerm) {
       const trimmedSearchTerm = searchTerm.toLowerCase().trim();
       filtered = filtered.filter((lead) =>
-        ["name", "leadSource", "phone", "assignedTo"].some((key) =>
+        ["staff_name", "leadSource", "phone", "name"].some((key) =>
           lead[key]?.toLowerCase().trim().includes(trimmedSearchTerm)
         )
       );
@@ -251,88 +201,15 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
       );
     }
 
-    // Filter by status
-    if (statusFilter) {
-      filtered = filtered.filter((lead) => lead.status === statusFilter);
-    }
-
-    // Filter by deal
-    if (dealFilter) {
-      filtered = filtered.filter((lead) => lead.deal_status === dealFilter);
-    }
-
-    // Filter by lead status
-    if (leadStatusFilter) {
-      filtered = filtered.filter(
-        (lead) => lead.lead_status === leadStatusFilter
-      );
-    }
-
-    // Filter by not interested reason
-    if (leadnotInterestedStatusFilter) {
-      if (leadnotInterestedStatusFilter === "other") {
-        filtered = filtered.filter(
-          (lead) => !["price", "budget", "distance"].includes(lead.reason)
-        );
-      } else {
-        filtered = filtered.filter(
-          (lead) => lead.reason === leadnotInterestedStatusFilter
-        );
-      }
-    }
-
-    // Filter by visit
-    if (visitFilter) {
-      filtered = filtered.filter((lead) => lead.visit === visitFilter);
-    }
-
-    // Filter by meeting status
-    if (meetingStatusFilter) {
-      filtered = filtered.filter(
-        (lead) => lead.meeting_status === meetingStatusFilter
-      );
-    }
-
     // Filter by employee
     if (employeeFilter) {
-      filtered = filtered.filter((lead) => lead.assignedTo === employeeFilter);
+      filtered = filtered.filter(
+        (lead) => lead.assignedTo === Number(employeeFilter)
+      );
     }
 
-    // Filter by month
-    if (monthFilter) {
-      filtered = filtered.filter((lead) => {
-        const leadMonth = moment(lead.createdTime).format("MM");
-        return leadMonth === monthFilter;
-      });
-    }
-    if (monthFilter) {
-      filtered = filtered.filter((lead) => {
-        const leadMonth = moment(lead.createdTime).format("MMMM");
-        return leadMonth === monthFilter;
-      });
-    }
-    if (yearFilter) {
-      filtered = filtered.filter((lead) => {
-        const leadYear = moment(lead.createdTime).format("YYYY");
-        return leadYear === yearFilter;
-      });
-    }
-
-    if (visitmonthFilter) {
-      filtered = filtered.filter((lead) => {
-        const visitleadMonth = moment(lead.visit_date).format("MMMM");
-        return visitleadMonth === visitmonthFilter;
-      });
-    }
     if (soldunitFilter) {
       filtered = filtered.filter((lead) => lead.unit_status === soldunitFilter);
-    }
-    // Filter by date range
-    if (filterDate) {
-      filtered = filtered.filter((lead) => {
-        const leadDate = moment(lead.createdTime).format("YYYY-MM-DD");
-        return leadDate === filterDate;
-      });
     }
 
     return filtered;
@@ -536,37 +413,29 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
                 {/* Filtered Date */}
                 <div className="flex flex-col">
                   <label className="mb-1 text-sm font-semibold text-gray-700">
-                    Filtered Date
+                    Start Date
                   </label>
                   <input
                     type="date"
-                    value={filterDate}
-                    onChange={(e) => setFilterDate(e.target.value)}
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
                     className={`w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 transition ${
-                      filterDate ? "bg-cyan-600 text-white" : "bg-white"
+                      startDate ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   />
                 </div>
-
-                {/* Meeting Status */}
                 <div className="flex flex-col">
                   <label className="mb-1 text-sm font-semibold text-gray-700">
-                    Meeting Status
+                    End Date
                   </label>
-                  <select
-                    value={meetingStatusFilter}
-                    onChange={(e) => setMeetingStatusFilter(e.target.value)}
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
                     className={`w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 transition ${
-                      meetingStatusFilter
-                        ? "bg-cyan-600 text-white"
-                        : "bg-white"
+                      endDate ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
-                  >
-                    <option value="">All Meeting Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="done by director">Done By Director</option>
-                    <option value="done by manager">Done By Manager</option>
-                  </select>
+                  />
                 </div>
 
                 {/* Lead Source */}
@@ -605,161 +474,6 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
                   </select>
                 </div>
 
-                {/* Deal Filter */}
-                <div className="flex flex-col">
-                  <label className="mb-1 text-sm font-semibold text-gray-700">
-                    Deal
-                  </label>
-                  <select
-                    value={dealFilter}
-                    onChange={(e) => setDealFilter(e.target.value)}
-                    className={`w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 transition ${
-                      dealFilter ? "bg-cyan-600 text-white" : "bg-white"
-                    }`}
-                  >
-                    <option value="">All Deal</option>
-                    <option value="pending">Pending</option>
-                    <option value="close">Closed</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                </div>
-
-                {/* Lead Status */}
-                <div className="flex flex-col">
-                  <label className="mb-1 text-sm font-semibold text-gray-700">
-                    Lead Status
-                  </label>
-                  <select
-                    value={leadStatusFilter}
-                    onChange={(e) => setLeadStatusFilter(e.target.value)}
-                    className={`w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 transition ${
-                      leadStatusFilter ? "bg-cyan-600 text-white" : "bg-white"
-                    }`}
-                  >
-                    <option value="">All Lead Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="active lead">Active Lead</option>
-                    <option value="calling done">Calling Done</option>
-                    <option value="site visit done">Site Visit Done</option>
-                    <option value="interested">Interested</option>
-                    <option value="not-interested">Not Interested</option>
-                    <option value="completed">Completed</option>
-                  </select>
-                </div>
-
-                {/* Not Interested Reason */}
-                {leadStatusFilter === "not-interested" && (
-                  <div className="flex flex-col">
-                    <label className="mb-1 text-sm font-semibold text-gray-700">
-                      Reason
-                    </label>
-                    <select
-                      value={leadnotInterestedStatusFilter}
-                      onChange={(e) =>
-                        setLeadnotInterestedStatusFilter(e.target.value)
-                      }
-                      className={`w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 transition ${
-                        leadnotInterestedStatusFilter
-                          ? "bg-cyan-600 text-white"
-                          : "bg-white"
-                      }`}
-                    >
-                      <option value="">All</option>
-                      <option value="price">Price</option>
-                      <option value="budget">Budget</option>
-                      <option value="distance">Distance</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                )}
-
-                {/* Visit Month */}
-                <div className="flex flex-col">
-                  <label className="mb-1 text-sm font-semibold text-gray-700">
-                    Visit Month
-                  </label>
-                  <select
-                    value={visitmonthFilter}
-                    onChange={(e) => setVisitMonthFilter(e.target.value)}
-                    className={`w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 transition ${
-                      visitmonthFilter ? "bg-cyan-600 text-white" : "bg-white"
-                    }`}
-                  >
-                    <option value="">All Months</option>
-                    {uniqueVisitMonth.map((m) => (
-                      <option key={m} value={m}>
-                        {m}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Visit Filter */}
-                {visitmonthFilter && (
-                  <div className="flex flex-col">
-                    <label className="mb-1 text-sm font-semibold text-gray-700">
-                      Visit
-                    </label>
-                    <select
-                      value={visitFilter}
-                      onChange={(e) => setVisitFilter(e.target.value)}
-                      className={`w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 transition ${
-                        visitFilter ? "bg-cyan-600 text-white" : "bg-white"
-                      }`}
-                    >
-                      <option value="">All Visit</option>
-                      <option value="fresh">Fresh Visit</option>
-                      <option value="re-visit">Re-Visit</option>
-                      <option value="associative">Associative Visit</option>
-                      <option value="self">Self Visit</option>
-                    </select>
-                  </div>
-                )}
-
-                {/* Year Filter */}
-                <div className="flex flex-col">
-                  <label className="mb-1 text-sm font-semibold text-gray-700">
-                    Year
-                  </label>
-                  <select
-                    value={yearFilter}
-                    onChange={(e) => setYearFilter(e.target.value)}
-                    className={`w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 transition ${
-                      yearFilter ? "bg-cyan-600 text-white" : "bg-white"
-                    }`}
-                  >
-                    <option value="">All Years</option>
-                    {uniqueYears.map((y) => (
-                      <option key={y} value={y}>
-                        {y}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Month Filter */}
-                {yearFilter && (
-                  <div className="flex flex-col">
-                    <label className="mb-1 text-sm font-semibold text-gray-700">
-                      Month
-                    </label>
-                    <select
-                      value={monthFilter}
-                      onChange={(e) => setMonthFilter(e.target.value)}
-                      className={`w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 transition ${
-                        monthFilter ? "bg-cyan-600 text-white" : "bg-white"
-                      }`}
-                    >
-                      <option value="">All Months</option>
-                      {uniqueMonth.map((m) => (
-                        <option key={m} value={m}>
-                          {m}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-
                 {/* Employee Filter */}
                 <div className="flex flex-col">
                   <label className="mb-1 text-sm font-semibold text-gray-700">
@@ -774,8 +488,8 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
                   >
                     <option value="">Select Employee</option>
                     {employees.map((emp) => (
-                      <option key={emp.employee_id} value={emp.name}>
-                        {emp.name}
+                      <option key={emp.staff_id} value={emp.staff_id}>
+                        {emp.staff_name}
                       </option>
                     ))}
                   </select>
@@ -880,25 +594,7 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
                     <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-cyan-700">
                       Unit Status
                     </th>
-                    <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-cyan-700">
-                      Visit
-                    </th>
-                    <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-cyan-700">
-                      Visit Date
-                    </th>
-                    <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-cyan-700">
-                      Reason
-                    </th>
-                    <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-cyan-700">
-                      Meeting Status
-                    </th>
 
-                    <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-cyan-700">
-                      Remark Status
-                    </th>
-                    <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-cyan-700">
-                      Answer Remark
-                    </th>
                     <th
                       className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-cyan-700 cursor-pointer"
                       onClick={toggleSortOrder}
@@ -948,7 +644,7 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
                           {lead.unit_type}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-700 font-semibold">
-                          {lead.assignedTo}
+                          {lead.staff_name}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 font-semibold">
                           {lead.lead_status}
@@ -956,37 +652,9 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
                         <td className="px-6 py-4 border-b border-gray-200 font-semibold">
                           {lead.unit_status}
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 font-semibold">
-                          {lead.visit}
-                        </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-700 font-semibold">
-                          {lead.visit_date === "pending"
-                            ? "pending"
-                            : moment(lead.visit_date)
-                                .format("DD MMM YYYY")
-                                .toUpperCase()}
-                        </td>
-                        <td className="px-6 py-4 border-b border-gray-200 font-semibold">
-                          {lead.reason}
-                        </td>
 
-                        <td className="px-6 py-4 border-b border-gray-200 font-semibold">
-                          {lead.meeting_status}
-                        </td>
-
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-700 font-semibold text-wrap">
-                          {lead.remark_status}
-                        </td>
-                        <td
-                          className="px-6 text-gray-700 cursor-pointer text-wrap font-semibold"
-                          // onClick={() => openModal(lead)}
-                        >
-                          {lead.answer_remark}
-                        </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-700 font-semibold">
-                          {moment(lead.createdTime)
-                            .format("DD MMM YYYY")
-                            .toUpperCase()}
+                          {lead.createdTime}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-700 font-semibold text-nowrap">
                           <button

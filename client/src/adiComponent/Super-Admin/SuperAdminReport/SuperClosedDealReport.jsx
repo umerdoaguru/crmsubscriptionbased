@@ -56,7 +56,7 @@ const SuperClosedDealReport = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -64,13 +64,13 @@ const SuperClosedDealReport = () => {
           },
         }
       );
-      // Filter out leads where deal status is "pending"
+
       const nonPendingLeads = response.data.filter(
-        (lead) => lead.deal_status == "close"
+        (lead) => lead.unit_status === "sold"
       );
 
       setLeads(nonPendingLeads);
-      setFilteredLeads(nonPendingLeads); // Initial data set for filtering
+      setFilteredLeads(nonPendingLeads);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }

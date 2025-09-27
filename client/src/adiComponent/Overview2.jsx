@@ -25,7 +25,7 @@ const Overview2 = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -48,7 +48,7 @@ const Overview2 = () => {
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-all-visit-super-admin`,
+        `https://crm-generalize.dentalguru.software/api/leads-all-visits`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -62,6 +62,8 @@ const Overview2 = () => {
       console.error("Error fetching quotations:", error);
     }
   };
+
+  console.log(visit);
 
   const fetchProjects = async () => {
     try {
@@ -84,7 +86,7 @@ const Overview2 = () => {
   const employeesoldunit = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/super-admin-unit-sold/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/getAllUnitSoldByOrg/${superadminuser?.staff_org_id}`,
 
         {
           headers: {
@@ -108,17 +110,20 @@ const Overview2 = () => {
   }, []);
 
   const leadCount = leads.length;
-  const closedCount = leads.filter(
-    (lead) => lead.deal_status === "close"
-  ).length;
+
+  console.log(leads);
 
   const soldunit = employeesold.length;
 
-  const visitCount = leads.filter((lead) =>
-    ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
-  ).length;
+  const visitCount = visit?.length;
 
   const projectCount = project.length;
+
+  const closedCount = leads.filter(
+    (lead) => lead.unit_status === "sold"
+  ).length;
+
+  console.log(closedCount);
 
   return (
     <>
@@ -218,7 +223,7 @@ const Overview2 = () => {
                     className={`${
                       selectedComponent === "ClosedData"
                         ? "text-white"
-                        : "text-gray-600"
+                        : "text-gray-600 font-bold"
                     }`}
                   >
                     {closedCount}
@@ -260,7 +265,7 @@ const Overview2 = () => {
                     className={`${
                       employeesold === "soldunit"
                         ? "text-white"
-                        : "text-gray-600"
+                        : "text-gray-600 font-bold"
                     }`}
                   >
                     {soldunit}

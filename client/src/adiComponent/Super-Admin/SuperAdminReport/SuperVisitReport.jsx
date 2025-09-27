@@ -11,7 +11,7 @@ const SuperVisitReport = () => {
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const leadsPerPage = 6;
-  const EmpId = useSelector((state) => state.auth.user.staff_id);
+  const EmpId = useSelector((state) => state.auth.user);
   const [employees, setEmployees] = useState([]);
   const [duration, setDuration] = useState("all");
   const [selectedEmployee, setSelectedEmployee] = useState("");
@@ -56,8 +56,8 @@ const SuperVisitReport = () => {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/leads-all-visits`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -65,21 +65,20 @@ const SuperVisitReport = () => {
           },
         }
       );
-      // Filter out leads where visit is "Pending"
-      const nonPendingLeads = response.data.filter((lead) =>
-        ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
-      );
 
-      setLeads(nonPendingLeads);
-      setFilteredLeads(nonPendingLeads);
+      setLeads(data);
+      setFilteredLeads(data);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
   };
+
+  console.log(leads);
+
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employee-super-admin/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getAllEmployeeData/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -87,7 +86,7 @@ const SuperVisitReport = () => {
           },
         }
       );
-      setEmployees(response.data);
+      setEmployees(data);
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
@@ -123,7 +122,7 @@ const SuperVisitReport = () => {
     // Filter by selected employee
     if (selectedEmployee) {
       filtered = filtered.filter(
-        (lead) => lead.assignedTo === selectedEmployee
+        (lead) => lead.assignedTo === Number(selectedEmployee)
       );
     }
     filtered = filterByDuration(filtered, duration);
@@ -132,7 +131,6 @@ const SuperVisitReport = () => {
   }, [selectedEmployee, duration, leads]);
 
   const downloadExcel = () => {
-    // Map to rename keys for export
     const columnMapping = {
       lead_no: "Lead Number",
       assignedTo: "Assigned To",
@@ -174,13 +172,12 @@ const SuperVisitReport = () => {
             col
           )
         ) {
-          // Check if date exists and is valid
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
               ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-              : "pending"; // If invalid or missing, set as "PENDING"
+              : "pending";
         } else {
-          formattedLead[newKey] = lead[col]; // Assign other fields normally
+          formattedLead[newKey] = lead[col];
         }
       });
 
@@ -224,8 +221,8 @@ const SuperVisitReport = () => {
               >
                 <option value="">Select Employee</option>
                 {employees.map((employee) => (
-                  <option key={employee.id} value={employee.name}>
-                    {employee.name}
+                  <option key={employee.staff_id} value={employee.staff_id}>
+                    {employee.staff_name}
                   </option>
                 ))}
               </select>
@@ -268,7 +265,7 @@ const SuperVisitReport = () => {
                     Assigned To
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Visit
+                    Visit Type
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Visit Date
@@ -302,17 +299,13 @@ const SuperVisitReport = () => {
                         {visit.name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {visit.assignedTo}
+                        {visit.staff_name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {visit.visit}
+                        {visit.visit_type}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {visit.visit_date === "pending"
-                          ? "pending"
-                          : moment(visit.visit_date)
-                              .format("DD MMM YYYY")
-                              .toUpperCase()}
+                        {visit.visit_date}
                       </td>
                     </tr>
                   ))

@@ -54,8 +54,8 @@ const SuperVisitData = () => {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/leads-all-visits`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -63,20 +63,17 @@ const SuperVisitData = () => {
           },
         }
       );
-      // Filter out leads where visit is "Pending"
-      const nonPendingLeads = response.data.filter((lead) =>
-        ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
-      );
-      setLeads(nonPendingLeads);
-      setFilteredLeads(nonPendingLeads); // Initial data set for filtering
+
+      setLeads(data);
+      setFilteredLeads(data);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employee-super-admin/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getAllEmployeeData/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -84,18 +81,15 @@ const SuperVisitData = () => {
           },
         }
       );
-      setEmployees(response.data);
+      setEmployees(data);
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
   };
 
-  // Automatically apply date filter when start or end date changes
-
   useEffect(() => {
     let filtered = leads;
 
-    // Filter by date
     if (startDate && endDate) {
       filtered = filtered.filter((lead) => {
         const visitDate = moment(lead.visit_date, "YYYY-MM-DD");
@@ -103,10 +97,9 @@ const SuperVisitData = () => {
       });
     }
 
-    // Filter by selected employee
     if (selectedEmployee) {
       filtered = filtered.filter(
-        (lead) => lead.assignedTo === selectedEmployee
+        (lead) => lead.assignedTo === Number(selectedEmployee)
       );
     }
 
@@ -114,7 +107,6 @@ const SuperVisitData = () => {
   }, [startDate, endDate, selectedEmployee, leads]);
 
   const downloadExcel = () => {
-    // Map to rename keys for export
     const columnMapping = {
       lead_no: "Lead Number",
       assignedTo: "Assigned To",
@@ -153,35 +145,31 @@ const SuperVisitData = () => {
             col
           )
         ) {
-          // Check if date exists and is valid
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
               ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-              : "pending"; // If invalid or missing, set as "PENDING"
+              : "pending";
         } else {
-          formattedLead[newKey] = lead[col]; // Assign other fields normally
+          formattedLead[newKey] = lead[col];
         }
       });
 
       return formattedLead;
     });
-    // Ensure we handle empty reports gracefully
+
     if (completedLeads.length === 0) {
       alert("No data available for the selected date range.");
       return;
     }
 
-    // Generate the Excel workbook
     const worksheet = XLSX.utils.json_to_sheet(completedLeads);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
 
-    // Generate a valid filename
     const filename = ` Lead Report ${
       startDate ? moment(startDate).format("DD-MM-YYYY") : "Start"
     } to ${endDate ? moment(endDate).format("DD-MM-YYYY") : "End"}.xlsx`;
 
-    // Download the Excel file
     XLSX.writeFile(workbook, filename);
   };
 
@@ -245,8 +233,8 @@ const SuperVisitData = () => {
               >
                 <option value="">Select Employee</option>
                 {employees.map((employee) => (
-                  <option key={employee.id} value={employee.name}>
-                    {employee.name}
+                  <option key={employee.staff_id} value={employee.staff_id}>
+                    {employee.staff_name}
                   </option>
                 ))}
               </select>
@@ -281,7 +269,7 @@ const SuperVisitData = () => {
                     Assigned To
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Visit
+                    Visit Type
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Visit Date
@@ -315,17 +303,13 @@ const SuperVisitData = () => {
                         {visit.name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {visit.assignedTo}
+                        {visit.staff_name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {visit.visit}
+                        {visit.visit_type}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {visit.visit_date === "pending"
-                          ? "pending"
-                          : moment(visit.visit_date)
-                              .format("DD MMM YYYY")
-                              .toUpperCase()}
+                        {visit.visit_date}
                       </td>
                     </tr>
                   ))
