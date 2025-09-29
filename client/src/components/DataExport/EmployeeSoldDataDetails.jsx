@@ -10,11 +10,11 @@ const EmployeeSoldDataDetails = () => {
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [employees, setEmployees] = useState([]);
-  const [selectedEmployee, setSelectedEmployee] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const leadsPerPage = 7;
+  const [employees, setEmployees] = useState([]);
 
+  const leadsPerPage = 7;
+  const [selectedEmployee, setSelectedEmployee] = useState("");
   const [soldUnits, setSoldUnits] = useState([]);
   const [selectedColumns, setSelectedColumns] = useState([
     "lead_id",
@@ -25,20 +25,38 @@ const EmployeeSoldDataDetails = () => {
     "unit_status",
     "date",
   ]);
-  const adminuser = useSelector((state) => state.auth.user);
-  const token = adminuser.token;
-  const userId = adminuser.user_id;
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
+  const userId = superadminuser.staff_id;
 
   useEffect(() => {
     fetchEmployeeUnitSold();
     fetchSoldUnits();
-    fetchEmployeeData();
     fetchEmployees();
   }, []);
+
+  const fetchEmployeeUnitSold = async () => {
+    try {
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setLeads(data);
+      setFilteredLeads(data);
+    } catch (error) {
+      console.error("Error fetching leads:", error);
+    }
+  };
   const fetchEmployees = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employee/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/employee-super-admin/${userId}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -52,32 +70,15 @@ const EmployeeSoldDataDetails = () => {
     }
   };
 
-  const fetchEmployeeUnitSold = async () => {
+  const fetchSoldUnits = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/admin-unit-sold/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/super-admin-unit-sold/${userId}`,
         {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
-      );
-      console.log("Fetched Leads:", response.data);
-      const fetchedLeads = response.data.data || response.data || [];
-      setLeads(fetchedLeads);
-      setFilteredLeads(fetchedLeads);
-    } catch (error) {
-      console.error("Error fetching leads:", error);
-    }
-  };
-
-  const fetchSoldUnits = async () => {
-    try {
-      const response = await axios.get(
-        "https://crm-generalize.dentalguru.software/api/unit-sold",
-        {
-          headers: { "Content-Type": "application/json" },
         }
       );
       setSoldUnits(response.data.data || response.data || []);
@@ -90,9 +91,12 @@ const EmployeeSoldDataDetails = () => {
   const fetchEmployeeData = async (employeeId) => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/unit-sold/${employeeId}`,
+        `https://crm-generalize.dentalguru.software/api/getAllEmployeeData/${superadminuser?.staff_org_id}`,
         {
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       console.log("Fetched Employee Data:", response.data);
@@ -189,32 +193,52 @@ const EmployeeSoldDataDetails = () => {
   };
 
   return (
-    <div className="flex-grow md:p-4 mt-14 lg:mt-0 sm:ml-0">
+    <div className="h-auto md:p-4 mt-14 lg:mt-0 sm:ml-0">
       <center className="text-2xl text-center mt-8 font-medium">
         Total Sold Units
       </center>
       <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
-      <div className="flex mb-4 sm:flex-row flex-col gap-2">
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          className="border p-1"
-        />
-        <div className="p-1">
-          <p>to</p>
+      <div className="flex flex-col sm:flex-row gap-4 mb-6 items-end">
+        {/* Start Date */}
+        <div className="flex flex-col w-full sm:w-auto">
+          <label className="mb-1 text-sm font-semibold text-gray-700">
+            Start Date
+          </label>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="border rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          />
         </div>
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          className="border p-1"
-        />
-        <div className="">
+
+        {/* Separator "to" */}
+        <div className="flex items-center justify-center text-gray-600 font-medium">
+          <span className="px-2">to</span>
+        </div>
+
+        {/* End Date */}
+        <div className="flex flex-col w-full sm:w-auto">
+          <label className="mb-1 text-sm font-semibold text-gray-700">
+            End Date
+          </label>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="border rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          />
+        </div>
+
+        {/* Employee Dropdown */}
+        <div className="flex flex-col w-full sm:w-auto">
+          <label className="mb-1 text-sm font-semibold text-gray-700">
+            Employee
+          </label>
           <select
             value={selectedEmployee}
             onChange={(e) => setSelectedEmployee(e.target.value)}
-            className="border p-1"
+            className="border rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
           >
             <option value="">Select Employee</option>
             {employees.map((employee) => (
@@ -224,10 +248,12 @@ const EmployeeSoldDataDetails = () => {
             ))}
           </select>
         </div>
-        <div>
+
+        {/* Download Button */}
+        <div className="w-full sm:w-auto">
           <button
             onClick={downloadExcel}
-            className="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded"
+            className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-6 py-2 rounded-lg shadow-md transition active:scale-95 w-full sm:w-auto"
           >
             Download Excel
           </button>
@@ -235,73 +261,79 @@ const EmployeeSoldDataDetails = () => {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto mt-4">
-        <table className="min-w-full bg-white border">
-          <thead>
-            <tr>
-              <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">Lead Id</th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">
-                Project Name
-              </th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">
-                Customer Name
-              </th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">Unit Id</th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">
-                Employee Name
-              </th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">
-                Unit Status
-              </th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentLeads.length === 0 ? (
+      <div className="mt-4">
+        <div className="border rounded-lg shadow-sm">
+          <table className="min-w-full bg-white border">
+            <thead className="sticky top-0 bg-gray-200 z-10">
               <tr>
-                <td
-                  colSpan="11"
-                  className="px-6 py-4 border-b border-gray-200 text-center text-gray-500"
-                >
-                  No data found
-                </td>
+                <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">
+                  Lead Id
+                </th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">
+                  Project Name
+                </th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">
+                  Customer Name
+                </th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">
+                  Unit Number
+                </th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">
+                  Employee Name
+                </th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">
+                  Unit Status
+                </th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">Date</th>
               </tr>
-            ) : (
-              currentLeads.map((sold, index) => (
-                <tr
-                  key={sold.id}
-                  className={index % 2 === 0 ? "bg-gray-100" : ""}
-                >
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {currentPage * leadsPerPage + index + 1}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {sold.lead_id}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {sold.project_name}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {sold.name}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {sold.unit_no}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {sold.employee_name}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {sold.unit_status}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {moment(sold.date).format("DD MMM YYYY").toUpperCase()}
+            </thead>
+            <tbody>
+              {currentLeads.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan="11"
+                    className="px-6 py-4 border-b border-gray-200 text-center text-gray-500"
+                  >
+                    No data found
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                currentLeads.map((sold, index) => (
+                  <tr
+                    key={sold.id}
+                    className={index % 2 === 0 ? "bg-gray-100" : ""}
+                  >
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {currentPage * leadsPerPage + index + 1}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {sold.lead_id}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {sold.project_name}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {sold.name}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {sold.unit_number}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {sold.staff_name}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {sold.unit_status}
+                    </td>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {sold.unit_updated_at?.split(" ")[0]}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Pagination */}

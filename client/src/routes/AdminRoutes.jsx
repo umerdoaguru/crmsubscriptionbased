@@ -33,7 +33,6 @@ import MainSocialLeads from "../components/SocialMediaLeads/MainSocialLeads";
 import QuotationlistAdmin from "../components/AdminDashBoardCards/AdminQuotationlist/QuotationlistAdmin";
 import Admin_view_quotations from "../components/Leads/Admin_view_quotations";
 import Admin_QuotationView from "../components/Leads/Admin_QuotationView";
-import Admin_RemarksView from "../components/Leads/Admin_RemarksView";
 import AdminDashboard from "../pages/Admin/AdminDashboard";
 import AdminLeads from "../pages/Admin/AdminLeads";
 import MainSocialMediaByProject from "../pages/Admin/MainSocialMediaByProject";
@@ -56,6 +55,8 @@ import AdminProfile from "../pages/Admin/AdminProfile";
 import AdminViewVisit from "../pages/Admin/AdminViewVisit";
 import AdminFollowUpView from "../pages/Admin/AdminFollowUpView";
 import AdminViewAllUnitSold from "../pages/Admin/AdminViewAllUnitSold";
+import Admin_RemarksView from "../components/Leads/Admin_RemarksView";
+import SuperSocialMediaLeads from "../pages/superAdmin/SuperSocialMediaLeads";
 
 function AdminRoutes() {
   const user = useSelector((state) => state.auth.user);
@@ -105,6 +106,13 @@ function AdminRoutes() {
           element={<AdminViewAllUnitSold />}
         />
 
+        <Route path="/admin_view_remark/:id" element={<Admin_RemarksView />} />
+
+        <Route
+          path="/social-media-superleads/:id"
+          element={<SuperSocialMediaLeads />}
+        />
+
         {/* =========================================================================== */}
 
         {/* <Route path="/admincrmonerealty" element={<Registration />} />
@@ -136,7 +144,7 @@ function AdminRoutes() {
         
        
         
-        <Route path="/admin_view_remark/:id" element={<Admin_RemarksView />} />
+       
         <Route
           path="/admin_view_quotations/:id"
           element={<Admin_view_quotations />}

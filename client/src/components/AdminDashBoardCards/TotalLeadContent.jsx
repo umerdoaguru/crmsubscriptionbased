@@ -10,11 +10,12 @@ const AdminTotalLeadContent = () => {
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const [leadsPerPage, setLeadsPerPage] = useState(7); // Default leads per page
+  const [leadsPerPage, setLeadsPerPage] = useState(7);
   const navigate = useNavigate();
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
   const userId = adminuser.user_id;
+
   useEffect(() => {
     fetchLeads();
   }, []);
@@ -22,7 +23,7 @@ const AdminTotalLeadContent = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-data-user-id/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${adminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -36,6 +37,7 @@ const AdminTotalLeadContent = () => {
       console.error("Error fetching leads:", error);
     }
   };
+
   useEffect(() => {
     let filtered = leads;
 
@@ -169,7 +171,7 @@ const AdminTotalLeadContent = () => {
                       {lead.leadSource}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.assignedTo}
+                      {lead.staff_name}
                     </td>
 
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">

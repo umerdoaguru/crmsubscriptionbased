@@ -8,30 +8,27 @@ import VisitData from "../components/DataExport/VisitData";
 import CloseData from "../components/DataExport/CloseDateData";
 import EmployeeSoldDataDetails from "../components/DataExport/EmployeeSoldDataDetails";
 
-function DataExportContent() {
+const DataExportContent = () => {
   const [leads, setLeads] = useState([]);
-  const [employee, setEmployee] = useState([]);
-  const [quotation, setQuotation] = useState([]);
-  const [invoice, setInvoice] = useState([]);
-  const [selectedComponent, setSelectedComponent] = useState("LeadData"); // Set 'LeadData' as default
+  const [visit, setVisit] = useState([]);
   const [employeesold, setemployeesold] = useState([]);
-  const adminuser = useSelector((state) => state.auth.user);
-  const token = adminuser.token;
-  const userId = adminuser.user_id;
+  const [selectedComponent, setSelectedComponent] = useState("LeadData");
+  const superadminuser = useSelector((state) => state.auth.user);
+  const [employee, setEmployee] = useState([]);
+  const token = superadminuser.token;
+  const userId = superadminuser.staff_id;
 
   useEffect(() => {
     fetchLeads();
     fetchEmployee();
-    fetchQuotation();
-    fetchInvoice();
+    fetchVisit();
     employeesoldunit();
-    // fetchVisit();
   }, []);
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-data-user-id/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -39,7 +36,7 @@ function DataExportContent() {
           },
         }
       );
-      setLeads(response.data);
+      setLeads(data);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
@@ -48,7 +45,7 @@ function DataExportContent() {
   const fetchEmployee = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employee/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/employee-super-admin/${userId}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -62,31 +59,10 @@ function DataExportContent() {
     }
   };
 
-  const fetchQuotation = async () => {
-    try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/quotation-data`
-      );
-      setQuotation(response.data);
-    } catch (error) {
-      console.error("Error fetching quotations:", error);
-    }
-  };
-
-  const fetchInvoice = async () => {
-    try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/invoice-data`
-      );
-      setInvoice(response.data);
-    } catch (error) {
-      console.error("Error fetching invoices:", error);
-    }
-  };
   const employeesoldunit = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/admin-unit-sold/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getAllUnitSoldByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -94,27 +70,35 @@ function DataExportContent() {
           },
         }
       );
-      console.log(response.data);
-      setemployeesold(response.data);
+      console.log(data);
+      setemployeesold(data);
+    } catch (error) {
+      console.error("Error fetching quotations:", error);
+    }
+  };
+  const fetchVisit = async () => {
+    try {
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/leads-all-visits/${superadminuser?.staff_org_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(data);
+      setVisit(data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
   };
 
-  const leadCount = leads.filter(
-    (lead) => lead.lead_status === "completed"
-  ).length;
-  const employeeCount = employee.length;
-
-  const visitCount = leads.filter((lead) =>
-    ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
+  const closedCount = leads.filter(
+    (lead) => lead.unit_status === "sold"
   ).length;
 
   const soldUnits = employeesold.length;
-
-  const closedCount = leads.filter(
-    (lead) => lead.deal_status === "close"
-  ).length; // Get count for Closed Data
 
   return (
     <>
@@ -163,7 +147,7 @@ function DataExportContent() {
                             : "text-gray-600"
                         }`}
                       >
-                        {leadCount}
+                        {leads?.length}
                       </p>
                     </div>
                   </div>
@@ -207,7 +191,7 @@ function DataExportContent() {
                             : "text-gray-600"
                         }`}
                       >
-                        {visitCount}
+                        {visit?.length}
                       </p>
                     </div>
                   </div>
@@ -315,6 +299,6 @@ function DataExportContent() {
       </div>
     </>
   );
-}
+};
 
 export default DataExportContent;

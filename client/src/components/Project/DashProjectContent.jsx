@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ReactPaginate from "react-paginate";
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 const DashProjectContent = () => {
   const [projects, setProjects] = useState([]);
@@ -22,7 +23,7 @@ const DashProjectContent = () => {
   const fetchProjects = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/all-project/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${adminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -35,6 +36,8 @@ const DashProjectContent = () => {
       console.error("Error fetching projects:", error);
     }
   };
+
+  console.log(projects);
 
   useEffect(() => {
     let filtered = projects;
@@ -144,22 +147,22 @@ const DashProjectContent = () => {
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {index + 1 + currentPage * projectsPerPage}
                       </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800 hover:text-cyan-700 font-bold capitalize ">
                         <Link
-                          to={`/project-units/${project.main_project_id}`}
+                          to={`/project-units/${project.project_id}`}
                           className="inline-block"
                         >
-                          {project.project_name}
+                          {project.project_name} <FaExternalLinkAlt />
                         </Link>
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {project.main_project_id}
+                        {project.project_id}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {project.location}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {project.total_area}
+                        {project.total_units}
                       </td>
                     </tr>
                   ))}

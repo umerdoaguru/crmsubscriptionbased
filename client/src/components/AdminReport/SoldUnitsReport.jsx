@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 function SoldUnitsReport() {
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
-  const [duration, setDuration] = useState("all"); // Default duration filter
+  const [duration, setDuration] = useState("all");
   const [selectedColumns, setSelectedColumns] = useState([
     "lead_id",
     "project_name",
@@ -20,9 +20,10 @@ function SoldUnitsReport() {
   ]);
   const [currentPage, setCurrentPage] = useState(0);
   const leadsPerPage = 6;
-  const adminuser = useSelector((state) => state.auth.user);
-  const token = adminuser.token;
-  const userId = adminuser.user_id;
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
+  const userId = superadminuser.staff_id;
+
   // Fetch leads from the API without appending an ID
   useEffect(() => {
     fetchLeads();
@@ -30,8 +31,8 @@ function SoldUnitsReport() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/admin-unit-sold/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -39,14 +40,15 @@ function SoldUnitsReport() {
           },
         }
       );
-      console.log("Fetched Leads:", response.data);
-      const fetchedLeads = response.data.data || response.data || [];
-      setLeads(fetchedLeads);
-      setFilteredLeads(fetchedLeads);
+
+      setLeads(data);
+      setFilteredLeads(data);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
   };
+
+  console.log(leads);
 
   // Filter leads by duration
   const filterByDuration = (leads, duration) => {
@@ -141,7 +143,7 @@ function SoldUnitsReport() {
         </div>
         <button
           onClick={downloadExcel}
-          className="bg-cyan-600 text-white font-medium px-4 py-2 rounded hover:bg-cyan-700"
+          className="bg-cyan-500 text-white font-medium px-4 py-2 rounded hover:bg-cyan-700"
         >
           Download Excel
         </button>
@@ -201,16 +203,16 @@ function SoldUnitsReport() {
                     {lead.name}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.unit_no}
+                    {lead.unit_number}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.employee_name}
+                    {lead.staff_name}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                     {lead.unit_status}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {moment(lead.date).format("DD MMM YYYY").toUpperCase()}
+                    {lead.unit_updated_at?.split(" ")[0]}
                   </td>
                 </tr>
               ))

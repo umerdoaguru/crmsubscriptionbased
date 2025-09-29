@@ -12,7 +12,7 @@ import {
 } from "recharts";
 import { useSelector } from "react-redux";
 
-const SuperLeadAllVisitChart = () => {
+const LeadVisitChart = () => {
   const [loading, setLoading] = useState(false);
   const [visitData, setVisitData] = useState([]);
   const [error, setError] = useState(null);
@@ -122,4 +122,4 @@ const SuperLeadAllVisitChart = () => {
   );
 };
 
-export default SuperLeadAllVisitChart;
+export default LeadVisitChart;

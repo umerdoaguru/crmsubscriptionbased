@@ -44,7 +44,6 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
       console.log(response.data);
       setLeads(response.data);
 
-      // Debugging: Log the exact value of the quotation field
       response.data.forEach((lead) => {
         console.log("Lead Quotation Status (raw):", lead.quotation);
       });
@@ -64,9 +63,7 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
           },
         }
       );
-      console.log(response.data);
 
-      // Ensure proper comparison with 'Created', trim any spaces and normalize the case
       setFollowCreated(response.data[0]);
     } catch (error) {
       console.error("Error fetching quotations:", error);
@@ -125,7 +122,6 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
       );
       console.log(response.data);
       setVisit(response.data);
-      // Ensure proper comparison with 'Created', trim any spaces and normalize the case
       const hasCreatedvisit = response.data.some(
         (lead) =>
           (lead.visit && lead.visit.trim().toLowerCase() === "fresh") ||
@@ -137,13 +133,12 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
     }
   };
   const handleViewQuotation = (lead) => {
-    console.log("Lead Object:", lead); // Log the lead object
+    console.log("Lead Object:", lead);
     const name = lead.name;
-    console.log("Lead Name:", name); // Log the name
+    console.log("Lead Name:", name);
     navigate(`/super_view_quotations/${lead.lead_id}`);
-
-    // navigate("/View_quotations");
   };
+
   const handleViewVisit = () => {
     navigate(`/super_view_visit/${leads[0].lead_id}`);
   };
@@ -187,6 +182,8 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
     }
   }, [leads]);
 
+  console.log(leads);
+
   return (
     <>
       <div className="relative  container px-2 mx-auto p-4">
@@ -206,13 +203,6 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
           {leads.map((lead, index) => (
             <div className="w-full lg:w-2/3 ">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                {/* <div>
-                  <label className="text-info">Lead Number</label>
-                  <div className="p-2 bg-gray-100 rounded">
-                    <p className="m-0">{lead.lead_no}</p>
-                  </div>
-                </div> */}
-
                 <div>
                   <label className="text-info">Name</label>
                   <div className="p-2 bg-gray-100 rounded">
@@ -341,43 +331,16 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Lead Source
                 </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Remark Status
-                </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Answer Remark
-                </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Meeting Status
-                </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Assigned By
-                </th>
+
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Lead Status
                 </th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Address
                 </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Booking Amount
-                </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Deal Status
-                </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Employee ID
-                </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Follow-Up Status
-                </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Payment Mode
-                </th>
 
-                <th className="px-6 py-3 border-b-2 border-gray-300">Reason</th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Registry
+                  Unit Status
                 </th>
 
                 <th className="px-6 py-3 border-b-2 border-gray-300">
@@ -396,19 +359,16 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Unit Status
                 </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">Visit</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Visit Date
-                </th>
+
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Close Date
                 </th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Assigned Date
                 </th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
+                {/* <th className="px-6 py-3 border-b-2 border-gray-300">
                   Actual Date
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody>
@@ -421,7 +381,7 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
                     {lead.lead_no}
                   </td> */}
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.assignedTo}
+                    {lead.staff_name}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                     {lead.name}
@@ -433,56 +393,23 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
                     {lead.leadSource}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.remark_status}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.answer_remark}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.meeting_status}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.assignedBy}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                     {lead.lead_status}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                     {lead.address}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.booking_amount}
+                    {lead.unit_status}
                   </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.deal_status}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.employeeId}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.follow_up_status}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.payment_mode}
-                  </td>
-
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.reason}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.registry}
-                  </td>
-
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                     {lead.project_name}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.main_project_id}
+                    {lead.project_id}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                     {lead.unit_type}
                   </td>
-
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                     {lead.unit_number}
                   </td>
@@ -490,35 +417,11 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
                     {lead.unit_status}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.visit}
+                    {lead.unit_updated_at}
                   </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800 ">
-                    {lead.visit_date === "pending"
-                      ? "pending"
-                      : moment(lead.visit_date)
-                          .format("DD MMM YYYY")
-                          .toUpperCase()}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 font-semibold text-gray-800">
-                    {lead.d_closeDate === "pending"
-                      ? "pending"
-                      : moment(lead.d_closeDate)
-                          .format("DD MMM YYYY")
-                          .toUpperCase()}
-                  </td>
+
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.createdTime
-                      ? moment(lead.createdTime)
-                          .format("DD MMM YYYY")
-                          .toUpperCase()
-                      : "N/A"}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.actual_date
-                      ? moment(lead.actual_date)
-                          .format("DD MMM YYYY")
-                          .toUpperCase()
-                      : "N/A"}
+                    {lead.createdTime}
                   </td>
                 </tr>
               ))}

@@ -3,12 +3,14 @@ import MainHeader from "../MainHeader";
 import Sider from "../Sider";
 
 import { GiFiles } from "react-icons/gi";
-import { SiMoneygram } from "react-icons/si";
+import { SiGoogleads, SiMoneygram } from "react-icons/si";
 
 import WebsiteLeads from "../SocialMediaLeads/WebsiteApi/WebsiteLeads";
 import Accrs from "../SocialMediaLeads/AccrsLeads";
 import LeadsTable from "../SocialMediaLeads/FacebookAPI/LeadsTable";
 import { useNavigate } from "react-router-dom";
+import { FaMeta } from "react-icons/fa6";
+import { CgWebsite } from "react-icons/cg";
 
 function SocialMediaLeadsContent() {
   const [selectedComponent, setSelectedComponent] = useState("FacebookData"); // Set 'FacebookData' as default
@@ -27,50 +29,111 @@ function SocialMediaLeadsContent() {
               </button>
             </div>
             <h2 className="text-2xl text-center font-medium">
-              Social Media Leads
+              Digital Marketing Leads
             </h2>
             <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
 
-            <div className="flex flex-wrap justify-around mt-3">
-              <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3 ">
+            <div className="flex flex-wrap justify-center gap-6 mt-5 mb-3">
+              {/* Meta Leads Data */}
+              <div className={`w-full sm:w-1/2 lg:w-1/4 xl:w-1/5`}>
                 <div
-                  className={` shadow-lg rounded-lg overflow-hidden cursor-pointer ${
+                  className={`rounded-2xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
                     selectedComponent === "FacebookData"
-                      ? "bg-cyan-500 text-white"
-                      : ""
-                  }`} // Change background color if active
-                  onClick={() => setSelectedComponent("FacebookData")} // Set selected component
+                      ? "bg-gradient-to-r from-cyan-500 to-cyan-600 text-white"
+                      : "bg-white text-gray-800"
+                  }`}
+                  onClick={() => setSelectedComponent("FacebookData")}
                 >
-                  <div className="p-4 flex flex-col items-center text-center">
+                  <div className="p-6 flex flex-col items-center text-center">
                     <div
-                      className={`text-3xl ${
+                      className={`text-4xl mb-3 transition-colors duration-300 ${
                         selectedComponent === "FacebookData"
                           ? "text-white"
-                          : "text-gray-700"
+                          : "text-cyan-600"
                       }`}
                     >
-                      <GiFiles />
+                      <FaMeta />
                     </div>
-                    <div className="mt-2">
-                      <h5
-                        className={`text-xl font-semibold ${
-                          selectedComponent === "FacebookData"
-                            ? "text-white"
-                            : "text-gray-800"
-                        }`}
-                      >
-                        Facebook Leads Data
-                      </h5>
-                      <p
-                        className={`${
-                          selectedComponent === "FacebookData"
-                            ? "text-white"
-                            : "text-gray-600"
-                        }`}
-                      >
-                        {}
-                      </p>
+                    <h5 className="text-lg font-semibold">Meta Leads Data</h5>
+                    <p
+                      className={`text-sm mt-1 ${
+                        selectedComponent === "FacebookData"
+                          ? "text-white/80"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      Track leads from Meta
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Website Inquiries */}
+              <div className={`w-full sm:w-1/2 lg:w-1/4 xl:w-1/5`}>
+                <div
+                  className={`rounded-2xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
+                    selectedComponent === "WebsiteData"
+                      ? "bg-gradient-to-r from-cyan-500 to-cyan-600 text-white"
+                      : "bg-white text-gray-800"
+                  }`}
+                  onClick={() => setSelectedComponent("WebsiteData")}
+                >
+                  <div className="p-6 flex flex-col items-center text-center">
+                    <div
+                      className={`text-4xl mb-3 transition-colors duration-300 ${
+                        selectedComponent === "WebsiteData"
+                          ? "text-white"
+                          : "text-cyan-600"
+                      }`}
+                    >
+                      <CgWebsite />
                     </div>
+                    <h5 className="text-lg font-semibold">
+                      Website Inquiries Data
+                    </h5>
+                    <p
+                      className={`text-sm mt-1 ${
+                        selectedComponent === "WebsiteData"
+                          ? "text-white/80"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      All website leads in one place
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Google Data */}
+              <div className={`w-full sm:w-1/2 lg:w-1/4 xl:w-1/5`}>
+                <div
+                  className={`rounded-2xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
+                    selectedComponent === "GoogleData"
+                      ? "bg-gradient-to-r from-cyan-500 to-cyan-600 text-white"
+                      : "bg-white text-gray-800"
+                  }`}
+                  onClick={() => setSelectedComponent("GoogleData")}
+                >
+                  <div className="p-6 flex flex-col items-center text-center">
+                    <div
+                      className={`text-4xl mb-3 transition-colors duration-300 ${
+                        selectedComponent === "GoogleData"
+                          ? "text-white"
+                          : "text-cyan-600"
+                      }`}
+                    >
+                      <SiGoogleads />
+                    </div>
+                    <h5 className="text-lg font-semibold">Google Data</h5>
+                    <p
+                      className={`text-sm mt-1 ${
+                        selectedComponent === "GoogleData"
+                          ? "text-white/80"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      View Google Ads leads
+                    </p>
                   </div>
                 </div>
               </div>
@@ -79,6 +142,7 @@ function SocialMediaLeadsContent() {
             {/* Conditionally render the selected component */}
             <div className="w-full h-[calc(100vh-10rem)] overflow-y-auto">
               {selectedComponent === "FacebookData" && <LeadsTable />}
+              {selectedComponent === "GoogleData" && <LeadsTable />}
               {selectedComponent === "WebsiteData" && <WebsiteLeads />}
               {selectedComponent === "99AcresData" && <Accrs />}
             </div>

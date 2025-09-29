@@ -1,28 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import moment from "moment";
+import Sider from "../Sider";
+import MainHeader from "../MainHeader";
 import { useSelector } from "react-redux";
 
-const AdminViewAllUnitSoldContent = () => {
-  const [employeeunitsold, setEmployeeUnitSold] = useState([]);
+const Admin_RemarksViewContent = () => {
+  const [remarks, setRemarks] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10);
   const [filterText, setFilterText] = useState("");
   const [render, setRender] = useState(false);
   const { id } = useParams();
+
   const navigate = useNavigate();
-  const adminuser = useSelector((state) => state.auth.user);
-  const token = adminuser?.token;
 
   useEffect(() => {
-    fetchEmployeeUnitSold();
+    fetchRemarks();
   }, [id, render]);
+  const adminuser = useSelector((state) => state.auth.user);
+  const token = adminuser.token;
 
-  const fetchEmployeeUnitSold = async () => {
+  const fetchRemarks = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/admin-unit-sold-lead-id/${id}`,
+        `https://crm-generalize.dentalguru.software/api/remarks-admin/${id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -30,45 +32,38 @@ const AdminViewAllUnitSoldContent = () => {
           },
         }
       );
-      setEmployeeUnitSold(response.data);
+      setRemarks(response.data);
       console.log(response);
     } catch (error) {
-      console.error("Error fetching visit:", error);
+      console.error("Error fetching remarks:", error);
     }
   };
 
-  const filteredEmployeeUnitSold = employeeunitsold.filter((unitsold) =>
-    unitsold.name.toLowerCase().includes(filterText.toLowerCase())
+  const filteredRemarks = remarks.filter((remark) =>
+    remark.name.toLowerCase().includes(filterText.toLowerCase())
   );
 
   const offset = currentPage * itemsPerPage;
-  const currentemployeeunitsold = filteredEmployeeUnitSold.slice(
-    offset,
-    offset + itemsPerPage
-  );
-  const pageCount = Math.ceil(filteredEmployeeUnitSold.length / itemsPerPage);
-
-  const handleBackClick = () => {
-    navigate(-1);
-  };
+  const currentRemarks = filteredRemarks.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(filteredRemarks.length / itemsPerPage);
 
   return (
     <>
       <div className="flex mt-20">
         <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
-          <div className="container mt-2">
-            <div className="mt-[1rem] ">
+          <div className="container">
+            <div className="mt-[1rem]">
               <button
                 onClick={() => navigate(-1)}
-                className="bg-cyan-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-cyan-600 transition-colors"
+                className="bg-blue-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-blue-600 transition-colors"
               >
                 Back
               </button>
             </div>
             <div className="w-full px-2 mx-auto p-4">
-              <div className="w-full px-2">
+              <div className="w-full px-2 mt-4">
                 <h2 className="text-2xl font-bold mb-4 text-center">
-                  All Unit Sold
+                  All Remarks
                 </h2>
                 <div className=" overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200 border border-gray-300">
@@ -77,41 +72,45 @@ const AdminViewAllUnitSoldContent = () => {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           S.no
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Unit No
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Project Name
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Unit Status
-                        </th>
 
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Name
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Assigned To
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Remark Status
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Remark Answer
+                        </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Date
                         </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {currentemployeeunitsold.map((unitsold, index) => (
-                        <tr key={unitsold.id}>
+                      {currentRemarks.map((remark, index) => (
+                        <tr key={remark.id}>
                           <td className="px-6 py-4 whitespace-nowrap">
                             {offset + index + 1}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {unitsold.unit_number}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {unitsold.project_name}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {unitsold.unit_status}
-                          </td>
 
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {moment(unitsold.date)
-                              .format("DD MMM YYYY")
-                              .toUpperCase()}
+                            {remark.name}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {remark.staff_name}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {remark.remark_status}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {remark.answer_remark}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {remark.remark_date}
                           </td>
                         </tr>
                       ))}
@@ -127,4 +126,4 @@ const AdminViewAllUnitSoldContent = () => {
   );
 };
 
-export default AdminViewAllUnitSoldContent;
+export default Admin_RemarksViewContent;

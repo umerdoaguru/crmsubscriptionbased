@@ -192,17 +192,20 @@ const Topbar = ({ isSidebarOpen }) => {
 
         {/* User Profile */}
         <div className="flex items-center gap-2">
-          {/* <img
-            src="https://i.pravatar.cc/150?img=48"
-            alt="User avatar"
-            className="rounded-full w-10 h-10 object-cover"
-          /> */}
           <button
             onClick={navigateToProfile}
             className="bg-cyan-600 text-white text-xl font-bold w-10 h-10 p-6 flex items-center justify-center rounded-full"
           >
             {getInitials(user?.staff_name)}
           </button>
+          <div className="flex flex-col items-start mr-2">
+            <span className="text-sm font-semibold text-gray-700 capitalize">
+              {user?.staff_name}
+            </span>
+            <span className="text-sm font-semibold text-gray-700">
+              {user?.staff_role}
+            </span>
+          </div>
         </div>
       </div>
     </header>

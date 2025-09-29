@@ -23,8 +23,8 @@ const TotalVisitContent = () => {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-data-user-id/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/leads-all-visits/${adminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -32,12 +32,9 @@ const TotalVisitContent = () => {
           },
         }
       );
-      const nonPendingLeads = response.data.filter((lead) =>
-        ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
-      );
 
-      setLeads(nonPendingLeads);
-      setFilteredLeads(nonPendingLeads);
+      setLeads(data);
+      setFilteredLeads(data);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
@@ -134,7 +131,7 @@ const TotalVisitContent = () => {
                         Assigned To
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Visit
+                        Visit Type
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Visit Date
@@ -160,14 +157,10 @@ const TotalVisitContent = () => {
                             {visit.assignedTo}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {visit.visit}
+                            {visit.visit_type}
                           </td>
                           <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                            {visit.visit_date === "pending"
-                              ? "pending"
-                              : moment(visit.visit_date)
-                                  .format("DD MMM YYYY")
-                                  .toUpperCase()}
+                            {visit.visit_date}
                           </td>
                         </tr>
                       ))

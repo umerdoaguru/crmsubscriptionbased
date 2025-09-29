@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
 import * as XLSX from "xlsx";
-import ReactPaginate from "react-paginate";
+import ReactPaginate from "react-paginate"; // Import react-paginate
+
 import { useSelector } from "react-redux";
 
 function LeadReport() {
@@ -39,9 +40,9 @@ function LeadReport() {
   ]);
   const [currentPage, setCurrentPage] = useState(0);
   const leadsPerPage = 6;
-  const adminuser = useSelector((state) => state.auth.user);
-  const token = adminuser.token;
-  const userId = adminuser.user_id;
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
+  const userId = superadminuser.staff_id;
   // Fetch leads and employees from the API
   useEffect(() => {
     fetchLeads();
@@ -51,7 +52,7 @@ function LeadReport() {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-data-user-id/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -66,10 +67,12 @@ function LeadReport() {
     }
   };
 
+  console.log(leads);
+
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employee/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getAllEmployeeData/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -77,7 +80,7 @@ function LeadReport() {
           },
         }
       );
-      setEmployees(response.data);
+      setEmployees(data);
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
@@ -111,12 +114,13 @@ function LeadReport() {
     let filtered = leads;
 
     if (selectedEmployee) {
-      filtered = filtered.filter(
-        (lead) => lead.assignedTo === selectedEmployee
-      );
+      filtered = filtered.filter((lead) => {
+        console.log(lead.assignedTo, selectedEmployee);
+        return lead.assignedTo === Number(selectedEmployee);
+      });
     }
 
-    filtered = filtered.filter((lead) => lead.lead_status === "completed");
+    // filtered = filtered.filter((lead) => lead.lead_status === "completed");
     filtered = filterByDuration(filtered, duration);
 
     setFilteredLeads(filtered);
@@ -126,7 +130,6 @@ function LeadReport() {
   // Excel download function
   const downloadExcel = () => {
     const columnMapping = {
-      lead_no: "Lead Number",
       assignedTo: "Assigned To",
       name: "Name",
       phone: "Phone",
@@ -142,8 +145,11 @@ function LeadReport() {
       employeeId: "Employee ID",
       follow_up_status: "Follow-up Status",
       payment_mode: "Payment Mode",
+      quotation: "Quotation",
+      quotation_status: "Quotation Status",
       reason: "Reason",
       registry: "Registry",
+
       project_name: "Project",
       visit: "Visit",
       visit_date: "Visit Date",
@@ -152,34 +158,29 @@ function LeadReport() {
       actual_date: "Actual Date",
     };
 
-    const completedLeads = filteredLeads
-      .filter((lead) => lead.deal_status !== "pending")
-      .map((lead) => {
-        const formattedLead = {};
+    const completedLeads = filteredLeads.map((lead) => {
+      const formattedLead = {};
 
-        // Dynamically include selected columns
-        selectedColumns.forEach((col) => {
-          const newKey = columnMapping[col] || col; // Use mapped name if available
+      selectedColumns.forEach((col) => {
+        const newKey = columnMapping[col] || col;
+
+        if (
+          ["actual_date", "createdTime", "visit_date", "d_closeDate"].includes(
+            col
+          )
+        ) {
+          // Check if date exists and is valid
           formattedLead[newKey] =
-            (col === "actual_date" || col === "createdTime") && lead[col]
+            lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
               ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-              : lead[col]; // Format dates or copy value
-        });
-
-        // Ensure renamed dates are included, even if not in selectedColumns
-        formattedLead["Actual Date"] = lead["actual_date"]
-          ? moment(lead["actual_date"]).format("DD MMM YYYY").toUpperCase()
-          : "";
-        formattedLead["Assigned Date"] = lead["createdTime"]
-          ? moment(lead["createdTime"]).format("DD MMM YYYY").toUpperCase()
-          : "";
-        formattedLead["Close Date"] = lead["d_closeDate"]
-          ? moment(lead["d_closeDate"]).format("DD MMM YYYY").toUpperCase()
-          : "pending";
-
-        return formattedLead;
+              : "pending";
+        } else {
+          formattedLead[newKey] = lead[col];
+        }
       });
 
+      return formattedLead;
+    });
     const worksheet = XLSX.utils.json_to_sheet(completedLeads);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(
@@ -200,6 +201,8 @@ function LeadReport() {
     setCurrentPage(data.selected);
   };
 
+  console.log(currentLeads);
+
   return (
     <>
       <div className="container 2xl:w-[95%] ">
@@ -213,8 +216,8 @@ function LeadReport() {
             >
               <option value="">Select Employee</option>
               {employees.map((employee) => (
-                <option key={employee.id} value={employee.name}>
-                  {employee.name}
+                <option key={employee.staff_id} value={employee.staff_id}>
+                  {employee.staff_name}
                 </option>
               ))}
             </select>
@@ -233,7 +236,7 @@ function LeadReport() {
           </div>
           <button
             onClick={downloadExcel}
-            className="bg-cyan-600 text-white font-medium px-4 py-2 rounded hover:bg-cyan-700"
+            className="bg-cyan-500 text-white font-medium px-4 py-2 rounded hover:bg-cyan-700"
           >
             Download Excel
           </button>
@@ -245,9 +248,9 @@ function LeadReport() {
             <thead>
               <tr>
                 <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
+                {/* <th className="px-6 py-3 border-b-2 border-gray-300">
                   Lead Number
-                </th>
+                </th> */}
                 <th className="px-6 py-3 border-b-2 border-gray-300">Name</th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Assigned To
@@ -284,14 +287,14 @@ function LeadReport() {
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {index + 1 + currentPage * leadsPerPage}
                     </td>
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                    {/* <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.lead_no}
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.name}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.assignedTo}
+                      {lead.staff_name}
                     </td>
 
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">

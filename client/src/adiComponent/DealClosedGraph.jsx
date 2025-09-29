@@ -11,15 +11,13 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import styled from "styled-components";
 
 const DealClosedGraph = () => {
   const [dealStatusData, setDealStatusData] = useState([]);
-  const adminuser = useSelector((state) => state.auth.user);
-  const token = adminuser.token;
-  const userId = adminuser.user_id;
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
+  const userId = superadminuser.staff_id;
 
-  // Function to format the date to "DD MMM" format
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("default", {
@@ -40,11 +38,9 @@ const DealClosedGraph = () => {
 
       const matchedLeads = fetchedData.filter(
         (item) =>
-          item.d_closeDate.split("T")[0] === formattedDate &&
-          item.deal_status?.trim().toLowerCase() === "close"
+          item.unit_updated_at?.split(" ")[0] === formattedDate &&
+          item.unit_status === "sold"
       );
-
-      console.log(`Date: ${formattedDate}, Leads: ${matchedLeads.length}`);
 
       data.push({
         day: formattedDay,
@@ -55,11 +51,10 @@ const DealClosedGraph = () => {
     return data.reverse();
   };
 
-  // Fetch data from the API
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-data-user-id/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -67,10 +62,10 @@ const DealClosedGraph = () => {
           },
         }
       );
-      const data = response.data;
 
+      const data = response.data;
+      console.log(data);
       const formattedData = generateStaticData(data);
-      console.log("Formatted Data: ", formattedData);
 
       setDealStatusData(formattedData);
     } catch (error) {
@@ -81,6 +76,8 @@ const DealClosedGraph = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  console.log(dealStatusData);
 
   return (
     <>

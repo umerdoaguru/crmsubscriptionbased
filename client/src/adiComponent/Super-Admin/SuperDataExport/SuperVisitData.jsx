@@ -55,7 +55,7 @@ const SuperVisitData = () => {
   const fetchLeads = async () => {
     try {
       const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-all-visits`,
+        `https://crm-generalize.dentalguru.software/api/leads-all-visits/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",

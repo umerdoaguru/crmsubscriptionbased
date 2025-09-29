@@ -13,8 +13,7 @@ const VisitData = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const leadsPerPage = 6; // Default leads per page
-  const EmpId = useSelector((state) => state.auth.user.id);
+  const leadsPerPage = 6;
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [selectedColumns, setSelectedColumns] = useState([
@@ -43,9 +42,10 @@ const VisitData = () => {
     "createdTime",
     "actual_date",
   ]);
-  const adminuser = useSelector((state) => state.auth.user);
-  const token = adminuser.token;
-  const userId = adminuser.user_id;
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
+  const userId = superadminuser.staff_id;
+
   // Fetch leads from the API
   useEffect(() => {
     fetchLeads();
@@ -54,8 +54,8 @@ const VisitData = () => {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-data-user-id/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/leads-all-visits/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -63,21 +63,17 @@ const VisitData = () => {
           },
         }
       );
-      // Filter out leads where visit is "Pending"
-      const nonPendingLeads = response.data.filter((lead) =>
-        ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
-      );
 
-      setLeads(nonPendingLeads);
-      setFilteredLeads(nonPendingLeads); // Initial data set for filtering
+      setLeads(data);
+      setFilteredLeads(data);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
   };
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employee/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getAllEmployeeData/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -85,19 +81,15 @@ const VisitData = () => {
           },
         }
       );
-
-      setEmployees(response.data);
+      setEmployees(data);
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
   };
 
-  // Automatically apply date filter when start or end date changes
-
   useEffect(() => {
     let filtered = leads;
 
-    // Filter by date
     if (startDate && endDate) {
       filtered = filtered.filter((lead) => {
         const visitDate = moment(lead.visit_date, "YYYY-MM-DD");
@@ -105,10 +97,9 @@ const VisitData = () => {
       });
     }
 
-    // Filter by selected employee
     if (selectedEmployee) {
       filtered = filtered.filter(
-        (lead) => lead.assignedTo === selectedEmployee
+        (lead) => lead.assignedTo === Number(selectedEmployee)
       );
     }
 
@@ -116,7 +107,6 @@ const VisitData = () => {
   }, [startDate, endDate, selectedEmployee, leads]);
 
   const downloadExcel = () => {
-    // Map to rename keys for export
     const columnMapping = {
       lead_no: "Lead Number",
       assignedTo: "Assigned To",
@@ -134,8 +124,6 @@ const VisitData = () => {
       employeeId: "Employee ID",
       follow_up_status: "Follow-up Status",
       payment_mode: "Payment Mode",
-      quotation: "Quotation",
-      quotation_status: "Quotation Status",
       reason: "Reason",
       registry: "Registry",
       project_name: "Project",
@@ -145,6 +133,7 @@ const VisitData = () => {
       createdTime: "Assigned Date",
       actual_date: "Actual Date",
     };
+
     const completedLeads = filteredLeads.map((lead) => {
       const formattedLead = {};
 
@@ -156,35 +145,31 @@ const VisitData = () => {
             col
           )
         ) {
-          // Check if date exists and is valid
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
               ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-              : "pending"; // If invalid or missing, set as "PENDING"
+              : "pending";
         } else {
-          formattedLead[newKey] = lead[col]; // Assign other fields normally
+          formattedLead[newKey] = lead[col];
         }
       });
 
       return formattedLead;
     });
-    // Ensure we handle empty reports gracefully
+
     if (completedLeads.length === 0) {
       alert("No data available for the selected date range.");
       return;
     }
 
-    // Generate the Excel workbook
     const worksheet = XLSX.utils.json_to_sheet(completedLeads);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
 
-    // Generate a valid filename
     const filename = ` Lead Report ${
       startDate ? moment(startDate).format("DD-MM-YYYY") : "Start"
     } to ${endDate ? moment(endDate).format("DD-MM-YYYY") : "End"}.xlsx`;
 
-    // Download the Excel file
     XLSX.writeFile(workbook, filename);
   };
 
@@ -209,40 +194,57 @@ const VisitData = () => {
           </center>
           <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
           {/* Date Filter */}
-          <div className="flex  mb-4 sm:flex-row flex-col gap-2">
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="border p-1"
-            />
-            <div className="p-1">
-              <p>to</p>
+          <div className="flex flex-col sm:flex-row gap-4 mb-6 items-end">
+            {/* Start Date */}
+            <div className="flex flex-col w-full sm:w-auto">
+              <label className="mb-1 text-sm font-semibold text-gray-700">
+                Start Date
+              </label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="border rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              />
             </div>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="border p-1"
-            />
-            <div className="">
+
+            {/* End Date */}
+            <div className="flex flex-col w-full sm:w-auto">
+              <label className="mb-1 text-sm font-semibold text-gray-700">
+                End Date
+              </label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="border rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              />
+            </div>
+
+            {/* Employee Filter */}
+            <div className="flex flex-col w-full sm:w-auto">
+              <label className="mb-1 text-sm font-semibold text-gray-700">
+                Employee
+              </label>
               <select
                 value={selectedEmployee}
                 onChange={(e) => setSelectedEmployee(e.target.value)}
-                className="border p-1"
+                className="border rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
               >
                 <option value="">Select Employee</option>
                 {employees.map((employee) => (
-                  <option key={employee.id} value={employee.name}>
-                    {employee.name}
+                  <option key={employee.staff_id} value={employee.staff_id}>
+                    {employee.staff_name}
                   </option>
                 ))}
               </select>
             </div>
-            <div className="respo ">
+
+            {/* Download Button */}
+            <div className="w-full sm:w-auto">
               <button
                 onClick={downloadExcel}
-                className="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded"
+                className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-6 py-2 rounded-lg shadow-md transition active:scale-95 w-full sm:w-auto"
               >
                 Download Excel
               </button>
@@ -267,7 +269,7 @@ const VisitData = () => {
                     Assigned To
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Visit
+                    Visit Type
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Visit Date
@@ -301,17 +303,13 @@ const VisitData = () => {
                         {visit.name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {visit.assignedTo}
+                        {visit.staff_name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {visit.visit}
+                        {visit.visit_type}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {visit.visit_date === "pending"
-                          ? "pending"
-                          : moment(visit.visit_date)
-                              .format("DD MMM YYYY")
-                              .toUpperCase()}
+                        {visit.visit_date}
                       </td>
                     </tr>
                   ))

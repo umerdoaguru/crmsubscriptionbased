@@ -12,7 +12,7 @@ const CloseData = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const leadsPerPage = 6; // Default leads per page
+  const leadsPerPage = 6;
   const EmpId = useSelector((state) => state.auth.user.id);
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
@@ -33,10 +33,8 @@ const CloseData = () => {
     "employeeId",
     "follow_up_status",
     "payment_mode",
-
     "reason",
     "registry",
-
     "project_name",
     "visit",
     "visit_date",
@@ -45,19 +43,13 @@ const CloseData = () => {
     "actual_date",
   ]);
 
-  // Fetch leads from the API
-  useEffect(() => {
-    fetchLeads();
-    fetchEmployees();
-  }, []);
-  const adminuser = useSelector((state) => state.auth.user);
-  const token = adminuser.token;
-  const userId = adminuser.user_id;
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
 
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-data-user-id/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/getAllUnitSoldByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -65,13 +57,13 @@ const CloseData = () => {
           },
         }
       );
-      // Filter out leads where deal status is "pending"
+
       const nonPendingLeads = response.data.filter(
-        (lead) => lead.deal_status == "close"
+        (lead) => lead.unit_status === "sold"
       );
 
       setLeads(nonPendingLeads);
-      setFilteredLeads(nonPendingLeads); // Initial data set for filtering
+      setFilteredLeads(nonPendingLeads);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
@@ -80,7 +72,7 @@ const CloseData = () => {
   const fetchEmployees = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employee/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/getAllEmployeeData/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -95,12 +87,16 @@ const CloseData = () => {
   };
 
   useEffect(() => {
+    fetchLeads();
+    fetchEmployees();
+  }, []);
+
+  useEffect(() => {
     let filtered = leads;
 
-    // Filter by date range
     if (startDate && endDate) {
       filtered = filtered.filter((lead) => {
-        const closeDate = moment(lead.d_closeDate, "YYYY-MM-DD", true); // Strict date parsing
+        const closeDate = moment(lead.d_closeDate, "YYYY-MM-DD", true);
         return (
           closeDate.isValid() &&
           closeDate.isBetween(startDate, endDate, undefined, "[]")
@@ -108,10 +104,9 @@ const CloseData = () => {
       });
     }
 
-    // Filter by selected employee
     if (selectedEmployee) {
       filtered = filtered.filter(
-        (lead) => lead.assignedTo === selectedEmployee
+        (lead) => lead.assignedTo === Number(selectedEmployee)
       );
     }
 
@@ -136,10 +131,8 @@ const CloseData = () => {
       employeeId: "Employee ID",
       follow_up_status: "Follow-up Status",
       payment_mode: "Payment Mode",
-
       reason: "Reason",
       registry: "Registry",
-
       project_name: "Project",
       visit: "Visit",
       visit_date: "Visit Date",
@@ -148,7 +141,6 @@ const CloseData = () => {
       actual_date: "Actual Date",
     };
 
-    // Filter and format data for the Excel report
     const completedLeads = filteredLeads.map((lead) => {
       const formattedLead = {};
 
@@ -160,35 +152,31 @@ const CloseData = () => {
             col
           )
         ) {
-          // Check if date exists and is valid
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
               ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-              : "pending"; // If invalid or missing, set as "PENDING"
+              : "pending";
         } else {
-          formattedLead[newKey] = lead[col]; // Assign other fields normally
+          formattedLead[newKey] = lead[col];
         }
       });
+
       return formattedLead;
     });
 
-    // Ensure we handle empty reports gracefully
     if (completedLeads.length === 0) {
       alert("No data available for the selected date range.");
       return;
     }
 
-    // Generate the Excel workbook
     const worksheet = XLSX.utils.json_to_sheet(completedLeads);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
 
-    // Generate a valid filename
     const filename = `Closed Lead Report ${
       startDate ? moment(startDate).format("DD-MM-YYYY") : "Start"
     } to ${endDate ? moment(endDate).format("DD-MM-YYYY") : "End"}.xlsx`;
 
-    // Download the Excel file
     XLSX.writeFile(workbook, filename);
   };
 
@@ -212,41 +200,57 @@ const CloseData = () => {
           <center className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></center>
 
           {/* Date Filter */}
-          <div className="flex  mb-4 sm:flex-row flex-col gap-2">
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="border p-1"
-            />
-            <div className="p-1">
-              <p>to</p>
+          <div className="flex flex-col sm:flex-row gap-4 mb-6 items-end">
+            {/* Start Date */}
+            <div className="flex flex-col w-full sm:w-auto">
+              <label className="mb-1 text-sm font-semibold text-gray-700">
+                Start Date
+              </label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="border rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              />
             </div>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="border p-1"
-            />
-            <div className="">
+
+            {/* End Date */}
+            <div className="flex flex-col w-full sm:w-auto">
+              <label className="mb-1 text-sm font-semibold text-gray-700">
+                End Date
+              </label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="border rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              />
+            </div>
+
+            {/* Employee Dropdown */}
+            <div className="flex flex-col w-full sm:w-auto">
+              <label className="mb-1 text-sm font-semibold text-gray-700">
+                Employee
+              </label>
               <select
                 value={selectedEmployee}
                 onChange={(e) => setSelectedEmployee(e.target.value)}
-                className="border p-1"
+                className="border rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
               >
                 <option value="">Select Employee</option>
                 {employees.map((employee) => (
-                  <option key={employee.id} value={employee.name}>
-                    {employee.name}
+                  <option key={employee.staff_id} value={employee.staff_id}>
+                    {employee.staff_name}
                   </option>
                 ))}
               </select>
             </div>
 
-            <div className="respo  ">
+            {/* Download Button */}
+            <div className="w-full sm:w-auto">
               <button
                 onClick={downloadExcel}
-                className="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded "
+                className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-6 py-2 rounded-lg shadow-md transition active:scale-95 w-full sm:w-auto"
               >
                 Download Excel
               </button>
@@ -259,9 +263,7 @@ const CloseData = () => {
               <thead>
                 <tr>
                   <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    Lead Number
-                  </th>
+
                   <th className="px-6 py-3 border-b-2 border-gray-300">
                     Assigned To
                   </th>
@@ -279,9 +281,7 @@ const CloseData = () => {
                   <th className="px-6 py-3 border-b-2 border-gray-300">
                     Deal Status
                   </th>
-                  <th className="px-6 py-3 border-b-2 border-gray-300">
-                    Closed Deal Date
-                  </th>
+                  <th className="px-6 py-3 border-b-2 border-gray-300">Date</th>
                 </tr>
               </thead>
               <tbody>
@@ -303,11 +303,9 @@ const CloseData = () => {
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {index + 1 + currentPage * leadsPerPage}
                       </td>
+
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.lead_no}
-                      </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.assignedTo}
+                        {lead.staff_name}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.name}
@@ -321,12 +319,10 @@ const CloseData = () => {
                       </td>
 
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.deal_status}
+                        {lead.unit_status}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {moment(lead.d_closeDate)
-                          .format("DD MMM YYYY")
-                          .toUpperCase()}
+                        {lead.unit_updated_at?.split(" ")[0]}
                       </td>
                     </tr>
                   ))

@@ -5,6 +5,7 @@ import { FaTrash, FaEdit } from "react-icons/fa";
 import cogoToast from "cogo-toast";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 const Projectshow = () => {
   const [projects, setProjects] = useState([]);
@@ -13,27 +14,27 @@ const Projectshow = () => {
   const [showModal, setShowModal] = useState(false);
   const [editProject, setEditProject] = useState({});
   const [addProject, setAddProject] = useState();
-  const adminuser = useSelector((state) => state.auth.user);
-  const token = adminuser.token;
-  const userId = adminuser.user_id;
+
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
+  const userId = superadminuser.staff_id;
 
   const [formData, setFormData] = useState({
+    project_org_id: superadminuser.staff_org_id,
     projectName: "",
     location: "",
-    total_area: "",
-    user_id: userId,
+    total_units: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `https://crm-generalize.dentalguru.software/api/project-add`,
+        "https://crm-generalize.dentalguru.software/api/project-add",
         formData
       );
 
@@ -46,10 +47,10 @@ const Projectshow = () => {
         setProjects((prevProjects) => [newProject, ...prevProjects]);
         fetchProjects();
         setFormData({
+          project_org_id: superadminuser.staff_org_id,
           projectName: "",
           location: "",
-          total_area: "",
-          user_id: userId,
+          total_units: "",
         });
       } else {
         cogoToast.error("Failed to add project.", { position: "top-right" });
@@ -73,7 +74,7 @@ const Projectshow = () => {
   const fetchProjects = async () => {
     try {
       const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/all-project/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${superadminuser.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -81,12 +82,14 @@ const Projectshow = () => {
           },
         }
       );
-      setProjects(data.reverse());
+      setProjects(data);
     } catch (error) {
       console.error("Error fetching projects:", error);
       cogoToast.error("An error occurred while fetching the projects.");
     }
   };
+
+  console.log(projects);
 
   const handleDelete = async (id) => {
     const isConfirmed = window.confirm(
@@ -95,28 +98,11 @@ const Projectshow = () => {
     if (!isConfirmed) return;
 
     try {
-      let response;
-      try {
-        response = await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/delete-project/${id}`
-        );
-      } catch (error) {
-        if (error.response && error.response.status === 400) {
-          const userConfirmed = window.confirm(error.response.data.message);
-          if (!userConfirmed) return;
-          response = await axios.delete(
-            `https://crm-generalize.dentalguru.software/api/delete-project/${id}?confirm=true`
-          );
-        } else {
-          throw error;
-        }
-      }
-
-      const { data } = response;
-      cogoToast.success(data.message || "Project deleted successfully!");
-      setProjects((prev) =>
-        prev.filter((project) => project.main_project_id !== id)
+      const res = await axios.delete(
+        `https://crm-generalize.dentalguru.software/api/delete-project/${id}`
       );
+      toast.success("project deleted successful");
+      fetchProjects();
     } catch (error) {
       console.error("Error deleting project:", error);
       cogoToast.error("An error occurred while deleting the project.");
@@ -131,17 +117,11 @@ const Projectshow = () => {
   const handleUpdate = async () => {
     try {
       const { data } = await axios.put(
-        `https://crm-generalize.dentalguru.software/api/edit-project/${editProject.main_project_id}`,
+        `https://crm-generalize.dentalguru.software/api/edit-project/${editProject.project_id}`,
         editProject
       );
       cogoToast.success(data.message || "Project updated successfully!");
-      setProjects((prev) =>
-        prev.map((project) =>
-          project.main_project_id === editProject.main_project_id
-            ? editProject
-            : project
-        )
-      );
+      fetchProjects();
       setShowModal(false);
     } catch (error) {
       console.error("Error updating project:", error);
@@ -149,13 +129,15 @@ const Projectshow = () => {
     }
   };
 
-  const itemsPerPage = 4;
-  const offset = currentPage * itemsPerPage;
-  const currentItems = projects.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(projects.length / itemsPerPage);
+  const indexOfLastProject = (currentPage + 1) * projectsPerPage;
+  const indexOfFirstProject = indexOfLastProject - projectsPerPage;
+  const currentProjects = projects.slice(
+    indexOfFirstProject,
+    indexOfLastProject
+  );
 
-  const handlePageClick = ({ selected }) => {
-    setCurrentPage(selected);
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected);
   };
 
   return (
@@ -169,21 +151,20 @@ const Projectshow = () => {
           Add Project
         </button>
       </div>
-
       <div className="overflow-x-auto mt-4">
         <table className="min-w-full bg-white border">
           <thead>
             <tr>
               <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
               <th className="px-6 py-3 border-b-2 border-gray-300">
-                Project Name
+                Project ID
               </th>
               <th className="px-6 py-3 border-b-2 border-gray-300">
-                Project ID
+                Project Name
               </th>
               <th className="px-6 py-3 border-b-2 border-gray-300">Location</th>
               <th className="px-6 py-3 border-b-2 border-gray-300">
-                Total Area
+                Total Units
               </th>
               <th className="px-6 py-3 border-b-2 border-gray-300">Action</th>
               <th className="px-6 py-3 border-b-2 border-gray-300">
@@ -192,8 +173,8 @@ const Projectshow = () => {
             </tr>
           </thead>
           <tbody>
-            {currentItems.length > 0 ? (
-              currentItems.map((project, index) => (
+            {currentProjects.length > 0 ? (
+              currentProjects.map((project, index) => (
                 <tr
                   key={project.main_project_id}
                   className={index % 2 === 0 ? "bg-gray-100" : ""}
@@ -202,16 +183,16 @@ const Projectshow = () => {
                     {currentPage * projectsPerPage + index + 1}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {project.project_name}
+                    {project.project_id}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {project.main_project_id}
+                    {project.project_name}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                     {project.location}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {project.total_area}
+                    {project.total_units}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                     <button
@@ -221,7 +202,7 @@ const Projectshow = () => {
                       <FaEdit />
                     </button>
                     <button
-                      onClick={() => handleDelete(project.main_project_id)}
+                      onClick={() => handleDelete(project.project_id)}
                       className="text-red-600 hover:text-red-800"
                     >
                       <FaTrash />
@@ -229,7 +210,7 @@ const Projectshow = () => {
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                     <Link
-                      to={`/project-units/${project.main_project_id}`}
+                      to={`/project-units/${project.project_id}`}
                       className="inline-block"
                     >
                       <button className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-cyan-700 transition">
@@ -249,14 +230,12 @@ const Projectshow = () => {
           </tbody>
         </table>
       </div>
-
       <div className="mt-4 flex justify-center">
         <ReactPaginate
           previousLabel={"Previous"}
           nextLabel={"Next"}
           breakLabel={"..."}
-          pageCount={pageCount}
-          forcePage={currentPage}
+          pageCount={Math.ceil(projects.length / projectsPerPage)}
           marginPagesDisplayed={2}
           pageRangeDisplayed={3}
           onPageChange={handlePageClick}
@@ -310,15 +289,21 @@ const Projectshow = () => {
 
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">
-                  Total Area
+                  Total Units
                 </label>
                 <input
                   type="text"
-                  name="total_area"
-                  value={formData.total_area}
+                  name="total_units"
+                  value={formData.total_units}
                   onChange={handleChange}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:outline-none shadow-sm"
                   placeholder="e.g., 5000sqft, 40000sqft"
+                  min={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "-" || e.key === "Subtract") {
+                      e.preventDefault();
+                    }
+                  }}
                 />
               </div>
 
@@ -362,7 +347,6 @@ const Projectshow = () => {
                 placeholder="Project Name"
               />
             </div>
-
             <div>
               <label className="block text-gray-600 mb-1">Location</label>
               <input
@@ -376,15 +360,18 @@ const Projectshow = () => {
               />
             </div>
             <div>
-              <label className="block text-gray-600 mb-1">Total Area</label>
+              <label className="block text-gray-600 mb-1">Total Units</label>
               <input
                 type="text"
-                value={editProject.total_area}
+                value={editProject.total_units}
                 onChange={(e) =>
-                  setEditProject({ ...editProject, total_area: e.target.value })
+                  setEditProject({
+                    ...editProject,
+                    total_units: e.target.value,
+                  })
                 }
                 className="border p-2 w-full mb-2"
-                placeholder="Total Area"
+                placeholder="Total Unit"
                 min={0}
                 onKeyDown={(e) => {
                   if (e.key === "-" || e.key === "Subtract") {

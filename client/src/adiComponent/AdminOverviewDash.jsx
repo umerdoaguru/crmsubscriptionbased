@@ -1,36 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { SiMoneygram } from "react-icons/si";
 import { MdOutlineNextWeek } from "react-icons/md";
 import { GiFiles } from "react-icons/gi";
 import { AiOutlineProject } from "react-icons/ai";
-// import { FaProjectDiagram } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
 import { logoutUser } from "../store/UserSlice";
 import cogoToast from "cogo-toast";
 
 const AdminOverviewDash = () => {
-  // ]);
   const [leads, setLeads] = useState([]);
   const [employee, setEmployee] = useState([]);
-  const [selectedComponent, setSelectedComponent] = useState("LeadData"); // Set 'LeadData' as default
-  const [visit, setVisit] = useState([]);
+  const [selectedComponent, setSelectedComponent] = useState("LeadData");
   const [project, setProjects] = useState([]);
   const [employeesold, setemployeesold] = useState([]);
   const EmpId = useSelector((state) => state.auth.user);
-
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
   const userId = adminuser.user_id;
+  const [visit, setVisit] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-data-user-id/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${adminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -46,6 +42,24 @@ const AdminOverviewDash = () => {
         dispatch(logoutUser());
         cogoToast.error("Token is expired Please Login Again !!");
       }
+    }
+  };
+
+  const fetchVisit = async () => {
+    try {
+      const response = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/leads-all-visits/${adminuser?.staff_org_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+      setVisit(response.data);
+    } catch (error) {
+      console.error("Error fetching quotations:", error);
     }
   };
 
@@ -69,7 +83,7 @@ const AdminOverviewDash = () => {
   const fetchProjects = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/all-project/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${adminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -87,7 +101,7 @@ const AdminOverviewDash = () => {
   const employeesoldunit = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/admin-unit-sold/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/getAllUnitSoldByOrg/${adminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -106,17 +120,15 @@ const AdminOverviewDash = () => {
     fetchProjects();
     fetchLeads();
     fetchEmployee();
-
+    fetchVisit();
     employeesoldunit();
   }, []);
 
   const employeeCount = employee.length;
   const leadCount = leads.length;
+
   const closedCount = leads.filter(
-    (lead) => lead.deal_status === "close"
-  ).length;
-  const visitCount = leads.filter((lead) =>
-    ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
+    (lead) => lead.unit_status === "sold"
   ).length;
 
   const projectCount = project.length;
@@ -181,7 +193,7 @@ const AdminOverviewDash = () => {
                     Total Site Visit
                   </h5>
                   <p className="text-gray-800 text-xl font-semibold ">
-                    {visitCount}
+                    {visit?.length}
                   </p>
                 </div>
               </div>

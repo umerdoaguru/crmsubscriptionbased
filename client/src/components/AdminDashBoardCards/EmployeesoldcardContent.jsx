@@ -22,8 +22,8 @@ const EmployeesoldUnitCardsContent = () => {
 
   const fetchEmployeeSoldUnits = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/admin-unit-sold/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getAllUnitSoldByOrg/${adminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -31,9 +31,9 @@ const EmployeesoldUnitCardsContent = () => {
           },
         }
       );
-      setLeads(response.data);
-      setFilteredLeads(response.data);
-      console.log(response.data);
+      setLeads(data);
+      setFilteredLeads(data);
+      console.log(data);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
@@ -159,18 +159,16 @@ const EmployeesoldUnitCardsContent = () => {
                             {visit.name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {visit.unit_no}
+                            {visit.unit_number}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {visit.employee_name}
+                            {visit.staff_name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             {visit.unit_status}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {moment(visit.date)
-                              .format("DD MMM YYYY")
-                              .toUpperCase()}
+                            {visit.date}
                           </td>
                         </tr>
                       ))

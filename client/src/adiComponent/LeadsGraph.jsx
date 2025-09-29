@@ -15,15 +15,14 @@ import { useSelector } from "react-redux";
 const LeadsGraph = () => {
   const [leadsData, setLeadsData] = useState([]);
   const [error, setError] = useState(null);
-  const adminuser = useSelector((state) => state.auth.user);
-  const token = adminuser.token;
-  const userId = adminuser.user_id;
-
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
+  const userId = superadminuser.staff_id;
   useEffect(() => {
     const fetchLeadsData = async () => {
       try {
         const response = await axios.get(
-          `https://crm-generalize.dentalguru.software/api/leads-data-user-id/${userId}`,
+          `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
           {
             headers: {
               "Content-Type": "application/json",

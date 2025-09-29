@@ -23,7 +23,7 @@ const SuperAdminTotalClosedDealContent = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -32,7 +32,7 @@ const SuperAdminTotalClosedDealContent = () => {
         }
       );
       const nonPendingLeads = response.data.filter(
-        (lead) => lead.deal_status == "close"
+        (lead) => lead.unit_status === "sold"
       );
       setLeads(nonPendingLeads);
       setFilteredLeads(nonPendingLeads);
@@ -54,16 +54,14 @@ const SuperAdminTotalClosedDealContent = () => {
       );
     }
 
-    // Update the filtered leads and reset to the first page
     setFilteredLeads(filtered);
-    setCurrentPage(0); // Reset to the first page when the search term changes
+    setCurrentPage(0);
   }, [searchTerm, leads]);
 
   // Pagination logic
   const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-  // const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
   const currentLeads =
     leadsPerPage === Infinity
       ? filteredLeads
@@ -76,7 +74,7 @@ const SuperAdminTotalClosedDealContent = () => {
   const handleLeadsPerPageChange = (e) => {
     const value = e.target.value;
     setLeadsPerPage(value === "All" ? Infinity : parseInt(value, 10));
-    setCurrentPage(0); // Reset to the first page
+    setCurrentPage(0);
   };
   return (
     <>
@@ -139,12 +137,6 @@ const SuperAdminTotalClosedDealContent = () => {
                         <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap text-cyan-700 font-bold text-sm">
                           Lead Source
                         </th>
-                        <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap text-cyan-700 font-bold text-sm">
-                          Visit
-                        </th>
-                        <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap text-cyan-700 font-bold text-sm">
-                          Follow Up Status
-                        </th>
 
                         <th className="px-6 py-3 border-b-2 border-gray-300 whitespace-nowrap text-cyan-700 font-bold text-sm">
                           Deal Status
@@ -170,7 +162,7 @@ const SuperAdminTotalClosedDealContent = () => {
                               {lead.lead_id}
                             </td>
                             <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                              {lead.assignedTo}
+                              {lead.staff_name}
                             </td>
                             <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                               {lead.name}
@@ -181,22 +173,12 @@ const SuperAdminTotalClosedDealContent = () => {
                             <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                               {lead.leadSource}
                             </td>
-                            <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                              {lead.visit}
-                            </td>
 
                             <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                              {lead.follow_up_status}
-                            </td>
-
-                            <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                              {lead.deal_status}
+                              {lead.unit_status}
                             </td>
                             <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                              {}
-                              {moment(lead.d_closeDate)
-                                .format("DD MMM YYYY")
-                                .toUpperCase()}
+                              {lead.unit_updated_at}
                             </td>
                           </tr>
                         ))

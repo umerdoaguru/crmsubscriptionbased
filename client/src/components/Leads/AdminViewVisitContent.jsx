@@ -89,8 +89,8 @@ const AdminViewVisitContent = () => {
       );
       if (response.status === 200) {
         cogoToast.success("Visit updated successfully!");
-        setRender(!render); // Refresh the list after updating
-        closeModal(); // Close the modal
+        setRender(!render);
+        closeModal();
       }
     } catch (error) {
       console.error("Error updating visit:", error);
@@ -110,7 +110,7 @@ const AdminViewVisitContent = () => {
   const pageCount = Math.ceil(filteredvisit.length / itemsPerPage);
 
   const handleBackClick = () => {
-    navigate(-1); // -1 navigates to the previous page in history
+    navigate(-1);
   };
 
   return (
@@ -137,22 +137,19 @@ const AdminViewVisitContent = () => {
                           S.no
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Lead Id
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Name
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Assigned To
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Visit
+                          Visit Type
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Visit Date
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Report
+                          Visit Report
                         </th>
                       </tr>
                     </thead>
@@ -163,22 +160,19 @@ const AdminViewVisitContent = () => {
                             {offset + index + 1}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {visit.lead_id}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
                             {visit.name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {visit.employee_name}
+                            {visit.staff_name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {visit.visit}
+                            {visit.visit_type}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             {visit.visit_date}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {visit.report}
+                            {visit.visit_details}
                           </td>
                         </tr>
                       ))}

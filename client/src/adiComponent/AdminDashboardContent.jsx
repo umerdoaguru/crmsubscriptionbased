@@ -1,23 +1,16 @@
 import React, { useState } from "react";
 import LeadsReport from "./LeadsReport";
 import Invoice from "./Invoice";
-import axios from "axios";
 import LeadsGraph from "./LeadsGraph";
 import AdminOverviewDash from "./AdminOverviewDash";
 import DealClosedGraph from "./DealClosedGraph";
+import LeadVisitChart from "./AdminComp/LeadVisitChart";
 
 const AdminDashboardContent = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
-  };
-  const getInvoiceData = () => {
-    try {
-      const response = axios.get(
-        "https://crm-generalize.dentalguru.software/api/invoiceData"
-      );
-    } catch (err) {}
   };
 
   return (
@@ -34,12 +27,10 @@ const AdminDashboardContent = () => {
               </div>
               <div className="grid grid-cols-1 gap-2 mt-6 mx-7 md:grid-cols-2 lg:grid-cols-3">
                 <LeadsGraph />
-                <Invoice />
-
+                <LeadVisitChart />
                 <DealClosedGraph />
               </div>
               <LeadsReport />
-              {/* <ToDoList /> */}
             </div>
           </div>
         </div>

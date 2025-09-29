@@ -48,7 +48,7 @@ const Overview2 = () => {
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-all-visits`,
+        `https://crm-generalize.dentalguru.software/api/leads-all-visits/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -63,7 +63,7 @@ const Overview2 = () => {
     }
   };
 
-  console.log(visit);
+  console.log("visit data", visit);
 
   const fetchProjects = async () => {
     try {

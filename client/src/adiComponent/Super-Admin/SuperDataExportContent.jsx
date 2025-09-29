@@ -8,15 +8,12 @@ import SuperVisitData from "./SuperDataExport/SuperVisitData";
 import SuperCloseData from "./SuperDataExport/SuperCloseDateData";
 import SuperSoldnit from "./SuperDataExport/SuperSolddUnit";
 
-function SuperDataExportContent() {
+const SuperDataExportContent = () => {
   const [leads, setLeads] = useState([]);
   const [visit, setVisit] = useState([]);
   const [employeesold, setemployeesold] = useState([]);
   const [employee, setEmployee] = useState([]);
-  const [quotation, setQuotation] = useState([]);
-  const [invoice, setInvoice] = useState([]);
   const [selectedComponent, setSelectedComponent] = useState("LeadData");
-
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
   const userId = superadminuser.staff_id;
@@ -82,7 +79,7 @@ function SuperDataExportContent() {
   const fetchVisit = async () => {
     try {
       const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-all-visits`,
+        `https://crm-generalize.dentalguru.software/api/leads-all-visits/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -300,6 +297,6 @@ function SuperDataExportContent() {
       </div>
     </>
   );
-}
+};
 
 export default SuperDataExportContent;

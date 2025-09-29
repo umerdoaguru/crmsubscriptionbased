@@ -16,7 +16,7 @@ const SuperAdminVisitContent = () => {
   const navigate = useNavigate();
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-  const userId = superadminuser.id;
+  console.log(superadminuser);
 
   useEffect(() => {
     fetchLeads();
@@ -24,8 +24,8 @@ const SuperAdminVisitContent = () => {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/leads-all-visits/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -33,11 +33,9 @@ const SuperAdminVisitContent = () => {
           },
         }
       );
-      const nonPendingLeads = response.data.filter((lead) =>
-        ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
-      );
-      setLeads(nonPendingLeads);
-      setFilteredLeads(nonPendingLeads); // Initial data set for filtering
+
+      setLeads(data);
+      setFilteredLeads(data);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
@@ -48,7 +46,7 @@ const SuperAdminVisitContent = () => {
     console.log(filtered);
     // Filter by search term
     if (searchTerm) {
-      const trimmedSearchTerm = searchTerm.toLowerCase().trim(); // Normalize the search term
+      const trimmedSearchTerm = searchTerm.toLowerCase().trim();
       filtered = filtered.filter((lead) =>
         ["name", "employee_name", "visit"].some((key) =>
           lead[key]?.toLowerCase().trim().includes(trimmedSearchTerm)
@@ -66,7 +64,6 @@ const SuperAdminVisitContent = () => {
   // Pagination logic
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-  // const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
   const currentLeads =
     leadsPerPage === Infinity
       ? filteredLeads
@@ -137,7 +134,7 @@ const SuperAdminVisitContent = () => {
                           Assigned To
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-bold text-cyan-600 uppercase tracking-wider">
-                          Visit
+                          Visit Type
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-bold text-cyan-600 uppercase tracking-wider">
                           Visit Date
@@ -160,10 +157,10 @@ const SuperAdminVisitContent = () => {
                               {visit.name}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              {visit.assignedTo}
+                              {visit.staff_name}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              {visit.visit}
+                              {visit.visit_type}
                             </td>
                             <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                               {visit.visit_date === "pending"

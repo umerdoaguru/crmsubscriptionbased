@@ -3,6 +3,9 @@ import EmpLeadReport from "./EmployeeReport/EmpLeadReport";
 import EmpVisitReport from "./EmployeeReport/EmpVisitReport";
 import EmpClosedDealReport from "./EmployeeReport/EmpClosedDealReport";
 import EmployeeSoldUnits from "./EmployeeReport/EmployeeSoldUnits";
+import { SiGoogleads } from "react-icons/si";
+import { FaHouseChimney } from "react-icons/fa6";
+import { RiCommunityFill } from "react-icons/ri";
 
 const EmployeeReportContent = () => {
   const [selectedComponent, setSelectedComponent] = useState("LeadData");
@@ -37,7 +40,7 @@ const EmployeeReportContent = () => {
                         : "text-cyan-600"
                     }`}
                   >
-                    📊
+                    <SiGoogleads />
                   </div>
                   <p
                     className={`text-lg font-semibold ${
@@ -68,7 +71,7 @@ const EmployeeReportContent = () => {
                         : "text-cyan-600"
                     }`}
                   >
-                    🏡
+                    <FaHouseChimney />
                   </div>
                   <h5
                     className={`text-lg font-semibold ${
@@ -130,7 +133,7 @@ const EmployeeReportContent = () => {
                         : "text-cyan-600"
                     }`}
                   >
-                    🏢
+                    <RiCommunityFill />
                   </div>
                   <h5
                     className={`text-lg font-semibold ${

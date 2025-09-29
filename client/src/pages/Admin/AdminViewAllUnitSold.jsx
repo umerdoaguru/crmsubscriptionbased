@@ -2,7 +2,6 @@ import { useState } from "react";
 import React from "react";
 import Sidebar from "../../utils/Sidebar";
 import Topbar from "../../utils/Topbar";
-import AdminFollowUpViewContent from "../../components/Leads/AdminFollowUpViewContent";
 import AdminViewAllUnitSoldContent from "../../components/Leads/AdminViewAllUnitSoldContent";
 
 const AdminViewAllUnitSold = () => {

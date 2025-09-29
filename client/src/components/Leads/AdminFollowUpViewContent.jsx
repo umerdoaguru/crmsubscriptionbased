@@ -61,7 +61,7 @@ const AdminFollowUpViewContent = () => {
       }
     }
   };
-  // Function to send the PUT request to update the visit data
+
   const openModal = (data) => {
     setModalData(data);
     setIsModalOpen(true);
@@ -72,7 +72,6 @@ const AdminFollowUpViewContent = () => {
     setModalData(null);
   };
 
-  // Handle updating field values in modalData
   const handleInputChange = (e) => {
     setModalData({
       ...modalData,
@@ -80,7 +79,6 @@ const AdminFollowUpViewContent = () => {
     });
   };
 
-  // Function to send the PUT request to update the visit data
   const updateVisit = async () => {
     try {
       const response = await axios.put(
@@ -89,8 +87,8 @@ const AdminFollowUpViewContent = () => {
       );
       if (response.status === 200) {
         cogoToast.success("Follow Up updated successfully!");
-        setRender(!render); // Refresh the list after updating
-        closeModal(); // Close the modal
+        setRender(!render);
+        closeModal();
       }
     } catch (error) {
       console.error("Error updating visit:", error);
@@ -110,7 +108,7 @@ const AdminFollowUpViewContent = () => {
   const pageCount = Math.ceil(filteredfollowup.length / itemsPerPage);
 
   const handleBackClick = () => {
-    navigate(-1); // -1 navigates to the previous page in history
+    navigate(-1);
   };
 
   return (
@@ -136,9 +134,7 @@ const AdminFollowUpViewContent = () => {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           S.no
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Lead Id
-                        </th>
+
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Name
                         </th>
@@ -162,14 +158,12 @@ const AdminFollowUpViewContent = () => {
                           <td className="px-6 py-4 whitespace-nowrap">
                             {offset + index + 1}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {followup.lead_id}
-                          </td>
+
                           <td className="px-6 py-4 whitespace-nowrap">
                             {followup.name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {followup.employee_name}
+                            {followup.staff_name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             {followup.follow_up_type}
@@ -178,7 +172,7 @@ const AdminFollowUpViewContent = () => {
                             {followup.follow_up_date}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {followup.report}
+                            {followup.follow_up_report}
                           </td>
                         </tr>
                       ))}

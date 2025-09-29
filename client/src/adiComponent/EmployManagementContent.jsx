@@ -1,22 +1,30 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { BsPencilSquare, BsTrash, BsPlusCircle } from "react-icons/bs";
-import Modal from "./Modal";
 import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
-import AddEditEmployeePopup from "./AddEditEmployeePopup";
+import SuperAddEditEmployeePopup from "./Super-Admin/SuperAdminProject/SuperAddEditEmployeePopup";
 
 const EmployeeManagementContent = () => {
   const [employees, setEmployees] = useState([]);
-  const adminuser = useSelector((state) => state.auth.user);
-  const token = adminuser.token;
-  const userId = adminuser.user_id;
+  const superadminuser = useSelector((state) => state.auth.user);
+  const userId = superadminuser.id;
+  const token = superadminuser.token;
+  const [newEmployee, setNewEmployee] = useState({
+    name: "",
+    email: "",
+    password: "",
+    position: "",
+    phone: "",
+    user_id: userId,
+  });
   const [editingIndex, setEditingIndex] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
-  const leadsPerPage = 10;
   const navigate = useNavigate();
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 7;
 
   useEffect(() => {
     fetchEmployees();
@@ -24,8 +32,8 @@ const EmployeeManagementContent = () => {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/getAllEmployees/${userId}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getEmployeeByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -33,11 +41,33 @@ const EmployeeManagementContent = () => {
           },
         }
       );
-      const { employees } = response.data;
-      setEmployees(employees || []);
+
+      setEmployees(data);
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
+  };
+
+  console.log(employees);
+
+  const filterEmp = employees?.filter((item) => {
+    return item?.staff_role === "employee";
+  });
+
+  const handleKeyPress = (e) => {
+    if (e.target.name === "phone") {
+      if (
+        !/[0-9]/.test(e.key) &&
+        !["Backspace", "ArrowLeft", "ArrowRight"].includes(e.key)
+      ) {
+        e.preventDefault();
+      }
+    }
+  };
+
+  const handleEditEmployee = (data) => {
+    setEditingIndex(data);
+    setShowForm(true);
   };
 
   const handleDeleteEmployee = async (employeeId) => {
@@ -60,47 +90,43 @@ const EmployeeManagementContent = () => {
     navigate(`/employee-single/${employeeId}`);
   };
 
-  const pageCount = Math.ceil(employees.length / leadsPerPage);
+  const pageCount = Math.ceil(filterEmp.length / itemsPerPage);
 
   // Pagination logic
-  const indexOfLastLead = (currentPage + 1) * leadsPerPage;
-  const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-  const currentEmployees = employees.slice(indexOfFirstLead, indexOfLastLead);
+  const indexOfLastLead = (currentPage + 1) * itemsPerPage;
+  const indexOfFirstLead = indexOfLastLead - itemsPerPage;
+  const currentemployee = filterEmp.slice(indexOfFirstLead, indexOfLastLead);
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
     console.log("change current page ", data.selected);
   };
 
-  const handleEditEmployee = (data) => {
-    setShowForm(true);
-    setEditingIndex(data);
-  };
-
   return (
     <>
       <div className="flex mt-20">
         <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
-          <div className="flex flex-col lg:flex-row">
-            <div className="flex-grow p-4">
-              <center className="text-2xl text-center mt-2 font-medium">
-                Empolyee Management
-              </center>
-              <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
+          <div className=" container px-3">
+            <h2 className="text-2xl text-center mt-[2rem] font-medium">
+              Employee Management
+            </h2>
+            <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
+          </div>
 
-              <div className="gap-4 mb-3">
+          <div className=" container flex flex-col min-h-screen lg:flex-row">
+            <main className="flex-1 p-4 lg:p-8">
+              <div className="flex flex-col-reverse items-start justify-between mb-8 lg:flex-row lg:items-center">
                 <button
                   onClick={() => {
                     setShowForm(true);
                     setEditingIndex(null);
                   }}
-                  className="mt-4 px-6 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-700 transition"
+                  className="flex items-center px-4 py-2 font-medium text-white transition duration-200 bg-cyan-500 rounded-lg shadow-lg hover:bg-cyan-600"
                 >
-                  <BsPlusCircle className="inline-block mr-2" /> Add Employee
+                  <BsPlusCircle className="mr-2 font-medium" /> Add Employee
                 </button>
               </div>
 
-              {/* Employee table */}
               <div className="overflow-x-auto rounded-lg shadow-md">
                 <table className="min-w-full bg-white">
                   <thead>
@@ -109,32 +135,36 @@ const EmployeeManagementContent = () => {
                       <th className="px-4 py-3 sm:px-6">Email</th>
                       <th className="px-4 py-3 sm:px-6">Role</th>
                       <th className="px-4 py-3 sm:px-6">Phone</th>
+                      <th className="px-4 py-3 sm:px-6">Status</th>
                       <th className="px-4 py-3 sm:px-6">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {currentEmployees.length > 0 ? (
-                      currentEmployees
-                        .filter((employee) => employee && employee.name) // Ensure employee and employee.name exist
+                    {currentemployee.length > 0 ? (
+                      currentemployee
+                        .filter((employee) => employee && employee.staff_name)
                         .map((employee, index) => (
                           <tr
-                            key={employee.employeeId}
-                            className="border-b border-gray-200 cursor-pointer hover:text-cyan-600 font-semibold"
+                            key={employee.staff_id}
+                            className="border-b border-gray-200 cursor-pointer hover:text-cyan-600"
                             onClick={() =>
-                              handleEmployeeClick(employee.employeeId)
+                              handleEmployeeClick(employee.staff_id)
                             }
                           >
                             <td className="px-4 py-4 sm:px-6">
-                              {employee.name}
+                              {employee.staff_name}
                             </td>
                             <td className="px-4 py-4 sm:px-6">
-                              {employee.email}
+                              {employee.staff_email}
                             </td>
                             <td className="px-4 py-4 sm:px-6">
-                              {employee.position}
+                              {employee.staff_role}
                             </td>
                             <td className="px-4 py-4 sm:px-6">
-                              {employee.phone}
+                              {employee.staff_phone}
+                            </td>
+                            <td className="px-4 py-4 sm:px-6 capitalize">
+                              {employee.staff_status}
                             </td>
                             <td className="px-4 py-4 sm:px-6">
                               <div className="flex space-x-2 sm:space-x-4">
@@ -143,14 +173,14 @@ const EmployeeManagementContent = () => {
                                     e.stopPropagation();
                                     handleEditEmployee(employee);
                                   }}
-                                  className="text-cyan-600 transition duration-200 hover:text-cyan-600"
+                                  className="text-cyan-500 transition duration-200 hover:text-cyan-600"
                                 >
                                   <BsPencilSquare size={20} />
                                 </button>
                                 <button
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleDeleteEmployee(employee.employeeId);
+                                    handleDeleteEmployee(employee.staff_id);
                                   }}
                                   className="text-red-500 transition duration-200 hover:text-red-600"
                                 >
@@ -170,7 +200,8 @@ const EmployeeManagementContent = () => {
                   </tbody>
                 </table>
               </div>
-              <div className="mt-3 mb-2 flex justify-center">
+
+              <div className="mt-2 mb-2 flex justify-center">
                 <ReactPaginate
                   previousLabel={"Previous"}
                   nextLabel={"Next"}
@@ -192,11 +223,11 @@ const EmployeeManagementContent = () => {
                   breakLinkClassName={"page-link"}
                 />
               </div>
-            </div>
+            </main>
           </div>
         </div>
       </div>
-      <AddEditEmployeePopup
+      <SuperAddEditEmployeePopup
         isOpen={showForm}
         onClose={() => setShowForm(false)}
         editingIndex={editingIndex}

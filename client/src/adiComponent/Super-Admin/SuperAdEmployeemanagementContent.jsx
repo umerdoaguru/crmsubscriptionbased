@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { BsPencilSquare, BsTrash, BsPlusCircle } from "react-icons/bs";
-
 import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
@@ -22,7 +21,6 @@ const SuperAdEmployeemanagementContent = () => {
   });
   const [editingIndex, setEditingIndex] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const [validationErrors, setValidationErrors] = useState({});
   const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -133,6 +131,7 @@ const SuperAdEmployeemanagementContent = () => {
                       <th className="px-4 py-3 sm:px-6">Email</th>
                       <th className="px-4 py-3 sm:px-6">Role</th>
                       <th className="px-4 py-3 sm:px-6">Phone</th>
+                      <th className="px-4 py-3 sm:px-6">Status</th>
                       <th className="px-4 py-3 sm:px-6">Actions</th>
                     </tr>
                   </thead>
@@ -159,6 +158,9 @@ const SuperAdEmployeemanagementContent = () => {
                             </td>
                             <td className="px-4 py-4 sm:px-6">
                               {employee.staff_phone}
+                            </td>
+                            <td className="px-4 py-4 sm:px-6">
+                              {employee.staff_status}
                             </td>
                             <td className="px-4 py-4 sm:px-6">
                               <div className="flex space-x-2 sm:space-x-4">

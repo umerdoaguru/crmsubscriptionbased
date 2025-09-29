@@ -11,7 +11,7 @@ const SuperAdminTotalLeadContent = () => {
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const [leadsPerPage, setLeadsPerPage] = useState(10); // Default leads per page
+  const [leadsPerPage, setLeadsPerPage] = useState(10);
   const navigate = useNavigate();
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
@@ -23,7 +23,7 @@ const SuperAdminTotalLeadContent = () => {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-super-admin/${superadminuser?.staff_org_id}`,
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",

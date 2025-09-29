@@ -12,7 +12,6 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
   const userId = superadminuser.staff_id;
-  // console.log(superadminuser);
 
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
@@ -248,12 +247,10 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
     (lead) => lead.deal_status === "close"
   ).length;
 
-  // Total Visits
   const totalVisits = applyFilters().filter((lead) =>
     ["fresh", "re-visit", "self", "associative"].includes(lead.visit)
   ).length;
 
-  // Use filteredLeads for pagination
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
 

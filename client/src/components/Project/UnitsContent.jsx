@@ -6,34 +6,32 @@ import ReactPaginate from "react-paginate";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import SuperUnitAddPopup from "../../adiComponent/Super-Admin/SuperAdminProject/SuperUnitAddPopup";
+import SuperUnitUpdatePopup from "../../adiComponent/Super-Admin/SuperAdminProject/SuperUnitUpdatePopup";
 
 const UnitsContent = () => {
   const { id } = useParams();
   const [currentPage, setCurrentPage] = useState(0);
-  const [projects, setProjects] = useState([]);
   const [projectsPerPage] = useState(7);
   const [showModal, setShowModal] = useState(false);
   const [editProject, setEditProject] = useState({});
-  const [addform, setaddunit] = useState(false);
+  const [addUnit, setAddUnit] = useState(false);
   const [units, setUnits] = useState([]);
   const navigate = useNavigate();
-  const adminuser = useSelector((state) => state.auth.user);
-  const token = adminuser.token;
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
+  const [selected, setSelected] = useState();
 
-  const [unitData, setUnitData] = useState({
-    main_project_id: id || "",
-    unit_type: "",
-    custom_unit_type: "",
-    unit_size: "",
-    total_units: "",
-    base_price: "",
-  });
+  const openUpdateModal = (data) => {
+    setSelected(data);
+    setShowModal(true);
+  };
 
   const fetchUnits = async () => {
     if (!id) return;
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/getUnitsdistributeById/${id}`,
+        `https://crm-generalize.dentalguru.software/api/super-admin-getUnitsdistributeById/${id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -58,67 +56,14 @@ const UnitsContent = () => {
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUnitData({ ...unitData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const unitTypeToSend =
-        unitData.unit_type === "Other"
-          ? unitData.custom_unit_type
-          : unitData.unit_type;
-      const payload = { ...unitData, unit_type: unitTypeToSend };
-      delete payload.custom_unit_type;
-
-      await axios.post(
-        "https://crm-generalize.dentalguru.software/api/add-unit",
-        payload,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      cogoToast.success("Unit added successfully!", { position: "top-center" });
-      fetchUnits();
-      setaddunit();
-      setaddunit(false);
-      setUnitData({
-        main_project_id: id || "",
-        unit_type: "",
-        custom_unit_type: "",
-        unit_size: "",
-        total_units: "",
-        base_price: "",
-      });
-    } catch (error) {
-      console.error("Error adding unit:", error);
-      cogoToast.error("Failed to add unit. Please try again.", {
-        position: "top-center",
-      });
-    }
-  };
+  console.log(units);
 
   const handleaddunit = () => {
-    setUnitData({
-      main_project_id: id,
-      unit_type: "",
-      custom_unit_type: "",
-      unit_size: "",
-      total_units: "",
-      base_price: "",
-    });
-    setaddunit((prev) => !prev);
+    setAddUnit(true);
   };
 
   const handleEdit = (unit) => {
     setEditProject(unit);
-    console.log(unit);
-
     setShowModal(true);
   };
 
@@ -158,27 +103,10 @@ const UnitsContent = () => {
     if (!isConfirmed) return;
 
     try {
-      let response;
-      try {
-        response = await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/delete-unit/${id}`
-        );
-      } catch (error) {
-        if (error.response && error.response.status === 400) {
-          const userConfirmed = window.confirm(error.response.data.message);
-          if (!userConfirmed) return;
-          response = await axios.delete(
-            `https://crm-generalize.dentalguru.software/api/delete-unit/${id}?confirm=true`
-          );
-        } else {
-          throw error;
-        }
-      }
-
-      const { data } = response;
-      cogoToast.success(data.message || "Unit deleted successfully!");
+      const res = await axios.delete(
+        `https://crm-generalize.dentalguru.software/api/delete-unit/${id}`
+      );
       fetchUnits();
-      setProjects((prev) => prev.filter((unit) => unit.unit_id !== id));
     } catch (error) {
       console.error("Error deleting unit:", error);
       cogoToast.error("An error occurred while deleting the unit.");
@@ -220,26 +148,19 @@ const UnitsContent = () => {
     setCustomLeadSource(e.target.value);
   };
 
-  const unitTypeToSend =
-    unitData.unit_type === "Other"
-      ? unitData.custom_unit_type
-      : unitData.unit_type;
-  const payload = { ...unitData, unit_type: unitTypeToSend };
-  delete payload.custom_unit_type;
-
   return (
     <>
       <div className="flex mt-20">
         <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
-          <div className="mt-[1rem]">
+          <div className="mt-[2rem]">
             <button
               onClick={() => navigate(-1)}
-              className="bg-cyan-600 text-white px-3 py-1 rounded-lg hover:bg-cyan-600 transition-colors"
+              className="bg-cyan-500 text-white px-3 py-1 rounded-lg hover:bg-cyan-600 transition-colors"
             >
               Back
             </button>
           </div>
-          <h2 className="text-2xl text-center">Units Management</h2>
+          <h2 className="text-2xl text-center mt-[1rem]">Units Management</h2>
 
           <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
           <div className="flex min-h-screen overflow-hidden ">
@@ -247,7 +168,7 @@ const UnitsContent = () => {
             <div className="flex-1 max-w-full">
               <div className="p-4 mt-6 bg-white rounded-lg shadow-lg mx-7 mb-2">
                 {/* Units Table */}
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center ">
                   <h3 className="mb-4 text-lg font-semibold mt-2 mx-1">
                     All units associated with Project ID {id}
                   </h3>
@@ -266,26 +187,27 @@ const UnitsContent = () => {
                           S.No
                         </th>
                         <th className="px-6 py-3 border-b border-gray-300 text-left">
-                          Unit ID
-                        </th>
-                        <th className="px-6 py-3 border-b border-gray-300 text-left">
-                          Unit Type
+                          Unit Number
                         </th>
                         <th className="px-6 py-3 border-b border-gray-300 text-left">
                           Unit Area
                         </th>
                         <th className="px-6 py-3 border-b border-gray-300 text-left">
-                          Total Units
+                          Unit Type
                         </th>
+
                         <th className="px-6 py-3 border-b border-gray-300 text-left">
                           Base Price
+                        </th>
+                        <th className="px-6 py-3 border-b border-gray-300 text-left">
+                          Status
                         </th>
                         <th className="px-6 py-3 border-b-2 border-gray-300">
                           Action
                         </th>
-                        <th className="px-6 py-3 border-b-2 border-gray-300">
-                          Units Detail
-                        </th>
+                        {/* <th className="px-6 py-3 border-b-2 border-gray-300">
+                          Unit Detail
+                        </th> */}
                       </tr>
                     </thead>
                     <tbody>
@@ -298,44 +220,42 @@ const UnitsContent = () => {
                             <td className="px-6 py-4">
                               {currentPage * projectsPerPage + index + 1}
                             </td>
-                            <td className="px-6 py-4">{unit.unit_id}</td>
+                            <td className="px-6 py-4">{unit.unit_number}</td>
+                            <td className="px-6 py-4">{unit.unit_area} sqft</td>
                             <td className="px-6 py-4">{unit.unit_type}</td>
-                            <td className="px-6 py-4">{unit.unit_size} sqft</td>
-                            <td className="px-6 py-4">{unit.total_units}</td>
+
                             <td className="px-6 py-4 font-semibold">
                               {" "}
                               {unit.base_price}
                             </td>
+                            <td className="px-6 py-4 font-semibold">
+                              {" "}
+                              {unit.unit_status}
+                            </td>
                             <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                               <button
-                                onClick={() => handleEdit(unit)}
+                                onClick={() => openUpdateModal(unit)}
                                 className="mr-2 text-cyan-600 hover:text-cyan-800"
                               >
                                 <FaEdit />
                               </button>
                               <button
-                                onClick={() =>
-                                  handleDelete(
-                                    unit.unit_id,
-                                    unit.unit_type,
-                                    unit.project_name
-                                  )
-                                }
+                                onClick={() => handleDelete(unit.unit_id)}
                                 className="text-red-600 hover:text-red-800"
                               >
                                 <FaTrash />
                               </button>
                             </td>
-                            <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                            {/* <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                               <Link
-                                to={`/admin-unit-Detail-Dash/${unit.unit_id}`}
+                                to={`/Super-admin-unit-Detail-Dash/${unit.unit_id}`}
                                 className="inline-block"
                               >
-                                <button className="bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-cyan-700 transition">
+                                <button className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-cyan-700 transition">
                                   Detail
                                 </button>
                               </Link>
-                            </td>
+                            </td> */}
                           </tr>
                         ))
                       ) : (
@@ -374,267 +294,24 @@ const UnitsContent = () => {
                     breakLinkClassName={"page-link"}
                   />
                 </div>
-                {addform && (
-                  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4 z-[9999]">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-                      <button
-                        onClick={() => setaddunit(false)}
-                        className="absolute top-3 right-3 text-gray-600 hover:text-red-500"
-                      >
-                        ✖
-                      </button>
-
-                      <h2 className="text-xl font-semibold mb-4 text-gray-700">
-                        Add New Unit
-                      </h2>
-                      <form
-                        onSubmit={handleSubmit}
-                        className="bg-white p-4 shadow-lg rounded-lg"
-                      >
-                        <div className="grid grid-cols-1 gap-4">
-                          {/* Project ID */}
-                          <div>
-                            <label className="block text-gray-700 font-medium mb-1">
-                              Project ID
-                            </label>
-                            <input
-                              type="number"
-                              name="main_project_id"
-                              value={unitData.main_project_id}
-                              onChange={handleChange}
-                              placeholder="Project ID"
-                              className="p-3 border rounded-lg w-full"
-                              required
-                              readOnly
-                            />
-                          </div>
-
-                          {/* Unit Type */}
-                          <div>
-                            <label className="block text-gray-700 font-medium mb-1">
-                              Unit Type
-                            </label>
-                            <select
-                              name="unit_type"
-                              value={unitData.unit_type}
-                              onChange={handleChange}
-                              className="w-full p-2 border rounded"
-                            >
-                              <option value="">Select Unit Type</option>
-                              {combinedLeadSources.map((source) => (
-                                <option key={source} value={source}>
-                                  {source}
-                                </option>
-                              ))}
-                            </select>
-                            {unitData.unit_type === "Other" && (
-                              <input
-                                type="text"
-                                name="custom_unit_type"
-                                value={unitData.custom_unit_type}
-                                onChange={handleChange}
-                                placeholder="Enter custom unit type"
-                                className="mt-2 w-full px-3 py-2 border border-gray-300 rounded"
-                              />
-                            )}
-                          </div>
-
-                          {/* Unit Size */}
-                          <div>
-                            <label className="block text-gray-700 font-medium mb-1">
-                              Unit Area
-                            </label>
-                            <input
-                              type="number"
-                              name="unit_size"
-                              value={unitData.unit_size}
-                              onChange={handleChange}
-                              placeholder="e.g., 500sqft, 400sqft"
-                              className="p-3 border rounded-lg w-full"
-                              required
-                              min={0}
-                              onKeyDown={(e) => {
-                                if (e.key === "-" || e.key === "Subtract") {
-                                  e.preventDefault();
-                                }
-                              }}
-                            />
-                          </div>
-
-                          {/* Total Units */}
-                          <div>
-                            <label className="block text-gray-700 font-medium mb-1">
-                              Total Units
-                            </label>
-                            <input
-                              type="number"
-                              name="total_units"
-                              value={unitData.total_units}
-                              onChange={handleChange}
-                              placeholder="Total Units"
-                              className="p-3 border rounded-lg w-full"
-                              required
-                              min={0}
-                              onKeyDown={(e) => {
-                                if (e.key === "-" || e.key === "Subtract") {
-                                  e.preventDefault();
-                                }
-                              }}
-                            />
-                          </div>
-
-                          {/* Base Price */}
-                          <div>
-                            <label className="block text-gray-700 font-medium mb-1">
-                              Base Price
-                            </label>
-                            <input
-                              type="number"
-                              name="base_price"
-                              value={unitData.base_price}
-                              onChange={handleChange}
-                              placeholder="Base Price"
-                              className="p-3 border rounded-lg w-full"
-                              required
-                              min={0}
-                              onKeyDown={(e) => {
-                                if (e.key === "-" || e.key === "Subtract") {
-                                  e.preventDefault();
-                                }
-                              }}
-                            />
-                          </div>
-
-                          {/* Submit Button */}
-                          <div className="mt-4">
-                            <button
-                              type="submit"
-                              className="w-full bg-cyan-600 text-white py-3 rounded-lg hover:bg-cyan-700 transition shadow-md"
-                            >
-                              Add Unit
-                            </button>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                )}
-
-                {showModal && editProject && (
-                  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999]">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                      <h2 className="text-xl font-semibold mb-4 text-gray-700">
-                        Edit Total Unit
-                      </h2>
-
-                      {/* Unit Type */}
-                      <div className="mb-3">
-                        <label className="block text-gray-600 mb-1">
-                          Unit Type
-                        </label>
-                        <input
-                          type="text"
-                          value={editProject.unit_type || ""}
-                          onChange={(e) =>
-                            setEditProject({
-                              ...editProject,
-                              unit_type: e.target.value,
-                            })
-                          }
-                          className="border p-2 w-full rounded focus:ring focus:ring-cyan-300"
-                          placeholder="Enter unit type"
-                          disabled
-                        />
-                      </div>
-
-                      {/* Unit Size */}
-                      <div className="mb-3">
-                        <label className="block text-gray-600 mb-1">
-                          Unit Area
-                        </label>
-                        <input
-                          type="text"
-                          value={editProject.unit_size || ""}
-                          onChange={(e) =>
-                            setEditProject({
-                              ...editProject,
-                              unit_size: e.target.value,
-                            })
-                          }
-                          className="border p-2 w-full rounded focus:ring focus:ring-cyan-300"
-                          placeholder="Enter unit size"
-                          disabled
-                        />
-                      </div>
-
-                      {/* Total Units */}
-                      <div className="mb-3">
-                        <label className="block text-gray-600 mb-1">
-                          Total Units
-                        </label>
-                        <input
-                          type="text"
-                          value={editProject.total_units || ""}
-                          onChange={(e) =>
-                            setEditProject({
-                              ...editProject,
-                              total_units: e.target.value,
-                            })
-                          }
-                          className="border p-2 w-full rounded focus:ring focus:ring-cyan-300"
-                          placeholder="Enter total units"
-                        />
-                      </div>
-
-                      {/* Base Price */}
-                      <div className="mb-3">
-                        <label className="block text-gray-600 mb-1">
-                          Base Price
-                        </label>
-                        <input
-                          type="number"
-                          value={editProject.base_price || ""}
-                          onChange={(e) =>
-                            setEditProject({
-                              ...editProject,
-                              base_price: e.target.value,
-                            })
-                          }
-                          className="border p-2 w-full rounded focus:ring focus:ring-cyan-300"
-                          placeholder="Enter base price"
-                          disabled
-                          min={0}
-                          onKeyDown={(e) => {
-                            if (e.key === "-" || e.key === "Subtract") {
-                              e.preventDefault();
-                            }
-                          }}
-                        />
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex justify-end">
-                        <button
-                          onClick={() => setShowModal(false)}
-                          className="mr-2 bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 transition"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          onClick={handleUpdate}
-                          className="bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-600 transition"
-                        >
-                          Update
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
         </div>
       </div>
+      <SuperUnitAddPopup
+        isOpen={addUnit}
+        onClose={() => setAddUnit(false)}
+        combinedLeadSources={combinedLeadSources}
+        fetchUnits={fetchUnits}
+      />
+      <SuperUnitUpdatePopup
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        combinedLeadSources={combinedLeadSources}
+        fetchUnits={fetchUnits}
+        selected={selected}
+      />
     </>
   );
 };

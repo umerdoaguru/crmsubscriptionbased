@@ -64,9 +64,7 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
           },
         }
       );
-      console.log(response.data);
 
-      // Ensure proper comparison with 'Created', trim any spaces and normalize the case
       setFollowCreated(response.data[0]);
     } catch (error) {
       console.error("Error fetching quotations:", error);
@@ -84,7 +82,6 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
         }
       );
 
-      // Ensure proper comparison with 'Created', trim any spaces and normalize the case
       setemployeeunitsoldCreated(response.data[0]);
     } catch (error) {
       console.error("Error fetching quotations:", error);
@@ -110,8 +107,9 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
   };
 
   const handleBackClick = () => {
-    navigate(-1); // -1 navigates to the previous page in history
+    navigate(-1);
   };
+
   const fetchVisit = async () => {
     try {
       const response = await axios.get(
@@ -125,7 +123,7 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
       );
       console.log(response.data);
       setVisit(response.data);
-      // Ensure proper comparison with 'Created', trim any spaces and normalize the case
+
       const hasCreatedvisit = response.data.some(
         (lead) =>
           (lead.visit && lead.visit.trim().toLowerCase() === "fresh") ||
@@ -138,12 +136,10 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
   };
 
   const handleViewQuotation = (lead) => {
-    console.log("Lead Object:", lead); // Log the lead object
+    console.log("Lead Object:", lead);
     const name = lead.name;
-    console.log("Lead Name:", name); // Log the name
+    console.log("Lead Name:", name);
     navigate(`/admin_view_quotations/${lead.lead_id}`);
-
-    // navigate("/View_quotations");
   };
   const handleViewVisit = () => {
     navigate(`/admin_view_visit/${leads[0].lead_id}`);
@@ -193,14 +189,14 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
               {leads.map((lead, index) => (
                 <div className="w-full lg:w-2/3 ">
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                    <div>
+                    {/* <div>
                       <label className="text-cyan-600 font-semibold">
                         Lead Number
                       </label>
                       <div className="p-2 bg-gray-100 rounded">
                         <p className="m-0">{lead.lead_no}</p>
                       </div>
-                    </div>
+                    </div> */}
 
                     <div>
                       <label className="text-cyan-600 font-semibold">
@@ -216,7 +212,7 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
                         Assigned To
                       </label>
                       <div className="p-2 bg-gray-100 rounded">
-                        <p className="m-0">{lead.assignedTo}</p>
+                        <p className="m-0">{lead.staff_name}</p>
                       </div>
                     </div>
 
@@ -265,7 +261,6 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
             </div>
             <div className=" mt-2">
               <div className="">
-                {/* Conditionally render the View Quotation button */}
                 <div className="flex flex-wrap gap-2">
                   {/* Conditionally render the View Quotation button */}
                   {visitCreated ? (
@@ -330,9 +325,6 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
                 <thead>
                   <tr>
                     <th className="px-6 py-3 border-b-2 border-gray-300">
-                      Lead Number
-                    </th>
-                    <th className="px-6 py-3 border-b-2 border-gray-300">
                       Assigned To
                     </th>
                     <th className="px-6 py-3 border-b-2 border-gray-300">
@@ -344,53 +336,21 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
                     <th className="px-6 py-3 border-b-2 border-gray-300">
                       Lead Source
                     </th>
-                    <th className="px-6 py-3 border-b-2 border-gray-300">
-                      Remark Status
-                    </th>
-                    <th className="px-6 py-3 border-b-2 border-gray-300">
-                      Answer Remark
-                    </th>
-                    <th className="px-6 py-3 border-b-2 border-gray-300">
-                      Meeting Status
-                    </th>
-                    <th className="px-6 py-3 border-b-2 border-gray-300">
+
+                    {/* <th className="px-6 py-3 border-b-2 border-gray-300">
                       Assigned By
-                    </th>
+                    </th> */}
                     <th className="px-6 py-3 border-b-2 border-gray-300">
                       Lead Status
                     </th>
                     <th className="px-6 py-3 border-b-2 border-gray-300">
                       Address
                     </th>
-                    <th className="px-6 py-3 border-b-2 border-gray-300">
-                      Booking Amount
-                    </th>
-                    <th className="px-6 py-3 border-b-2 border-gray-300">
-                      Deal Status
-                    </th>
-                    <th className="px-6 py-3 border-b-2 border-gray-300">
-                      Employee ID
-                    </th>
-                    <th className="px-6 py-3 border-b-2 border-gray-300">
-                      Follow-Up Status
-                    </th>
-                    <th className="px-6 py-3 border-b-2 border-gray-300">
-                      Payment Mode
-                    </th>
-
-                    <th className="px-6 py-3 border-b-2 border-gray-300">
-                      Reason
-                    </th>
-                    <th className="px-6 py-3 border-b-2 border-gray-300">
-                      Registry
-                    </th>
 
                     <th className="px-6 py-3 border-b-2 border-gray-300">
                       Project
                     </th>
-                    <th className="px-6 py-3 border-b-2 border-gray-300">
-                      Project Id
-                    </th>
+
                     <th className="px-6 py-3 border-b-2 border-gray-300">
                       Unit Type
                     </th>
@@ -401,20 +361,12 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
                     <th className="px-6 py-3 border-b-2 border-gray-300">
                       Unit Status
                     </th>
+
                     <th className="px-6 py-3 border-b-2 border-gray-300">
-                      Visit
-                    </th>
-                    <th className="px-6 py-3 border-b-2 border-gray-300">
-                      Visit Date
-                    </th>
-                    <th className="px-6 py-3 border-b-2 border-gray-300">
-                      Close Date
+                      Sold Date
                     </th>
                     <th className="px-6 py-3 border-b-2 border-gray-300">
                       Assigned Date
-                    </th>
-                    <th className="px-6 py-3 border-b-2 border-gray-300">
-                      Actual Date
                     </th>
                   </tr>
                 </thead>
@@ -425,10 +377,7 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
                       className={index % 2 === 0 ? "bg-gray-100" : ""}
                     >
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.lead_no}
-                      </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.assignedTo}
+                        {lead.staff_name}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.name}
@@ -439,93 +388,36 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.leadSource}
                       </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.remark_status}
-                      </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.answer_remark}
-                      </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.meeting_status}
-                      </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {/* <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.assignedBy}
-                      </td>
+                      </td> */}
+
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.lead_status}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.address}
                       </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.booking_amount}
-                      </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.deal_status}
-                      </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.employeeId}
-                      </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.follow_up_status}
-                      </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.payment_mode}
-                      </td>
-
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.reason}
-                      </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.registry}
-                      </td>
 
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.project_name}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.main_project_id}
-                      </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.unit_type}
                       </td>
-
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.unit_number}
                       </td>
+
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                         {lead.unit_status}
                       </td>
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.visit}
+                        {lead.unit_updated_at?.split(" ")[0]}
                       </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800 ">
-                        {lead.visit_date === "pending"
-                          ? "pending"
-                          : moment(lead.visit_date)
-                              .format("DD MMM YYYY")
-                              .toUpperCase()}
-                      </td>
-                      <td className="px-6 py-4 border-b border-gray-200 font-semibold text-gray-800">
-                        {lead.d_closeDate === "pending"
-                          ? "pending"
-                          : moment(lead.d_closeDate)
-                              .format("DD MMM YYYY")
-                              .toUpperCase()}
-                      </td>
+
                       <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.createdTime
-                          ? moment(lead.createdTime)
-                              .format("DD MMM YYYY")
-                              .toUpperCase()
-                          : "N/A"}
-                      </td>
-                      <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                        {lead.actual_date
-                          ? moment(lead.actual_date)
-                              .format("DD MMM YYYY")
-                              .toUpperCase()
-                          : "N/A"}
+                        {lead.createdTime}
                       </td>
                     </tr>
                   ))}

@@ -17,7 +17,7 @@ function SuperMainSocialMediaByProjectContent() {
     const fetchProjectDetail = async () => {
       try {
         const { data } = await axios.get(
-          `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${userId}/${user?.staff_org_id}`,
+          `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${user?.staff_org_id}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -50,14 +50,12 @@ function SuperMainSocialMediaByProjectContent() {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
-  // Function to generate page numbers with ellipsis
   const getPageNumbers = () => {
     const pages = [];
-    const maxVisible = 5; // max visible numbers around current page
+    const maxVisible = 5;
     const startPage = Math.max(1, currentPage - 2);
     const endPage = Math.min(totalPages, currentPage + 2);
 
-    // Always show first page
     if (startPage > 1) {
       pages.push(1);
       if (startPage > 2) pages.push("...");
@@ -95,7 +93,7 @@ function SuperMainSocialMediaByProjectContent() {
               setSearchTerm(e.target.value);
               setCurrentPage(1);
             }}
-            className="border px-4 py-2 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-cyan-300"
+            className="border w-[20rem] px-4 py-2 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-cyan-300"
           />
         </div>
 
@@ -107,7 +105,7 @@ function SuperMainSocialMediaByProjectContent() {
                 <th className="px-4 py-3 text-left">#</th>
                 <th className="px-4 py-3 text-left">Project Name</th>
                 <th className="px-4 py-3 text-left">Location</th>
-                <th className="px-4 py-3 text-left">Total Area</th>
+                <th className="px-4 py-3 text-left">Total Unit</th>
                 <th className="px-4 py-3 text-center">Action</th>
               </tr>
             </thead>
@@ -125,10 +123,10 @@ function SuperMainSocialMediaByProjectContent() {
                       {project.project_name}
                     </td>
                     <td className="px-4 py-2 uppercase">{project.location}</td>
-                    <td className="px-4 py-2">{project.total_area}sq. ft.</td>
+                    <td className="px-4 py-2">{project.total_units}</td>
                     <td className="px-4 py-2 text-center">
                       <Link
-                        to={`/social-media-superleads/${project.main_project_id}`}
+                        to={`/social-media-superleads/${project.project_id}`}
                         className="bg-cyan-600 hover:bg-cyan-700 text-white px-3 py-1 rounded-lg transition"
                       >
                         View

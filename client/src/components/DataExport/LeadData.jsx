@@ -3,7 +3,6 @@ import axios from "axios";
 import moment from "moment";
 import * as XLSX from "xlsx";
 import ReactPaginate from "react-paginate";
-import Header from "../../pages/Quotation/Header";
 import { useSelector } from "react-redux";
 
 function LeadData() {
@@ -13,10 +12,8 @@ function LeadData() {
   const [endDate, setEndDate] = useState("");
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
-
   const [currentPage, setCurrentPage] = useState(0);
-  const leadsPerPage = 6; // Default leads per page
-
+  const leadsPerPage = 6;
   const [selectedColumns, setSelectedColumns] = useState([
     "lead_no",
     "assignedTo",
@@ -44,11 +41,9 @@ function LeadData() {
     "actual_date",
   ]);
 
-  const adminuser = useSelector((state) => state.auth.user);
-  const token = adminuser.token;
-  const userId = adminuser.user_id;
-
-  // Fetch leads and employees from the API
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
+  const userId = superadminuser.staff_id;
   useEffect(() => {
     fetchLeads();
     fetchEmployees();
@@ -57,7 +52,7 @@ function LeadData() {
   const fetchLeads = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-data-user-id/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -66,7 +61,7 @@ function LeadData() {
         }
       );
       setLeads(response.data);
-      setFilteredLeads(response.data); // Initial data set for filtering
+      setFilteredLeads(response.data);
       console.log(leads);
     } catch (error) {
       console.error("Error fetching leads:", error);
@@ -76,7 +71,7 @@ function LeadData() {
   const fetchEmployees = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employee/${userId}`,
+        `https://crm-generalize.dentalguru.software/api/getAllEmployeeData/${superadminuser?.staff_org_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -94,7 +89,6 @@ function LeadData() {
   useEffect(() => {
     let filtered = leads;
 
-    // Filter by date range if specified
     if (startDate && endDate) {
       filtered = filtered.filter((lead) => {
         const createdTime = moment(lead.createdTime, "YYYY-MM-DD");
@@ -102,23 +96,21 @@ function LeadData() {
       });
     }
 
-    // Filter by selected employee if specified
     if (selectedEmployee) {
       filtered = filtered.filter(
-        (lead) => lead.assignedTo === selectedEmployee
+        (lead) => lead.assignedTo === Number(selectedEmployee)
       );
     }
 
     // Filter by lead_status 'completed'
-    filtered = filtered.filter((lead) => lead.lead_status === "completed");
+    // filtered = filtered.filter((lead) => lead.lead_status === "completed");
 
     setFilteredLeads(filtered);
-    setCurrentPage(0); // Reset to first page on filter change
+    setCurrentPage(0);
   }, [startDate, endDate, selectedEmployee, leads]);
 
   const downloadExcel = () => {
     const columnMapping = {
-      lead_no: "Lead Number",
       assignedTo: "Assigned To",
       name: "Name",
       phone: "Phone",
@@ -134,13 +126,11 @@ function LeadData() {
       employeeId: "Employee ID",
       follow_up_status: "Follow-up Status",
       payment_mode: "Payment Mode",
-
       reason: "Reason",
       registry: "Registry",
-
       project_name: "Project",
       visit: "Visit",
-      visit_Date: "Visit Date",
+      visit_date: "Visit Date",
       d_closeDate: "Close Date",
       createdTime: "Assigned Date",
       actual_date: "Actual Date",
@@ -191,8 +181,6 @@ function LeadData() {
     XLSX.writeFile(workbook, filename);
   };
 
-  // Pagination logic
-  // Calculate total number of pages
   const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
 
   // Pagination logic
@@ -206,7 +194,7 @@ function LeadData() {
   };
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       {/* <Sider /> */}
       <div className="container 2xl:w-[95%] ">
         <h1 className="text-2xl text-center mt-[2rem] font-medium">
@@ -215,44 +203,60 @@ function LeadData() {
         <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
 
         {/* Date Filter */}
-        <div className="flex  mb-4 sm:flex-row flex-col gap-2">
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="border p-1"
-          />
-          <div className="p-1">
-            <p>to</p>
+        <div className="flex flex-col sm:flex-row flex-wrap items-end gap-4 mb-4">
+          {/* Start Date */}
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-semibold text-gray-700">
+              Start Date
+            </label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="border rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            />
           </div>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="border p-1"
-          />
+
+          {/* End Date */}
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-semibold text-gray-700">
+              End Date
+            </label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="border rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            />
+          </div>
 
           {/* Employee Filter */}
-          <div className="">
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-semibold text-gray-700">
+              Employee
+            </label>
             <select
               value={selectedEmployee}
               onChange={(e) => setSelectedEmployee(e.target.value)}
-              className="border p-1"
+              className="border rounded-lg px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
             >
               <option value="">Select Employee</option>
               {employees.map((employee) => (
-                <option key={employee.id} value={employee.name}>
-                  {employee.name}
+                <option key={employee.staff_id} value={employee.staff_id}>
+                  {employee.staff_name}
                 </option>
               ))}
             </select>
           </div>
 
           {/* Download Button */}
-          <div className="respo ">
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-semibold text-gray-700 invisible">
+              Download
+            </label>
             <button
               onClick={downloadExcel}
-              className="bg-cyan-600 text-white font-medium px-4 py-2 rounded hover:bg-cyan-700"
+              className="bg-cyan-600 text-white font-medium px-5 py-2 rounded-lg shadow-md hover:bg-cyan-700 active:scale-95 transition"
             >
               Download Excel
             </button>
@@ -264,9 +268,9 @@ function LeadData() {
             <thead>
               <tr>
                 <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">
+                {/* <th className="px-6 py-3 border-b-2 border-gray-300">
                   Lead Number
-                </th>
+                </th> */}
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Assigned To
                 </th>
@@ -302,11 +306,11 @@ function LeadData() {
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {index + 1 + currentPage * leadsPerPage}
                     </td>
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                    {/* <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.lead_no}
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.assignedTo}
+                      {lead.staff_name}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.name}
