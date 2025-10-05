@@ -220,6 +220,11 @@ const {
   getLeadsByOrg,
 } = require("../controllers/ControllerNine");
 
+const {
+  metaLeadFetchByPageId,
+  getMetaLeadsByOrgId,
+} = require("../controllers/ControllerTen");
+
 // ========== Router Begins =====================
 router.post("/register", register);
 router.post("/login", login);
@@ -666,5 +671,8 @@ router.put(
 
 router.get("/getAllUnitSoldByOrg/:orgId", getAllUnitSoldByOrg);
 router.get("/getLeadsByOrg/:orgId", getLeadsByOrg);
+
+router.get("/metaLeadFetchByPageId", metaLeadFetchByPageId);
+router.get("/getMetaLeadsByOrgId", getMetaLeadsByOrgId);
 
 module.exports = router;

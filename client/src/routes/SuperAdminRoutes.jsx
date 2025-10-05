@@ -36,6 +36,7 @@ import Superunits from "../pages/superAdmin/Superunits";
 import SuperUnitsDetails from "../pages/superAdmin/SuperUnitsDetails";
 import AdminProfile from "../pages/superAdmin/AdminProfile";
 import EmployeeProfile from "../pages/Employees/EmployeeProfile";
+import SuperSetting from "../pages/superAdmin/SuperSetting";
 
 function SuperAdminRoutes() {
   const user = useSelector((state) => state.auth.user);
@@ -87,7 +88,7 @@ function SuperAdminRoutes() {
           element={<SuperAdminSoldUnits />}
         />
         <Route
-          path="/social-media-superleads/:id"
+          path="/social-media-superleads"
           element={<SuperSocialMediaLeads />}
         />
         <Route path="/super-admin-project-units/:id" element={<Superunits />} />
@@ -103,6 +104,8 @@ function SuperAdminRoutes() {
           path="/super-admin-admin-employe/:adminId"
           element={<AdminProfile />}
         />
+
+        <Route path="/super-admin-settings" element={<SuperSetting />} />
 
         {/* ================================================================================= */}
         {/* <Route path="/super-admin-leads" element={<SuperAdminLead />} />

@@ -20,6 +20,7 @@ import { RiAdminFill } from "react-icons/ri";
 import { logoutUser } from "../store/UserSlice";
 import logoTwo from "../assets/favicon_one.png";
 import logoOne from "../assets/CRMGuruLogo.png";
+import { IoSettings } from "react-icons/io5";
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const user = useSelector((state) => state.auth.user);
@@ -44,7 +45,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
           },
           {
             name: "Digital Marketing Leads",
-            path: "/main-social-media-super-admin-leads",
+            path: "/social-media-superleads",
             icon: <TiSocialInstagramCircular />,
           },
           {
@@ -72,11 +73,11 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             path: "/super-admin-employee-management",
             icon: <IoIosPeople />,
           },
-          // {
-          //   name: "Admin Management",
-          //   path: "/super-admin-AdminManagement",
-          //   icon: <RiAdminFill />,
-          // },
+          {
+            name: "Settings",
+            path: "/super-admin-settings",
+            icon: <IoSettings />,
+          },
         ]
       : []),
 

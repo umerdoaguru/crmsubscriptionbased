@@ -15,15 +15,15 @@ function SuperSocialMediaLeadsContent() {
   return (
     <>
       <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
-          <div className="mt-[1rem] ">
+        <div className="w-full min-h-full bg-[#F9FAFF] p-2">
+          {/* <div className="mt-[1rem] ">
             <button
               onClick={() => navigate(-1)}
               className="bg-cyan-600 text-white px-3 py-1 rounded-lg hover:bg-cyan-700 transition-colors"
             >
               Back
             </button>
-          </div>
+          </div> */}
           <div className="container">
             <h2 className="text-2xl text-center mt-[1rem] font-medium">
               Digital Marketing Leads
