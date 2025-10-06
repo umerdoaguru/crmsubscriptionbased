@@ -8,7 +8,7 @@ import { FaMeta } from "react-icons/fa6";
 import { CgWebsite } from "react-icons/cg";
 import { SiGoogleads } from "react-icons/si";
 
-function SuperSocialMediaLeadsContent() {
+function SuperSocialMediaLeadsContent({ isSidebarOpen }) {
   const [selectedComponent, setSelectedComponent] = useState("FacebookData");
   const navigate = useNavigate();
 
@@ -138,8 +138,12 @@ function SuperSocialMediaLeadsContent() {
 
             {/* Conditionally render the selected component */}
             <div className="w-full h-[calc(100vh-10rem)] overflow-y-auto">
-              {selectedComponent === "FacebookData" && <SuperLeadsTable />}
-              {selectedComponent === "GoogleData" && <SuperLeadsTable />}
+              {selectedComponent === "FacebookData" && (
+                <SuperLeadsTable isSidebarOpen={isSidebarOpen} />
+              )}
+              {selectedComponent === "GoogleData" && (
+                <SuperLeadsTable isSidebarOpen={isSidebarOpen} />
+              )}
               {selectedComponent === "WebsiteData" && <SuperWebsiteLeads />}
               {selectedComponent === "99AcresData" && <SuperAccrs />}
             </div>

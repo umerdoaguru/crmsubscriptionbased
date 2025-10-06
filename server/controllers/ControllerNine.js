@@ -751,6 +751,135 @@ const getLeadsByOrg = (req, res) => {
   });
 };
 
+const getOrgDetailsById = (req, res) => {
+  try {
+    const orgId = req.params.orgId;
+    const selectQuery = `select * from company_profile where org_id = ?`;
+    db.query(selectQuery, orgId, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+      return res.status(200).send(result);
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "internal server error" });
+  }
+};
+
+const updateOrgDetails = async (req, res) => {
+  try {
+    const orgId = req.params.orgId;
+    const {
+      company_name,
+      company_name_account_name,
+      company_name_account_ifsc,
+      company_name_account_number,
+      bank,
+      company_address,
+      moblie_no,
+      gst_no,
+      pan_no,
+      email_id,
+      website_url,
+      org_page_id,
+      org_page_access_token,
+    } = req.body;
+
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+    let fields = [];
+    let values = [];
+
+    if (company_name) {
+      fields.push("company_name = ?");
+      values.push(company_name);
+    }
+    if (company_name_account_name) {
+      fields.push("company_name_account_name = ?");
+      values.push(company_name_account_name);
+    }
+    if (company_name_account_ifsc) {
+      fields.push("company_name_account_ifsc = ?");
+      values.push(company_name_account_ifsc);
+    }
+    if (company_name_account_number) {
+      fields.push("company_name_account_number = ?");
+      values.push(company_name_account_number);
+    }
+    if (bank) {
+      fields.push("bank = ?");
+      values.push(bank);
+    }
+    if (company_address) {
+      fields.push("company_address = ?");
+      values.push(company_address);
+    }
+    if (moblie_no) {
+      fields.push("moblie_no = ?");
+      values.push(moblie_no);
+    }
+    if (gst_no) {
+      fields.push("gst_no = ?");
+      values.push(gst_no);
+    }
+    if (pan_no) {
+      fields.push("pan_no = ?");
+      values.push(pan_no);
+    }
+    if (email_id) {
+      fields.push("email_id = ?");
+      values.push(email_id);
+    }
+    if (website_url) {
+      fields.push("website_url = ?");
+      values.push(website_url);
+    }
+    if (org_page_id) {
+      fields.push("org_page_id = ?");
+      values.push(org_page_id);
+    }
+    if (org_page_access_token) {
+      fields.push("org_page_access_token = ?");
+      values.push(org_page_access_token);
+    }
+
+    // Update timestamp
+    fields.push("company_updated_at = ?");
+    values.push(dateTime);
+
+    if (fields.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No fields provided for update",
+      });
+    }
+
+    const updateQuery = `UPDATE company_profile SET ${fields.join(
+      ", "
+    )} WHERE org_id = ?`;
+    values.push(orgId);
+
+    db.query(updateQuery, values, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+
+      if (result.affectedRows === 0) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Organization not found" });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "Organization details updated successfully",
+      });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   insertNewPlan,
   insertBillingCycle,
@@ -772,4 +901,6 @@ module.exports = {
   updateOnlyLeadStatusEmployeeEnd,
   getAllUnitSoldByOrg,
   getLeadsByOrg,
+  getOrgDetailsById,
+  updateOrgDetails,
 };

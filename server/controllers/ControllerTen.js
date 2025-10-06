@@ -2,15 +2,30 @@ const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
 const { db } = require("../db");
+const moment = require("moment-timezone");
 
 const metaLeadFetchByPageId = async (req, res) => {
   const { pageId, accessToken, meta_org_id } = req.body;
 
-  if (!pageId || !accessToken || !meta_org_id) {
+  if (!pageId) {
     return res.status(400).json({
-      error: "pageId, accessToken, and meta_org_id are required",
+      error: "pageId is required",
     });
   }
+
+  if (!accessToken) {
+    return res.status(400).json({
+      error: "accessToken is required",
+    });
+  }
+
+  if (!meta_org_id) {
+    return res.status(400).json({
+      error: "meta_org_id is required",
+    });
+  }
+
+  const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
 
   try {
     const formsResp = await axios.get(
@@ -40,6 +55,7 @@ const metaLeadFetchByPageId = async (req, res) => {
         const leadId = lead.id;
         const createdTime = lead.created_time;
         const fieldData = JSON.stringify(lead.field_data);
+        const formName = form.name;
 
         db.query(
           "SELECT meta_id FROM meta_leads WHERE leadgen_id = ?",
@@ -53,16 +69,18 @@ const metaLeadFetchByPageId = async (req, res) => {
             if (result.length === 0) {
               db.query(
                 `INSERT INTO meta_leads 
-                (leadgen_id, meta_form_id, meta_page_id, generated_time, question_fields_data, meta_org_id, meta_lead_status)
-                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                (leadgen_id, meta_form_id, meta_form_name, meta_page_id, generated_time, question_fields_data, meta_org_id, meta_lead_status, meta_created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                   leadId,
                   form.id,
+                  formName,
                   pageId,
                   createdTime,
                   fieldData,
                   meta_org_id,
                   "Pending",
+                  dateTime,
                 ],
                 (err2) => {
                   if (err2) {
@@ -107,4 +125,100 @@ const getMetaLeadsByOrgId = (req, res) => {
   }
 };
 
-module.exports = { metaLeadFetchByPageId, getMetaLeadsByOrgId };
+const updateAndAssignedMetaLeads = (req, res) => {
+  try {
+    const mlid = req.params.mlid;
+    const {
+      meta_assignedTo,
+      meta_assignedBy,
+      meta_project_id,
+      meta_unit_id,
+      meta_lead_status,
+    } = req.body;
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+    let fields = [];
+    let values = [];
+
+    if (meta_assignedTo) {
+      fields.push("meta_assignedTo = ?");
+      values.push(meta_assignedTo);
+    }
+
+    if (meta_assignedBy) {
+      fields.push("meta_assignedBy = ?");
+      values.push(meta_assignedBy);
+    }
+
+    if (meta_project_id) {
+      fields.push("meta_project_id = ?");
+      values.push(meta_project_id);
+    }
+
+    if (meta_unit_id) {
+      fields.push("meta_unit_id = ?");
+      values.push(meta_unit_id);
+    }
+
+    if (meta_lead_status) {
+      fields.push("meta_lead_status = ?");
+      values.push(meta_lead_status);
+    }
+
+    fields.push("meta_updated_at = ?");
+    values.push(dateTime);
+
+    if (fields.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No fields provided for update",
+      });
+    }
+
+    const updateQuery = `UPDATE meta_leads SET ${fields.join(
+      ", "
+    )} WHERE meta_id = ?`;
+    values.push(mlid);
+
+    db.query(updateQuery, values, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+
+      if (result.affectedRows === 0) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Invalid Meta Lead ID" });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "Meta Leads details updated successfully",
+      });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const getAllUnitsByProjectId = (req, res) => {
+  try {
+    const projectId = req.params.projectId;
+    const selectQuery = `select * from units where unit_project_id = ?`;
+    db.query(selectQuery, projectId, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+      return res.status(200).send(result);
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+module.exports = {
+  metaLeadFetchByPageId,
+  getMetaLeadsByOrgId,
+  updateAndAssignedMetaLeads,
+  getAllUnitsByProjectId,
+};

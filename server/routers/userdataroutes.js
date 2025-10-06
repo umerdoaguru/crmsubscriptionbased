@@ -218,11 +218,15 @@ const {
   updateOnlyLeadStatusEmployeeEnd,
   getAllUnitSoldByOrg,
   getLeadsByOrg,
+  getOrgDetailsById,
+  updateOrgDetails,
 } = require("../controllers/ControllerNine");
 
 const {
   metaLeadFetchByPageId,
   getMetaLeadsByOrgId,
+  updateAndAssignedMetaLeads,
+  getAllUnitsByProjectId,
 } = require("../controllers/ControllerTen");
 
 // ========== Router Begins =====================
@@ -674,5 +678,9 @@ router.get("/getLeadsByOrg/:orgId", getLeadsByOrg);
 
 router.get("/metaLeadFetchByPageId", metaLeadFetchByPageId);
 router.get("/getMetaLeadsByOrgId", getMetaLeadsByOrgId);
+router.get("/getOrgDetailsById/:orgId", getOrgDetailsById);
+router.put("/updateOrgDetails/:orgId", updateOrgDetails);
+router.put("/updateAndAssignedMetaLeads/:mlid", updateAndAssignedMetaLeads);
+router.get("/getAllUnitsByProjectId/:projectId", getAllUnitsByProjectId);
 
 module.exports = router;

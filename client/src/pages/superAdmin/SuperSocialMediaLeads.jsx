@@ -26,7 +26,7 @@ const SuperSocialMediaLeads = () => {
           <Topbar isSidebarOpen={isSidebarOpen} />
           <div className=""></div>
 
-          <SuperSocialMediaLeadsContent />
+          <SuperSocialMediaLeadsContent isSidebarOpen={isSidebarOpen} />
         </div>
       </div>
     </div>
