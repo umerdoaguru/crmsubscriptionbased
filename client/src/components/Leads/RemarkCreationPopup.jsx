@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import cogoToast from "cogo-toast";
 
+
+
 const RemarkCreationPopup = ({
   isOpen,
   onClose,
@@ -13,20 +15,22 @@ const RemarkCreationPopup = ({
   const modalRef = useRef();
   const [loading, setLoading] = useState(false);
   const [remark, setRemark] = useState({
-    remark_lead_id: leads[0]?.lead_id,
-    remark_project_id: leads[0]?.project_id,
-    remark_employeeId: leads[0]?.staff_id,
+    remark_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
+    remark_project_id: leads[0]?.project_id || leads[0]?.meta_project_id,
+    remark_employeeId: leads[0]?.staff_id || leads[0]?.meta_assignedTo,
     remark_status: "",
     answer_remark: "",
     remark_date: "",
   });
 
+  console.log(leads);
+
   useEffect(() => {
     setRemark({
       ...remark,
-      remark_lead_id: leads[0]?.lead_id,
-      remark_project_id: leads[0]?.project_id,
-      remark_employeeId: leads[0]?.staff_id,
+      remark_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
+      remark_project_id: leads[0]?.project_id || leads[0]?.meta_project_id,
+      remark_employeeId: leads[0]?.staff_id || leads[0]?.meta_assignedTo,
     });
   }, [leads]);
 

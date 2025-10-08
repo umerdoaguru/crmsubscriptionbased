@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
 
-function EmployeeLeadContent({ isSidebarOpen }) {
+const EmployeeLeadContent = ({ isSidebarOpen }) => {
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -105,7 +105,7 @@ function EmployeeLeadContent({ isSidebarOpen }) {
       if (response.status === 200) {
         console.log("Updated successfully:", response.data);
         cogoToast.success("Lead status updated successfully");
-        navigate(`/employee-lead-single-data/${lead.lead_id}`);
+        navigate(`/employee-lead-single-data/general/${lead.lead_id}`);
       } else {
         console.error("Error updating:", response.data);
         cogoToast.error("Failed to update the lead status.");
@@ -488,7 +488,7 @@ function EmployeeLeadContent({ isSidebarOpen }) {
                           </td>
                           <td className="px-2 sm:px-4 py-3 border-b border-gray-200 underline font-semibold text-cyan-600">
                             <Link
-                              to={`/employee-lead-single-data/${lead.lead_id}`}
+                              to={`/employee-lead-single-data/general/${lead.lead_id}`}
                             >
                               {lead.lead_id}
                             </Link>
@@ -589,6 +589,6 @@ function EmployeeLeadContent({ isSidebarOpen }) {
       </div>
     </>
   );
-}
+};
 
 export default EmployeeLeadContent;

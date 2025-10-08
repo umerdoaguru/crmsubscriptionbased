@@ -10,16 +10,17 @@ const VisitCreationPopup = ({
   onClose,
   fetchVisit,
   fetchLeads,
+  fetchMetaLeads,
   leads,
 }) => {
   const modalRef = useRef();
-  const { id } = useParams();
+  const { type, id } = useParams();
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.auth.user);
 
   const [visitLead, setVisitLead] = useState({
     vis_staff_id: user?.staff_id,
-    vis_lead_id: id,
+    vis_lead_id: Number(id),
     visit_details: "",
     visit_type: "",
     visit_date: "",
@@ -53,6 +54,7 @@ const VisitCreationPopup = ({
 
         fetchVisit();
         fetchLeads();
+        fetchMetaLeads();
         setLoading(false);
         onClose();
       } else {

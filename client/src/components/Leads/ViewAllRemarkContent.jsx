@@ -5,13 +5,24 @@ import moment from "moment";
 import { useSelector } from "react-redux";
 import cogoToast from "cogo-toast";
 
+const getFieldValue = (dataString, fieldName) => {
+  try {
+    const data = JSON.parse(dataString);
+    const field = data.find((item) => item.name === fieldName);
+    return field ? field.values[0] : "";
+  } catch (error) {
+    console.error("Invalid question_fields_data:", error);
+    return "";
+  }
+};
+
 const ViewAllRemarkContent = () => {
   const [remarks, setRemarks] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10);
   const [filterText, setFilterText] = useState("");
   const [render, setRender] = useState(false);
-  const { id } = useParams();
+  const { type, id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
   const navigate = useNavigate();
@@ -24,17 +35,22 @@ const ViewAllRemarkContent = () => {
 
   const fetchRemarks = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/remarks/${id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setRemarks(response.data);
-      console.log(response);
+      let apiUrl = "";
+
+      if (type === "meta") {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeRemarkMeta/${id}`;
+      } else {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/remarks/${id}`;
+      }
+
+      const { data } = await axios.get(apiUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setRemarks(data);
     } catch (error) {
       console.error("Error fetching remarks:", error);
     }
@@ -85,7 +101,7 @@ const ViewAllRemarkContent = () => {
   const updateRemark = async () => {
     try {
       const response = await axios.put(
-        `https://crm-generalize.dentalguru.software/api/remarks/${id}`,
+        `https://crm-generalize.dentalguru.software/api/remarks/${modalData?.remark_id}`,
         modalData
       );
       cogoToast.success("Remark updated successfully!");
@@ -101,13 +117,9 @@ const ViewAllRemarkContent = () => {
     setCurrentPage(selected);
   };
 
-  const filteredRemarks = remarks.filter((remark) =>
-    remark?.name?.toLowerCase().includes(filterText.toLowerCase())
-  );
-
   const offset = currentPage * itemsPerPage;
-  const currentRemarks = filteredRemarks.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(filteredRemarks.length / itemsPerPage);
+  const currentRemarks = remarks.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(remarks.length / itemsPerPage);
 
   return (
     <>
@@ -173,7 +185,11 @@ const ViewAllRemarkContent = () => {
                             {remark.remark_lead_id}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {remark.name}
+                            {remark.name ||
+                              getFieldValue(
+                                remark.question_fields_data,
+                                "full_name"
+                              )}
                           </td>
                           {/* <td className="px-6 py-4 whitespace-nowrap">
                             {remark.employee_name}
@@ -230,7 +246,13 @@ const ViewAllRemarkContent = () => {
                             <input
                               type="text"
                               name="name"
-                              value={modalData.name || ""}
+                              value={
+                                modalData.name ||
+                                getFieldValue(
+                                  modalData.question_fields_data,
+                                  "full_name"
+                                )
+                              }
                               // onChange={handleInputChange}
                               className="w-full px-3 py-2 border border-gray-300 rounded"
                               disabled

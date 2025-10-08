@@ -74,6 +74,7 @@ import ViewAllRemark from "../pages/Employees/ViewAllRemark";
 import ViewAllUnitSold from "../pages/Employees/ViewAllUnitSold";
 import SuperAdminProfileContent from "../adiComponent/Super-Admin/superAdminProfileContent";
 import SuperAdminProfile from "../pages/superAdmin/SuperAdminProfile";
+import MetaLeadEmp from "../pages/Employees/MetaLeadEmp";
 
 function EmployeeRoutes() {
   const user = useSelector((state) => state.auth.user);
@@ -97,13 +98,20 @@ function EmployeeRoutes() {
           <Route path="/close-data" element={<CloseTable />} />
           <Route path="/employee-sold" element={<Employeesoldunit />} />
           <Route
-            path="/employee-lead-single-data/:id"
+            path="/employee-lead-single-data/:type/:id"
             element={<EmployeeSingleLeadProfile />}
           />
-          <Route path="/view_visit/:id" element={<ViewAllVisit />} />
-          <Route path="/view_follow_up/:id" element={<ViewAllFollowUp />} />
-          <Route path="/view_remark/:id" element={<ViewAllRemark />} />
-          <Route path="/view_unit_sold/:id" element={<ViewAllUnitSold />} />
+          <Route path="/view_visit/:type/:id" element={<ViewAllVisit />} />
+          <Route
+            path="/view_follow_up/:type/:id"
+            element={<ViewAllFollowUp />}
+          />
+          <Route path="/view_remark/:type/:id" element={<ViewAllRemark />} />
+          <Route
+            path="/view_unit_sold/:type/:id"
+            element={<ViewAllUnitSold />}
+          />
+          <Route path="/meta-leads-employee" element={<MetaLeadEmp />} />
 
           {/* ========================================================================== */}
 

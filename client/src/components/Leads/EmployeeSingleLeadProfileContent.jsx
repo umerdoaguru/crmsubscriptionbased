@@ -11,8 +11,21 @@ import RemarkCreationPopup from "./RemarkCreationPopup";
 import UnitSoldCreationPopup from "./UnitSoldCreationPopup";
 import UpdateLeadStatusPopup from "./UpdateLeadStatusPopup";
 
+const getFieldValue = (dataString, fieldName) => {
+  try {
+    const data = JSON.parse(dataString);
+    const field = data.find((item) => item.name === fieldName);
+    return field ? field.values[0] : "";
+  } catch (error) {
+    console.error("Invalid question_fields_data:", error);
+    return "";
+  }
+};
+
 function EmployeeSingleLeadProfileContent() {
-  const { id } = useParams();
+  const { type, id } = useParams();
+  console.log(`lead Id`, id);
+
   const navigate = useNavigate();
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -62,15 +75,20 @@ function EmployeeSingleLeadProfileContent() {
   const [remarkCreated, setRemarkCreated] = useState(false);
 
   useEffect(() => {
-    fetchLeads();
-    fetchVisit();
-    fetchFollowUp();
-    fetchRemark();
-  }, [id]);
-  useEffect(() => {
     fetchUnitdata();
     fetchUnitSoldEmployee();
   }, [leads[0]]);
+
+  useEffect(() => {
+    fetchVisit();
+    fetchFollowUp();
+    fetchRemark();
+    if (type === "meta") {
+      fetchMetaLeads();
+    } else {
+      fetchLeads();
+    }
+  }, [type, id]);
 
   const fetchLeads = async () => {
     try {
@@ -105,12 +123,30 @@ function EmployeeSingleLeadProfileContent() {
     }
   };
 
+  const fetchMetaLeads = async () => {
+    try {
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getMetaLeadsByLeadId/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(data);
+      setLeads(data);
+    } catch (error) {
+      console.error("Error fetching quotations:", error);
+    }
+  };
+
   console.log(leads);
 
   const fetchVisit = async () => {
     try {
       const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-visit/${id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-visit/${type}/${id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -129,32 +165,45 @@ function EmployeeSingleLeadProfileContent() {
 
   const fetchFollowUp = async () => {
     try {
-      const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-follow-up/${id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      let apiUrl = "";
+
+      if (type === "meta") {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeFollow_UpMeta/${id}`;
+      } else {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeFollow_Up/${id}`;
+      }
+
+      const { data } = await axios.get(apiUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setFollowCreated(data);
     } catch (error) {
-      console.error("Error fetching quotations:", error);
+      console.error("Error fetching follow up:", error);
     }
   };
+
+  console.log(followCreated);
+
   const fetchUnitSoldEmployee = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/unit-sold-lead-id/${leads[0].lead_id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      let apiUrl = "";
+
+      if (type === "meta") {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeUnitSoldByLeadIdMeta/${leads[0].leadgen_id}`;
+      } else {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/unit-sold-lead-id/${leads[0].lead_id}`;
+      }
+
+      const response = await axios.get(apiUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       console.log(response);
 
@@ -166,15 +215,20 @@ function EmployeeSingleLeadProfileContent() {
 
   const fetchRemark = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/remarks/${id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      let apiUrl = "";
+
+      if (type === "meta") {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeRemarkMeta/${id}`;
+      } else {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/remarks/${id}`;
+      }
+
+      const response = await axios.get(apiUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       console.log(response.data);
       setRemarkCreated(response.data.length > 0);
     } catch (error) {
@@ -239,20 +293,26 @@ function EmployeeSingleLeadProfileContent() {
   };
 
   const handleViewVisit = () => {
-    navigate(`/view_visit/${leads[0].lead_id}`);
+    navigate(`/view_visit/${type}/${leads[0].lead_id || leads[0].leadgen_id}`);
     console.log(leads[0].lead_id);
   };
   const handleViewEmployeeUnitSold = () => {
-    navigate(`/view_unit_sold/${leads[0].lead_id}`);
+    navigate(
+      `/view_unit_sold/${type}/${leads[0].lead_id || leads[0].leadgen_id}`
+    );
     console.log(leads[0].employeeId);
   };
 
   const handleViewFollowUp = () => {
-    navigate(`/view_follow_up/${leads[0].lead_id}`);
+    navigate(
+      `/view_follow_up/${type}/${leads[0].lead_id || leads[0].leadgen_id}`
+    );
   };
 
   const handleViewRemark = () => {
-    navigate(`/view_remark/${leads[0].lead_id}`);
+    navigate(
+      `/view_remark/${type}/${leads[0].lead_id || leads[0]?.leadgen_id}`
+    );
   };
 
   const saveChanges = async () => {
@@ -349,7 +409,13 @@ function EmployeeSingleLeadProfileContent() {
                           Name
                         </label>
                         <div className="p-2 bg-gray-100 rounded">
-                          <p className="m-0 break-words">{lead.name}</p>
+                          <p className="m-0 break-words">
+                            {lead.name ||
+                              getFieldValue(
+                                lead.question_fields_data,
+                                "full_name"
+                              )}
+                          </p>
                         </div>
                       </div>
 
@@ -367,7 +433,13 @@ function EmployeeSingleLeadProfileContent() {
                           Mobile Number
                         </label>
                         <div className="p-2 bg-gray-100 rounded">
-                          <p className="m-0">{lead.phone}</p>
+                          <p className="m-0">
+                            {lead.phone ||
+                              getFieldValue(
+                                lead.question_fields_data,
+                                "phone_number"
+                              )}
+                          </p>
                         </div>
                       </div>
 
@@ -376,7 +448,7 @@ function EmployeeSingleLeadProfileContent() {
                           Lead Source
                         </label>
                         <div className="p-2 bg-gray-100 rounded">
-                          <p className="m-0">{lead.leadSource}</p>
+                          <p className="m-0">{lead.leadSource || "Meta"}</p>
                         </div>
                       </div>
                       <div>
@@ -392,7 +464,9 @@ function EmployeeSingleLeadProfileContent() {
                           Lead Status
                         </label>
                         <div className="p-2 bg-gray-100 rounded">
-                          <p className="m-0">{lead.lead_status}</p>
+                          <p className="m-0">
+                            {lead.lead_status || lead?.meta_lead_status}
+                          </p>
                         </div>
                       </div>
 
@@ -403,9 +477,7 @@ function EmployeeSingleLeadProfileContent() {
                         </label>
                         <div className="p-2 bg-gray-100 rounded">
                           <p className="m-0">
-                            {moment(lead.createdTime)
-                              .format("DD MMM YYYY")
-                              .toUpperCase()}
+                            {lead.createdTime || lead?.meta_updated_at}
                           </p>
                         </div>
                       </div>
@@ -535,7 +607,7 @@ function EmployeeSingleLeadProfileContent() {
                       </th>
 
                       <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Assigned By
+                        Assigned To
                       </th>
 
                       <th className="px-6 py-3 border-b-2 border-gray-300">
@@ -581,24 +653,36 @@ function EmployeeSingleLeadProfileContent() {
                           {lead.staff_name}
                         </td> */}
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.name}
+                          {lead.name ||
+                            getFieldValue(
+                              lead.question_fields_data,
+                              "full_name"
+                            )}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.phone}
+                          {lead.phone ||
+                            getFieldValue(
+                              lead.question_fields_data,
+                              "phone_number"
+                            )}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.leadSource}
+                          {lead.leadSource || "Meta"}
                         </td>
 
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.assignedBy}
+                          {lead.assignedBy || lead?.staff_name}
                         </td>
 
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.address}
+                          {lead.address ||
+                            getFieldValue(
+                              lead.question_fields_data,
+                              "street_address"
+                            )}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.lead_status}
+                          {lead.lead_status || lead?.meta_lead_status}
                         </td>
 
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
@@ -617,11 +701,7 @@ function EmployeeSingleLeadProfileContent() {
                         </td>
 
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.createdTime
-                            ? moment(lead.createdTime)
-                                .format("DD MMM YYYY")
-                                .toUpperCase()
-                            : "N/A"}
+                          {lead.createdTime || lead?.meta_updated_at}
                         </td>
 
                         <td className="px-6 py-4 border-b border-gray-200">
@@ -647,6 +727,7 @@ function EmployeeSingleLeadProfileContent() {
         leads={leads}
         visitLead={visitLead}
         fetchLeads={fetchLeads}
+        fetchMetaLeads={fetchMetaLeads}
         fetchVisit={fetchVisit}
       />
       <FollowUpCreationPopUp
@@ -655,6 +736,7 @@ function EmployeeSingleLeadProfileContent() {
         leads={leads}
         visitLead={visitLead}
         fetchLeads={fetchLeads}
+        fetchMetaLeads={fetchMetaLeads}
         fetchFollowUp={fetchFollowUp}
       />
       <RemarkCreationPopup
@@ -663,6 +745,7 @@ function EmployeeSingleLeadProfileContent() {
         leads={leads}
         visitLead={visitLead}
         fetchLeads={fetchLeads}
+        fetchMetaLeads={fetchMetaLeads}
         fetchRemark={fetchRemark}
       />
       <UnitSoldCreationPopup
@@ -672,6 +755,7 @@ function EmployeeSingleLeadProfileContent() {
         fetchLeads={fetchLeads}
         fetchUnitdata={fetchUnitdata}
         fetchUnitSoldEmployee={fetchUnitSoldEmployee}
+        fetchMetaLeads={fetchMetaLeads}
         unitdata={unitdata}
       />
       <UpdateLeadStatusPopup
@@ -679,6 +763,7 @@ function EmployeeSingleLeadProfileContent() {
         onClose={() => setShowPopup(false)}
         leads={leads}
         fetchLeads={fetchLeads}
+        fetchMetaLeads={fetchMetaLeads}
         fetchUnitdata={fetchUnitdata}
         fetchUnitSoldEmployee={fetchUnitSoldEmployee}
         unitdata={unitdata}

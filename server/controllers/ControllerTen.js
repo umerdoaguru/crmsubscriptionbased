@@ -216,9 +216,75 @@ const getAllUnitsByProjectId = (req, res) => {
   }
 };
 
+const getMetaLeadsByStaffId = (req, res) => {
+  const staffId = req.params.staffId;
+  try {
+    const selectQuery = `select * from meta_leads join company_staff on company_staff.staff_id = meta_leads.meta_assignedTo join projects on projects.project_id = meta_leads.meta_project_id join units on units.unit_project_id = meta_leads.meta_project_id where meta_leads.meta_assignedTo = ? order by meta_leads.meta_id desc`;
+    db.query(selectQuery, staffId, (err, result) => {
+      if (err) {
+        res.status(400).json({ success: false, message: err.message });
+      }
+      res.status(200).send(result);
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const getMetaLeadsByLeadId = (req, res) => {
+  const metaId = req.params.metaId;
+  try {
+    const selectQuery = `select * from meta_leads join company_staff on company_staff.staff_id = meta_leads.meta_assignedTo join projects on projects.project_id = meta_leads.meta_project_id join units on units.unit_project_id = meta_leads.meta_project_id where meta_leads.meta_id = ? order by meta_leads.meta_id desc`;
+    db.query(selectQuery, metaId, (err, result) => {
+      if (err) {
+        res.status(400).json({ success: false, message: err.message });
+      }
+      res.status(200).send(result);
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const updateOnlyMetaLeadStatusEmployeeEnd = (req, res) => {
+  const { id } = req.params;
+  const { lead_status } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ message: "Lead ID is required" });
+  }
+
+  if (!lead_status) {
+    return res.status(400).json({ message: "Lead status is required" });
+  }
+
+  const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+  const sql = `UPDATE meta_leads 
+               SET meta_lead_status = ?, meta_updated_at = ? 
+               WHERE meta_id = ?`;
+
+  db.query(sql, [lead_status, dateTime, id], (err, result) => {
+    if (err) {
+      console.error("Error updating lead status:", err);
+      return res
+        .status(500)
+        .json({ message: "Internal Server Error", error: err.message });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Lead not found" });
+    }
+
+    return res.status(200).json({ message: "Lead updated successfully" });
+  });
+};
+
 module.exports = {
   metaLeadFetchByPageId,
   getMetaLeadsByOrgId,
   updateAndAssignedMetaLeads,
   getAllUnitsByProjectId,
+  getMetaLeadsByStaffId,
+  getMetaLeadsByLeadId,
+  updateOnlyMetaLeadStatusEmployeeEnd,
 };

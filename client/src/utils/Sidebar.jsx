@@ -143,6 +143,11 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             icon: <GrTableAdd />,
           },
           {
+            name: "Assigned Meta Leads",
+            path: "/meta-leads-employee",
+            icon: <GrTableAdd />,
+          },
+          {
             name: "Reports",
             path: "/employee-report",
             icon: <TbReport />,

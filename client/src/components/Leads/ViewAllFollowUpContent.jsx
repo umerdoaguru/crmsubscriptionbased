@@ -5,13 +5,24 @@ import moment from "moment";
 import { useSelector } from "react-redux";
 import cogoToast from "cogo-toast";
 
+const getFieldValue = (dataString, fieldName) => {
+  try {
+    const data = JSON.parse(dataString);
+    const field = data.find((item) => item.name === fieldName);
+    return field ? field.values[0] : "";
+  } catch (error) {
+    console.error("Invalid question_fields_data:", error);
+    return "";
+  }
+};
+
 const ViewAllFollowUpContent = () => {
   const [follow_up, setFollow_Up] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10);
   const [filterText, setFilterText] = useState("");
   const [render, setRender] = useState(false);
-  const { id } = useParams();
+  const { type, id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
   const navigate = useNavigate();
@@ -24,18 +35,24 @@ const ViewAllFollowUpContent = () => {
 
   const fetchFollowUp = async () => {
     try {
-      const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-follow-up/${id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      let apiUrl = "";
+
+      if (type === "meta") {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeFollow_UpMeta/${id}`;
+      } else {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeFollow_Up/${id}`;
+      }
+
+      const { data } = await axios.get(apiUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       setFollow_Up(data);
     } catch (error) {
-      console.error("Error fetching visit:", error);
+      console.error("Error fetching follow up:", error);
     }
   };
 
@@ -96,13 +113,9 @@ const ViewAllFollowUpContent = () => {
     setCurrentPage(selected);
   };
 
-  const filteredfollowup = follow_up.filter((follow) =>
-    follow?.name?.toLowerCase()?.includes(filterText.toLowerCase())
-  );
-
   const offset = currentPage * itemsPerPage;
-  const currentfollow = filteredfollowup.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(filteredfollowup.length / itemsPerPage);
+  const currentfollow = follow_up.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(follow_up.length / itemsPerPage);
 
   const handleBackClick = () => {
     navigate(-1);
@@ -169,10 +182,14 @@ const ViewAllFollowUpContent = () => {
                             {followup.project_name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {followup.lead_id}
+                            {followup.lead_id || followup.leadgen_id}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {followup.name}
+                            {followup.name ||
+                              getFieldValue(
+                                followup.question_fields_data,
+                                "full_name"
+                              )}
                           </td>
                           {/* <td className="px-6 py-4 whitespace-nowrap">
                             {followup.employee_name}
@@ -236,7 +253,7 @@ const ViewAllFollowUpContent = () => {
                             <input
                               type="text"
                               name="lead_id"
-                              value={modalData.lead_id || ""}
+                              value={modalData.lead_id || modalData?.leadgen_id}
                               onChange={handleInputChange}
                               className="w-full px-3 py-2 border border-gray-300 rounded"
                               disabled
@@ -248,7 +265,13 @@ const ViewAllFollowUpContent = () => {
                             <input
                               type="text"
                               name="name"
-                              value={modalData.name || ""}
+                              value={
+                                modalData.name ||
+                                getFieldValue(
+                                  modalData.question_fields_data,
+                                  "full_name"
+                                )
+                              }
                               onChange={handleInputChange}
                               className="w-full px-3 py-2 border border-gray-300 rounded"
                               disabled

@@ -4,7 +4,17 @@ import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import cogoToast from "cogo-toast";
-import toast from "react-hot-toast";
+
+const getFieldValue = (dataString, fieldName) => {
+  try {
+    const data = JSON.parse(dataString);
+    const field = data.find((item) => item.name === fieldName);
+    return field ? field.values[0] : "";
+  } catch (error) {
+    console.error("Invalid question_fields_data:", error);
+    return "";
+  }
+};
 
 const ViewAllVisitContent = () => {
   const [visit, setVisit] = useState([]);
@@ -12,7 +22,7 @@ const ViewAllVisitContent = () => {
   const [itemsPerPage] = useState(10);
   const [filterText, setFilterText] = useState("");
   const [render, setRender] = useState(false);
-  const { id } = useParams();
+  const { type, id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
   const navigate = useNavigate();
@@ -27,7 +37,7 @@ const ViewAllVisitContent = () => {
   const fetchvisit = async () => {
     try {
       const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-visit/${id}`,
+        `https://crm-generalize.dentalguru.software/api/employe-visit/${type}/${id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -104,13 +114,9 @@ const ViewAllVisitContent = () => {
     setCurrentPage(selected);
   };
 
-  const filteredvisit = visit.filter((visit) =>
-    visit?.name?.toLowerCase().includes(filterText.toLowerCase())
-  );
-
   const offset = currentPage * itemsPerPage;
-  const currentvisit = filteredvisit.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(filteredvisit.length / itemsPerPage);
+  const currentvisit = visit?.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(visit.length / itemsPerPage);
 
   const handleBackClick = () => {
     navigate(-1);
@@ -154,7 +160,7 @@ const ViewAllVisitContent = () => {
                           Assigned To
                         </th> */}
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Visit Details
+                          Visit type
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Visit Date
@@ -177,16 +183,20 @@ const ViewAllVisitContent = () => {
                             {visit.project_name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {visit.lead_id}
+                            {visit.lead_id || visit.leadgen_id}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {visit.name}
+                            {visit.name ||
+                              getFieldValue(
+                                visit.question_fields_data,
+                                "full_name"
+                              )}
                           </td>
                           {/* <td className="px-6 py-4 whitespace-nowrap">
                             {visit.employee_name}
                           </td> */}
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {visit.visit_details}
+                            {visit.visit_type}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             {moment(visit.visit_date)

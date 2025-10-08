@@ -228,17 +228,44 @@ const getLeadQuotation = async (req, res) => {
 
 const getEmployeeVisit = async (req, res) => {
   try {
-    const { id } = req.params;
-    const sql =
-      "SELECT * FROM visit join leads on leads.lead_id = visit.vis_lead_id join projects on projects.project_id = leads.main_project_id WHERE visit.vis_lead_id = ?";
-    db.query(sql, id, (err, result) => {
+    const { type, id } = req.params;
+
+    let sql;
+
+    if (type && type === "meta") {
+      sql = `
+    SELECT * 
+    FROM visit 
+    JOIN meta_leads 
+      ON meta_leads.leadgen_id COLLATE utf8mb4_general_ci = visit.vis_lead_id COLLATE utf8mb4_general_ci
+    JOIN projects AS lead_project 
+      ON lead_project.project_id = meta_leads.meta_project_id 
+    JOIN company_staff 
+      ON company_staff.staff_id = visit.vis_staff_id 
+    WHERE visit.vis_lead_id = ?
+  `;
+    } else {
+      sql = `
+    SELECT * 
+    FROM visit 
+    JOIN leads 
+      ON leads.lead_id COLLATE utf8mb4_general_ci = visit.vis_lead_id COLLATE utf8mb4_general_ci
+    JOIN projects AS lead_project 
+      ON lead_project.project_id = leads.main_project_id 
+    JOIN company_staff 
+      ON company_staff.staff_id = visit.vis_staff_id 
+    WHERE visit.vis_lead_id = ?
+  `;
+    }
+
+    db.query(sql, [id], (err, result) => {
       if (err) {
-        res.status(400).json({ success: false, message: err.message });
+        return res.status(400).json({ success: false, message: err.message });
       }
-      res.status(200).send(result);
+      return res.status(200).send(result);
     });
   } catch (err) {
-    res.status(500).json({ message: "Internal Server Erro, error: errr" });
+    res.status(500).json({ message: err.message });
   }
 };
 

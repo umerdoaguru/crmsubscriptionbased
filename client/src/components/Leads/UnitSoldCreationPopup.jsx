@@ -4,12 +4,24 @@ import axios from "axios";
 import cogoToast from "cogo-toast";
 import { useSelector } from "react-redux";
 
+const getFieldValue = (dataString, fieldName) => {
+  try {
+    const data = JSON.parse(dataString);
+    const field = data.find((item) => item.name === fieldName);
+    return field ? field.values[0] : "";
+  } catch (error) {
+    console.error("Invalid question_fields_data:", error);
+    return "";
+  }
+};
+
 const UnitSoldCreationPopup = ({
   isOpen,
   onClose,
   fetchUnitSoldEmployee,
   fetchUnitdata,
   fetchLeads,
+  fetchMetaLeads,
   leads,
   unitdata,
 }) => {
@@ -19,10 +31,10 @@ const UnitSoldCreationPopup = ({
   const userId = EmpId.user_id;
   const [loading, setLoading] = useState(false);
   const [unitsold, setUnitSold] = useState({
-    esu_lead_id: leads[0]?.lead_id,
-    esu_staff_id: leads[0]?.staff_id,
-    esu_unit_id: leads[0]?.unit_id,
-    esu_project_id: leads[0]?.project_id,
+    esu_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
+    esu_staff_id: leads[0]?.staff_id || leads[0]?.meta_assignedTo,
+    esu_unit_id: leads[0]?.unit_id || leads[0]?.meta_unit_id,
+    esu_project_id: leads[0]?.project_id || leads[0]?.meta_project_id,
     esu_sold_date: "",
     esu_notes: "",
   });
@@ -32,10 +44,10 @@ const UnitSoldCreationPopup = ({
   useEffect(() => {
     setUnitSold({
       ...unitsold,
-      esu_lead_id: leads[0]?.lead_id,
-      esu_staff_id: leads[0]?.staff_id,
-      esu_unit_id: leads[0]?.unit_id,
-      esu_project_id: leads[0]?.project_id,
+      esu_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
+      esu_staff_id: leads[0]?.staff_id || leads[0]?.meta_assignedTo,
+      esu_unit_id: leads[0]?.unit_id || leads[0]?.meta_unit_id,
+      esu_project_id: leads[0]?.project_id || leads[0]?.meta_project_id,
     });
   }, [leads]);
 
@@ -137,7 +149,10 @@ const UnitSoldCreationPopup = ({
                 <input
                   type="text"
                   name="name"
-                  value={leads[0].name}
+                  value={
+                    leads[0].name ||
+                    getFieldValue(leads[0].question_fields_data, "full_name")
+                  }
                   // onChange={handleInputChangeUnitSold}
                   disabled
                   className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"

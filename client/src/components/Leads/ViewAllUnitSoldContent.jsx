@@ -13,7 +13,7 @@ const ViewAllUnitSoldContent = () => {
   const [sortAsc, setSortAsc] = useState(true);
   const [render, setRender] = useState(false);
   const [previousUnit, setPreviousUnit] = useState("");
-  const { id } = useParams();
+  const { type, id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
   const [unitdata, setUnitData] = useState([]);
@@ -28,19 +28,24 @@ const ViewAllUnitSoldContent = () => {
 
   const fetchEmployeeUnitSold = async () => {
     try {
-      const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/unit-sold-lead-id/${id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      let apiUrl = "";
+
+      if (type === "meta") {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeUnitSoldByLeadIdMeta/${id}`;
+      } else {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/unit-sold-lead-id/${id}`;
+      }
+
+      const { data } = await axios.get(apiUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       setEmployeeUnitSold(data);
-      console.log(data);
     } catch (error) {
-      console.error("Error fetching visit:", error);
+      console.error("Error fetching quotations:", error);
     }
   };
 
@@ -153,12 +158,8 @@ const ViewAllUnitSoldContent = () => {
     setCurrentPage(selected);
   };
 
-  const filteredEmployeeUnitSold = employeeunitsold.filter((unitsold) =>
-    unitsold?.name?.toLowerCase().includes(filterText.toLowerCase())
-  );
-
   const offset = currentPage * itemsPerPage;
-  const currentemployeeunitsold = filteredEmployeeUnitSold.slice(
+  const currentemployeeunitsold = employeeunitsold.slice(
     offset,
     offset + itemsPerPage
   );

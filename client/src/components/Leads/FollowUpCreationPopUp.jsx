@@ -3,11 +3,23 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import cogoToast from "cogo-toast";
 
+const getFieldValue = (dataString, fieldName) => {
+  try {
+    const data = JSON.parse(dataString);
+    const field = data.find((item) => item.name === fieldName);
+    return field ? field.values[0] : "";
+  } catch (error) {
+    console.error("Invalid question_fields_data:", error);
+    return "";
+  }
+};
+
 const FollowUpCreationPopUp = ({
   isOpen,
   onClose,
   fetchFollowUp,
   fetchLeads,
+  fetchMetaLeads,
   leads,
 }) => {
   const modalRef = useRef();
@@ -21,7 +33,7 @@ const FollowUpCreationPopUp = ({
     follow_up_report: "",
   });
 
-  console.log(leads[0]?.project_id);
+  console.log(leads);
 
   const handleInputChangeFollowUp = (e) => {
     const { name, value } = e.target;
@@ -36,9 +48,9 @@ const FollowUpCreationPopUp = ({
   useEffect(() => {
     setFollow_Up({
       ...follow_up,
-      fu_project_id: leads[0]?.project_id,
-      fu_lead_id: leads[0]?.lead_id,
-      fu_employeeId: leads[0]?.staff_id,
+      fu_project_id: leads[0]?.project_id || leads[0]?.meta_project_id,
+      fu_lead_id: leads[0]?.lead_id || Number(leads[0]?.leadgen_id),
+      fu_employeeId: leads[0]?.staff_id || leads[0]?.meta_assignedTo,
     });
   }, [leads]);
 
@@ -69,6 +81,7 @@ const FollowUpCreationPopUp = ({
 
       fetchFollowUp();
       fetchLeads();
+      fetchMetaLeads();
       setLoading(false);
       onClose();
     } catch (error) {
@@ -142,7 +155,10 @@ const FollowUpCreationPopUp = ({
                 <input
                   type="text"
                   name="name"
-                  value={leads[0].name}
+                  value={
+                    leads[0].name ||
+                    getFieldValue(leads[0].question_fields_data, "full_name")
+                  }
                   disabled
                   className="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-cyan-500"
                 />
