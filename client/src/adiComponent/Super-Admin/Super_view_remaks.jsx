@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import getFieldValue from "../../utils/getFieldValue";
 
-const Super_view_remarks = ({ id, closeModalRemark }) => {
+const Super_view_remarks = ({ selectedLeadId, closeModalRemark, type }) => {
   const [remarks, setRemarks] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10);
@@ -15,19 +16,24 @@ const Super_view_remarks = ({ id, closeModalRemark }) => {
 
   useEffect(() => {
     fetchRemarks();
-  }, [id, render]);
+  }, [selectedLeadId, render]);
 
   const fetchRemarks = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/remarks-super-admin/${id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      let apiUrl = "";
+
+      if (type === "meta") {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeRemarkMeta/${selectedLeadId?.leadgen_id}`;
+      } else {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/remarks/${selectedLeadId?.lead_id}`;
+      }
+
+      const response = await axios.get(apiUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setRemarks(response.data);
       console.log(response);
     } catch (error) {
@@ -35,13 +41,9 @@ const Super_view_remarks = ({ id, closeModalRemark }) => {
     }
   };
 
-  const filteredRemarks = remarks.filter((remark) =>
-    remark.name.toLowerCase().includes(filterText.toLowerCase())
-  );
-
   const offset = currentPage * itemsPerPage;
-  const currentRemarks = filteredRemarks.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(filteredRemarks.length / itemsPerPage);
+  const currentRemarks = remarks.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(remarks.length / itemsPerPage);
   const handleClose = () => {
     closeModalRemark();
   };
@@ -95,7 +97,11 @@ const Super_view_remarks = ({ id, closeModalRemark }) => {
                       </td>
 
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {remark.name}
+                        {remark.name ||
+                          getFieldValue(
+                            remark.question_fields_data,
+                            "full_name"
+                          )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {remark.staff_name}

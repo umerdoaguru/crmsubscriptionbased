@@ -36,7 +36,6 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   const [soldunitFilter, setSoldUnitFilter] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
-
   const [isModalOpenLeadProfile, setIsModalOpenLeadProfile] = useState(false);
   const [selectedLeadId, setSelectedLeadId] = useState(null);
   const [monthFilter, setMonthFilter] = useState("");
@@ -289,7 +288,6 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   // Function to open modal and set lead_id
   const handleRowClick = (leadId) => {
     setSelectedLeadId(leadId);
-
     setIsModalOpenLeadProfile(true);
   };
 

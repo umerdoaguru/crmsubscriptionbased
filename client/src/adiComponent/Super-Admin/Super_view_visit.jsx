@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import getFieldValue from "../../utils/getFieldValue";
 
-const Super_view_visit = ({ id, closeModalVisit }) => {
+const Super_view_visit = ({ selectedLeadId, closeModalVisit, type }) => {
   const [visit, setVisit] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10);
@@ -18,15 +19,17 @@ const Super_view_visit = ({ id, closeModalVisit }) => {
 
   useEffect(() => {
     fetchvisit();
-  }, [id, render]);
+  }, [selectedLeadId, render]);
 
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
 
   const fetchvisit = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-visit-super-admin/${id}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/employe-visit/${type}/${
+          selectedLeadId?.lead_id || selectedLeadId?.leadgen_id
+        }`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -34,20 +37,16 @@ const Super_view_visit = ({ id, closeModalVisit }) => {
           },
         }
       );
-      setVisit(response.data);
-      console.log(response);
+      console.log(data);
+      setVisit(data);
     } catch (error) {
-      console.error("Error fetching visit:", error);
+      console.error("Error fetching quotations:", error);
     }
   };
 
-  const filteredvisit = visit.filter((visit) =>
-    visit.name.toLowerCase().includes(filterText.toLowerCase())
-  );
-
   const offset = currentPage * itemsPerPage;
-  const currentvisit = filteredvisit.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(filteredvisit.length / itemsPerPage);
+  const currentvisit = visit.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(visit.length / itemsPerPage);
 
   console.log(currentvisit);
 
@@ -100,7 +99,11 @@ const Super_view_visit = ({ id, closeModalVisit }) => {
                       </td>
 
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {visit.name}
+                        {visit.name ||
+                          getFieldValue(
+                            visit.question_fields_data,
+                            "full_name"
+                          )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {visit.staff_name}

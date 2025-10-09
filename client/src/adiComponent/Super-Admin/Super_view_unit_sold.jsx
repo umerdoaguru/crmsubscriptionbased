@@ -4,31 +4,37 @@ import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
 
-const Super_view_unit_sold = ({ id, closeModalUnitSold }) => {
+const Super_view_unit_sold = ({ selectedLeadId, closeModalUnitSold, type }) => {
   const [employeeunitsold, setEmployeeUnitSold] = useState([]);
   const [render, setRender] = useState(false);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
 
-  console.log(id);
+  console.log(selectedLeadId);
+  console.log(type);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchEmployeeUnitSold();
-  }, [id, render]);
+  }, [selectedLeadId, render]);
 
   const fetchEmployeeUnitSold = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/super-admin-unit-sold-lead-id/${id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      let apiUrl = "";
+
+      if (type === "meta") {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeUnitSoldByLeadIdMeta/${selectedLeadId.leadgen_id}`;
+      } else {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/unit-sold-lead-id/${selectedLeadId.lead_id}`;
+      }
+
+      const response = await axios.get(apiUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setEmployeeUnitSold(response.data);
       console.log(response);
     } catch (error) {
@@ -39,6 +45,8 @@ const Super_view_unit_sold = ({ id, closeModalUnitSold }) => {
   const handleClose = () => {
     closeModalUnitSold();
   };
+
+  console.log(employeeunitsold);
 
   return (
     <>
@@ -80,7 +88,7 @@ const Super_view_unit_sold = ({ id, closeModalUnitSold }) => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {employeeunitsold.map((unitsold, index) => (
-                    <tr key={unitsold.id}>
+                    <tr>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {index + 1}
                       </td>

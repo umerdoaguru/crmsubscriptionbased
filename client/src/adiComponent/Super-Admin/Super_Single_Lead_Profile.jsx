@@ -1,23 +1,22 @@
 import axios from "axios";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import img from "../../images/lead_profile.png";
-import MainHeader from "../../components/MainHeader";
-import SuperAdminSider from "./SuperAdminSider";
 import Super_view_remarks from "./Super_view_remaks";
 import Super_view_followup from "./Super_view_followup";
 import Super_view_visit from "./Super_view_visit";
 import { useSelector } from "react-redux";
 import Super_view_unit_sold from "./Super_view_unit_sold";
+import getFieldValue from "../../utils/getFieldValue";
 
-function Super_Single_Lead_Profile({ id, closeModalLead }) {
-  console.log(id);
+function Super_Single_Lead_Profile({ selectedLeadId, closeModalLead, type }) {
+  console.log(selectedLeadId);
+  let id;
 
   const navigate = useNavigate();
   const [leads, setLeads] = useState([]);
   const [visit, setVisit] = useState([]);
-
   const [visitCreated, setVisitCreated] = useState(false);
   const [followCreated, setFollowCreated] = useState(false);
   const [remarksCreated, setRemarksCreated] = useState(false);
@@ -32,8 +31,8 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/leads-super-admin-byid/${id}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/leads-super-admin-byid/${selectedLeadId?.lead_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -41,12 +40,26 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
           },
         }
       );
-      console.log(response.data);
-      setLeads(response.data);
+      console.log(data);
+      setLeads(data);
+    } catch (error) {
+      console.error("Error fetching quotations:", error);
+    }
+  };
 
-      response.data.forEach((lead) => {
-        console.log("Lead Quotation Status (raw):", lead.quotation);
-      });
+  const fetchMetaLeads = async () => {
+    try {
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getMetaLeadsByLeadId/${selectedLeadId?.leadgen_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(data);
+      setLeads(data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
@@ -54,15 +67,20 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
 
   const fetchFollowUp = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-follow-up-super-admin/${id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      let apiUrl = "";
+
+      if (type === "meta") {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeFollow_UpMeta/${selectedLeadId?.leadgen_id}`;
+      } else {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeFollow_Up/${selectedLeadId?.lead_id}`;
+      }
+
+      const response = await axios.get(apiUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setFollowCreated(response.data[0]);
     } catch (error) {
@@ -71,15 +89,20 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
   };
   const fetchRemark = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/remarks-super-admin/${id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      let apiUrl = "";
+
+      if (type === "meta") {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeRemarkMeta/${selectedLeadId?.leadgen_id}`;
+      } else {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/remarks/${selectedLeadId?.lead_id}`;
+      }
+
+      const response = await axios.get(apiUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       console.log(response.data);
       setRemarksCreated(response.data[0]);
     } catch (error) {
@@ -89,15 +112,20 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
 
   const fetchUnitSoldEmployee = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/super-admin-unit-sold-lead-id/${leads[0].lead_id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      let apiUrl = "";
+
+      if (type === "meta") {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeUnitSoldByLeadIdMeta/${selectedLeadId.leadgen_id}`;
+      } else {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/unit-sold-lead-id/${selectedLeadId.lead_id}`;
+      }
+
+      const response = await axios.get(apiUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       // Ensure proper comparison with 'Created', trim any spaces and normalize the case
       setemployeeunitsoldCreated(response.data[0]);
@@ -111,8 +139,10 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
   };
   const fetchVisit = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-visit-super-admin/${id}`,
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/employe-visit/${type}/${
+          selectedLeadId?.lead_id || selectedLeadId?.leadgen_id
+        }`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -120,14 +150,8 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
           },
         }
       );
-      console.log(response.data);
-      setVisit(response.data);
-      const hasCreatedvisit = response.data.some(
-        (lead) =>
-          (lead.visit && lead.visit.trim().toLowerCase() === "fresh") ||
-          "repeated"
-      );
-      setVisitCreated(hasCreatedvisit);
+      console.log(data);
+      setVisit(data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
@@ -171,11 +195,16 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
     setIsModalOpenUnitSold(false);
   };
   useEffect(() => {
-    fetchLeads();
+    if (type === "meta") {
+      fetchMetaLeads();
+    } else {
+      fetchLeads();
+    }
     fetchFollowUp();
     fetchVisit();
     fetchRemark();
   }, [id]);
+
   useEffect(() => {
     if (leads.length > 0) {
       fetchUnitSoldEmployee();
@@ -183,6 +212,7 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
   }, [leads]);
 
   console.log(leads);
+  console.log(visit);
 
   return (
     <>
@@ -206,28 +236,37 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
                 <div>
                   <label className="text-info">Name</label>
                   <div className="p-2 bg-gray-100 rounded">
-                    <p className="m-0 break-words">{lead.name}</p>
+                    <p className="m-0 break-words">
+                      {lead.name ||
+                        getFieldValue(lead.question_fields_data, "full_name")}
+                    </p>
                   </div>
                 </div>
 
                 <div>
                   <label className="text-info">Assigned To</label>
                   <div className="p-2 bg-gray-100 rounded">
-                    <p className="m-0">{lead.assignedTo}</p>
+                    <p className="m-0">{lead.staff_name}</p>
                   </div>
                 </div>
 
                 <div>
                   <label className="text-info">Mobile Number</label>
                   <div className="p-2 bg-gray-100 rounded">
-                    <p className="m-0">{lead.phone}</p>
+                    <p className="m-0">
+                      {lead.phone ||
+                        getFieldValue(
+                          lead.question_fields_data,
+                          "phone_number"
+                        )}
+                    </p>
                   </div>
                 </div>
 
                 <div>
                   <label className="text-info">Lead Source</label>
                   <div className="p-2 bg-gray-100 rounded">
-                    <p className="m-0">{lead.leadSource}</p>
+                    <p className="m-0">{lead.leadSource || "META"}</p>
                   </div>
                 </div>
                 {/* <div>
@@ -239,7 +278,9 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
                 <div>
                   <label className="text-info">Lead Status</label>
                   <div className="p-2 bg-gray-100 rounded">
-                    <p className="m-0">{lead.lead_status}</p>
+                    <p className="m-0">
+                      {lead.lead_status || lead?.meta_lead_status}
+                    </p>
                   </div>
                 </div>
 
@@ -247,9 +288,7 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
                   <label className="text-info">Assigned Date</label>
                   <div className="p-2 bg-gray-100 rounded">
                     <p className="m-0">
-                      {moment(lead.createdTime)
-                        .format("DD MMM YYYY")
-                        .toUpperCase()}
+                      {lead.createdTime || lead?.meta_updated_at}
                     </p>
                   </div>
                 </div>
@@ -260,10 +299,8 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
 
         <div className="mt-2">
           <div className="">
-            {/* Conditionally render the View Quotation button */}
             <div className="flex flex-wrap gap-2">
-              {/* Conditionally render the View Quotation button */}
-              {visitCreated ? (
+              {visit?.length > 0 ? (
                 <button
                   onClick={handleClickVisit}
                   className="bg-green-500 text-white px-4 py-2 w-full sm:w-auto   rounded"
@@ -384,19 +421,26 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
                     {lead.staff_name}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.name}
+                    {lead.name ||
+                      getFieldValue(lead.question_fields_data, "full_name")}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.phone}
+                    {lead.phone ||
+                      getFieldValue(lead.question_fields_data, "phone_number")}
+                    }
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.leadSource}
+                    {lead.leadSource || "META"}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.lead_status}
+                    {lead.lead_status || lead?.meta_lead_status}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.address}
+                    {lead.address ||
+                      getFieldValue(
+                        lead.question_fields_data,
+                        "street_address"
+                      )}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                     {lead.unit_status}
@@ -421,7 +465,7 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
                   </td>
 
                   <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                    {lead.createdTime}
+                    {lead.createdTime || lead?.meta_updated_at}
                   </td>
                 </tr>
               ))}
@@ -433,8 +477,9 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
           <div className=" fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 mx-2">
             <div className="w-75 bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto mx-4 my-5">
               <Super_view_remarks
-                id={leads[0].lead_id}
+                selectedLeadId={selectedLeadId}
                 closeModalRemark={closeModalRemark}
+                type={type}
               />
             </div>
           </div>
@@ -443,8 +488,9 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
           <div className=" fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 mx-2">
             <div className="w-75 bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto mx-4 my-5">
               <Super_view_followup
-                id={leads[0].lead_id}
+                selectedLeadId={selectedLeadId}
                 closeModalFollowUp={closeModalFollowUp}
+                type={type}
               />
             </div>
           </div>
@@ -453,8 +499,9 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
           <div className=" fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 mx-2">
             <div className="w-75 bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto mx-4 my-5">
               <Super_view_visit
-                id={leads[0].lead_id}
+                selectedLeadId={selectedLeadId}
                 closeModalVisit={closeModalVisit}
+                type={type}
               />
             </div>
           </div>
@@ -463,8 +510,9 @@ function Super_Single_Lead_Profile({ id, closeModalLead }) {
           <div className=" fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 mx-2">
             <div className="w-75 bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto mx-4 my-5">
               <Super_view_unit_sold
-                id={leads[0].lead_id}
+                selectedLeadId={selectedLeadId}
                 closeModalUnitSold={closeModalUnitSold}
+                type={type}
               />
             </div>
           </div>

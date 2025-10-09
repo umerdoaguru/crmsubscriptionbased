@@ -9,8 +9,9 @@ import cogoToast from "cogo-toast";
 import LeadAnswersModal from "./LeadAnswersModal";
 import { AiFillCheckCircle, AiFillEye } from "react-icons/ai";
 import MetaAssignedPopup from "../../../../pages/superAdmin/popupWindows/MetaAssignedPopup";
+import Super_Single_Lead_Profile from "../../Super_Single_Lead_Profile";
 
-const SuperLeadsTable = ({ isSidebarOpen }) => {
+const SuperLeadsTable = ({ isSidebarOpen, type }) => {
   const [metaLeads, setMetaLeads] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newLoading, setNewLoading] = useState(false);
@@ -24,9 +25,20 @@ const SuperLeadsTable = ({ isSidebarOpen }) => {
   const [orgData, setOrgData] = useState(null);
   const [selectedForm, setSelectedForm] = useState("");
   const [modalAssign, setModalAssign] = useState(false);
-
+  const [isModalOpenLeadProfile, setIsModalOpenLeadProfile] = useState(false);
+  const [selectedLeadId, setSelectedLeadId] = useState(null);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
+
+  const handleRowClick = (lead) => {
+    setSelectedLeadId(lead);
+    setIsModalOpenLeadProfile(true);
+  };
+
+  const closeModalLead = () => {
+    setIsModalOpenLeadProfile(false);
+    setSelectedLeadId(null);
+  };
 
   const handleViewAnswers = (lead) => {
     setSelectedLead(lead);
@@ -380,7 +392,10 @@ const SuperLeadsTable = ({ isSidebarOpen }) => {
                       <td className="py-2 px-4 border-b text-gray-800">
                         {indexOfFirstLead + index + 1}
                       </td>
-                      <td className="py-2 px-4 border-b text-gray-800">
+                      <td
+                        className="px-6 py-4 border-b border-gray-200 underline text-cyan-600 cursor-pointer font-semibold"
+                        onClick={() => handleRowClick(lead)}
+                      >
                         {lead.meta_form_name}
                       </td>
                       <td className="py-2 px-4 border-b text-gray-800">
@@ -468,6 +483,18 @@ const SuperLeadsTable = ({ isSidebarOpen }) => {
         lead={selectedLead}
         fetchAllMetaLeads={fetchAllMetaLeads}
       />
+
+      {isModalOpenLeadProfile && selectedLeadId && (
+        <div className=" fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-[1055]">
+          <div className="w-75 bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto mx-4 my-5">
+            <Super_Single_Lead_Profile
+              selectedLeadId={selectedLeadId}
+              closeModalLead={closeModalLead}
+              type={"meta"}
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 };

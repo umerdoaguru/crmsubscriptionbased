@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import getFieldValue from "../../utils/getFieldValue";
 
-const Super_view_followup = ({ id, closeModalFollowUp }) => {
+const Super_view_followup = ({ selectedLeadId, closeModalFollowUp, type }) => {
   const [follow_up, setFollow_Up] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10);
@@ -17,7 +18,7 @@ const Super_view_followup = ({ id, closeModalFollowUp }) => {
 
   useEffect(() => {
     fetchFollowUp();
-  }, [id, render]);
+  }, [selectedLeadId, render]);
 
   const handleClose = () => {
     closeModalFollowUp();
@@ -25,15 +26,20 @@ const Super_view_followup = ({ id, closeModalFollowUp }) => {
 
   const fetchFollowUp = async () => {
     try {
-      const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/employe-follow-up-super-admin/${id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      let apiUrl = "";
+
+      if (type === "meta") {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeFollow_UpMeta/${selectedLeadId?.leadgen_id}`;
+      } else {
+        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeFollow_Up/${selectedLeadId?.lead_id}`;
+      }
+
+      const response = await axios.get(apiUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setFollow_Up(response.data);
       console.log(response?.data);
     } catch (error) {
@@ -41,13 +47,13 @@ const Super_view_followup = ({ id, closeModalFollowUp }) => {
     }
   };
 
-  const filteredfollowup = follow_up.filter((follow) =>
-    follow.name.toLowerCase().includes(filterText.toLowerCase())
-  );
+  // const filteredfollowup = follow_up.filter((follow) =>
+  //   follow.name.toLowerCase().includes(filterText.toLowerCase())
+  // );
 
   const offset = currentPage * itemsPerPage;
-  const currentfollow = filteredfollowup.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(filteredfollowup.length / itemsPerPage);
+  const currentfollow = follow_up.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(follow_up.length / itemsPerPage);
 
   const handleBackClick = () => {
     navigate(-1);
@@ -101,7 +107,11 @@ const Super_view_followup = ({ id, closeModalFollowUp }) => {
                       </td>
 
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {followup.name}
+                        {followup.name ||
+                          getFieldValue(
+                            followup.question_fields_data,
+                            "full_name"
+                          )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {followup.staff_name}
