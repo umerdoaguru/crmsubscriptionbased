@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import cogoToast from "cogo-toast";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 const getFieldValue = (dataString, fieldName) => {
   try {
@@ -26,6 +27,7 @@ const UnitSoldCreationPopup = ({
   unitdata,
 }) => {
   const modalRef = useRef();
+  const { type, id } = useParams();
   const EmpId = useSelector((state) => state.auth.user);
   const token = EmpId?.token;
   const userId = EmpId.user_id;
@@ -37,6 +39,8 @@ const UnitSoldCreationPopup = ({
     esu_project_id: leads[0]?.project_id || leads[0]?.meta_project_id,
     esu_sold_date: "",
     esu_notes: "",
+    lead_status: "Sold",
+    leadType: type,
   });
 
   console.log(leads);
@@ -74,6 +78,7 @@ const UnitSoldCreationPopup = ({
       cogoToast.success("UnitSold Save successfully");
       fetchUnitdata();
       fetchLeads();
+      fetchMetaLeads();
       fetchUnitSoldEmployee();
       setLoading(false);
       onClose();

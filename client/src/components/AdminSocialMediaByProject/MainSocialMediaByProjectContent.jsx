@@ -1,204 +1,156 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { GiFiles } from "react-icons/gi";
+import { useNavigate } from "react-router-dom";
+import { FaMeta } from "react-icons/fa6";
+import { CgWebsite } from "react-icons/cg";
+import { SiGoogleads } from "react-icons/si";
+import SuperLeadsTable from "../../adiComponent/Super-Admin/SocialMediaSectionSuperAdmin/SuperFacebookAPI/SuperLeadsTable";
+import SuperWebsiteLeads from "../../adiComponent/Super-Admin/SocialMediaSectionSuperAdmin/SuperWebsiteLeads";
+import SuperAccrs from "../../adiComponent/Super-Admin/SocialMediaSectionSuperAdmin/SuperAccrsLeads";
 
-function MainSocialMediaByProjectContent() {
-  const [projects, setProjects] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-
-  const user = useSelector((state) => state.auth.user);
-  const token = user?.token;
-  const userId = user.staff_id;
-
-  useEffect(() => {
-    const fetchProjectDetail = async () => {
-      try {
-        const { data } = await axios.get(
-          `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${user?.staff_org_id}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setProjects(data);
-      } catch (error) {
-        console.error("Error fetching projects:", error);
-      }
-    };
-    fetchProjectDetail();
-  }, [userId, user?.staff_org_id, token]);
-
-  // Filtered projects
-  const filteredProjects = projects.filter(
-    (p) =>
-      p.project_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
-  const paginatedProjects = filteredProjects.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const handlePageClick = (page) => {
-    if (page >= 1 && page <= totalPages) setCurrentPage(page);
-  };
-
-  const getPageNumbers = () => {
-    const pages = [];
-    const maxVisible = 5; // max visible numbers around current page
-    const startPage = Math.max(1, currentPage - 2);
-    const endPage = Math.min(totalPages, currentPage + 2);
-
-    // Always show first page
-    if (startPage > 1) {
-      pages.push(1);
-      if (startPage > 2) pages.push("...");
-    }
-
-    // Visible middle pages
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
-
-    // Always show last page
-    if (endPage < totalPages) {
-      if (endPage < totalPages - 1) pages.push("...");
-      pages.push(totalPages);
-    }
-
-    return pages;
-  };
+function MainSocialMediaByProjectContent({ isSidebarOpen }) {
+  const [selectedComponent, setSelectedComponent] = useState("FacebookData");
+  const navigate = useNavigate();
 
   return (
-    <div className="flex mt-20">
-      <div className="w-full min-h-screen bg-[#F9FAFF] p-4">
-        <h2 className="text-2xl text-center font-semibold">
-          Project Wise Social Integration
-        </h2>
-        <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
+    <>
+      <div className="flex mt-20">
+        <div className="w-full min-h-full bg-[#F9FAFF] p-2">
+          {/* <div className="mt-[1rem] ">
+            <button
+              onClick={() => navigate(-1)}
+              className="bg-cyan-600 text-white px-3 py-1 rounded-lg hover:bg-cyan-700 transition-colors"
+            >
+              Back
+            </button>
+          </div> */}
+          <div className="container">
+            <h2 className="text-2xl text-center mt-[1rem] font-medium">
+              Digital Marketing Leads
+            </h2>
+            <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
 
-        {/* Search Bar */}
-        <div className="flex justify-end mb-4">
-          <input
-            type="text"
-            placeholder="Search by project or location..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="border w-[20rem] px-4 py-2 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-cyan-300"
-          />
-        </div>
+            <div className="flex flex-wrap justify-center gap-6 mt-5 mb-3">
+              {/* Meta Leads Data */}
+              <div className={`w-full sm:w-1/2 lg:w-1/4 xl:w-1/5`}>
+                <div
+                  className={`rounded-2xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
+                    selectedComponent === "FacebookData"
+                      ? "bg-gradient-to-r from-cyan-500 to-cyan-600 text-white"
+                      : "bg-white text-gray-800"
+                  }`}
+                  onClick={() => setSelectedComponent("FacebookData")}
+                >
+                  <div className="p-6 flex flex-col items-center text-center">
+                    <div
+                      className={`text-4xl mb-3 transition-colors duration-300 ${
+                        selectedComponent === "FacebookData"
+                          ? "text-white"
+                          : "text-cyan-600"
+                      }`}
+                    >
+                      <FaMeta />
+                    </div>
+                    <h5 className="text-lg font-semibold">Meta Leads Data</h5>
+                    <p
+                      className={`text-sm mt-1 ${
+                        selectedComponent === "FacebookData"
+                          ? "text-white/80"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      Track leads from Meta
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-        {/* Table */}
-        <div className="overflow-x-auto rounded-xl shadow-md bg-white">
-          <table className="w-full table-auto border-collapse">
-            <thead className="bg-cyan-600 text-white">
-              <tr>
-                <th className="px-4 py-3 text-left">#</th>
-                <th className="px-4 py-3 text-left">Project Name</th>
-                <th className="px-4 py-3 text-left">Location</th>
-                <th className="px-4 py-3 text-left">Total Area</th>
-                <th className="px-4 py-3 text-center">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedProjects.length > 0 ? (
-                paginatedProjects.map((project, index) => (
-                  <tr
-                    key={project.main_project_id}
-                    className="border-b hover:bg-gray-100"
-                  >
-                    <td className="px-4 py-2">
-                      {(currentPage - 1) * itemsPerPage + index + 1}
-                    </td>
-                    <td className="px-4 py-2 capitalize">
-                      {project.project_name}
-                    </td>
-                    <td className="px-4 py-2 uppercase">{project.location}</td>
-                    <td className="px-4 py-2">{project.total_units}</td>
-                    <td className="px-4 py-2 text-center">
-                      <Link
-                        to={`/social-media-superleads/${project.project_id}`}
-                        className="bg-cyan-600 hover:bg-cyan-700 text-white px-3 py-1 rounded-lg transition"
-                      >
-                        View
-                      </Link>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan="4"
-                    className="text-center text-gray-500 py-6 italic"
-                  >
-                    No matching projects found.
-                  </td>
-                </tr>
+              {/* Website Inquiries */}
+              <div className={`w-full sm:w-1/2 lg:w-1/4 xl:w-1/5`}>
+                <div
+                  className={`rounded-2xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
+                    selectedComponent === "WebsiteData"
+                      ? "bg-gradient-to-r from-cyan-500 to-cyan-600 text-white"
+                      : "bg-white text-gray-800"
+                  }`}
+                  onClick={() => setSelectedComponent("WebsiteData")}
+                >
+                  <div className="p-6 flex flex-col items-center text-center">
+                    <div
+                      className={`text-4xl mb-3 transition-colors duration-300 ${
+                        selectedComponent === "WebsiteData"
+                          ? "text-white"
+                          : "text-cyan-600"
+                      }`}
+                    >
+                      <CgWebsite />
+                    </div>
+                    <h5 className="text-lg font-semibold">
+                      Website Inquiries Data
+                    </h5>
+                    <p
+                      className={`text-sm mt-1 ${
+                        selectedComponent === "WebsiteData"
+                          ? "text-white/80"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      All website leads in one place
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Google Data */}
+              <div className={`w-full sm:w-1/2 lg:w-1/4 xl:w-1/5`}>
+                <div
+                  className={`rounded-2xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
+                    selectedComponent === "GoogleData"
+                      ? "bg-gradient-to-r from-cyan-500 to-cyan-600 text-white"
+                      : "bg-white text-gray-800"
+                  }`}
+                  onClick={() => setSelectedComponent("GoogleData")}
+                >
+                  <div className="p-6 flex flex-col items-center text-center">
+                    <div
+                      className={`text-4xl mb-3 transition-colors duration-300 ${
+                        selectedComponent === "GoogleData"
+                          ? "text-white"
+                          : "text-cyan-600"
+                      }`}
+                    >
+                      <SiGoogleads />
+                    </div>
+                    <h5 className="text-lg font-semibold">Google Leads Data</h5>
+                    <p
+                      className={`text-sm mt-1 ${
+                        selectedComponent === "GoogleData"
+                          ? "text-white/80"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      View Google Ads leads
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Conditionally render the selected component */}
+            <div className="w-full h-[calc(100vh-10rem)] overflow-y-auto">
+              {selectedComponent === "FacebookData" && (
+                <SuperLeadsTable isSidebarOpen={isSidebarOpen} />
               )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination with numbers + ellipsis */}
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center mt-6 space-x-2">
-            {/* Prev Button */}
-            <button
-              onClick={() => handlePageClick(currentPage - 1)}
-              disabled={currentPage === 1}
-              className={`px-3 py-1 rounded-md border ${
-                currentPage === 1
-                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  : "bg-white text-gray-700 hover:bg-gray-100"
-              }`}
-            >
-              Prev
-            </button>
-
-            {/* Numbered Pages */}
-            {getPageNumbers().map((page, idx) => (
-              <button
-                key={idx}
-                onClick={() => page !== "..." && handlePageClick(page)}
-                disabled={page === "..."}
-                className={`px-3 py-1 rounded-md border ${
-                  page === currentPage
-                    ? "bg-cyan-600 text-white"
-                    : page === "..."
-                    ? "bg-white text-gray-400 cursor-default"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                {page}
-              </button>
-            ))}
-
-            {/* Next Button */}
-            <button
-              onClick={() => handlePageClick(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className={`px-3 py-1 rounded-md border ${
-                currentPage === totalPages
-                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  : "bg-white text-gray-700 hover:bg-gray-100"
-              }`}
-            >
-              Next
-            </button>
+              {selectedComponent === "GoogleData" && (
+                <SuperLeadsTable isSidebarOpen={isSidebarOpen} />
+              )}
+              {selectedComponent === "WebsiteData" && <SuperWebsiteLeads />}
+              {selectedComponent === "99AcresData" && <SuperAccrs />}
+            </div>
           </div>
-        )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

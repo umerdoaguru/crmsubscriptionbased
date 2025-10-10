@@ -95,7 +95,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             icon: <GrTableAdd />,
           },
           {
-            name: "Social Media Leads",
+            name: "Digital Marketing Leads",
             path: "/main-social-media-leads",
             icon: <TiSocialInstagramCircular />,
           },

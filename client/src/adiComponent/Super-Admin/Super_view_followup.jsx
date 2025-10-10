@@ -31,7 +31,7 @@ const Super_view_followup = ({ selectedLeadId, closeModalFollowUp, type }) => {
       if (type === "meta") {
         apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeFollow_UpMeta/${selectedLeadId?.leadgen_id}`;
       } else {
-        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeFollow_Up/${selectedLeadId?.lead_id}`;
+        apiUrl = `https://crm-generalize.dentalguru.software/api/employe-follow-up/${selectedLeadId?.lead_id}`;
       }
 
       const response = await axios.get(apiUrl, {

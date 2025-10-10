@@ -271,41 +271,88 @@ const getEmployeeVisit = async (req, res) => {
 
 const createVisit = (req, res) => {
   const {
-    party_name,
-    party_contact,
-    party_email,
     vis_staff_id,
     vis_lead_id,
     visit_details,
+    visit_type,
     visit_date,
     vis_status,
+    lead_status,
+    lead_type,
   } = req.body;
+
+  if ((!vis_lead_id || !vis_staff_id || !lead_status, !lead_type)) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing required fields",
+    });
+  }
 
   const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
 
-  const sql = `INSERT INTO visit (party_name, party_contact, party_email, vis_staff_id, vis_lead_id, visit_details, visit_date, vis_status, vis_created_at) VALUES (?,?,?,?,?,?,?, ?, ?)`;
+  const insertSql = `
+    INSERT INTO visit (
+      vis_staff_id, vis_lead_id, visit_details, visit_type, visit_date, vis_status, vis_created_at
+    ) VALUES (?,?,?,?,?,?,?)
+  `;
 
   const insertParams = [
-    party_name,
-    party_contact,
-    party_email,
     vis_staff_id,
     vis_lead_id,
     visit_details,
+    visit_type,
     visit_date,
     vis_status,
     dateTime,
   ];
 
-  db.query(sql, insertParams, (err, results) => {
+  db.query(insertSql, insertParams, (err, results) => {
     if (err) {
-      res.status(500).json({ success: false, message: err.message });
-    } else {
-      res.status(201).json({
-        success: true,
-        message: "Visit data successfully submitted",
-      });
+      console.error("Error inserting visit:", err);
+      return res.status(500).json({ success: false, message: err.message });
     }
+
+    let updateSql = "";
+    let updateParams = [];
+
+    if (lead_type && lead_type === "meta") {
+      updateSql = `
+        UPDATE meta_leads
+        SET meta_lead_status = ?, meta_updated_at = ?
+        WHERE meta_id = ?
+      `;
+      updateParams = [lead_status, dateTime, vis_lead_id];
+    } else {
+      updateSql = `
+        UPDATE leads
+        SET lead_status = ?, lead_updated_at = ?
+        WHERE lead_id = ?
+      `;
+      updateParams = [lead_status, dateTime, vis_lead_id];
+    }
+
+    db.query(updateSql, updateParams, (updateErr, updateResult) => {
+      if (updateErr) {
+        console.error("Error updating lead status:", updateErr);
+        return res.status(500).json({
+          success: false,
+          message: "Error updating lead status",
+          error: updateErr.message,
+        });
+      }
+
+      if (updateResult.affectedRows === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Lead not found for status update",
+        });
+      }
+
+      return res.status(201).json({
+        success: true,
+        message: "Visit submitted and lead status updated successfully",
+      });
+    });
   });
 };
 

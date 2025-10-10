@@ -26,7 +26,7 @@ const MainSocialMediaByProject = () => {
           <Topbar isSidebarOpen={isSidebarOpen} />
           <div className=""></div>
 
-          <MainSocialMediaByProjectContent />
+          <MainSocialMediaByProjectContent isSidebarOpen={isSidebarOpen} />
         </div>
       </div>
     </div>

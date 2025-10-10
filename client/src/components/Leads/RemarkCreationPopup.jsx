@@ -2,17 +2,18 @@ import React, { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import cogoToast from "cogo-toast";
-
-
+import { useParams } from "react-router-dom";
 
 const RemarkCreationPopup = ({
   isOpen,
   onClose,
   fetchRemark,
   fetchLeads,
+  fetchMetaLeads,
   leads,
 }) => {
   const modalRef = useRef();
+  const { type, id } = useParams();
   const [loading, setLoading] = useState(false);
   const [remark, setRemark] = useState({
     remark_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
@@ -21,6 +22,8 @@ const RemarkCreationPopup = ({
     remark_status: "",
     answer_remark: "",
     remark_date: "",
+    lead_status: "Remark created",
+    leadType: type,
   });
 
   console.log(leads);
@@ -63,6 +66,7 @@ const RemarkCreationPopup = ({
 
       fetchRemark();
       fetchLeads();
+      fetchMetaLeads();
       setLoading(false);
       onClose();
     } catch (error) {

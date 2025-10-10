@@ -56,7 +56,7 @@ const ViewAllUnitSoldContent = () => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/unit-sold/${id}`
+          `https://crm-generalize.dentalguru.software/api/unit-sold/${type}/${id}`
         );
 
         console.log("Unit Sold deleted successfully");

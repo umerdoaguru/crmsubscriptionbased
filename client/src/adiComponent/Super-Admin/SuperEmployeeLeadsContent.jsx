@@ -622,7 +622,7 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
                         </td>
                         <td
                           className="px-6 py-4 border-b border-gray-200 underline text-cyan-600 cursor-pointer font-semibold"
-                          onClick={() => handleRowClick(lead.lead_id)}
+                          onClick={() => handleRowClick(lead)}
                         >
                           {lead.lead_id}
                         </td>
@@ -757,8 +757,9 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
             <div className=" fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-[1055]">
               <div className="w-75 bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto mx-4 my-5">
                 <Super_Single_Lead_Profile
-                  id={selectedLeadId}
+                  selectedLeadId={selectedLeadId}
                   closeModalLead={closeModalLead}
+                  type={"general"}
                 />
               </div>
             </div>

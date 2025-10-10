@@ -2,17 +2,8 @@ import React, { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import cogoToast from "cogo-toast";
-
-const getFieldValue = (dataString, fieldName) => {
-  try {
-    const data = JSON.parse(dataString);
-    const field = data.find((item) => item.name === fieldName);
-    return field ? field.values[0] : "";
-  } catch (error) {
-    console.error("Invalid question_fields_data:", error);
-    return "";
-  }
-};
+import getFieldValue from "../../utils/getFieldValue";
+import { useParams } from "react-router-dom";
 
 const FollowUpCreationPopUp = ({
   isOpen,
@@ -23,6 +14,7 @@ const FollowUpCreationPopUp = ({
   leads,
 }) => {
   const modalRef = useRef();
+  const { type, id } = useParams();
   const [loading, setLoading] = useState(false);
   const [follow_up, setFollow_Up] = useState({
     fu_project_id: leads[0]?.project_id,
@@ -31,6 +23,8 @@ const FollowUpCreationPopUp = ({
     follow_up_type: "",
     follow_up_date: "",
     follow_up_report: "",
+    lead_status: "Followup created",
+    leadType: type,
   });
 
   console.log(leads);

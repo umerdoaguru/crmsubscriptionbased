@@ -17,6 +17,7 @@ const VisitCreationPopup = ({
   const { type, id } = useParams();
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.auth.user);
+  console.log(id);
 
   const [visitLead, setVisitLead] = useState({
     vis_staff_id: user?.staff_id,
@@ -25,6 +26,8 @@ const VisitCreationPopup = ({
     visit_type: "",
     visit_date: "",
     vis_status: "",
+    lead_status: "Visit created",
+    leadType: type,
   });
 
   console.log(id);

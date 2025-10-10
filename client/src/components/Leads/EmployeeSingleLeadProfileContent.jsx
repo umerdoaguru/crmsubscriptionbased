@@ -170,7 +170,7 @@ function EmployeeSingleLeadProfileContent() {
       if (type === "meta") {
         apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeFollow_UpMeta/${id}`;
       } else {
-        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeFollow_Up/${id}`;
+        apiUrl = `https://crm-generalize.dentalguru.software/api/employe-follow-up/${id}`;
       }
 
       const { data } = await axios.get(apiUrl, {

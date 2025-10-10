@@ -30,6 +30,8 @@ function Super_Single_Lead_Profile({ selectedLeadId, closeModalLead, type }) {
   const token = superadminuser.token;
 
   const fetchLeads = async () => {
+    console.log("fetch leads called");
+
     try {
       const { data } = await axios.get(
         `https://crm-generalize.dentalguru.software/api/leads-super-admin-byid/${selectedLeadId?.lead_id}`,
@@ -72,7 +74,7 @@ function Super_Single_Lead_Profile({ selectedLeadId, closeModalLead, type }) {
       if (type === "meta") {
         apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeFollow_UpMeta/${selectedLeadId?.leadgen_id}`;
       } else {
-        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeFollow_Up/${selectedLeadId?.lead_id}`;
+        apiUrl = `https://crm-generalize.dentalguru.software/api/employe-follow-up/${selectedLeadId?.lead_id}`;
       }
 
       const response = await axios.get(apiUrl, {
@@ -230,7 +232,7 @@ function Super_Single_Lead_Profile({ selectedLeadId, closeModalLead, type }) {
           <div className="w-full lg:w-1/3">
             <img src={img} alt="doctor-profile" className=" rounded-lg" />
           </div>
-          {leads.map((lead, index) => (
+          {leads?.map((lead, index) => (
             <div className="w-full lg:w-2/3 ">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <div>
