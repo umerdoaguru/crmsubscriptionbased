@@ -37,6 +37,7 @@ import SuperUnitsDetails from "../pages/superAdmin/SuperUnitsDetails";
 import AdminProfile from "../pages/superAdmin/AdminProfile";
 import EmployeeProfile from "../pages/Employees/EmployeeProfile";
 import SuperSetting from "../pages/superAdmin/SuperSetting";
+import FinanceCompanySetting from "../pages/superAdmin/FinanceCompanySetting";
 
 function SuperAdminRoutes() {
   const user = useSelector((state) => state.auth.user);
@@ -106,6 +107,10 @@ function SuperAdminRoutes() {
         />
 
         <Route path="/super-admin-settings" element={<SuperSetting />} />
+        <Route
+          path="/finance-company-settings"
+          element={<FinanceCompanySetting />}
+        />
 
         {/* ================================================================================= */}
         {/* <Route path="/super-admin-leads" element={<SuperAdminLead />} />

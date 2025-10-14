@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Overview from "./Overview2";
-import axios from "axios";
 import SuperLeadGraph from "./Super-Admin/SuperLeadGraph";
 import SuperLeadAllVisitChart from "./Super-Admin/SuperLeadAllVisitChart";
 import SuperDealClosedGraph from "./Super-Admin/SuperDealClosedGraph";
@@ -18,7 +17,7 @@ const SuperDashContent = () => {
       <div className="flex mt-20">
         <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
           <div className="">
-            <div>
+            <div className="text-center sm:text-left">
               <h2 className="text-2xl font-bold text-gray-600 mt-2">
                 Super Admin Dashboard
               </h2>

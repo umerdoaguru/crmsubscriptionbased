@@ -5,17 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
-
-const getFieldValue = (dataString, fieldName) => {
-  try {
-    const data = JSON.parse(dataString);
-    const field = data.find((item) => item.name === fieldName);
-    return field ? field.values[0] : "";
-  } catch (error) {
-    console.error("Invalid question_fields_data:", error);
-    return "";
-  }
-};
+import getFieldValue from "../../utils/getFieldValue";
 
 const MetaLeadEmpContent = ({ isSidebarOpen }) => {
   const [leads, setLeads] = useState([]);

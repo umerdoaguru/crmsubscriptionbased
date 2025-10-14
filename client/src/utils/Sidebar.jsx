@@ -21,6 +21,7 @@ import { logoutUser } from "../store/UserSlice";
 import logoTwo from "../assets/favicon_one.png";
 import logoOne from "../assets/CRMGuruLogo.png";
 import { IoSettings } from "react-icons/io5";
+import { path } from "framer-motion/client";
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const user = useSelector((state) => state.auth.user);
@@ -48,11 +49,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             path: "/social-media-superleads",
             icon: <TiSocialInstagramCircular />,
           },
-          {
-            name: "Import Data",
-            path: "/super-admin-import-data",
-            icon: <LuImport />,
-          },
+
           {
             name: "Reports",
             path: "/super-admin-reporting",
@@ -78,6 +75,11 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             path: "/super-admin-settings",
             icon: <IoSettings />,
           },
+          {
+            name: "Finance Company Settings",
+            path: "/finance-company-settings",
+            icon: <IoSettings />,
+          },
         ]
       : []),
 
@@ -98,11 +100,6 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             name: "Digital Marketing Leads",
             path: "/main-social-media-leads",
             icon: <TiSocialInstagramCircular />,
-          },
-          {
-            name: "Import Data",
-            path: "/admin-import-data",
-            icon: <LuImport />,
           },
           {
             name: "Reports",
@@ -172,7 +169,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   return (
     <div
       className={`${
-        isSidebarOpen ? "w-60" : "w-28"
+        isSidebarOpen ? "w-60" : "w-12 sm:w-28"
       } h-screen fixed p-2 flex flex-col bg-white shadow-sm`}
     >
       {/* Top Logo and Hamburger */}

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import GeneralLeads from "./GeneralLeads";
-import MetaLeads from "./MetaLeads";
-import WebsiteLeads from "./WebsiteLeads";
-import GoogleLeads from "./GoogleLeads";
+import EmployeeLeadsReport from "./EmployeeLeadsReport";
+import EmpMetaLeads from "./EmpMetaLeads";
+import EmpWebLeads from "./EmpWebLeads";
+import EmpGoogleLeads from "./EmpGoogleLeads";
 
-const LeadsDashboard = () => {
+const EmployeeLeadsDash = () => {
   const [activeTab, setActiveTab] = useState("general");
 
   const tabs = [
@@ -17,15 +17,15 @@ const LeadsDashboard = () => {
   const renderComponent = () => {
     switch (activeTab) {
       case "general":
-        return <GeneralLeads />;
+        return <EmployeeLeadsReport />;
       case "meta":
-        return <MetaLeads />;
+        return <EmpMetaLeads />;
       case "website":
-        return <WebsiteLeads />;
+        return <EmpWebLeads />;
       case "google":
-        return <GoogleLeads />;
+        return <EmpGoogleLeads />;
       default:
-        return <GeneralLeads />;
+        return <EmployeeLeadsReport />;
     }
   };
 
@@ -59,4 +59,4 @@ const LeadsDashboard = () => {
   );
 };
 
-export default LeadsDashboard;
+export default EmployeeLeadsDash;

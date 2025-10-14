@@ -90,6 +90,8 @@ const SuperLeadsTable = ({ isSidebarOpen, type }) => {
     }
   };
 
+  console.log(metaLeads);
+
   useEffect(() => {
     fetchAllMetaLeads();
   }, []);
@@ -229,7 +231,7 @@ const SuperLeadsTable = ({ isSidebarOpen, type }) => {
 
   return (
     <>
-      <div className="container mx-auto p-2">
+      <div className={`container mx-auto p-2`}>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold mb-4">Meta Leads Table</h2>
           <div className="gap-2 flex">
@@ -356,11 +358,7 @@ const SuperLeadsTable = ({ isSidebarOpen, type }) => {
         {loading ? (
           <p>Loading...</p>
         ) : filteredLeads.length > 0 ? (
-          <div
-            className={`${
-              isSidebarOpen ? "w-[75rem]" : "w-[85rem]"
-            } overflow-x-auto`}
-          >
+          <div className={`overflow-x-auto`}>
             <table className="min-w-full bg-white border">
               <thead>
                 <tr className="bg-gray-100">
@@ -378,6 +376,7 @@ const SuperLeadsTable = ({ isSidebarOpen, type }) => {
                   <th className="py-2 px-4 border-b">Phone</th>
                   <th className="py-2 px-4 border-b">Address</th>
                   <th className="py-2 px-4 border-b">Generated Date</th>
+                  <th className="py-2 px-4 border-b">Assigned To</th>
                   <th className="py-2 px-4 border-b">Status</th>
                   <th className="py-2 px-4 border-b">Action</th>
                 </tr>
@@ -414,30 +413,42 @@ const SuperLeadsTable = ({ isSidebarOpen, type }) => {
                       <td className="py-2 px-4 border-b">
                         {moment(lead.generated_time).format("DD-MM-YYYY HH:mm")}
                       </td>
+                      <th className="py-2 px-4 border-b font-bold capitalize">
+                        {lead?.staff_name || "--"}
+                      </th>
                       <td
                         className={`py-2 px-4 border-b ${
                           lead.meta_lead_status === "Pending"
                             ? "text-red-600 font-semibold"
+                            : lead.meta_lead_status === "Sold"
+                            ? "text-green-600 font-semibold"
                             : "text-gray-800"
                         }`}
                       >
                         {lead.meta_lead_status}
                       </td>
+
                       <td className="py-3 px-4 border-b">
                         <div className="flex items-center gap-2 justify-center">
                           <button
-                            className="flex items-center gap-1 bg-cyan-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-cyan-700"
                             onClick={() => handleViewAnswers(lead)}
+                            className="flex items-center gap-1 bg-cyan-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-cyan-700 transition-all duration-200"
                           >
                             <AiFillEye className="w-4 h-4" />
                             View
                           </button>
+
                           <button
-                            className="flex items-center gap-1 bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-green-700"
                             onClick={() => handleAssigned(lead)}
+                            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-white transition-all duration-200 shadow-sm
+        ${
+          lead?.meta_assignedTo
+            ? "bg-amber-600 hover:bg-amber-700"
+            : "bg-green-600 hover:bg-green-700"
+        }`}
                           >
                             <AiFillCheckCircle className="w-4 h-4" />
-                            Assign
+                            {lead?.meta_assignedTo ? "Re-Assign" : "Assign"}
                           </button>
                         </div>
                       </td>

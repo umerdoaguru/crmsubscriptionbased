@@ -9,6 +9,7 @@ import cogoToast from "cogo-toast";
 
 const EmployeeOverview = () => {
   const [leads, setLeads] = useState([]);
+  const [metaLeads, setMetaLeads] = useState([]);
   const [quotation, setQuotation] = useState([]);
   const [invoice, setInvoice] = useState([]);
   const [selectedComponent, setSelectedComponent] = useState("LeadData");
@@ -40,6 +41,24 @@ const EmployeeOverview = () => {
         dispatch(logoutUser());
         cogoToast.error("Token is expired Please Login Again !!");
       }
+    }
+  };
+
+  const fetchMetaLeads = async () => {
+    try {
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getMetaLeadsByStaffId/${EmpId.staff_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setMetaLeads(data);
+    } catch (error) {
+      console.error("Error fetching leads:", error);
     }
   };
 
@@ -86,6 +105,7 @@ const EmployeeOverview = () => {
   useEffect(() => {
     fetchLeads();
     fetchVisit();
+    fetchMetaLeads();
     employeesoldunit();
   }, []);
 
@@ -117,6 +137,26 @@ const EmployeeOverview = () => {
                   </h5>
                   <p className="text-gray-800 text-xl font-semibold ">
                     {leadCount}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Link>
+        </div>
+
+        <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3  ">
+          <Link to="/employees-total-leads">
+            <div className="shadow-lg rounded-lg overflow-hidden cursor-pointer text-gray-600 border-1">
+              <div className="p-4 flex flex-col items-center text-center">
+                <div className=" text-3xl text-cyan-600">
+                  <GiFiles />
+                </div>
+                <div className="mt-2">
+                  <h5 className="text-gray-800 text-xl font-semibold ">
+                    Total Meta Leads{" "}
+                  </h5>
+                  <p className="text-gray-800 text-xl font-semibold ">
+                    {metaLeads?.length}
                   </p>
                 </div>
               </div>
@@ -171,7 +211,7 @@ const EmployeeOverview = () => {
         </div>
 
         {/* Card for Closed Data */}
-        <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3">
+        {/* <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3">
           <Link to="/close-data">
             <div
               className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
@@ -214,7 +254,7 @@ const EmployeeOverview = () => {
               </div>
             </div>
           </Link>
-        </div>
+        </div> */}
 
         {/* Card for sold unit Data */}
         <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3">

@@ -230,6 +230,7 @@ const {
   getMetaLeadsByStaffId,
   getMetaLeadsByLeadId,
   updateOnlyMetaLeadStatusEmployeeEnd,
+  createFinanceCompany,
 } = require("../controllers/ControllerTen");
 
 // ========== Router Begins =====================
@@ -691,5 +692,6 @@ router.get(
   "/updateOnlyMetaLeadStatusEmployeeEnd/:id",
   updateOnlyMetaLeadStatusEmployeeEnd
 );
+router.post("/finance-companies/create", createFinanceCompany);
 
 module.exports = router;

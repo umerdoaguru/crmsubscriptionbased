@@ -3,10 +3,9 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ReactPaginate from "react-paginate";
-import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-const EmployeeLeadsReport = () => {
+const EmpGoogleLeads = () => {
   const [leads, setLeads] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const leadsPerPage = 5;
@@ -72,7 +71,7 @@ const EmployeeLeadsReport = () => {
               </tr>
             </thead>
             <tbody>
-              {currentLeads.length > 0 ? (
+              {currentLeads.length > 10 ? (
                 currentLeads.map((lead, index) => (
                   <tr
                     key={lead.id}
@@ -148,45 +147,4 @@ const EmployeeLeadsReport = () => {
   );
 };
 
-export default EmployeeLeadsReport;
-
-const Wrapper = styled.div`
-  /* Your existing styles */
-  .pagination-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
-  }
-
-  .pagination-page,
-  .pagination-previous,
-  .pagination-next,
-  .pagination-break {
-    background-color: white;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-
-  .pagination-link {
-    padding: 0.25rem 1rem;
-    font-size: 0.875rem;
-    color: #3b82f6;
-    text-decoration: none;
-    &:hover {
-      color: #2563eb;
-    }
-  }
-
-  .pagination-active {
-    background-color: #1e50ff;
-    color: white;
-    border: 1px solid #374151;
-  }
-
-  .pagination-active a {
-    color: white !important;
-  }
-`;
+export default EmpGoogleLeads;

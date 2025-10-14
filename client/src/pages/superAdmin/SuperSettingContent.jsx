@@ -174,7 +174,7 @@ const SuperSettingContent = () => {
                   className="bg-sky-500 hover:bg-sky-600 text-white p-2 rounded"
                   onClick={() => updateModalfunc(orgData)}
                 >
-                  Update Details
+                  Edit Details
                 </button>
               </div>
 
@@ -254,7 +254,7 @@ const SuperSettingContent = () => {
               </div>
               <div className="px-6 py-4">
                 <button className="bg-sky-500 hover:bg-sky-600 text-white p-2 rounded">
-                  Update Details
+                  Edit Details
                 </button>
               </div>
             </div>

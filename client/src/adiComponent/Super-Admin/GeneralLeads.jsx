@@ -1,53 +1,54 @@
-import axios from "axios";
-import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import moment from "moment";
 import ReactPaginate from "react-paginate";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
-const EmployeeLeadsReport = () => {
+const GeneralLeads = () => {
   const [leads, setLeads] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const leadsPerPage = 5;
-  const EmpId = useSelector((state) => state.auth.user);
-  const token = EmpId?.token;
+  const [leadsPerPage] = useState(7);
+  const superadminuser = useSelector((state) => state.auth.user);
+
+  const userId = superadminuser.staff_id;
+  const token = superadminuser.token;
+  console.log(token);
+
+  const fetchLeads = async () => {
+    try {
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setLeads(data);
+    } catch (error) {
+      console.error("Error fetching leads:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchLeads = async () => {
-      try {
-        const { data } = await axios.get(
-          `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.staff_id}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        setLeads(data);
-      } catch (error) {
-        console.error("Error fetching leads:", error);
-      }
-    };
-
     fetchLeads();
-  }, [EmpId]);
+  }, []);
+
+  console.log(leads);
 
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-  const currentLeads = leads.slice(indexOfFirstLead, indexOfLastLead);
-
-  console.log(currentLeads);
+  const currentLeads = leads?.slice(indexOfFirstLead, indexOfLastLead);
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
 
   return (
-    <div className="mx-7">
-      <div className="p-4 mt-6 bg-white rounded-lg shadow-lg">
+    <>
+      <div className="p-4 mt-6 bg-white rounded-lg shadow-lg mx-7 mb-2 ">
         <h3 className="mb-4 text-lg font-semibold">Recently Assigned Leads</h3>
         <div className="overflow-x-auto mt-4">
           <table className="min-w-full bg-white border">
@@ -72,8 +73,8 @@ const EmployeeLeadsReport = () => {
               </tr>
             </thead>
             <tbody>
-              {currentLeads.length > 0 ? (
-                currentLeads.map((lead, index) => (
+              {currentLeads?.length > 0 ? (
+                currentLeads?.map((lead, index) => (
                   <tr
                     key={lead.id}
                     className={index % 2 === 0 ? "bg-gray-100" : ""}
@@ -82,10 +83,8 @@ const EmployeeLeadsReport = () => {
                       {currentPage * leadsPerPage + index + 1}
                     </td>
 
-                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800 hover:text-cyan-600">
-                      <Link to={`/employee-lead-single-data/${lead.lead_id}`}>
-                        {lead.name}
-                      </Link>
+                    <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                      {lead.name}
                     </td>
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.phone}
@@ -120,73 +119,30 @@ const EmployeeLeadsReport = () => {
             </tbody>
           </table>
         </div>
-        {leads.length > 0 && (
-          <div className="mt-4 flex justify-center">
-            <ReactPaginate
-              previousLabel={"Previous"}
-              nextLabel={"Next"}
-              breakLabel={"..."}
-              pageCount={Math.ceil(leads.length / leadsPerPage)}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={3}
-              onPageChange={handlePageClick}
-              containerClassName={"pagination"}
-              activeClassName={"active"}
-              pageClassName={"page-item"}
-              pageLinkClassName={"page-link"}
-              previousClassName={"page-item"}
-              nextClassName={"page-item"}
-              previousLinkClassName={"page-link"}
-              nextLinkClassName={"page-link"}
-              breakClassName={"page-item"}
-              breakLinkClassName={"page-link"}
-            />
-          </div>
-        )}
+        <div className="mt-4 flex justify-center">
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            breakLabel={"..."}
+            pageCount={Math.ceil(leads?.length / leadsPerPage)}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination"}
+            activeClassName={"active"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            nextClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextLinkClassName={"page-link"}
+            breakClassName={"page-item"}
+            breakLinkClassName={"page-link"}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default EmployeeLeadsReport;
-
-const Wrapper = styled.div`
-  /* Your existing styles */
-  .pagination-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
-  }
-
-  .pagination-page,
-  .pagination-previous,
-  .pagination-next,
-  .pagination-break {
-    background-color: white;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-
-  .pagination-link {
-    padding: 0.25rem 1rem;
-    font-size: 0.875rem;
-    color: #3b82f6;
-    text-decoration: none;
-    &:hover {
-      color: #2563eb;
-    }
-  }
-
-  .pagination-active {
-    background-color: #1e50ff;
-    color: white;
-    border: 1px solid #374151;
-  }
-
-  .pagination-active a {
-    color: white !important;
-  }
-`;
+export default GeneralLeads;

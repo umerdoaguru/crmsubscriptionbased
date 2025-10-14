@@ -6,115 +6,142 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
   ResponsiveContainer,
 } from "recharts";
 import axios from "axios";
-import { useSelector } from "react-redux";
 import moment from "moment";
+import { useSelector } from "react-redux";
 
 const EmployeeLeadsGraph = () => {
-  const EmpId = useSelector((state) => state.auth.user);
-  const [leadsData, setLeadsData] = useState([]);
+  const [chartData, setChartData] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const token = EmpId?.token;
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser?.token;
+  const orgId = superadminuser?.staff_org_id;
 
   useEffect(() => {
-    const fetchLeadsData = async () => {
+    const fetchAllData = async () => {
       try {
-        const response = await axios.get(
-          `https://crm-generalize.dentalguru.software/api/employe-leads/${EmpId.staff_id}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const allLeads = response.data;
+        setLoading(true);
+
+        // ✅ Fetch only Leads and MetaLeads
+        const [leadsRes, metaLeadsRes] = await Promise.all([
+          axios.get(
+            `https://crm-generalize.dentalguru.software/api/employe-leads/${superadminuser?.staff_id}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          ),
+          axios.get(
+            `https://crm-generalize.dentalguru.software/api/getMetaLeadsByStaffId/${superadminuser.staff_id}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          ),
+        ]);
+
+        const allLeads = leadsRes.data || [];
+        const allMetaLeads = metaLeadsRes.data || [];
+        console.log(allMetaLeads);
 
         const today = moment();
         const startDate = moment().subtract(28, "days");
-
-        // Format dates to 'MMM DD' for display
         const formatDate = (date) => moment(date).format("MMM DD");
 
-        // Filter the data for the last 28 days including today
-        const filteredLeads = allLeads.filter((lead) => {
-          const leadDate = moment(lead.createdTime, "YYYY-MM-DD HH:mm:ss"); // Parse the string
-          return leadDate.isBetween(startDate, today, undefined, "[]"); // Check date range
-        });
+        // ✅ Helper: group data by date (custom date key)
+        const groupByDate = (data, dateKey) =>
+          data.reduce((acc, item) => {
+            const dateValue = item[dateKey];
+            if (!dateValue) return acc;
 
-        // Group by date
-        const groupedLeads = filteredLeads.reduce((acc, lead) => {
-          const date = formatDate(
-            moment(lead.createdTime, "YYYY-MM-DD HH:mm:ss")
-          );
-          if (!acc[date]) {
-            acc[date] = 0;
-          }
-          acc[date] += 1;
-          return acc;
-        }, {});
+            const parsedDate = moment(dateValue, [
+              "YYYY-MM-DD HH:mm:ss",
+              "YYYY-MM-DD",
+            ]);
+            if (!parsedDate.isValid()) return acc;
 
-        const leadsData = [];
+            const formatted = formatDate(parsedDate);
+            if (parsedDate.isBetween(startDate, today, undefined, "[]")) {
+              acc[formatted] = (acc[formatted] || 0) + 1;
+            }
+
+            return acc;
+          }, {});
+
+        // ✅ Use correct date keys for each dataset
+        const leadsGrouped = groupByDate(allLeads, "createdTime");
+        const metaLeadsGrouped = groupByDate(allMetaLeads, "generated_time");
+
+        // ✅ Prepare chart data for last 28 days
+        const finalData = [];
         for (let i = 0; i <= 27; i++) {
           const date = moment().subtract(i, "days");
           const formattedDate = formatDate(date);
-          leadsData.push({
+          finalData.push({
             createdDate: formattedDate,
-            Leads: groupedLeads[formattedDate] || 0,
+            Leads: leadsGrouped[formattedDate] || 0,
+            MetaLeads: metaLeadsGrouped[formattedDate] || 0,
           });
         }
 
-        leadsData.reverse();
-        setLeadsData(leadsData);
+        finalData.reverse();
+        setChartData(finalData);
       } catch (error) {
-        console.error("Error fetching leads data:", error);
-        setError("Failed to load leads data");
+        console.error("Error fetching chart data:", error);
+        setError("Failed to load chart data");
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchLeadsData();
-  }, []);
+    fetchAllData();
+  }, [token, orgId]);
 
   return (
-    <div className="">
-      <div className="w-full max-w-4xl mx-auto p-4 border rounded-lg shadow-md bg-white">
-        <h2 className="text-xl font-bold mb-2">Daily Leads Overview</h2>
-        {error ? (
+    <div className="mx-2">
+      <div className="w-full max-w-5xl p-4 border rounded-lg shadow-md bg-white">
+        <h2 className="text-xl font-bold mb-2">
+          Daily Leads & MetaLeads Overview
+        </h2>
+
+        {loading ? (
+          <p className="text-gray-500">Loading data...</p>
+        ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
           <>
             <p className="text-sm text-gray-500 mb-4">
-              Leads for the past 28 days
+              Data for the past 28 days
             </p>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={320}>
               <BarChart
-                data={leadsData}
-                margin={{ top: 5, right: 20, left: -40, bottom: 25 }}
+                data={chartData}
+                margin={{ top: 5, right: 15, left: -40, bottom: 25 }}
               >
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis
-                  dataKey="createdDate"
-                  tick={{ fill: "gray" }}
-                  angle={0}
-                  textAnchor="middle"
-                />
-                <YAxis
-                  tick={{ fill: "gray" }}
-                  allowDecimals={false}
-                  tickFormatter={(value) =>
-                    Number.isInteger(value) ? value : ""
-                  }
-                />
+                <XAxis dataKey="createdDate" tick={{ fill: "gray" }} />
+                <YAxis tick={{ fill: "gray" }} allowDecimals={false} />
                 <Tooltip />
+                <Legend />
                 <Bar
                   dataKey="Leads"
-                  name="Visit"
+                  name="Leads"
                   fill="#0891b2"
                   radius={[10, 10, 0, 0]}
-                  barSize={15}
+                  barSize={14}
+                />
+                <Bar
+                  dataKey="MetaLeads"
+                  name="Meta Leads"
+                  fill="#f59e0b"
+                  radius={[10, 10, 0, 0]}
+                  barSize={14}
                 />
               </BarChart>
             </ResponsiveContainer>

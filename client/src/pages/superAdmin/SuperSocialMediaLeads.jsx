@@ -18,11 +18,7 @@ const SuperSocialMediaLeads = () => {
         <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
         {/* Main Content */}
-        <div
-          className={`main-content transition-all w-full duration-300 ${
-            isSidebarOpen ? "ml-60" : "ml-28"
-          }`}
-        >
+        <div className={`main-content transition-all w-full duration-300`}>
           <Topbar isSidebarOpen={isSidebarOpen} />
           <div className=""></div>
 

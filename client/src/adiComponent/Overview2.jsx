@@ -21,6 +21,7 @@ const Overview2 = () => {
   const dispatch = useDispatch();
   const [project, setProjects] = useState([]);
   const [employeesold, setemployeesold] = useState([]);
+  const [metaLeads, setMetaLeads] = useState([]);
 
   const fetchLeads = async () => {
     try {
@@ -40,6 +41,23 @@ const Overview2 = () => {
         dispatch(logoutUser());
         cogoToast.error("Token is expired Please Login Again !!");
       }
+    }
+  };
+
+  const fetchAllMetaLeads = async () => {
+    try {
+      // setLoading(true);
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getMetaLeadsByOrgId/${superadminuser.staff_org_id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setMetaLeads(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      // setLoading(false);
     }
   };
 
@@ -107,6 +125,7 @@ const Overview2 = () => {
     fetchLeads();
     fetchVisit();
     employeesoldunit();
+    fetchAllMetaLeads();
   }, []);
 
   const leadCount = leads.length;
@@ -168,26 +187,6 @@ const Overview2 = () => {
           </Link>
         </div>
 
-        <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-3">
-          <Link to="/super-admin-total-visit">
-            <div className="shadow-lg rounded-lg overflow-hidden cursor-pointer text-gray-600">
-              <div className="p-4 flex flex-col items-center text-center">
-                <div className=" text-3xl text-cyan-600">
-                  <MdOutlineNextWeek />
-                </div>
-                <div className="mt-2">
-                  <h5 className="text-gray-800 text-xl font-semibold ">
-                    Total Site Visit
-                  </h5>
-                  <p className="text-gray-800 text-xl font-semibold ">
-                    {visitCount}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </Link>
-        </div>
-
         {/* Card for Closed Data */}
         <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-3">
           <Link to="/super-admin-close-data">
@@ -217,7 +216,7 @@ const Overview2 = () => {
                         : "text-gray-800"
                     }`}
                   >
-                    Total Closed Deal
+                    Total Meta Leads
                   </h5>
                   <p
                     className={`${
@@ -226,7 +225,27 @@ const Overview2 = () => {
                         : "text-gray-600 font-bold"
                     }`}
                   >
-                    {closedCount}
+                    {metaLeads?.length}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Link>
+        </div>
+
+        <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-3">
+          <Link to="/super-admin-total-visit">
+            <div className="shadow-lg rounded-lg overflow-hidden cursor-pointer text-gray-600">
+              <div className="p-4 flex flex-col items-center text-center">
+                <div className=" text-3xl text-cyan-600">
+                  <MdOutlineNextWeek />
+                </div>
+                <div className="mt-2">
+                  <h5 className="text-gray-800 text-xl font-semibold ">
+                    Total Site Visit
+                  </h5>
+                  <p className="text-gray-800 text-xl font-semibold ">
+                    {visitCount}
                   </p>
                 </div>
               </div>

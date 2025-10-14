@@ -4,6 +4,7 @@ import EmployeeOverview from "./DashboardCompo/EmployeDashboardOverview";
 import EmployeeLeadsReport from "./DashboardCompo/EmployeeLeadsReport";
 import EmployeeVisitGraph from "./DashboardCompo/EmployeeVisitGraph";
 import EmployeeCloseGraph from "./DashboardCompo/EmployeeCloseGraph";
+import EmployeeLeadsDash from "./DashboardCompo/EmployeeLeadsDash";
 
 function EmployeeDashboardContent() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -28,7 +29,7 @@ function EmployeeDashboardContent() {
                 <EmployeeVisitGraph />
                 <EmployeeCloseGraph />
               </div>
-              <EmployeeLeadsReport />
+              <EmployeeLeadsDash />
             </div>
           </div>
         </div>

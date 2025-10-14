@@ -72,7 +72,6 @@ import ViewAllVisit from "../pages/Employees/ViewAllVisit";
 import ViewAllFollowUp from "../pages/Employees/ViewAllFollowUp";
 import ViewAllRemark from "../pages/Employees/ViewAllRemark";
 import ViewAllUnitSold from "../pages/Employees/ViewAllUnitSold";
-import SuperAdminProfileContent from "../adiComponent/Super-Admin/superAdminProfileContent";
 import SuperAdminProfile from "../pages/superAdmin/SuperAdminProfile";
 import MetaLeadEmp from "../pages/Employees/MetaLeadEmp";
 

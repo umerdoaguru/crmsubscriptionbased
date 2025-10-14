@@ -6,7 +6,7 @@ import ReactPaginate from "react-paginate";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-const EmployeeLeadsReport = () => {
+const EmpWebLeads = () => {
   const [leads, setLeads] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const leadsPerPage = 5;
@@ -72,7 +72,7 @@ const EmployeeLeadsReport = () => {
               </tr>
             </thead>
             <tbody>
-              {currentLeads.length > 0 ? (
+              {currentLeads.length > 10 ? (
                 currentLeads.map((lead, index) => (
                   <tr
                     key={lead.id}
@@ -148,7 +148,7 @@ const EmployeeLeadsReport = () => {
   );
 };
 
-export default EmployeeLeadsReport;
+export default EmpWebLeads;
 
 const Wrapper = styled.div`
   /* Your existing styles */

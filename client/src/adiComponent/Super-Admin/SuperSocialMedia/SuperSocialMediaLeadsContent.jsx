@@ -14,7 +14,11 @@ function SuperSocialMediaLeadsContent({ isSidebarOpen }) {
 
   return (
     <>
-      <div className="flex mt-20">
+      <div
+        className={`${
+          isSidebarOpen ? "ml-60 w-[85%] 3xl:w-[90%]" : "ml-28 w-[95%]"
+        } flex mt-20`}
+      >
         <div className="w-full min-h-full bg-[#F9FAFF] p-2">
           {/* <div className="mt-[1rem] ">
             <button

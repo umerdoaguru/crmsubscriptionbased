@@ -279,6 +279,80 @@ const updateOnlyMetaLeadStatusEmployeeEnd = (req, res) => {
   });
 };
 
+const createFinanceCompany = async (req, res) => {
+  try {
+    const {
+      fc_org_id,
+      fc_name,
+      fc_contact_person,
+      fc_contact_phone,
+      interest_rate,
+    } = req.body;
+
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+    if (!fc_org_id || !fc_name) {
+      return res.status(400).json({
+        success: false,
+        message: "Organization ID and name are required",
+      });
+    }
+
+    db.query(
+      `SELECT * FROM finance_companies WHERE fc_name = ?`,
+      [fc_name], (err, result)=>{
+        if(err){
+          return res.status(400).json({success: false, message: err.message});
+        }
+      })
+
+    db.query(
+      `SELECT * FROM finance_companies WHERE fc_name = ?`,
+      [fc_name]
+    );
+
+    if (existingCompany.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Finance company name already exists",
+      });
+    }
+
+    const [result] = await db.query(
+      `INSERT INTO finance_companies 
+       (fc_org_id, fc_name, fc_contact_person, fc_contact_phone, interest_rate, fc_created_at)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [
+        fc_org_id,
+        fc_name,
+        fc_contact_person,
+        fc_contact_phone,
+        interest_rate,
+        dateTime,
+      ]
+    );
+
+    return res.json({
+      success: true,
+      message: "Finance company added successfully",
+      finance_company_id: result.insertId,
+    });
+  } catch (error) {
+    if (error.code === "ER_DUP_ENTRY") {
+      return res.status(400).json({
+        success: false,
+        message: "Finance company name already exists",
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Error adding finance company",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   metaLeadFetchByPageId,
   getMetaLeadsByOrgId,
@@ -287,4 +361,5 @@ module.exports = {
   getMetaLeadsByStaffId,
   getMetaLeadsByLeadId,
   updateOnlyMetaLeadStatusEmployeeEnd,
+  createFinanceCompany,
 };

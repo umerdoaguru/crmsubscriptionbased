@@ -2,9 +2,10 @@ import { useState } from "react";
 import React from "react";
 import Sidebar from "../../utils/Sidebar";
 import Topbar from "../../utils/Topbar";
-import SuperDashContent from "../../adiComponent/SuperDashContent";
+import SuperSettingContent from "./SuperSettingContent";
+import FinanceCompanySettingContent from "./FinanceCompanySettingContent";
 
-const SuperDash = () => {
+const FinanceCompanySetting = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {
@@ -20,16 +21,16 @@ const SuperDash = () => {
         {/* Main Content */}
         <div
           className={`main-content transition-all w-full duration-300 ${
-            isSidebarOpen ? "ml-60" : "ml-10 sm:ml-28"
+            isSidebarOpen ? "ml-60" : "ml-28"
           }`}
         >
           <Topbar isSidebarOpen={isSidebarOpen} />
           <div className=""></div>
 
-          <SuperDashContent />
+          <FinanceCompanySettingContent />
         </div>
       </div>
     </div>
   );
 };
-export default SuperDash;
+export default FinanceCompanySetting;

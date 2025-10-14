@@ -19,13 +19,11 @@ const Topbar = ({ isSidebarOpen }) => {
   const role = user?.staff_role;
   const isLoggedIn = !!user;
 
-  // Example: role can be "admin", "employee", or "superadmin"
   const isAdmin = role === "Admin";
   const isEmployee = role === "employee" || role === "Employee";
   const isSuperAdmin = role === "Super-Admin";
 
   const pages = [
-    // Visible when logged in (generic dashboard by role)
     ...(isLoggedIn
       ? [
           {
@@ -148,7 +146,7 @@ const Topbar = ({ isSidebarOpen }) => {
   return (
     <header
       className={`fixed top-0 right-0 z-50 flex justify-between items-center px-4 py-3 bg-white shadow-sm transition-all duration-300 ${
-        isSidebarOpen ? "left-60" : "left-28"
+        isSidebarOpen ? "left-60" : "left-12 sm:left-28"
       }`}
     >
       {/* Logo */}
@@ -169,7 +167,7 @@ const Topbar = ({ isSidebarOpen }) => {
             <input
               type="text"
               placeholder="Search..."
-              className="flex-1 bg-transparent focus:outline-none text-sm"
+              className="hidden sm:flex-1 bg-transparent focus:outline-none text-sm"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
