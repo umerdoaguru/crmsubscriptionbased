@@ -1,40 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import moment from "moment";
 import { useSelector } from "react-redux";
 import cogoToast from "cogo-toast";
+import moment from "moment";
+import OwnerPaymentSavePopup from "../../pages/Employees/EmpPopupWindow/OwnerPaymentSavePopup";
 
 const ViewAllUnitSoldContent = () => {
-  const [employeeunitsold, setEmployeeUnitSold] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage] = useState(10); // Number of items per page
-  const [filterText, setFilterText] = useState("");
-  const [sortAsc, setSortAsc] = useState(true);
-  const [render, setRender] = useState(false);
-  const [previousUnit, setPreviousUnit] = useState("");
-  const { type, id } = useParams();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalData, setModalData] = useState(null);
-  const [unitdata, setUnitData] = useState([]);
+  const [unitSoldData, setUnitSoldData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { type, id } = useParams();
   const EmpId = useSelector((state) => state.auth.user);
-
   const token = EmpId?.token;
+  const [ownPaymentModal, setOwnPaymentModal] = useState(false);
 
   useEffect(() => {
-    fetchEmployeeUnitSold();
-  }, [id, render]);
+    fetchUnitSoldData();
+  }, [id]);
 
-  const fetchEmployeeUnitSold = async () => {
+  const fetchUnitSoldData = async () => {
     try {
-      let apiUrl = "";
-
-      if (type === "meta") {
-        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeUnitSoldByLeadIdMeta/${id}`;
-      } else {
-        apiUrl = `https://crm-generalize.dentalguru.software/api/unit-sold-lead-id/${id}`;
-      }
+      setLoading(true);
+      const apiUrl =
+        type === "meta"
+          ? `https://crm-generalize.dentalguru.software/api/getEmployeeUnitSoldByLeadIdMeta/${id}`
+          : `https://crm-generalize.dentalguru.software/api/unit-sold-lead-id/${id}`;
 
       const { data } = await axios.get(apiUrl, {
         headers: {
@@ -43,351 +34,235 @@ const ViewAllUnitSoldContent = () => {
         },
       });
 
-      setEmployeeUnitSold(data);
+      setUnitSoldData(Array.isArray(data) ? data : [data]);
     } catch (error) {
-      console.error("Error fetching quotations:", error);
+      console.error("Error fetching unit sold data:", error);
+      cogoToast.error("Failed to fetch unit sold details");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDelete = async (id) => {
-    const isConfirmed = window.confirm(
-      "Are you sure you want to delete this Unit Sold?"
+  const handleDelete = async (esu_id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this record?"
     );
-    if (isConfirmed) {
-      try {
-        const response = await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/unit-sold/${type}/${id}`
-        );
+    if (!confirmDelete) return;
 
-        console.log("Unit Sold deleted successfully");
-        cogoToast.success("Unit Sold deleted successfully");
-        console.log(response);
-        fetchEmployeeUnitSold();
-        setRender(!render);
-      } catch (error) {
-        console.error("Error deleting visit:", error);
-      }
-    }
-  };
-  // Function to send the PUT request to update the visit data
-  const openModal = (data) => {
-    setModalData(data);
-    console.log(data);
-    setPreviousUnit(data.unit_no);
-
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setModalData(null);
-  };
-
-  // Handle updating field values in modalData
-  const handleInputChange = (e) => {
-    setModalData({
-      ...modalData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  // Function to send the PUT request to update the visit data
-  const updateVisit = async () => {
     try {
-      const response = await axios.put(
-        `https://crm-generalize.dentalguru.software/api/unit-sold`,
-        modalData
+      await axios.delete(
+        `https://crm-generalize.dentalguru.software/api/unit-sold/${type}/${esu_id}`
       );
-      if (response.status === 200) {
-        cogoToast.success("Unit Sold updated successfully!");
-
-        const putResponseUnit = await axios.put(
-          `https://crm-generalize.dentalguru.software/api/updateOnlyUnitStatus/${modalData.lead_id}`,
-          { unit_number: modalData.unit_no, unit_status: modalData.unit_status }
-        );
-
-        if (putResponseUnit.status === 200) {
-          console.log(
-            "Unit of Lead Status updated successfully:",
-            putResponseUnit.data
-          );
-        } else {
-          console.error("Error updating Unit Status:", putResponseUnit.data);
-          cogoToast.error("Failed to update the lead Unit Status.");
-        }
-        const putResponseUnitdelete = await axios.put(
-          `https://crm-generalize.dentalguru.software/api/unit-data/${previousUnit}`,
-          { unit_status: "pending" }
-        );
-
-        if (putResponseUnitdelete.status === 200) {
-          console.log(
-            "Unit Status updated successfully:",
-            putResponseUnitdelete.data
-          );
-        } else {
-          console.error(
-            "Error updating Unit Status:",
-            putResponseUnitdelete.data
-          );
-          cogoToast.error("Failed to update the lead Unit Status.");
-        }
-
-        const putResponse = await axios.put(
-          `https://crm-generalize.dentalguru.software/api/unit-data/${modalData.unit_no}`,
-          { unit_status: modalData.unit_status }
-        );
-
-        if (putResponse.status === 200) {
-          console.log("Unit Status updated successfully:", putResponse.data);
-        } else {
-          console.error("Error updating Unit Status:", putResponse.data);
-          cogoToast.error("Failed to update the lead Unit Status.");
-        }
-
-        setRender(!render);
-        closeModal();
-        setPreviousUnit("");
-      }
+      cogoToast.success("Unit Sold deleted successfully!");
+      fetchUnitSoldData();
     } catch (error) {
-      console.error("Error updating visit:", error);
+      console.error("Error deleting unit:", error);
+      cogoToast.error("Failed to delete record");
     }
   };
 
-  const handlePageClick = ({ selected }) => {
-    setCurrentPage(selected);
+  const handleSimpleAction = (action) => {
+    cogoToast.info(`${action} feature coming soon`);
   };
 
-  const offset = currentPage * itemsPerPage;
-  const currentemployeeunitsold = employeeunitsold.slice(
-    offset,
-    offset + itemsPerPage
-  );
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen text-xl text-gray-600">
+        Loading Unit Sold Details...
+      </div>
+    );
+  }
 
   return (
     <>
-      <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
-          <div className="container mt-2">
-            <div className="mt-[1rem] ">
-              <button
-                onClick={() => navigate(-1)}
-                className="bg-cyan-600 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-cyan-700 transition-colors"
-              >
-                Back
-              </button>
+      <div className="min-h-screen bg-[#F9FAFF] pt-24 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-3xl font-bold text-gray-700">
+              Unit Sold Details
+            </h2>
+            <button
+              onClick={() => navigate(-1)}
+              className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700"
+            >
+              Back
+            </button>
+          </div>
+
+          {unitSoldData.length === 0 ? (
+            <div className="text-center text-gray-500 mt-10">
+              No unit sold details found.
             </div>
-            <div className="w-full px-2 mx-auto p-4">
-              <div className="w-full px-2 mt-4">
-                <h2 className="text-2xl font-bold mb-4 text-center">
-                  All Sold Units
-                </h2>
-                <div className=" overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200 border border-gray-300">
-                    <thead className="bg-gray-100">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          S.no
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Unit No
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Project Name
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Unit Status
-                        </th>
+          ) : (
+            unitSoldData.map((data, i) => (
+              <div
+                key={i}
+                className="bg-white shadow-md rounded-xl p-6 mb-10 border border-gray-200"
+              >
+                {/* Action Buttons */}
+                <div className="flex flex-wrap gap-3 justify-end mb-6">
+                  <button
+                    onClick={() => setOwnPaymentModal(true)}
+                    className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600"
+                  >
+                    + Add Payment
+                  </button>
+                  <button
+                    onClick={() => handleSimpleAction("Add Owner Loan")}
+                    className="bg-indigo-500 text-white px-4 py-1 rounded-md hover:bg-indigo-600"
+                  >
+                    + Add Loan
+                  </button>
+                  <button
+                    onClick={() => handleSimpleAction("Manage EMI")}
+                    className="bg-yellow-500 text-white px-4 py-1 rounded-md hover:bg-yellow-600"
+                  >
+                    + Manage EMI
+                  </button>
+                </div>
 
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Date
-                        </th>
+                {/* Project & Unit Details */}
+                <h3 className="text-xl font-semibold mb-3 text-cyan-700">
+                  Project & Unit Details
+                </h3>
+                <div className="grid sm:grid-cols-2 gap-2 text-gray-700 mb-6">
+                  <p>
+                    <strong>Project Name:</strong> {data.project_name}
+                  </p>
+                  <p>
+                    <strong>Unit No:</strong> {data.unit_number}
+                  </p>
+                  <p>
+                    <strong>Unit Type:</strong> {data.unit_type}
+                  </p>
+                  <p>
+                    <strong>Area:</strong> {data.unit_area} sqft
+                  </p>
+                  <p>
+                    <strong>Base Price:</strong> ₹{data.base_price}
+                  </p>
+                  <p>
+                    <strong>Sale Price:</strong> ₹{data.esu_sale_price}
+                  </p>
+                  <p>
+                    <strong>Status:</strong> {data.unit_status}
+                  </p>
+                </div>
 
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Notes
-                        </th>
+                {/* Sale & Payment Details */}
+                <h3 className="text-xl font-semibold mb-3 text-cyan-700">
+                  Sale & Token Payment Details
+                </h3>
+                <div className="grid sm:grid-cols-2 gap-2 text-gray-700 mb-6">
+                  <p>
+                    <strong>Sold Date:</strong>{" "}
+                    {moment(data.esu_sold_date).format("DD MMM YYYY")}
+                  </p>
+                  <p>
+                    <strong>Booking Date:</strong>{" "}
+                    {moment(data.esu_booking_date).format("DD MMM YYYY")}
+                  </p>
+                  <p>
+                    <strong>Final Date:</strong>{" "}
+                    {moment(data.esu_final_date).format("DD MMM YYYY")}
+                  </p>
+                  <p>
+                    <strong>Registry Date:</strong>{" "}
+                    {data.registry_date
+                      ? moment(data.registry_date).format("DD MMM YYYY")
+                      : "—"}
+                  </p>
+                  <p>
+                    <strong>Payment Mode:</strong> {data.esu_payment_method}
+                  </p>
+                  <p>
+                    <strong>Token Amount:</strong> ₹{data.esu_token_amount}
+                  </p>
+                  <p>
+                    <strong>Token Status:</strong> {data.esu_token_paid_status}
+                  </p>
+                </div>
 
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Action
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {currentemployeeunitsold.map((unitsold, index) => (
-                        <tr key={unitsold.id}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {offset + index + 1}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {unitsold.unit_number}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {unitsold.project_name}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {unitsold.unit_status}
-                          </td>
+                {/* Owner Details */}
+                <h3 className="text-xl font-semibold mb-3 text-cyan-700">
+                  Owner Details
+                </h3>
+                <div className="grid sm:grid-cols-2 gap-2 text-gray-700 mb-6">
+                  <p>
+                    <strong>Name:</strong> {data.owner_name}
+                  </p>
+                  <p>
+                    <strong>Phone:</strong> {data.owner_phone}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {data.owner_email}
+                  </p>
+                  <p>
+                    <strong>Address:</strong> {data.owner_address}
+                  </p>
+                </div>
 
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {unitsold.esu_sold_date}
-                          </td>
+                {/* Staff Details */}
+                <h3 className="text-xl font-semibold mb-3 text-cyan-700">
+                  Staff Details
+                </h3>
+                <div className="grid sm:grid-cols-2 gap-2 text-gray-700 mb-6">
+                  <p>
+                    <strong>Name:</strong> {data.staff_name}
+                  </p>
+                  <p>
+                    <strong>Phone:</strong> {data.staff_phone}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {data.staff_email}
+                  </p>
+                  <p>
+                    <strong>Role:</strong>{" "}
+                    {data.staff_role
+                      ? data.staff_role.charAt(0).toUpperCase() +
+                        data.staff_role.slice(1)
+                      : ""}
+                  </p>
+                </div>
 
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {unitsold.esu_notes}
-                          </td>
+                {/* Notes Section */}
+                {data.esu_notes && (
+                  <div className="mb-6">
+                    <h3 className="text-xl font-semibold mb-2 text-cyan-700">
+                      Notes
+                    </h3>
+                    <p className="bg-gray-50 border p-3 rounded-lg text-gray-700">
+                      {data.esu_notes}
+                    </p>
+                  </div>
+                )}
 
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {/* <button
-                              className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded m-1"
-                              onClick={() => openModal(unitsold)}
-                            >
-                              Edit
-                            </button> */}
-
-                            <button
-                              className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded m-1"
-                              onClick={() => handleDelete(unitsold?.esu_id)}
-                            >
-                              Delete
-                            </button>
-
-                            {/* <button
-                        className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-1 px-3 rounded m-1"
-                        onClick={() =>
-                          handleCopyvisit(visit.visit_id)
-                        }
-                      >
-                        Copy
-                      </button> */}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-
-                  {/* Modal for Editing Follow Up Data */}
-                  {isModalOpen && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-                      <div className="bg-white p-6 rounded-lg shadow-lg w-[500px]">
-                        <h2 className="text-xl mb-4 font-bold">
-                          Edit Unit Sold
-                        </h2>
-                        <form>
-                          <div className="mb-4">
-                            <label className="block text-gray-700">
-                              Lead ID:
-                            </label>
-                            <input
-                              type="text"
-                              name="lead_id"
-                              value={modalData.lead_id || ""}
-                              onChange={handleInputChange}
-                              className="w-full px-3 py-2 border border-gray-300 rounded"
-                              disabled
-                            />
-                          </div>
-                          <div className="mb-4">
-                            <label className="block text-gray-700">Name:</label>
-                            <input
-                              type="text"
-                              name="name"
-                              value={modalData.name || ""}
-                              onChange={handleInputChange}
-                              className="w-full px-3 py-2 border border-gray-300 rounded"
-                              disabled
-                            />
-                          </div>
-
-                          <div className="mb-4">
-                            <label className="block text-gray-700">
-                              Unit Number:
-                            </label>
-
-                            <select
-                              name="unit_no"
-                              value={modalData.unit_no || ""}
-                              onChange={handleInputChange}
-                              className="border rounded-2xl p-2 w-full"
-                            >
-                              <option value="">Select Unit Number</option>
-                              {unitdata.map((unit) => (
-                                <option
-                                  key={unit.id}
-                                  value={unit.unit_number}
-                                  disabled={unit.status === "sold"} // Disable sold units
-                                >
-                                  {unit.status === "sold"
-                                    ? `Sold ${unit.unit_number}`
-                                    : `Unit ${unit.unit_number} (Available)`}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-
-                          <div className="mb-4">
-                            <label className="block text-gray-700">
-                              Project Name
-                            </label>
-                            <input
-                              type="text"
-                              name="project_name"
-                              value={modalData.project_name || ""}
-                              onChange={handleInputChange}
-                              className="w-full px-3 py-2 border border-gray-300 rounded"
-                              disabled
-                            />
-                          </div>
-
-                          <div className="mb-4">
-                            <label className="block text-gray-700">
-                              Unit Status
-                            </label>
-                            <input
-                              type="text"
-                              name="unit_status"
-                              value={modalData.unit_status || ""}
-                              onChange={handleInputChange}
-                              className="w-full px-3 py-2 border border-gray-300 rounded"
-                            />
-                          </div>
-
-                          <div className="mb-4">
-                            <label className="block text-gray-700">Date:</label>
-                            <input
-                              type="date"
-                              name="date"
-                              value={modalData.date || ""}
-                              onChange={handleInputChange}
-                              className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
-                            />
-                          </div>
-
-                          <div className="flex justify-end">
-                            <button
-                              type="button"
-                              onClick={updateVisit}
-                              className="bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-700 mr-2"
-                            >
-                              Update
-                            </button>
-                            <button
-                              type="button"
-                              onClick={closeModal}
-                              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                  )}
+                {/* Buttons */}
+                <div className="mt-6 flex justify-end gap-3">
+                  <button
+                    onClick={() => handleSimpleAction("Update Details")}
+                    className="bg-cyan-600 text-white px-5 py-2 rounded-lg hover:bg-cyan-700"
+                  >
+                    Update Details
+                  </button>
+                  <button
+                    onClick={() => handleDelete(data.esu_id)}
+                    className="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600"
+                  >
+                    Delete Record
+                  </button>
                 </div>
               </div>
-            </div>
-          </div>
+            ))
+          )}
         </div>
       </div>
+      <OwnerPaymentSavePopup
+        isOpen={ownPaymentModal}
+        onClose={() => setOwnPaymentModal(false)}
+        unitSoldData={unitSoldData}
+        fetchUnitSoldData={fetchUnitSoldData}
+      />
     </>
   );
 };

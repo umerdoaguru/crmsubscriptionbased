@@ -883,6 +883,72 @@ const updateOnlyRemarkAnswer = async (req, res) => {
   }
 };
 
+// const createEmployeeUnitSold = (req, res) => {
+//   try {
+//     const {
+//       esu_lead_id,
+//       esu_staff_id,
+//       esu_unit_id,
+//       esu_project_id,
+//       esu_sold_date,
+//       esu_notes,
+//     } = req.body;
+
+//     const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+//     const insertSql = `INSERT INTO employee_sold_units (
+//       esu_lead_id,
+//       esu_staff_id,
+//       esu_unit_id,
+//       esu_project_id,
+//       esu_sold_date,
+//       esu_notes,
+//       esu_created_at
+//     ) VALUES (?,?,?,?,?,?,?)`;
+
+//     db.query(
+//       insertSql,
+//       [
+//         esu_lead_id,
+//         esu_staff_id,
+//         esu_unit_id,
+//         esu_project_id,
+//         esu_sold_date,
+//         esu_notes,
+//         dateTime,
+//       ],
+//       (err, results) => {
+//         if (err) {
+//           return res.status(500).json({
+//             success: false,
+//             message: "Error inserting data",
+//             error: err.message,
+//           });
+//         }
+
+//         const updateSql = `UPDATE units SET unit_status = ? WHERE unit_id = ?`;
+//         db.query(updateSql, ["sold", esu_unit_id], (err2, result2) => {
+//           if (err2) {
+//             return res.status(500).json({
+//               success: false,
+//               message: "Error updating unit status",
+//               error: err2.message,
+//             });
+//           }
+
+//           res.status(201).json({
+//             success: true,
+//             message:
+//               "Unit Number data successfully submitted and unit status updated",
+//           });
+//         });
+//       }
+//     );
+//   } catch (error) {
+//     res.status(500).json({ success: false, error: error.message });
+//   }
+// };
+
 const createEmployeeUnitSold = (req, res) => {
   try {
     const {
@@ -892,60 +958,199 @@ const createEmployeeUnitSold = (req, res) => {
       esu_project_id,
       esu_sold_date,
       esu_notes,
+      lead_status,
+      leadType,
+      esu_sale_price,
+      esu_token_amount,
+      esu_token_amount_status,
+      esu_booking_date,
+      esu_final_date,
+      esu_registery_name,
+      esu_registery_date,
+      esu_payment_method,
+      owner_org_id,
+      owner_name,
+      owner_email,
+      owner_phone,
+      owner_address,
     } = req.body;
+
+    // 🔒 Required field validation
+    if (
+      !esu_lead_id ||
+      !esu_staff_id ||
+      !esu_unit_id ||
+      !lead_status ||
+      !leadType ||
+      !owner_org_id ||
+      !owner_name ||
+      !owner_email ||
+      !owner_phone
+    ) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing required fields" });
+    }
 
     const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
 
-    const insertSql = `INSERT INTO employee_sold_units (
-      esu_lead_id,
-      esu_staff_id,
-      esu_unit_id,
-      esu_project_id,
-      esu_sold_date,
-      esu_notes,
-      esu_created_at
-    ) VALUES (?,?,?,?,?,?,?)`;
+    // 🧩 Step 1: Check duplicate entry before insert
+    const checkDuplicateSql =
+      "SELECT esu_id FROM employee_sold_units WHERE esu_lead_id = ? LIMIT 1";
+    db.query(checkDuplicateSql, [esu_lead_id], (dupErr, dupResult) => {
+      if (dupErr) {
+        return res
+          .status(400)
+          .json({ success: false, message: dupErr.message });
+      }
 
-    db.query(
-      insertSql,
-      [
-        esu_lead_id,
-        esu_staff_id,
-        esu_unit_id,
-        esu_project_id,
-        esu_sold_date,
-        esu_notes,
-        dateTime,
-      ],
-      (err, results) => {
-        if (err) {
-          return res.status(500).json({
-            success: false,
-            message: "Error inserting data",
-            error: err.message,
-          });
-        }
-
-        const updateSql = `UPDATE units SET unit_status = ? WHERE unit_id = ?`;
-        db.query(updateSql, ["sold", esu_unit_id], (err2, result2) => {
-          if (err2) {
-            return res.status(500).json({
-              success: false,
-              message: "Error updating unit status",
-              error: err2.message,
-            });
-          }
-
-          res.status(201).json({
-            success: true,
-            message:
-              "Unit Number data successfully submitted and unit status updated",
-          });
+      if (dupResult.length > 0) {
+        return res.status(409).json({
+          success: false,
+          message: "This lead is already marked as sold.",
         });
       }
-    );
+
+      // 🧩 Step 2: Insert Owner
+      const insertOwnerSql = `
+        INSERT INTO owner 
+          (owner_org_id, owner_name, owner_email, owner_phone, owner_address, owner_created_at) 
+        VALUES (?, ?, ?, ?, ?, ?)
+      `;
+
+      const ownerParams = [
+        owner_org_id,
+        owner_name,
+        owner_email,
+        owner_phone,
+        owner_address,
+        dateTime,
+      ];
+
+      db.query(insertOwnerSql, ownerParams, (ownerErr, ownerResult) => {
+        if (ownerErr) {
+          return res
+            .status(400)
+            .json({ success: false, message: ownerErr.message });
+        }
+
+        const ownerId = ownerResult.insertId;
+
+        // 🧩 Step 3: Insert Employee Sold Unit
+        const insertSoldSql = `
+          INSERT INTO employee_sold_units (
+            esu_lead_id,
+            esu_staff_id,
+            esu_unit_id,
+            esu_project_id,
+            esu_owner_id,
+            esu_sold_date,
+            esu_notes,
+            esu_sale_price,
+            esu_token_amount,
+            esu_token_paid_status,
+            esu_booking_date,
+            esu_final_date,
+            registry_name,
+            registry_date,
+            esu_payment_method,
+            esu_created_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        const soldParams = [
+          esu_lead_id,
+          esu_staff_id,
+          esu_unit_id,
+          esu_project_id,
+          ownerId,
+          esu_sold_date,
+          esu_notes,
+          esu_sale_price || null,
+          esu_token_amount || null,
+          esu_token_amount_status || null,
+          esu_booking_date || null,
+          esu_final_date || null,
+          esu_registery_name || null,
+          esu_registery_date || null,
+          esu_payment_method || null,
+          dateTime,
+        ];
+
+        db.query(insertSoldSql, soldParams, (soldErr, soldResult) => {
+          if (soldErr) {
+            return res
+              .status(400)
+              .json({ success: false, message: soldErr.message });
+          }
+
+          // 🧩 Step 4: Update Unit status
+          const updateUnitSql = `
+            UPDATE units 
+            SET unit_status = ?, unit_updated_at = ? 
+            WHERE unit_id = ?
+          `;
+
+          db.query(
+            updateUnitSql,
+            ["sold", dateTime, esu_unit_id],
+            (unitErr) => {
+              if (unitErr) {
+                return res
+                  .status(400)
+                  .json({ success: false, message: unitErr.message });
+              }
+
+              // 🧩 Step 5: Update Lead Status (meta / normal)
+              let updateLeadSql = "";
+              let leadParams = [];
+
+              if (leadType === "meta") {
+                updateLeadSql = `
+                  UPDATE meta_leads 
+                  SET meta_lead_status = ?, meta_updated_at = ? 
+                  WHERE leadgen_id = ?
+                `;
+                leadParams = [lead_status, dateTime, esu_lead_id];
+              } else {
+                updateLeadSql = `
+                  UPDATE leads 
+                  SET lead_status = ?, lead_updated_at = ? 
+                  WHERE lead_id = ?
+                `;
+                leadParams = [lead_status, dateTime, esu_lead_id];
+              }
+
+              db.query(updateLeadSql, leadParams, (leadErr, leadResult) => {
+                if (leadErr) {
+                  return res
+                    .status(400)
+                    .json({ success: false, message: leadErr.message });
+                }
+
+                if (leadResult.affectedRows === 0) {
+                  return res
+                    .status(404)
+                    .json({ success: false, message: "Lead not found" });
+                }
+
+                // ✅ Final success response
+                res.status(201).json({
+                  success: true,
+                  message:
+                    "Owner added, sold details recorded, unit marked as sold and lead status updated successfully",
+                  owner_id: ownerId,
+                  sold_id: soldResult.insertId,
+                });
+              });
+            }
+          );
+        });
+      });
+    });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.error("createEmployeeUnitSold Error:", error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 

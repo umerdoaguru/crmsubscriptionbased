@@ -300,16 +300,15 @@ const createFinanceCompany = async (req, res) => {
 
     db.query(
       `SELECT * FROM finance_companies WHERE fc_name = ?`,
-      [fc_name], (err, result)=>{
-        if(err){
-          return res.status(400).json({success: false, message: err.message});
+      [fc_name],
+      (err, result) => {
+        if (err) {
+          return res.status(400).json({ success: false, message: err.message });
         }
-      })
-
-    db.query(
-      `SELECT * FROM finance_companies WHERE fc_name = ?`,
-      [fc_name]
+      }
     );
+
+    db.query(`SELECT * FROM finance_companies WHERE fc_name = ?`, [fc_name]);
 
     if (existingCompany.length > 0) {
       return res.status(400).json({
@@ -353,6 +352,67 @@ const createFinanceCompany = async (req, res) => {
   }
 };
 
+const createOwnerPayments = (req, res) => {
+  try {
+    const {
+      op_sale_id,
+      op_owner_id,
+      op_org_id,
+      op_amount,
+      op_paid_date,
+      op_reference_no,
+      op_payment_method,
+      op_remark,
+    } = req.body;
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+    if (
+      op_sale_id ||
+      op_owner_id ||
+      op_org_id ||
+      op_amount ||
+      op_paid_date ||
+      op_payment_method
+    ) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Required field missing!" });
+    }
+
+    const insertQuery = `insert into owner_payments (op_sale_id,
+      op_owner_id,
+      op_org_id,
+      op_amount,
+      op_paid_date,
+      op_reference_no,
+      op_payment_method,
+      op_remark, 	op_created_at) values (?,?,?,?,?,?,?,?,?)`;
+    const insertParams = [
+      op_sale_id,
+      op_owner_id,
+      op_org_id,
+      op_amount,
+      op_paid_date,
+      op_reference_no,
+      op_payment_method,
+      op_remark,
+      dateTime,
+    ];
+
+    db.query(insertQuery, insertParams, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+      return res.status(200).json({
+        success: true,
+        message: "owner payment details added successfully",
+      });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   metaLeadFetchByPageId,
   getMetaLeadsByOrgId,
@@ -362,4 +422,5 @@ module.exports = {
   getMetaLeadsByLeadId,
   updateOnlyMetaLeadStatusEmployeeEnd,
   createFinanceCompany,
+  createOwnerPayments,
 };
