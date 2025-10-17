@@ -2,27 +2,40 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import cogoToast from "cogo-toast";
 import { useSelector } from "react-redux";
-import moment from "moment";
 
 const OwnerPaymentSavePopup = ({
   isOpen,
   onClose,
   unitSoldData,
   fetchUnitSoldData,
+  fetchOwnerPayments,
 }) => {
+  console.log(unitSoldData);
+
   const user = useSelector((state) => state.auth.user);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    op_sale_id: "",
-    op_owner_id: "",
+    op_sale_id: unitSoldData[0]?.esu_id,
+    op_owner_id: unitSoldData[0]?.esu_owner_id,
     op_org_id: user?.staff_org_id || "",
     op_amount: "",
     op_paid_date: "",
     op_reference_no: "",
     op_payment_method: "",
     op_remark: "",
+    op_remaining_amount: "",
   });
 
   const modalRef = useRef();
+
+  useEffect(() => {
+    setFormData({
+      ...formData,
+      op_sale_id: unitSoldData[0]?.esu_id,
+      op_owner_id: unitSoldData[0]?.esu_owner_id,
+      op_remaining_amount: unitSoldData[0]?.remaining_amount,
+    });
+  }, [unitSoldData]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -42,12 +55,23 @@ const OwnerPaymentSavePopup = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === "op_amount") {
+      const payableAmount = Number(unitSoldData[0]?.remaining_amount || 0);
+      const enteredAmount = Number(value);
+
+      if (enteredAmount > payableAmount) {
+        cogoToast.warn("Amount cannot be greater than payable amount");
+        return;
+      }
+    }
+
     setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     const requiredFields = [
       "op_sale_id",
       "op_owner_id",
@@ -65,94 +89,91 @@ const OwnerPaymentSavePopup = ({
 
     try {
       const res = await axios.post(
-        "https://crm-generalize.dentalguru.software/api/owner-payments/create",
+        "https://crm-generalize.dentalguru.software/api/createOwnerPayments",
         formData
       );
 
       if (res.data.success) {
         cogoToast.success("Owner payment added successfully!");
         fetchUnitSoldData();
+        fetchOwnerPayments();
         onClose();
+        setLoading(false);
       } else {
         cogoToast.error(res.data.message || "Failed to add payment");
+        setLoading(false);
       }
+      setLoading(false);
     } catch (error) {
       console.error(error);
+      setLoading(false);
       cogoToast.error("Error while saving data");
     }
   };
 
   if (!isOpen) return null;
 
+  console.log(formData);
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div
         ref={modalRef}
-        className="bg-white rounded-2xl w-[90%] max-w-lg p-6 shadow-xl relative animate-fadeIn"
+        className="bg-white rounded-2xl w-[90%] max-w-2xl h-[90vh] overflow-y-auto p-6 shadow-xl relative animate-fadeIn"
       >
         <h2 className="text-xl font-semibold mb-4 text-gray-800 text-center">
           Add Owner Payment
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+        >
+          {/* Amount */}
           <div>
-            <label className="block text-gray-600 mb-1">Sale ID *</label>
-            <input
-              type="text"
-              name="op_sale_id"
-              value={formData.op_sale_id}
-              onChange={handleChange}
-              placeholder="Enter sale ID"
-              className="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-blue-300 outline-none"
-              required
-            />
-          </div>
+            <label className="block text-gray-700 mb-1 font-medium">
+              Amount (₹) <span className="text-red-500">*</span>
+            </label>
 
-          <div>
-            <label className="block text-gray-600 mb-1">Owner ID *</label>
-            <input
-              type="text"
-              name="op_owner_id"
-              value={formData.op_owner_id}
-              onChange={handleChange}
-              placeholder="Enter owner ID"
-              className="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-blue-300 outline-none"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-600 mb-1">Amount (₹) *</label>
             <input
               type="number"
               name="op_amount"
               value={formData.op_amount}
               onChange={handleChange}
               placeholder="Enter payment amount"
-              className="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-blue-300 outline-none"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
               required
             />
+            <small className="block text-green-600 mb-1">
+              Payable Amount: ₹{unitSoldData[0]?.remaining_amount || 0}
+            </small>
           </div>
 
+          {/* Paid Date */}
           <div>
-            <label className="block text-gray-600 mb-1">Paid Date *</label>
+            <label className="block text-gray-700 mb-1 font-medium">
+              Paid Date <span className="text-red-500">*</span>
+            </label>
             <input
               type="date"
               name="op_paid_date"
               value={formData.op_paid_date}
               onChange={handleChange}
-              className="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-blue-300 outline-none"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
               required
             />
           </div>
 
+          {/* Payment Method */}
           <div>
-            <label className="block text-gray-600 mb-1">Payment Method *</label>
+            <label className="block text-gray-700 mb-1 font-medium">
+              Payment Method <span className="text-red-500">*</span>
+            </label>
             <select
               name="op_payment_method"
               value={formData.op_payment_method}
               onChange={handleChange}
-              className="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-blue-300 outline-none"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
               required
             >
               <option value="">Select method</option>
@@ -163,43 +184,51 @@ const OwnerPaymentSavePopup = ({
             </select>
           </div>
 
+          {/* Reference No */}
           <div>
-            <label className="block text-gray-600 mb-1">Reference No</label>
+            <label className="block text-gray-700 mb-1 font-medium">
+              Reference No
+            </label>
             <input
               type="text"
               name="op_reference_no"
               value={formData.op_reference_no}
               onChange={handleChange}
               placeholder="Enter reference number (if any)"
-              className="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-blue-300 outline-none"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
             />
           </div>
 
-          <div>
-            <label className="block text-gray-600 mb-1">Remark</label>
+          {/* Remark */}
+          <div className="md:col-span-2">
+            <label className="block text-gray-700 mb-1 font-medium">
+              Remark
+            </label>
             <textarea
               name="op_remark"
               value={formData.op_remark}
               onChange={handleChange}
               placeholder="Enter remarks (optional)"
-              className="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-blue-300 outline-none"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
               rows={2}
             ></textarea>
           </div>
 
-          <div className="flex justify-end gap-3 mt-4">
+          {/* Buttons */}
+          <div className="md:col-span-2 flex justify-end gap-3 mt-4">
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 transition"
+              className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition"
             >
               Cancel
             </button>
             <button
               type="submit"
+              disabled={loading}
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
             >
-              Save
+              {loading ? "Save....." : "Save"}
             </button>
           </div>
         </form>

@@ -2,7 +2,6 @@ import { useState } from "react";
 import React from "react";
 import Sidebar from "../../utils/Sidebar";
 import Topbar from "../../utils/Topbar";
-import SuperSettingContent from "./SuperSettingContent";
 import FinanceCompanySettingContent from "./FinanceCompanySettingContent";
 
 const FinanceCompanySetting = () => {

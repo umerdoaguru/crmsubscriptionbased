@@ -3,7 +3,12 @@ import axios from "axios";
 import cogoToast from "cogo-toast";
 import { useSelector } from "react-redux";
 
-const FinanceCompanySavePopup = ({ isOpen, onClose, fetchCompanies }) => {
+const FinanceCompanyUpdatePopup = ({
+  isOpen,
+  onClose,
+  fetchCompanies,
+  selected,
+}) => {
   const user = useSelector((state) => state.auth.user);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -15,6 +20,17 @@ const FinanceCompanySavePopup = ({ isOpen, onClose, fetchCompanies }) => {
   });
 
   const modalRef = useRef();
+
+  useEffect(() => {
+    setFormData({
+      ...formData,
+      fc_org_id: user?.staff_org_id,
+      fc_name: selected?.fc_name,
+      fc_contact_person: selected?.fc_contact_person,
+      fc_contact_phone: selected?.fc_contact_phone,
+      interest_rate: selected?.interest_rate,
+    });
+  }, [selected]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -54,14 +70,14 @@ const FinanceCompanySavePopup = ({ isOpen, onClose, fetchCompanies }) => {
     }
 
     try {
-      const res = await axios.post(
-        "https://crm-generalize.dentalguru.software/api/finance-companies/create",
+      const res = await axios.put(
+        `https://crm-generalize.dentalguru.software/api/updateFinanceCompany/${selected?.finance_company_id}`,
         formData
       );
 
       if (res.data.success) {
         cogoToast.success("Finance company added successfully!");
-        fetchCompanies(); // Refresh company list
+        fetchCompanies();
         onClose();
         setLoading(false);
       } else {
@@ -162,4 +178,4 @@ const FinanceCompanySavePopup = ({ isOpen, onClose, fetchCompanies }) => {
   );
 };
 
-export default FinanceCompanySavePopup;
+export default FinanceCompanyUpdatePopup;

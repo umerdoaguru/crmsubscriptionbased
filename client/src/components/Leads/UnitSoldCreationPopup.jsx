@@ -22,6 +22,8 @@ const UnitSoldCreationPopup = ({
   const token = Emp?.token;
   const owner_org_id = Emp?.staff_org_id;
 
+  console.log(leads);
+
   const [loading, setLoading] = useState(false);
   const [unitsold, setUnitSold] = useState({
     esu_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
@@ -80,14 +82,12 @@ const UnitSoldCreationPopup = ({
   const saveUnitSold = async (e) => {
     e.preventDefault();
 
-    // ✅ Prevent multiple rapid submissions (even before loading updates)
     if (window.__UNIT_SOLD_SUBMITTING__) return;
     window.__UNIT_SOLD_SUBMITTING__ = true;
 
     setLoading(true);
 
     try {
-      // Validation
       if (
         !unitsold.owner_name ||
         !unitsold.owner_phone ||
@@ -119,7 +119,6 @@ const UnitSoldCreationPopup = ({
       cogoToast.error("Failed to save Unit Sold data");
     } finally {
       setLoading(false);
-      // ✅ Release the lock AFTER short delay to prevent re-click
       setTimeout(() => (window.__UNIT_SOLD_SUBMITTING__ = false), 800);
     }
   };
@@ -238,6 +237,9 @@ const UnitSoldCreationPopup = ({
                       onChange={handleInputChangeUnitSold}
                       className="w-full px-3 py-2 border rounded"
                     />
+                    <small className="text-green-700">
+                      Base Price - ₹{leads[0]?.base_price}
+                    </small>
                   </div>
 
                   <div>
@@ -289,6 +291,7 @@ const UnitSoldCreationPopup = ({
                       <option value="Credit/Debit Card">
                         Credit/Debit Card
                       </option>
+                      <option value="EMI">EMI</option>
                     </select>
                   </div>
                 </div>

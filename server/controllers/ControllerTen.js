@@ -300,42 +300,47 @@ const createFinanceCompany = async (req, res) => {
 
     db.query(
       `SELECT * FROM finance_companies WHERE fc_name = ?`,
-      [fc_name],
+      fc_name,
       (err, result) => {
         if (err) {
           return res.status(400).json({ success: false, message: err.message });
         }
-      }
-    );
 
-    db.query(`SELECT * FROM finance_companies WHERE fc_name = ?`, [fc_name]);
-
-    if (existingCompany.length > 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Finance company name already exists",
-      });
-    }
-
-    const [result] = await db.query(
-      `INSERT INTO finance_companies 
+        if (result && result.length > 0) {
+          return res.status(400).json({
+            success: false,
+            message: "Finance company name already exists",
+          });
+        } else {
+          db.query(
+            `INSERT INTO finance_companies 
        (fc_org_id, fc_name, fc_contact_person, fc_contact_phone, interest_rate, fc_created_at)
        VALUES (?, ?, ?, ?, ?, ?)`,
-      [
-        fc_org_id,
-        fc_name,
-        fc_contact_person,
-        fc_contact_phone,
-        interest_rate,
-        dateTime,
-      ]
+            [
+              fc_org_id,
+              fc_name,
+              fc_contact_person,
+              fc_contact_phone,
+              interest_rate,
+              dateTime,
+            ],
+            (insertErr, insertResult) => {
+              if (insertErr) {
+                return res.status(400).json({
+                  success: false,
+                  message: insertErr.message,
+                });
+              }
+              return res.status(201).json({
+                success: true,
+                message: "Finance Company Added Successfully",
+                finance_company_id: result.insertId,
+              });
+            }
+          );
+        }
+      }
     );
-
-    return res.json({
-      success: true,
-      message: "Finance company added successfully",
-      finance_company_id: result.insertId,
-    });
   } catch (error) {
     if (error.code === "ER_DUP_ENTRY") {
       return res.status(400).json({
@@ -363,30 +368,27 @@ const createOwnerPayments = (req, res) => {
       op_reference_no,
       op_payment_method,
       op_remark,
+      op_remaining_amount,
     } = req.body;
+
     const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
 
-    if (
-      op_sale_id ||
-      op_owner_id ||
-      op_org_id ||
-      op_amount ||
-      op_paid_date ||
-      op_payment_method
-    ) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Required field missing!" });
-    }
+    // Insert payment record
+    const insertQuery = `
+      INSERT INTO owner_payments (
+        op_sale_id,
+        op_owner_id,
+        op_org_id,
+        op_amount,
+        op_paid_date,
+        op_reference_no,
+        op_payment_method,
+        op_remark,
+        op_remaining_amount,
+        op_created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+    `;
 
-    const insertQuery = `insert into owner_payments (op_sale_id,
-      op_owner_id,
-      op_org_id,
-      op_amount,
-      op_paid_date,
-      op_reference_no,
-      op_payment_method,
-      op_remark, 	op_created_at) values (?,?,?,?,?,?,?,?,?)`;
     const insertParams = [
       op_sale_id,
       op_owner_id,
@@ -396,6 +398,7 @@ const createOwnerPayments = (req, res) => {
       op_reference_no,
       op_payment_method,
       op_remark,
+      op_remaining_amount,
       dateTime,
     ];
 
@@ -403,10 +406,315 @@ const createOwnerPayments = (req, res) => {
       if (err) {
         return res.status(400).json({ success: false, message: err.message });
       }
-      return res.status(200).json({
-        success: true,
-        message: "owner payment details added successfully",
+
+      // Update remaining_amount in employee_sold_units table
+      const updateQuery = `
+        UPDATE employee_sold_units 
+        SET remaining_amount = remaining_amount - ?,
+            esu_updated_at = ?
+        WHERE esu_id = ?
+      `;
+
+      const updateParams = [op_amount, dateTime, op_sale_id];
+
+      db.query(updateQuery, updateParams, (updateErr, updateResult) => {
+        if (updateErr) {
+          return res
+            .status(400)
+            .json({ success: false, message: updateErr.message });
+        }
+
+        return res.status(200).json({
+          success: true,
+          message:
+            "Owner payment details added and remaining amount updated successfully",
+        });
       });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const getOwnerPaymentsByMultiIds = (req, res) => {
+  try {
+    const { saleId, ownerId, orgId } = req.params;
+    const selectQuery = `select * from owner_payments join employee_sold_units on employee_sold_units.esu_id = owner_payments.op_sale_id join owner on owner.owner_id = owner_payments.op_owner_id join company_profile on company_profile.org_id = owner_payments.op_org_id where owner_payments.op_sale_id = ? and owner_payments.op_owner_id = ? and owner_payments.op_org_id = ?`;
+    db.query(selectQuery, [saleId, ownerId, orgId], (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+      return res.status(200).send(result);
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const createOwnerLoan = (req, res) => {
+  try {
+    const {
+      loan_org_id,
+      loan_owner_id,
+      loan_sale_id,
+      loan_finance_company_id,
+      loan_principal,
+      loan_down_payment,
+      loan_interest_rate,
+      loan_tenure_months,
+      loan_emi_amount,
+      loan_start_date,
+      loan_status,
+      loan_ref,
+    } = req.body;
+
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+    if (
+      !loan_org_id ||
+      !loan_sale_id ||
+      !loan_principal ||
+      !loan_interest_rate ||
+      !loan_tenure_months ||
+      !loan_start_date
+    ) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const insertLoanQuery = `
+      INSERT INTO owner_loans 
+      (loan_org_id, loan_owner_id, loan_sale_id, loan_finance_company_id, loan_principal, loan_down_payment, loan_interest_rate, loan_tenure_months, loan_emi_amount, loan_start_date, loan_status, loan_ref, loan_created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const insertParams = [
+      loan_org_id,
+      loan_owner_id,
+      loan_sale_id,
+      loan_finance_company_id,
+      loan_principal,
+      loan_down_payment,
+      loan_interest_rate,
+      loan_tenure_months,
+      loan_emi_amount,
+      loan_start_date,
+      loan_status || "active",
+      loan_ref,
+      dateTime,
+    ];
+
+    // Insert loan record first
+    db.query(insertLoanQuery, insertParams, (err, loanResult) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+
+      const loanId = loanResult.insertId;
+
+      // ---------- EMI Schedule Generation ----------
+      const principal = parseFloat(loan_principal);
+      const rate = parseFloat(loan_interest_rate) / 100 / 12;
+      const months = parseInt(loan_tenure_months);
+      const emiAmount = parseFloat(loan_emi_amount);
+
+      let remainingPrincipal = principal;
+      let installments = [];
+
+      for (let i = 1; i <= months; i++) {
+        const interestComponent = remainingPrincipal * rate;
+        const principalComponent = emiAmount - interestComponent;
+        remainingPrincipal -= principalComponent;
+
+        const dueDate = moment(loan_start_date)
+          .add(i * 30, "days")
+          .format("YYYY-MM-DD");
+
+        installments.push([
+          loan_org_id,
+          loanId,
+          i,
+          dueDate,
+          principalComponent.toFixed(2),
+          interestComponent.toFixed(2),
+          emiAmount.toFixed(2),
+          0,
+          null,
+          "pending",
+          dateTime,
+          null,
+        ]);
+      }
+
+      const insertInstallmentsQuery = `
+        INSERT INTO loan_installments 
+        (inst_org_id, inst_loan_id, installment_number, inst_due_date, principal_component, interest_component, inst_amount, inst_paid_amount, inst_paid_on, inst_paid_status, inst_created_at, inst_updated_at)
+        VALUES ?
+      `;
+
+      db.query(insertInstallmentsQuery, [installments], (err2) => {
+        if (err2) {
+          return res.status(400).json({
+            success: false,
+            message:
+              "Loan created but installment schedule failed: " + err2.message,
+          });
+        }
+
+        return res.status(200).json({
+          success: true,
+          message: "Owner loan created successfully with EMI schedule",
+        });
+      });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const getFinanceCompanyByOrg = (req, res) => {
+  try {
+    const orgId = req.params.orgId;
+    const selectQuery = `select * from finance_companies where fc_org_id = ?`;
+    db.query(selectQuery, orgId, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+      return res.status(200).send(result);
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const deleteFinanceCompany = (req, res) => {
+  try {
+    const fcId = req.params.fcId;
+    const checkQuery = `select * from finance_companies where finance_company_id = ?`;
+    db.query(checkQuery, fcId, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+
+      if (result && result.length > 0) {
+        const deleteQuery = `delete from finance_companies where finance_company_id = ?`;
+        db.query(deleteQuery, fcId, (deleteErr, deleteResult) => {
+          if (deleteErr) {
+            return res
+              .status(400)
+              .json({ success: false, message: deleteErr.message });
+          }
+          return res.status(200).json({
+            success: true,
+            message: "finance company data deleted successfully",
+          });
+        });
+      } else {
+        return res
+          .status(400)
+          .json({ success: false, message: "invalid finance company ID" });
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const updateFinanceCompany = (req, res) => {
+  try {
+    const { fcId } = req.params;
+    const { fc_name, fc_contact_person, fc_contact_phone, interest_rate } =
+      req.body;
+
+    if (!fcId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Finance Company ID is required" });
+    }
+
+    const checkQuery = `select * from finance_companies where finance_company_id = ?`;
+    db.query(checkQuery, fcId, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+
+      if (result && result.length === 0) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Finance company ID not found" });
+      }
+
+      const fields = [];
+      const values = [];
+
+      if (fc_name) {
+        fields.push("fc_name = ?");
+        values.push(fc_name);
+      }
+      if (fc_contact_person) {
+        fields.push("fc_contact_person = ?");
+        values.push(fc_contact_person);
+      }
+      if (fc_contact_phone) {
+        fields.push("fc_contact_phone = ?");
+        values.push(fc_contact_phone);
+      }
+      if (interest_rate !== undefined) {
+        fields.push("interest_rate = ?");
+        values.push(interest_rate);
+      }
+
+      if (fields.length === 0) {
+        return res
+          .status(400)
+          .json({ success: false, message: "No fields provided to updated" });
+      }
+
+      const dateTime = moment()
+        .tz("Asia/Kolkata")
+        .format("YYYY-MM-DD HH:mm:ss");
+
+      fields.push("fc_updated_at = ?");
+      values.push(dateTime);
+
+      values.push(fcId);
+
+      const updateQuery = `update finance_companies set ${fields.join(
+        ", "
+      )} where finance_company_id = ?`;
+
+      db.query(updateQuery, values, (updateErr, updateResult) => {
+        if (updateErr) {
+          if (updateErr.code === "ER_DUP_ENTRY") {
+            return res.status(400).json({
+              success: false,
+              message: "finance company name already exists",
+            });
+          }
+          return req
+            .status(400)
+            .json({ success: false, message: updateErr.message });
+        }
+
+        return res.status(200).json({
+          success: true,
+          message: "Finance company details updated successfully",
+        });
+      });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const getLoanEmiDetailsByLoanID = (req, res) => {
+  try {
+    const loanId = req.params.loanId;
+    const selectQuery = `select * from owner_loans join loan_installments on loan_installments.inst_loan_id = owner_loans.own_loan_id join finance_companies on finance_companies.finance_company_id = owner_loans.loan_finance_company_id where owner_loans.own_loan_id = ?`;
+    db.query(selectQuery, loanId, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+      return res.status(200).send(result);
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -423,4 +731,10 @@ module.exports = {
   updateOnlyMetaLeadStatusEmployeeEnd,
   createFinanceCompany,
   createOwnerPayments,
+  getOwnerPaymentsByMultiIds,
+  createOwnerLoan,
+  getFinanceCompanyByOrg,
+  deleteFinanceCompany,
+  updateFinanceCompany,
+  getLoanEmiDetailsByLoanID,
 };

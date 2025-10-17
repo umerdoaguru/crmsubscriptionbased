@@ -628,6 +628,9 @@ function EmployeeSingleLeadProfileContent() {
                         Unit Number
                       </th>
                       <th className="px-6 py-3 border-b-2 border-gray-300">
+                        Unit Base Price
+                      </th>
+                      <th className="px-6 py-3 border-b-2 border-gray-300">
                         Unit Status
                       </th>
 
@@ -695,6 +698,9 @@ function EmployeeSingleLeadProfileContent() {
 
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                           {lead.unit_number}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-green-800 font-bold">
+                          ₹{lead.base_price}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                           {lead.unit_status}

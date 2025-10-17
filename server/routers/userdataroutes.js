@@ -232,6 +232,12 @@ const {
   updateOnlyMetaLeadStatusEmployeeEnd,
   createFinanceCompany,
   createOwnerPayments,
+  getOwnerPaymentsByMultiIds,
+  createOwnerLoan,
+  getFinanceCompanyByOrg,
+  deleteFinanceCompany,
+  updateFinanceCompany,
+  getLoanEmiDetailsByLoanID,
 } = require("../controllers/ControllerTen");
 
 // ========== Router Begins =====================
@@ -695,5 +701,14 @@ router.get(
 );
 router.post("/finance-companies/create", createFinanceCompany);
 router.post("/createOwnerPayments", createOwnerPayments);
+router.get(
+  "/getOwnerPaymentsByMultiIds/:saleId/:ownerId/:orgId",
+  getOwnerPaymentsByMultiIds
+);
+router.post("/createOwnerLoan", createOwnerLoan);
+router.get("/getFinanceCompanyByOrg/:orgId", getFinanceCompanyByOrg);
+router.delete("/deleteFinanceCompany/:fcId", deleteFinanceCompany);
+router.put("/updateFinanceCompany/:fcId", updateFinanceCompany);
+router.get("/getLoanEmiDetailsByLoanID/:loanId", getLoanEmiDetailsByLoanID);
 
 module.exports = router;
