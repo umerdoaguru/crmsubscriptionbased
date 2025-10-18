@@ -721,6 +721,209 @@ const getLoanEmiDetailsByLoanID = (req, res) => {
   }
 };
 
+const updateInstallments = (req, res) => {
+  try {
+    const { instId } = req.params;
+    const { inst_paid_amount, inst_paid_on, inst_paid_status } = req.body;
+
+    if (!instId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Installment ID is requirement" });
+    }
+
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+    const updateQuery = `update loan_installments set inst_paid_amount = ?, inst_paid_on = ?, inst_paid_status = ?, inst_updated_at = ? where installment_id  = ?`;
+
+    const insertParams = [
+      inst_paid_amount,
+      inst_paid_on,
+      inst_paid_status,
+      dateTime,
+      instId,
+    ];
+
+    db.query(updateQuery, insertParams, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+
+      if (result.affectedRows === 0) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Installment not found" });
+      }
+
+      return res
+        .status(200)
+        .json({ success: true, message: "Installment updated successfully" });
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const updateEmployeeUnitSoldUpdate = (req, res) => {
+  try {
+    const esu_id = req.params.esu_id;
+    const {
+      esu_lead_id,
+      esu_staff_id,
+      esu_unit_id,
+      esu_project_id,
+      esu_owner_id,
+      esu_sold_date,
+      esu_notes,
+      esu_sale_price,
+      esu_token_amount,
+      esu_token_paid_status,
+      esu_booking_date,
+      esu_final_date,
+      registry_name,
+      registry_date,
+      esu_payment_method,
+      remaining_amount,
+    } = req.body;
+
+    if (!esu_id) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required parameter: esu_id",
+      });
+    }
+
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+    const fieldsToUpdate = [];
+    const values = [];
+
+    if (esu_lead_id !== undefined) {
+      fieldsToUpdate.push("esu_lead_id = ?");
+      values.push(esu_lead_id);
+    }
+    if (esu_staff_id !== undefined) {
+      fieldsToUpdate.push("esu_staff_id = ?");
+      values.push(esu_staff_id);
+    }
+    if (esu_unit_id !== undefined) {
+      fieldsToUpdate.push("esu_unit_id = ?");
+      values.push(esu_unit_id);
+    }
+    if (esu_project_id !== undefined) {
+      fieldsToUpdate.push("esu_project_id = ?");
+      values.push(esu_project_id);
+    }
+    if (esu_owner_id !== undefined) {
+      fieldsToUpdate.push("esu_owner_id = ?");
+      values.push(esu_owner_id);
+    }
+    if (esu_sold_date !== undefined) {
+      fieldsToUpdate.push("esu_sold_date = ?");
+      values.push(esu_sold_date);
+    }
+    if (esu_notes !== undefined) {
+      fieldsToUpdate.push("esu_notes = ?");
+      values.push(esu_notes);
+    }
+    if (esu_sale_price !== undefined) {
+      fieldsToUpdate.push("esu_sale_price = ?");
+      values.push(esu_sale_price);
+    }
+    if (esu_token_amount !== undefined) {
+      fieldsToUpdate.push("esu_token_amount = ?");
+      values.push(esu_token_amount);
+    }
+    if (esu_token_paid_status !== undefined) {
+      fieldsToUpdate.push("esu_token_paid_status = ?");
+      values.push(esu_token_paid_status);
+    }
+    if (esu_booking_date !== undefined) {
+      fieldsToUpdate.push("esu_booking_date = ?");
+      values.push(esu_booking_date);
+    }
+    if (esu_final_date !== undefined) {
+      fieldsToUpdate.push("esu_final_date = ?");
+      values.push(esu_final_date);
+    }
+    if (registry_name !== undefined) {
+      fieldsToUpdate.push("registry_name = ?");
+      values.push(registry_name);
+    }
+    if (registry_date !== undefined) {
+      fieldsToUpdate.push("registry_date = ?");
+      values.push(registry_date);
+    }
+    if (esu_payment_method !== undefined) {
+      fieldsToUpdate.push("esu_payment_method = ?");
+      values.push(esu_payment_method);
+    }
+    if (remaining_amount !== undefined) {
+      fieldsToUpdate.push("remaining_amount = ?");
+      values.push(remaining_amount);
+    }
+
+    fieldsToUpdate.push("esu_updated_at = ?");
+    values.push(dateTime);
+
+    if (fieldsToUpdate.length === 1) {
+      return res.status(400).json({
+        success: false,
+        message: "No fields provided for update",
+      });
+    }
+
+    const updateSql = `
+      UPDATE employee_sold_units 
+      SET ${fieldsToUpdate.join(", ")} 
+      WHERE esu_id = ?
+    `;
+    values.push(esu_id);
+
+    db.query(updateSql, values, (err, result) => {
+      if (err) {
+        return res.status(400).json({
+          success: false,
+          message: err.message,
+        });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No record found with the given esu_id",
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "Employee sold unit updated successfully",
+      });
+    });
+  } catch (error) {
+    console.error("updateEmployeeUnitSold Error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const getSubscriptionDetailsByOrg = (req, res) => {
+  try {
+    const orgId = req.params.orgId;
+    const selectQuery = `select * from company_profile join company_profile.cp_subscription_id = subscriptions.subscription_id where company_profile.org_id = ?`;
+    db.query(selectQuery, orgId, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+      return res.status(200).send(result);
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   metaLeadFetchByPageId,
   getMetaLeadsByOrgId,
@@ -737,4 +940,7 @@ module.exports = {
   deleteFinanceCompany,
   updateFinanceCompany,
   getLoanEmiDetailsByLoanID,
+  updateInstallments,
+  updateEmployeeUnitSoldUpdate,
+  getSubscriptionDetailsByOrg,
 };

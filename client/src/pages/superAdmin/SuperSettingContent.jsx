@@ -11,7 +11,6 @@ const SuperSettingContent = () => {
   const [selected, setSelected] = useState();
 
   const updateModalfunc = (data) => {
-    // alert("Update Modal Clicked");
     setUpdateModal(true);
     setSelected(data);
   };
@@ -21,7 +20,7 @@ const SuperSettingContent = () => {
   const getOrgDataById = async () => {
     try {
       const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/getOrgDetailsById/${user?.staff_org_id}`
+        `https://crm-generalize.dentalguru.software/api/getSubscriptionDetailsByOrg/${user?.staff_org_id}`
       );
       setOrgData(data[0]);
     } catch (error) {
@@ -256,6 +255,67 @@ const SuperSettingContent = () => {
                 <button className="bg-sky-500 hover:bg-sky-600 text-white p-2 rounded">
                   Edit Details
                 </button>
+              </div>
+            </div>
+            {/* SUBSCRIPTION DETAILS */}
+            <div className="max-w-5xl px-4 p-4 mx-auto bg-white rounded-2xl shadow-lg overflow-hidden mt-4">
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                Subscription Details
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Plan Name</p>
+                  <div className="bg-gray-50 border rounded-lg px-3 py-2">
+                    {orgData?.plan_name || "—"}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Billing Cycle</p>
+                  <div className="bg-gray-50 border rounded-lg px-3 py-2">
+                    {orgData?.cycle_name || "—"}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Price</p>
+                  <div className="bg-gray-50 border rounded-lg px-3 py-2">
+                    {orgData?.price || "—"}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Start Date</p>
+                  <div className="bg-gray-50 border rounded-lg px-3 py-2">
+                    {orgData?.start_date || "—"}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">End Date</p>
+                  <div className="bg-gray-50 border rounded-lg px-3 py-2">
+                    {orgData?.end_date || "—"}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Status</p>
+                  <div
+                    className={`bg-gray-50 border rounded-lg px-3 py-2 capitalize font-medium ${
+                      orgData?.sub_status === "active"
+                        ? "text-green-600"
+                        : orgData?.sub_status === "expired"
+                        ? "text-red-600"
+                        : orgData?.sub_status === "cancelled"
+                        ? "text-gray-500"
+                        : orgData?.sub_status === "trial"
+                        ? "text-blue-600"
+                        : "text-yellow-600"
+                    }`}
+                  >
+                    {orgData?.sub_status || "—"}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -7,11 +7,12 @@ const { db } = require("./db");
 dotenv.config();
 const bodyParser = require("body-parser");
 const Router = require("./routers/userdataroutes");
+const { initializeCronJobs } = require("./cronJobs");
 
 const app = express();
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, "build")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(cors());
 app.use(bodyParser.json({ limit: "10mb" }));
@@ -28,14 +29,15 @@ app.use("/Assets", express.static(path.join(__dirname, "Assets")));
 
 app.get("*", (req, res, next) => {
   // If the request is for an API route, skip serving the React HTML file
-  if (req.url.startsWith('/api')) {
+  if (req.url.startsWith("/api")) {
     return next();
   }
-  
+
   // Otherwise, serve the React HTML file
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
+initializeCronJobs();
 
 const PORT = process.env.PORT;
 

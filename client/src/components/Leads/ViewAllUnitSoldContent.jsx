@@ -6,6 +6,8 @@ import cogoToast from "cogo-toast";
 import moment from "moment";
 import OwnerPaymentSavePopup from "../../pages/Employees/EmpPopupWindow/OwnerPaymentSavePopup";
 import OwnerLoanAddPopup from "../../pages/Employees/EmpPopupWindow/OwnerLoanAddPopup";
+import EMIPayPopup from "../../pages/Employees/EmpPopupWindow/EMIPayPopup";
+import UnitSoldUpdatePopup from "../../pages/Employees/EmpPopupWindow/UnitSoldUpdatePopup";
 
 const ViewAllUnitSoldContent = () => {
   const [unitSoldData, setUnitSoldData] = useState([]);
@@ -17,9 +19,72 @@ const ViewAllUnitSoldContent = () => {
   const [ownPayment, setOwnPayment] = useState([]);
   const [ownPaymentModal, setOwnPaymentModal] = useState(false);
   const [ownerLoanModal, setOwnerLoanModal] = useState(false);
+  const [emiPayModal, setEmiPayModal] = useState(false);
+  const [leads, setLeads] = useState([]);
+  const [selectedEMI, setSelectedEMI] = useState(null);
   const [loanInstallment, setLoanInstallment] = useState([]);
+  const [updateModal, setUpdateModal] = useState(false);
+  const [selectedUnit, setSelectedUnit] = useState(null);
 
-  console.log(unitSoldData);
+  const openUnitModal = (data) => {
+    setUpdateModal(true);
+    setSelectedUnit(data);
+  };
+
+  const openEMIModal = (data) => {
+    setEmiPayModal(true);
+    setSelectedEMI(data);
+  };
+
+  useEffect(() => {
+    if (type === "meta") {
+      fetchMetaLeads();
+    } else {
+      fetchLeads();
+    }
+  }, [type, id]);
+
+  const fetchLeads = async () => {
+    try {
+      const response = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/leads-employee/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+      setLeads(response.data);
+    } catch (error) {
+      console.error("Error fetching quotations:", error);
+    }
+  };
+
+  const fetchMetaLeads = async () => {
+    try {
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getMetaLeadsByLeadId/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(data);
+      setLeads(data);
+    } catch (error) {
+      console.error("Error fetching quotations:", error);
+    }
+  };
+
+  console.log(leads);
+
+  console.log(unitSoldData[0]?.esu_id);
+
+  console.log(ownPayment?.length === 0, loanInstallment.length === 0);
 
   useEffect(() => {
     fetchUnitSoldData();
@@ -37,6 +102,10 @@ const ViewAllUnitSoldContent = () => {
   };
 
   const fetchOwnerPayments = async () => {
+    console.log(
+      `${unitSoldData[0]?.esu_id} - ${unitSoldData[0]?.esu_owner_id}`
+    );
+
     try {
       const { data } = await axios.get(
         `https://crm-generalize.dentalguru.software/api/getOwnerPaymentsByMultiIds/${unitSoldData[0]?.esu_id}/${unitSoldData[0]?.esu_owner_id}/${EmpId?.staff_org_id}`
@@ -48,11 +117,14 @@ const ViewAllUnitSoldContent = () => {
   };
 
   useEffect(() => {
-    fetchOwnerPayments();
-    fetchLoanInstallments();
+    if (unitSoldData && unitSoldData.length > 0) {
+      fetchOwnerPayments();
+      fetchLoanInstallments();
+    }
   }, [unitSoldData]);
 
   console.log(ownPayment);
+  console.log(loanInstallment);
 
   const fetchUnitSoldData = async () => {
     try {
@@ -136,33 +208,29 @@ const ViewAllUnitSoldContent = () => {
               >
                 {/* Action Buttons */}
                 <div className="flex flex-wrap gap-3 justify-end mb-6">
-                  {unitSoldData[0]?.esu_payment_method === "EMI" && (
-                    <>
-                      <button
-                        onClick={() => setOwnerLoanModal(true)}
-                        className="bg-indigo-500 text-white px-4 py-1 rounded-md hover:bg-indigo-600"
-                      >
-                        + Add Loan
-                      </button>
-                      {/* <button
-                        onClick={() => handleSimpleAction("Manage EMI")}
-                        className="bg-yellow-500 text-white px-4 py-1 rounded-md hover:bg-yellow-600"
-                      >
-                        + Manage EMI
-                      </button> */}
-                    </>
-                  )}
+                  {unitSoldData[0]?.esu_payment_method === "EMI" &&
+                    loanInstallment.length === 0 && (
+                      <>
+                        <button
+                          onClick={() => setOwnerLoanModal(true)}
+                          className="bg-indigo-500 text-white px-4 py-1 rounded-md hover:bg-indigo-600"
+                        >
+                          + Add Loan
+                        </button>
+                      </>
+                    )}
 
-                  {unitSoldData?.remaining_amount > 0 && (
-                    <>
-                      <button
-                        onClick={() => setOwnPaymentModal(true)}
-                        className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600"
-                      >
-                        + Add Payment
-                      </button>
-                    </>
-                  )}
+                  {unitSoldData[0]?.remaining_amount > 0 &&
+                    unitSoldData[0]?.esu_payment_method !== "EMI" && (
+                      <>
+                        <button
+                          onClick={() => setOwnPaymentModal(true)}
+                          className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600"
+                        >
+                          + Add Payment
+                        </button>
+                      </>
+                    )}
                 </div>
 
                 {/* Project & Unit Details */}
@@ -316,14 +384,14 @@ const ViewAllUnitSoldContent = () => {
 
                 {/* Buttons */}
                 <div className="mt-6 flex justify-end gap-3">
-                  <button
-                    onClick={() => handleSimpleAction("Update Details")}
-                    className="bg-cyan-600 text-white px-5 py-2 rounded-lg hover:bg-cyan-700"
-                  >
-                    Update Details
-                  </button>
-                  {ownPayment?.length === 0 && (
+                  {ownPayment?.length === 0 && loanInstallment.length === 0 && (
                     <>
+                      <button
+                        onClick={() => openUnitModal(data)}
+                        className="bg-cyan-600 text-white px-5 py-2 rounded-lg hover:bg-cyan-700"
+                      >
+                        Update Details
+                      </button>
                       <button
                         onClick={() => handleDelete(data.esu_id)}
                         className="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600"
@@ -433,13 +501,16 @@ const ViewAllUnitSoldContent = () => {
                           Sr. No.
                         </th>
                         <th className="px-4 py-3 text-left font-semibold">
-                          Owner Name
+                          Company Name
                         </th>
                         <th className="px-4 py-3 text-left font-semibold">
-                          Sale Price
+                          Contact Person
                         </th>
                         <th className="px-4 py-3 text-left font-semibold">
-                          Remaining Amount
+                          EMI Amount
+                        </th>
+                        <th className="px-4 py-3 text-left font-semibold">
+                          Due Date
                         </th>
                         <th className="px-4 py-3 text-left font-semibold">
                           Paid Amount
@@ -448,44 +519,68 @@ const ViewAllUnitSoldContent = () => {
                           Paid Date
                         </th>
                         <th className="px-4 py-3 text-left font-semibold">
-                          Payment Method
+                          Status
                         </th>
                         <th className="px-4 py-3 text-left font-semibold">
-                          Remark
+                          Action
                         </th>
                       </tr>
                     </thead>
 
                     <tbody className="divide-y divide-gray-200 bg-white">
-                      {loanInstallment?.map((item, index) => (
-                        <tr
-                          key={index}
-                          className="hover:bg-blue-50 transition-colors duration-200"
-                        >
-                          <td className="px-4 py-2">{index + 1}</td>
-                          <td className="px-4 py-2 font-medium text-gray-900">
-                            {item?.owner_name || "-"}
-                          </td>
-                          <td className="px-4 py-2">
-                            ₹{item?.esu_sale_price || "-"}
-                          </td>
-                          <td className="px-4 py-2">
-                            ₹{item?.op_remaining_amount || "-"}
-                          </td>
-                          <td className="px-4 py-2 text-green-600 font-semibold">
-                            ₹{item?.op_amount || 0}
-                          </td>
-                          <td className="px-4 py-2">
-                            {item?.op_paid_date || "Not Available"}
-                          </td>
-                          <td className="px-4 py-2 capitalize">
-                            {item?.op_payment_method || "-"}
-                          </td>
-                          <td className="px-4 py-2 text-gray-600">
-                            {item?.op_remark || "-"}
-                          </td>
-                        </tr>
-                      ))}
+                      {loanInstallment?.map((item, index) => {
+                        // Check if any previous EMI is unpaid
+                        const anyPreviousUnpaid = loanInstallment
+                          .slice(0, index)
+                          .some((emi) => emi.inst_paid_status !== "paid");
+
+                        // Button should be disabled if previous unpaid OR current EMI is already paid
+                        const isDisabled =
+                          anyPreviousUnpaid || item.inst_paid_status === "paid";
+
+                        return (
+                          <tr
+                            key={index}
+                            className="hover:bg-blue-50 transition-colors duration-200"
+                          >
+                            <td className="px-4 py-2">{index + 1}</td>
+                            <td className="px-4 py-2 font-medium text-gray-900">
+                              {item?.fc_name || "-"}
+                            </td>
+                            <td className="px-4 py-2">
+                              {item?.fc_contact_person || "-"}
+                            </td>
+                            <td className="px-4 py-2">
+                              ₹{item?.inst_amount || "-"}
+                            </td>
+                            <td className="px-4 py-2 text-green-600 font-semibold">
+                              {item?.inst_due_date || "-"}
+                            </td>
+                            <td className="px-4 py-2">
+                              {item?.inst_paid_amount || "Not Available"}
+                            </td>
+                            <td className="px-4 py-2 capitalize">
+                              {item?.inst_paid_on || "-"}
+                            </td>
+                            <td className="px-4 py-2 text-gray-600">
+                              {item?.inst_paid_status || "-"}
+                            </td>
+                            <td className="px-4 py-2 text-gray-600">
+                              <button
+                                disabled={isDisabled}
+                                onClick={() => openEMIModal(item)}
+                                className={`p-2 px-4 rounded text-white transition ${
+                                  isDisabled
+                                    ? "bg-gray-400 cursor-not-allowed"
+                                    : "bg-sky-600 hover:bg-sky-700"
+                                }`}
+                              >
+                                ₹ Pay EMI
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 ) : (
@@ -511,6 +606,19 @@ const ViewAllUnitSoldContent = () => {
         onClose={() => setOwnerLoanModal(false)}
         unitSoldData={unitSoldData}
         fetchUnitSoldData={fetchUnitSoldData}
+      />
+      <EMIPayPopup
+        isOpen={emiPayModal}
+        onClose={() => setEmiPayModal(false)}
+        selectedEMI={selectedEMI}
+        fetchLoanInstallments={fetchLoanInstallments}
+      />
+      <UnitSoldUpdatePopup
+        isOpen={updateModal}
+        onClose={() => setUpdateModal(false)}
+        selectedUnit={selectedUnit}
+        fetchUnitSoldData={fetchUnitSoldData}
+        leads={leads}
       />
     </>
   );

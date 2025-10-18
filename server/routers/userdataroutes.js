@@ -238,6 +238,9 @@ const {
   deleteFinanceCompany,
   updateFinanceCompany,
   getLoanEmiDetailsByLoanID,
+  updateInstallments,
+  updateEmployeeUnitSoldUpdate,
+  getSubscriptionDetailsByOrg,
 } = require("../controllers/ControllerTen");
 
 // ========== Router Begins =====================
@@ -710,5 +713,13 @@ router.get("/getFinanceCompanyByOrg/:orgId", getFinanceCompanyByOrg);
 router.delete("/deleteFinanceCompany/:fcId", deleteFinanceCompany);
 router.put("/updateFinanceCompany/:fcId", updateFinanceCompany);
 router.get("/getLoanEmiDetailsByLoanID/:loanId", getLoanEmiDetailsByLoanID);
+router.put("/updateInstallments/:instId", updateInstallments);
+router.put(
+  "/updateEmployeeUnitSoldUpdate/:esu_id",
+  updateEmployeeUnitSoldUpdate
+);
+router.get("/getSubscriptionDetailsByOrg/:orgId", getSubscriptionDetailsByOrg);
+
+
 
 module.exports = router;

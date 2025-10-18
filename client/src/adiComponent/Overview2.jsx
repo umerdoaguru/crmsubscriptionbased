@@ -189,7 +189,7 @@ const Overview2 = () => {
 
         {/* Card for Closed Data */}
         <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-3">
-          <Link to="/super-admin-close-data">
+          <Link to="/social-media-superleads">
             <div
               className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                 selectedComponent === "ClosedData"

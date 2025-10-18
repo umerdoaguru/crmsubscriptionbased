@@ -106,9 +106,7 @@ const EmployeeLeadsGraph = () => {
   return (
     <div className="mx-2">
       <div className="w-full max-w-5xl p-4 border rounded-lg shadow-md bg-white">
-        <h2 className="text-xl font-bold mb-2">
-          Daily Leads & MetaLeads Overview
-        </h2>
+        <h2 className="text-xl font-bold mb-2">Daily Leads Overview</h2>
 
         {loading ? (
           <p className="text-gray-500">Loading data...</p>
@@ -119,7 +117,7 @@ const EmployeeLeadsGraph = () => {
             <p className="text-sm text-gray-500 mb-4">
               Data for the past 28 days
             </p>
-            <ResponsiveContainer width="100%" height={320}>
+            <ResponsiveContainer width="100%" height={300}>
               <BarChart
                 data={chartData}
                 margin={{ top: 5, right: 15, left: -40, bottom: 25 }}
