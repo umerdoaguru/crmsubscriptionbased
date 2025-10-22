@@ -8,6 +8,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
 import { logoutUser } from "../store/UserSlice";
 import cogoToast from "cogo-toast";
+import { SiGoogleads } from "react-icons/si";
+import { FaMeta } from "react-icons/fa6";
 
 const AdminOverviewDash = () => {
   const [leads, setLeads] = useState([]);
@@ -15,6 +17,7 @@ const AdminOverviewDash = () => {
   const [selectedComponent, setSelectedComponent] = useState("LeadData");
   const [project, setProjects] = useState([]);
   const [employeesold, setemployeesold] = useState([]);
+  const [metaLeads, setMetaLeads] = useState([]);
   const EmpId = useSelector((state) => state.auth.user);
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
@@ -42,6 +45,23 @@ const AdminOverviewDash = () => {
         dispatch(logoutUser());
         cogoToast.error("Token is expired Please Login Again !!");
       }
+    }
+  };
+
+  const fetchAllMetaLeads = async () => {
+    try {
+      // setLoading(true);
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getMetaLeadsByOrgId/${adminuser.staff_org_id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setMetaLeads(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      // setLoading(false);
     }
   };
 
@@ -122,6 +142,7 @@ const AdminOverviewDash = () => {
     fetchEmployee();
     fetchVisit();
     employeesoldunit();
+    fetchAllMetaLeads();
   }, []);
 
   const employeeCount = employee.length;
@@ -166,7 +187,7 @@ const AdminOverviewDash = () => {
             >
               <div className="p-4 flex flex-col items-center text-center">
                 <div className=" text-3xl text-cyan-600">
-                  <GiFiles />
+                  <SiGoogleads />
                 </div>
                 <div className="mt-2">
                   <h5 className="text-gray-800 text-xl font-semibold ">
@@ -203,11 +224,11 @@ const AdminOverviewDash = () => {
 
         {/* Card for Closed Data */}
         <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-3">
-          <Link to="/admin-total-closed">
+          <Link to="/main-social-media-leads">
             <div
               className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                 selectedComponent === "ClosedData"
-                  ? "bg-cyan-500 text-white"
+                  ? "bg-blue-500 text-white"
                   : ""
               }`}
               onClick={() => setSelectedComponent("ClosedData")}
@@ -220,7 +241,7 @@ const AdminOverviewDash = () => {
                       : "text-cyan-600"
                   }`}
                 >
-                  <FaCheckCircle />
+                  <FaMeta />
                 </div>
                 <div className="mt-2">
                   <h5
@@ -230,16 +251,16 @@ const AdminOverviewDash = () => {
                         : "text-gray-800"
                     }`}
                   >
-                    Total Closed Deal
+                    Total Meta Leads
                   </h5>
                   <p
                     className={`${
                       selectedComponent === "ClosedData"
                         ? "text-white"
-                        : "text-gray-600"
+                        : "text-gray-600 font-bold"
                     }`}
                   >
-                    {closedCount}
+                    {metaLeads?.length}
                   </p>
                 </div>
               </div>

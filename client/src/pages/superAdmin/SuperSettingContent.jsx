@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import UpdateOrgModal from "./popupWindows/UpdateOrgModal";
+import { MdManageAccounts } from "react-icons/md";
 
 const SuperSettingContent = () => {
   const user = useSelector((state) => state.auth.user);
@@ -316,6 +317,12 @@ const SuperSettingContent = () => {
                     {orgData?.sub_status || "—"}
                   </div>
                 </div>
+              </div>
+              <div className="py-4">
+                <button className="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white px-3 py-2 rounded">
+                  <MdManageAccounts className="text-lg" />
+                  <span>Renew Subscription</span>
+                </button>
               </div>
             </div>
           </div>

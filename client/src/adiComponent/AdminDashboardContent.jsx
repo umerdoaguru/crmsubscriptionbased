@@ -5,6 +5,8 @@ import LeadsGraph from "./LeadsGraph";
 import AdminOverviewDash from "./AdminOverviewDash";
 import DealClosedGraph from "./DealClosedGraph";
 import LeadVisitChart from "./AdminComp/LeadVisitChart";
+import SuperLeadGraph from "./Super-Admin/SuperLeadGraph";
+import SuperLeadsToday from "./Super-Admin/SuperLeadsToday";
 
 const AdminDashboardContent = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -26,11 +28,13 @@ const AdminDashboardContent = () => {
                 <AdminOverviewDash />
               </div>
               <div className="grid grid-cols-1 gap-2 mt-6 mx-7 md:grid-cols-2 lg:grid-cols-3">
-                <LeadsGraph />
+                {/* <LeadsGraph /> */}
+                <SuperLeadGraph />
                 <LeadVisitChart />
                 <DealClosedGraph />
               </div>
-              <LeadsReport />
+              {/* <LeadsReport /> */}
+               <SuperLeadsToday />
             </div>
           </div>
         </div>

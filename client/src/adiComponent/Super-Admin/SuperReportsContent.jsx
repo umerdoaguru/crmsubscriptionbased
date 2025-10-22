@@ -6,9 +6,9 @@ import SuperVisitReport from "./SuperAdminReport/SuperVisitReport";
 import SuperClosedDealReport from "./SuperAdminReport/SuperClosedDealReport";
 import SoldAdminSoldUnitReport from "./SuperAdminReport/SuperAdminSoldUnitReport";
 import { SiGoogleads } from "react-icons/si";
-import { FaHouseChimney } from "react-icons/fa6";
-import { FaHandshake } from "react-icons/fa";
+import { FaHouseChimney, FaMeta } from "react-icons/fa6";
 import { RiCommunityFill } from "react-icons/ri";
+import SuperMetaLeadReport from "./SuperAdminReport/SuperMetaLeadReport";
 
 const SuperReportsContent = () => {
   const [selectedComponent, setSelectedComponent] = useState("LeadData");
@@ -46,6 +46,29 @@ const SuperReportsContent = () => {
                     <SiGoogleads />
                   </div>
                   <p className="text-lg font-semibold">Leads</p>
+                </div>
+              </div>
+
+              {/* Meta Leads */}
+              <div
+                className={`transition-all duration-300 transform hover:scale-105 shadow-md rounded-2xl cursor-pointer w-40 sm:w-48 ${
+                  selectedComponent === "metaLeadData"
+                    ? "bg-cyan-600 text-white shadow-lg shadow-cyan-300/50"
+                    : "bg-white text-gray-800 hover:bg-gray-100"
+                }`}
+                onClick={() => setSelectedComponent("metaLeadData")}
+              >
+                <div className="p-6 flex flex-col items-center text-center">
+                  <div
+                    className={`text-4xl mb-2 ${
+                      selectedComponent === "metaLeadData"
+                        ? "text-white"
+                        : "text-cyan-600"
+                    }`}
+                  >
+                    <FaMeta />
+                  </div>
+                  <p className="text-lg font-semibold">Meta Leads</p>
                 </div>
               </div>
 
@@ -122,6 +145,7 @@ const SuperReportsContent = () => {
             {/* Render Selected Component */}
             <div className="w-full h-[calc(100vh-12rem)] overflow-y-auto mt-6 bg-white shadow-inner rounded-xl p-4">
               {selectedComponent === "LeadData" && <SuperLeadReport />}
+              {selectedComponent === "metaLeadData" && <SuperMetaLeadReport />}
               {selectedComponent === "VisitData" && <SuperVisitReport />}
               {selectedComponent === "ClosedData" && <SuperClosedDealReport />}
               {selectedComponent === "SoldUnits" && <SoldAdminSoldUnitReport />}

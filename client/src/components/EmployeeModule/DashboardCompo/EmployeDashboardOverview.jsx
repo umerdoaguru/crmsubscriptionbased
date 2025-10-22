@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaClipboardList, FaCheckCircle } from "react-icons/fa";
 import { logoutUser } from "../../../store/UserSlice";
 import cogoToast from "cogo-toast";
+import { FaMeta } from "react-icons/fa6";
 
 const EmployeeOverview = () => {
   const [leads, setLeads] = useState([]);
@@ -149,7 +150,7 @@ const EmployeeOverview = () => {
             <div className="shadow-lg rounded-lg overflow-hidden cursor-pointer text-gray-600 border-1">
               <div className="p-4 flex flex-col items-center text-center">
                 <div className=" text-3xl text-cyan-600">
-                  <GiFiles />
+                  <FaMeta />
                 </div>
                 <div className="mt-2">
                   <h5 className="text-gray-800 text-xl font-semibold ">

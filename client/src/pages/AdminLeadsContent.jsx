@@ -601,18 +601,44 @@ function AdminLeadsContent({ isSidebarOpen }) {
                             {lead.createdTime}
                           </td>
                           <td className="px-6 py-4 border-b border-gray-200 text-gray-800 font-semibold text-nowrap">
-                            <button
-                              className="text-cyan-500 hover:text-cyan-700"
-                              onClick={() => handleEditClick(lead)}
-                            >
-                              <BsPencilSquare size={20} />
-                            </button>
-                            <button
-                              className="text-red-500 hover:text-red-700 mx-2"
-                              onClick={() => handleDeleteClick(lead.lead_id)}
-                            >
-                              <BsTrash size={20} />
-                            </button>
+                            {lead.unit_status === "sold" ||
+                            lead.lead_status === "Sold" ? (
+                              <>
+                                <button
+                                  className="text-gray-500"
+                                  disabled
+                                  // onClick={() => handleEditClick(lead)}
+                                >
+                                  <BsPencilSquare size={20} />
+                                </button>
+                                <button
+                                  className="text-gray-500 mx-2"
+                                  disabled
+                                  // onClick={() =>
+                                  //   handleDeleteClick(lead.lead_id)
+                                  // }
+                                >
+                                  <BsTrash size={20} />
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <button
+                                  className="text-cyan-500 hover:text-cyan-700"
+                                  onClick={() => handleEditClick(lead)}
+                                >
+                                  <BsPencilSquare size={20} />
+                                </button>
+                                <button
+                                  className="text-red-500 hover:text-red-700 mx-2"
+                                  onClick={() =>
+                                    handleDeleteClick(lead.lead_id)
+                                  }
+                                >
+                                  <BsTrash size={20} />
+                                </button>
+                              </>
+                            )}
                           </td>
                         </tr>
                       );

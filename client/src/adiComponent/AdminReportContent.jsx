@@ -6,6 +6,7 @@ import SoldUnitsReport from "../components/AdminReport/SoldUnitsReport";
 import { RiCommunityFill } from "react-icons/ri";
 import { FaHouseChimney } from "react-icons/fa6";
 import { SiGoogleads } from "react-icons/si";
+import MetaLeadReport from "../components/AdminReport/MetaLeadReport";
 
 const AdminReportContent = () => {
   const [selectedComponent, setSelectedComponent] = useState("LeadData");
@@ -119,6 +120,7 @@ const AdminReportContent = () => {
             {/* Render Selected Component */}
             <div className="w-full h-[calc(100vh-12rem)] overflow-y-auto mt-6 bg-white shadow-inner rounded-xl p-4">
               {selectedComponent === "LeadData" && <LeadReport />}
+              {selectedComponent === "metaLeadData" && <MetaLeadReport />}
               {selectedComponent === "VisitData" && <VisitReport />}
               {selectedComponent === "ClosedData" && <ClosedDealReport />}
               {selectedComponent === "SoldUnits" && <SoldUnitsReport />}

@@ -7,9 +7,12 @@ import SuperLeadData from "./SuperDataExport/SuperLeadData";
 import SuperVisitData from "./SuperDataExport/SuperVisitData";
 import SuperCloseData from "./SuperDataExport/SuperCloseDateData";
 import SuperSoldnit from "./SuperDataExport/SuperSolddUnit";
+import SuperMetaLeadData from "./SuperDataExport/SuperMetaLeadData";
+import { FaMeta } from "react-icons/fa6";
 
 const SuperDataExportContent = () => {
   const [leads, setLeads] = useState([]);
+  const [metaLeads, setMetaLeads] = useState([]);
   const [visit, setVisit] = useState([]);
   const [employeesold, setemployeesold] = useState([]);
   const [employee, setEmployee] = useState([]);
@@ -20,6 +23,7 @@ const SuperDataExportContent = () => {
 
   useEffect(() => {
     fetchLeads();
+    fetchMetaLeads();
     fetchEmployee();
     fetchVisit();
     employeesoldunit();
@@ -37,6 +41,23 @@ const SuperDataExportContent = () => {
         }
       );
       setLeads(data);
+    } catch (error) {
+      console.error("Error fetching leads:", error);
+    }
+  };
+
+  const fetchMetaLeads = async () => {
+    try {
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getMetaLeadsByOrgId/${superadminuser?.staff_org_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setMetaLeads(data);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
@@ -153,6 +174,49 @@ const SuperDataExportContent = () => {
                 </div>
               </div>
 
+              <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3 ">
+                <div
+                  className={` shadow-lg rounded-lg overflow-hidden cursor-pointer ${
+                    selectedComponent === "metaLeadData"
+                      ? "bg-cyan-600 text-white"
+                      : ""
+                  }`} // Change background color if active
+                  onClick={() => setSelectedComponent("metaLeadData")} // Set selected component
+                >
+                  <div className="p-4 flex flex-col items-center text-center">
+                    <div
+                      className={`text-3xl ${
+                        selectedComponent === "metaLeadData"
+                          ? "text-white"
+                          : "text-gray-700"
+                      }`}
+                    >
+                      <FaMeta />
+                    </div>
+                    <div className="mt-2">
+                      <h5
+                        className={`text-xl font-semibold ${
+                          selectedComponent === "metaLeadData"
+                            ? "text-white"
+                            : "text-gray-800"
+                        }`}
+                      >
+                        Meta Leads Data
+                      </h5>
+                      <p
+                        className={`${
+                          selectedComponent === "metaLeadData"
+                            ? "text-white"
+                            : "text-gray-600"
+                        }`}
+                      >
+                        {metaLeads?.length}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Card for Visit Data */}
               <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3">
                 <div
@@ -198,7 +262,7 @@ const SuperDataExportContent = () => {
               </div>
 
               {/* Card for Closed Data */}
-              <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3">
+              {/* <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3">
                 <div
                   className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "ClosedData"
@@ -239,7 +303,7 @@ const SuperDataExportContent = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3">
                 <div
@@ -288,6 +352,7 @@ const SuperDataExportContent = () => {
             {/* Conditionally render the selected component */}
             <div className="">
               {selectedComponent === "LeadData" && <SuperLeadData />}
+              {selectedComponent === "metaLeadData" && <SuperMetaLeadData />}
               {selectedComponent === "VisitData" && <SuperVisitData />}
               {selectedComponent === "ClosedData" && <SuperCloseData />}
               {selectedComponent === "SoldData" && <SuperSoldnit />}

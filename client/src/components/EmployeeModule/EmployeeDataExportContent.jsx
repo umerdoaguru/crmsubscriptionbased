@@ -10,11 +10,14 @@ import EmployeeInvoiceData from "./EmployeeDataExport/EmployeeInvoiceData";
 import EmployeeVisitData from "./EmployeeDataExport/EmployeeVisitData";
 import EmployeeCloseData from "./EmployeeDataExport/EmployeeCloseData";
 import EmployeeSoldData from "./EmployeeDataExport/EmployeeSoldData";
+import EmployeeMetaLeadData from "./EmployeeDataExport/EmployeeMetaLeadData";
+import { FaMeta } from "react-icons/fa6";
 
 function EmployeeDataExportContent() {
   const [leads, setLeads] = useState([]);
   const [selectedComponent, setSelectedComponent] = useState("LeadData");
   const [visit, setVisit] = useState([]);
+  const [metaLeads, setMetaLeads] = useState([]);
   const EmpId = useSelector((state) => state.auth.user);
   const token = EmpId?.token;
 
@@ -31,6 +34,24 @@ function EmployeeDataExportContent() {
       );
       console.log("setLeads", response.data);
       setLeads(response.data);
+    } catch (error) {
+      console.error("Error fetching leads:", error);
+    }
+  };
+
+  const fetchMetaLeads = async () => {
+    try {
+      const response = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getMetaLeadsByStaffId/${EmpId.staff_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("setLeads", response.data);
+      setMetaLeads(response.data);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
@@ -65,6 +86,7 @@ function EmployeeDataExportContent() {
   useEffect(() => {
     fetchLeads();
     fetchVisit();
+    fetchMetaLeads();
   }, []);
 
   return (
@@ -121,6 +143,49 @@ function EmployeeDataExportContent() {
                 </div>
               </div>
 
+              <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3 ">
+                <div
+                  className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
+                    selectedComponent === "metaLeadData"
+                      ? "bg-cyan-600 text-white"
+                      : ""
+                  }`}
+                  onClick={() => setSelectedComponent("metaLeadData")}
+                >
+                  <div className="p-4 flex flex-col items-center text-center">
+                    <div
+                      className={`text-3xl ${
+                        selectedComponent === "metaLeadData"
+                          ? "text-white"
+                          : "text-gray-700"
+                      }`}
+                    >
+                      <FaMeta />
+                    </div>
+                    <div className="mt-2">
+                      <h5
+                        className={`text-xl font-semibold ${
+                          selectedComponent === "metaLeadData"
+                            ? "text-white"
+                            : "text-gray-800"
+                        }`}
+                      >
+                        Meta Leads Data
+                      </h5>
+                      <p
+                        className={`${
+                          selectedComponent === "metaLeadData"
+                            ? "text-white"
+                            : "text-gray-600"
+                        }`}
+                      >
+                        {metaLeads?.length}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Card for Visit Data */}
               <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3">
                 <div
@@ -166,7 +231,7 @@ function EmployeeDataExportContent() {
               </div>
 
               {/* Card for Closed Data */}
-              <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3">
+              {/* <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3">
                 <div
                   className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
                     selectedComponent === "ClosedData"
@@ -207,7 +272,7 @@ function EmployeeDataExportContent() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Card for Sold Data */}
               <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3">
@@ -257,6 +322,7 @@ function EmployeeDataExportContent() {
             {/* Conditionally render the selected component */}
             <div className="w-full mb-20">
               {selectedComponent === "LeadData" && <EmployeeLeadData />}
+              {selectedComponent === "metaLeadData" && <EmployeeMetaLeadData />}
               {selectedComponent === "QuotationData" && (
                 <EmployeeQuotationData />
               )}
