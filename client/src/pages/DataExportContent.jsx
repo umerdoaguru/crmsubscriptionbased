@@ -7,9 +7,13 @@ import { FaCheckCircle, FaClipboardList } from "react-icons/fa";
 import VisitData from "../components/DataExport/VisitData";
 import CloseData from "../components/DataExport/CloseDateData";
 import EmployeeSoldDataDetails from "../components/DataExport/EmployeeSoldDataDetails";
+import MetaLeadData from "../components/DataExport/MetaLeadData";
+import { FaMeta } from "react-icons/fa6";
+import { SiGoogleads } from "react-icons/si";
 
 const DataExportContent = () => {
   const [leads, setLeads] = useState([]);
+  const [metaLeads, setMetaLeads] = useState([]);
   const [visit, setVisit] = useState([]);
   const [employeesold, setemployeesold] = useState([]);
   const [selectedComponent, setSelectedComponent] = useState("LeadData");
@@ -23,7 +27,25 @@ const DataExportContent = () => {
     fetchEmployee();
     fetchVisit();
     employeesoldunit();
+    fetchMetaLeads();
   }, []);
+
+  const fetchMetaLeads = async () => {
+    try {
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getMetaLeadsByOrgId/${superadminuser?.staff_org_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setMetaLeads(data);
+    } catch (error) {
+      console.error("Error fetching leads:", error);
+    }
+  };
 
   const fetchLeads = async () => {
     try {
@@ -128,7 +150,7 @@ const DataExportContent = () => {
                           : "text-gray-700"
                       }`}
                     >
-                      <GiFiles />
+                      <SiGoogleads />
                     </div>
                     <div className="mt-2">
                       <h5
@@ -148,6 +170,50 @@ const DataExportContent = () => {
                         }`}
                       >
                         {leads?.length}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card for Closed Data */}
+              <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3">
+                <div
+                  className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
+                    selectedComponent === "metaLeadData"
+                      ? "bg-cyan-500 text-white"
+                      : ""
+                  }`}
+                  onClick={() => setSelectedComponent("metaLeadData")}
+                >
+                  <div className="p-4 flex flex-col items-center text-center">
+                    <div
+                      className={`text-3xl ${
+                        selectedComponent === "metaLeadData"
+                          ? "text-white"
+                          : "text-gray-700"
+                      }`}
+                    >
+                      <FaMeta />
+                    </div>
+                    <div className="mt-2">
+                      <h5
+                        className={`text-xl font-semibold ${
+                          selectedComponent === "metaLeadData"
+                            ? "text-white"
+                            : "text-gray-800"
+                        }`}
+                      >
+                        Meta Lead Data
+                      </h5>
+                      <p
+                        className={`${
+                          selectedComponent === "metaLeadData"
+                            ? "text-white"
+                            : "text-gray-600"
+                        }`}
+                      >
+                        {metaLeads?.length}
                       </p>
                     </div>
                   </div>
@@ -192,50 +258,6 @@ const DataExportContent = () => {
                         }`}
                       >
                         {visit?.length}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card for Closed Data */}
-              <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/5 my-3 p-0 sm-mx-0 mx-3">
-                <div
-                  className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
-                    selectedComponent === "ClosedData"
-                      ? "bg-cyan-500 text-white"
-                      : ""
-                  }`}
-                  onClick={() => setSelectedComponent("ClosedData")}
-                >
-                  <div className="p-4 flex flex-col items-center text-center">
-                    <div
-                      className={`text-3xl ${
-                        selectedComponent === "ClosedData"
-                          ? "text-white"
-                          : "text-gray-700"
-                      }`}
-                    >
-                      <FaCheckCircle />
-                    </div>
-                    <div className="mt-2">
-                      <h5
-                        className={`text-xl font-semibold ${
-                          selectedComponent === "ClosedData"
-                            ? "text-white"
-                            : "text-gray-800"
-                        }`}
-                      >
-                        Closed Deal Data
-                      </h5>
-                      <p
-                        className={`${
-                          selectedComponent === "ClosedData"
-                            ? "text-white"
-                            : "text-gray-600"
-                        }`}
-                      >
-                        {closedCount}
                       </p>
                     </div>
                   </div>
@@ -291,7 +313,7 @@ const DataExportContent = () => {
             <div className="w-full h-[calc(100vh-10rem)] overflow-y-auto">
               {selectedComponent === "LeadData" && <LeadData />}
               {selectedComponent === "VisitData" && <VisitData />}
-              {selectedComponent === "ClosedData" && <CloseData />}
+              {selectedComponent === "metaLeadData" && <MetaLeadData />}
               {selectedComponent === "SoldData" && <EmployeeSoldDataDetails />}
             </div>
           </div>

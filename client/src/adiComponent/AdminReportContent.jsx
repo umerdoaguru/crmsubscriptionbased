@@ -4,7 +4,7 @@ import VisitReport from "../components/AdminReport/VisitReport";
 import ClosedDealReport from "../components/AdminReport/ClosedDealReport";
 import SoldUnitsReport from "../components/AdminReport/SoldUnitsReport";
 import { RiCommunityFill } from "react-icons/ri";
-import { FaHouseChimney } from "react-icons/fa6";
+import { FaHouseChimney, FaMeta } from "react-icons/fa6";
 import { SiGoogleads } from "react-icons/si";
 import MetaLeadReport from "../components/AdminReport/MetaLeadReport";
 
@@ -44,6 +44,29 @@ const AdminReportContent = () => {
                     <SiGoogleads />
                   </div>
                   <p className="text-lg font-semibold">Leads</p>
+                </div>
+              </div>
+
+              {/* Meta Leads */}
+              <div
+                className={`transition-all duration-300 transform hover:scale-105 shadow-md rounded-2xl cursor-pointer w-40 sm:w-48 ${
+                  selectedComponent === "metaLeadData"
+                    ? "bg-cyan-600 text-white shadow-lg shadow-cyan-300/50"
+                    : "bg-white text-gray-800 hover:bg-gray-100"
+                }`}
+                onClick={() => setSelectedComponent("metaLeadData")}
+              >
+                <div className="p-6 flex flex-col items-center text-center">
+                  <div
+                    className={`text-4xl mb-2 ${
+                      selectedComponent === "metaLeadData"
+                        ? "text-white"
+                        : "text-cyan-600"
+                    }`}
+                  >
+                    <FaMeta />
+                  </div>
+                  <p className="text-lg font-semibold">Meta Leads</p>
                 </div>
               </div>
 

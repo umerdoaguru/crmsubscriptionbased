@@ -924,6 +924,62 @@ const getSubscriptionDetailsByOrg = (req, res) => {
   }
 };
 
+const updateCompanySubscription = (req, res) => {
+  try {
+    const { org_id, cp_subscription_id } = req.params;
+
+    if (!org_id || !cp_subscription_id) {
+      return res.status(400).json({
+        success: false,
+        message: "org_id and cp_subscription_id are required",
+      });
+    }
+
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+    const updateQuery = `
+      UPDATE company_profile 
+      SET cp_subscription_id = ?, company_updated_at = ? 
+      WHERE org_id = ?
+    `;
+
+    db.query(
+      updateQuery,
+      [cp_subscription_id, dateTime, org_id],
+      (err, result) => {
+        if (err) {
+          return res.status(400).json({ success: false, message: err.message });
+        }
+
+        if (result.affectedRows === 0) {
+          return res.status(404).json({
+            success: false,
+            message: "Company not found or no changes made",
+          });
+        }
+
+        // Fetch updated record
+        const selectQuery = `SELECT * FROM company_profile WHERE org_id = ?`;
+        db.query(selectQuery, [org_id], (fetchErr, fetchResult) => {
+          if (fetchErr) {
+            return res
+              .status(400)
+              .json({ success: false, message: fetchErr.message });
+          }
+
+          res.status(200).json({
+            success: true,
+            message: "Subscription updated successfully",
+            data: fetchResult[0],
+          });
+        });
+      }
+    );
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
 module.exports = {
   metaLeadFetchByPageId,
   getMetaLeadsByOrgId,
@@ -943,4 +999,5 @@ module.exports = {
   updateInstallments,
   updateEmployeeUnitSoldUpdate,
   getSubscriptionDetailsByOrg,
+  updateCompanySubscription,
 };

@@ -241,6 +241,7 @@ const {
   updateInstallments,
   updateEmployeeUnitSoldUpdate,
   getSubscriptionDetailsByOrg,
+  updateCompanySubscription,
 } = require("../controllers/ControllerTen");
 
 // ========== Router Begins =====================
@@ -719,7 +720,9 @@ router.put(
   updateEmployeeUnitSoldUpdate
 );
 router.get("/getSubscriptionDetailsByOrg/:orgId", getSubscriptionDetailsByOrg);
-
-
+router.put(
+  "/updateCompanySubscription/:org_id/:cp_subscription_id",
+  updateCompanySubscription
+);
 
 module.exports = router;

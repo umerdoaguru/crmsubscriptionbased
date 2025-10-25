@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import UpdateOrgModal from "./popupWindows/UpdateOrgModal";
 import { MdManageAccounts } from "react-icons/md";
+import SubsPaymentModal from "./popupWindows/SubsPaymentModal";
 
 const SuperSettingContent = () => {
   const user = useSelector((state) => state.auth.user);
@@ -10,6 +11,7 @@ const SuperSettingContent = () => {
   const [updateModal, setUpdateModal] = useState(false);
   const [orgData, setOrgData] = useState(null);
   const [selected, setSelected] = useState();
+  const [paymentModal, setPaymentModal] = useState(false);
 
   const updateModalfunc = (data) => {
     setUpdateModal(true);
@@ -319,7 +321,10 @@ const SuperSettingContent = () => {
                 </div>
               </div>
               <div className="py-4">
-                <button className="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white px-3 py-2 rounded">
+                <button
+                  className="flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-white px-3 py-2 rounded"
+                  onClick={() => setPaymentModal(true)}
+                >
                   <MdManageAccounts className="text-lg" />
                   <span>Renew Subscription</span>
                 </button>
@@ -333,6 +338,12 @@ const SuperSettingContent = () => {
         onClose={() => setUpdateModal(false)}
         selected={selected}
         getOrgDataById={getOrgDataById}
+      />
+
+      <SubsPaymentModal
+        isOpen={paymentModal}
+        onClose={() => setPaymentModal(false)}
+        orgData={orgData}
       />
     </>
   );
