@@ -2,8 +2,6 @@ import React from "react";
 
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
-
-import Registration from "../components/Registration";
 import QuotationForm1 from "../pages/Quotation/QuotationForm1";
 import CreateCompanyProfile from "../pages/Quotation/CreateCompanyProfile";
 

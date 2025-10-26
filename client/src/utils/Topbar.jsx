@@ -167,13 +167,13 @@ const Topbar = ({ isSidebarOpen }) => {
             <input
               type="text"
               placeholder="Search..."
-              className="hidden sm:flex-1 bg-transparent focus:outline-none text-sm"
+              className="flex-1 bg-transparent focus:outline-none text-sm hidden sm:block"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
             <FaSearch className="ml-2 text-cyan-600" />
           </div>
-          {filteredPages.length > 0 && (
+          {query && filteredPages.length > 0 && (
             <ul className="absolute mt-1 w-full bg-white border rounded-lg shadow z-50 overflow-hidden max-h-60 overflow-y-auto">
               {filteredPages.map((page, index) => (
                 <li
@@ -185,6 +185,12 @@ const Topbar = ({ isSidebarOpen }) => {
                 </li>
               ))}
             </ul>
+          )}
+
+          {query && filteredPages.length === 0 && (
+            <div className="absolute mt-1 w-full bg-white border rounded-lg shadow z-50 p-2 text-gray-500 text-sm">
+              No results found
+            </div>
           )}
         </div>
 
