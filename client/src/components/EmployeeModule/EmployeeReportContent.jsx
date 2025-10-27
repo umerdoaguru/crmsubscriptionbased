@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import EmpLeadReport from "./EmployeeReport/EmpLeadReport";
 import EmpVisitReport from "./EmployeeReport/EmpVisitReport";
 import EmpClosedDealReport from "./EmployeeReport/EmpClosedDealReport";
@@ -117,38 +117,6 @@ const EmployeeReportContent = () => {
                 </div>
               </div>
 
-              {/* Closed Deal */}
-              {/* <div
-                className={`transition-all duration-300 transform hover:scale-105 shadow-md rounded-2xl cursor-pointer w-40 sm:w-48 ${
-                  selectedComponent === "ClosedData"
-                    ? "bg-cyan-600 text-white shadow-lg shadow-cyan-300/50"
-                    : "bg-white text-gray-800 hover:bg-gray-100"
-                }`}
-                onClick={() => setSelectedComponent("ClosedData")}
-              >
-                <div className="p-6 flex flex-col items-center text-center">
-                  <div
-                    className={`text-4xl mb-2 ${
-                      selectedComponent === "ClosedData"
-                        ? "text-white"
-                        : "text-cyan-600"
-                    }`}
-                  >
-                    🤝
-                  </div>
-                  <h5
-                    className={`text-lg font-semibold ${
-                      selectedComponent === "ClosedData"
-                        ? "text-white"
-                        : "text-gray-800"
-                    }`}
-                  >
-                    Closed Deal
-                  </h5>
-                </div>
-              </div> */}
-
-              {/* Sold Units */}
               <div
                 className={`transition-all duration-300 transform hover:scale-105 shadow-md rounded-2xl cursor-pointer w-40 sm:w-48 ${
                   selectedComponent === "SoldUnits"

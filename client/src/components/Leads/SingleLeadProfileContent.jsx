@@ -29,24 +29,16 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
           },
         }
       );
-      console.log(response.data);
       setLeads(response.data);
-
-      // Debugging: Log the exact value of the quotation field
       response.data.forEach((lead) => {
         console.log("Lead Quotation Status (raw):", lead.quotation);
       });
 
-      // Ensure proper comparison with 'Created', trim any spaces and normalize the case
       const hasCreatedQuotation = response.data.some(
         (lead) =>
           lead.quotation && lead.quotation.trim().toLowerCase() === "created"
       );
 
-      console.log(
-        "Has created quotation (normalized check)?",
-        hasCreatedQuotation
-      ); // Debugging
       setQuotationCreated(hasCreatedQuotation);
     } catch (error) {
       console.error("Error fetching quotations:", error);
@@ -121,9 +113,8 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
           },
         }
       );
-      console.log(response.data);
-      setVisit(response.data);
 
+      setVisit(response.data);
       const hasCreatedvisit = response.data.some(
         (lead) =>
           (lead.visit && lead.visit.trim().toLowerCase() === "fresh") ||
@@ -136,9 +127,7 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
   };
 
   const handleViewQuotation = (lead) => {
-    console.log("Lead Object:", lead);
     const name = lead.name;
-    console.log("Lead Name:", name);
     navigate(`/admin_view_quotations/${lead.lead_id}`);
   };
   const handleViewVisit = () => {
@@ -189,15 +178,6 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
               {leads.map((lead, index) => (
                 <div className="w-full lg:w-2/3 ">
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                    {/* <div>
-                      <label className="text-cyan-600 font-semibold">
-                        Lead Number
-                      </label>
-                      <div className="p-2 bg-gray-100 rounded">
-                        <p className="m-0">{lead.lead_no}</p>
-                      </div>
-                    </div> */}
-
                     <div>
                       <label className="text-cyan-600 font-semibold">
                         Name

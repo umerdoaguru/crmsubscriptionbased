@@ -8,11 +8,9 @@ import { useNavigate } from "react-router-dom";
 const AdminTotalClosedDealContent = () => {
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
-  const [startDate, setStartDate] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const [leadsPerPage, setLeadsPerPage] = useState(7); // Default leads per page
+  const [leadsPerPage, setLeadsPerPage] = useState(7);
   const navigate = useNavigate();
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
@@ -34,7 +32,7 @@ const AdminTotalClosedDealContent = () => {
         }
       );
       const nonPendingLeads = response.data.filter(
-        (lead) => lead.deal_status == "close"
+        (lead) => lead.deal_status === "close"
       );
       setLeads(nonPendingLeads);
       setFilteredLeads(nonPendingLeads);

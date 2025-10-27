@@ -31,7 +31,6 @@ const SuperAddEditEmployeePopup = ({
 
   console.log(editingIndex);
 
-  // Reset lead data when editing
   useEffect(() => {
     if (editingIndex !== null) {
       setNewEmployee({
@@ -56,7 +55,6 @@ const SuperAddEditEmployeePopup = ({
     }
   }, [editingIndex]);
 
-  // Close when clicking outside or pressing ESC
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (modalRef.current && !modalRef.current.contains(e.target)) {
@@ -97,14 +95,26 @@ const SuperAddEditEmployeePopup = ({
       if (editingIndex !== null) {
         response = await axios.put(
           `https://crm-generalize.dentalguru.software/api/updateEmployeeDetails/${editingIndex?.staff_id}`,
-          newEmployee
+          newEmployee,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setLoading(false);
         cogoToast.success("Employee data updated successfully");
       } else {
         response = await axios.post(
           "https://crm-generalize.dentalguru.software/api/addNewCompanyStaff",
-          newEmployee
+          newEmployee,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setLoading(false);
         cogoToast.success("Employee data saved successfully");

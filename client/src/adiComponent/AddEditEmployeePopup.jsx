@@ -65,7 +65,13 @@ const AddEditEmployeePopup = ({
       if (editingIndex !== null) {
         await axios.put(
           `https://crm-generalize.dentalguru.software/api/updateEmployee/${editingIndex?.employeeId}`,
-          newEmployee
+          newEmployee,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         cogoToast.success("Data updated successfully");
         setLoading(false);
@@ -73,7 +79,13 @@ const AddEditEmployeePopup = ({
         // Add new employee
         await axios.post(
           "https://crm-generalize.dentalguru.software/api/addEmployee",
-          newEmployee
+          newEmployee,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         cogoToast.success("Data added successfully");
         setLoading(false);

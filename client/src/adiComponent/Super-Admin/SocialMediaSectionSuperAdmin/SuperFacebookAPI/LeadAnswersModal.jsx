@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 
 const LeadAnswersModal = ({ isOpen, onClose, lead }) => {
-  // ✅ Close on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (e.target.id === "modal-overlay") {

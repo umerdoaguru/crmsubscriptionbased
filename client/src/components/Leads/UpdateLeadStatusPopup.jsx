@@ -2,8 +2,8 @@ import React, { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import cogoToast from "cogo-toast";
-import UpdateLeadField from "../EmployeeModule/updateLeadField";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const UpdateLeadStatusPopup = ({
   isOpen,
@@ -13,6 +13,8 @@ const UpdateLeadStatusPopup = ({
   leads,
   fetchMetaLeads,
 }) => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const modalRef = useRef();
   const { type, id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -21,8 +23,6 @@ const UpdateLeadStatusPopup = ({
     lead_status: "",
   });
 
-  console.log(leads);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCurrentLead((prevState) => ({ ...prevState, [name]: value }));
@@ -30,23 +30,26 @@ const UpdateLeadStatusPopup = ({
 
   const saveChanges = async (e) => {
     e.preventDefault();
-    console.log(currentLead);
 
     try {
       setLoading(true);
       const response = await axios.put(
         `https://crm-generalize.dentalguru.software/api/updateOnlyLeadStatusEmployeeEnd/${leads[0]?.lead_id}`,
-        currentLead
+        currentLead,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
-      console.log("Updated successfully:", response.data);
       cogoToast.success("Lead status updated successfully");
       setRender(!render);
       fetchLeads();
       setLoading(false);
       onClose();
     } catch (error) {
-      console.error("Request failed:", error);
       setLoading(false);
       cogoToast.error("Failed to update the lead status.");
     }
@@ -54,23 +57,26 @@ const UpdateLeadStatusPopup = ({
 
   const saveMetaChanges = async (e) => {
     e.preventDefault();
-    console.log(currentLead);
 
     try {
       setLoading(true);
       const response = await axios.put(
         `https://crm-generalize.dentalguru.software/api/updateOnlyMetaLeadStatusEmployeeEnd/${leads[0]?.meta_id}`,
-        currentLead
+        currentLead,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
-      console.log("Updated successfully:", response.data);
       cogoToast.success("Lead status updated successfully");
       setRender(!render);
       fetchMetaLeads();
       setLoading(false);
       onClose();
     } catch (error) {
-      console.error("Request failed:", error);
       setLoading(false);
       cogoToast.error("Failed to update the lead status.");
     }
@@ -116,7 +122,6 @@ const UpdateLeadStatusPopup = ({
               Update Status
             </h2>
 
-            {/* Dynamic Form Fields */}
             <form
               onSubmit={type === "meta" ? saveMetaChanges : saveChanges}
               className="space-y-4"

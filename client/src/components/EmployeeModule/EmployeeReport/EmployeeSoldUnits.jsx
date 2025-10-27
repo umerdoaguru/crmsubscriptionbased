@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
 import * as XLSX from "xlsx";
-import ReactPaginate from "react-paginate"; // Import react-paginate
+import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
 
 function EmployeeSoldUnits() {
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
-  const [duration, setDuration] = useState("all"); // Default is "all"
+  const [duration, setDuration] = useState("all");
   const [selectedColumns, setSelectedColumns] = useState([
     "lead_id",
     "project_name",
@@ -71,54 +71,6 @@ function EmployeeSoldUnits() {
     setFilteredLeads(filtered);
     setCurrentPage(0);
   }, [selectedEmployee, duration, leads]);
-
-  // Excel download function
-  // const downloadExcel = () => {
-  //   const columnMapping = {
-  //     lead_id: "lead id",
-  //     project_name: "Project Name",
-  //     name: "Costumer name",
-  //     unit_no: "unit Id",
-  //     employee_name: "Employee Name",
-  //     unit_status: "Unit Status",
-  //     date: "Date",
-  //   };
-
-  //   const completedLeads = filteredLeads.map((lead) => {
-  //     const formattedLead = {};
-
-  //     selectedColumns.forEach((col) => {
-  //       const newKey = columnMapping[col] || col;
-  //       if (
-  //         [
-  //           "actual_date",
-  //           "createdTime",
-  //           "visit_date",
-  //           "d_closeDate",
-  //           "date",
-  //         ].includes(col)
-  //       ) {
-  //         formattedLead[newKey] =
-  //           lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
-  //             ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-  //             : "pending";
-  //       } else {
-  //         formattedLead[newKey] = lead[col];
-  //       }
-  //     });
-
-  //     return formattedLead;
-  //   });
-
-  //   const worksheet = XLSX.utils.json_to_sheet(completedLeads);
-  //   const workbook = XLSX.utils.book_new();
-  //   XLSX.utils.book_append_sheet(
-  //     workbook,
-  //     worksheet,
-  //     `Lead of ${duration} Report`
-  //   );
-  //   XLSX.writeFile(workbook, `Lead of ${duration} Report.xlsx`);
-  // };
 
   const downloadExcel = () => {
     const completedLeads = currentLeads.map((lead) => ({ ...lead }));

@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import cogoToast from "cogo-toast"; 
+import cogoToast from "cogo-toast";
+import { useSelector } from "react-redux";
 
 const SuperRealEstateProjectForm = () => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const [formData, setFormData] = useState({
     projectName: "",
     projectId: "",
@@ -21,24 +24,39 @@ const SuperRealEstateProjectForm = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("https://crm-generalize.dentalguru.software/api/project-add", formData);
+      const response = await axios.post(
+        "https://crm-generalize.dentalguru.software/api/project-add",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.status === 200) {
-        cogoToast.success("Project added successfully!", { position: "top-right" });
+        cogoToast.success("Project added successfully!", {
+          position: "top-right",
+        });
         navigate("/");
       } else {
         cogoToast.error("Failed to add project.", { position: "top-right" });
       }
     } catch (error) {
       console.error("Error submitting the form:", error);
-      cogoToast.error("An error occurred while submitting the form.", { position: "top-right" });
+      cogoToast.error("An error occurred while submitting the form.", {
+        position: "top-right",
+      });
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="bg-white shadow-lg rounded-lg w-full max-w-4xl p-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Add Real Estate Project</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">
+          Add Real Estate Project
+        </h1>
         <form onSubmit={handleSubmit}>
           {/* Project Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">

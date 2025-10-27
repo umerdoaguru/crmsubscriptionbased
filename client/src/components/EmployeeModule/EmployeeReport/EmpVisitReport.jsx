@@ -10,8 +10,7 @@ const EmpVisitReport = () => {
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const leadsPerPage = 6;
-
-  const [duration, setDuration] = useState("all"); // Default is "all"
+  const [duration, setDuration] = useState("all");
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [selectedColumns, setSelectedColumns] = useState([
     "lead_no",
@@ -40,7 +39,6 @@ const EmpVisitReport = () => {
     "actual_date",
   ]);
   const EmpId = useSelector((state) => state.auth.user);
-
   const token = EmpId?.token;
 
   // Fetch leads from the API
@@ -102,63 +100,6 @@ const EmpVisitReport = () => {
     filtered = filterByDuration(filtered, duration);
     setFilteredLeads(filtered);
   }, [selectedEmployee, duration, leads]);
-
-  // const downloadExcel = () => {
-  //   const columnMapping = {
-  //     assignedTo: "",
-  //     name: "Name",
-  //     phone: "Phone",
-  //     leadSource: "Lead Source",
-  //     remark_status: "Remark Status",
-  //     answer_remark: "Answer Remark",
-  //     meeting_status: "Meeting Status",
-  //     assignedBy: "Assigned By",
-  //     lead_status: "Lead Status",
-  //     address: "Address",
-  //     booking_amount: "Booking Amount",
-  //     deal_status: "Deal Status",
-  //     employeeId: "Employee ID",
-  //     follow_up_status: "Follow-up Status",
-  //     payment_mode: "Payment Mode",
-  //     reason: "Reason",
-  //     registry: "Registry",
-  //     project_name: "Project",
-  //     visit: "Visit",
-  //     visit_date: "Visit Date",
-  //     d_closeDate: "Close Date",
-  //     createdTime: "Assigned Date",
-  //     actual_date: "Actual Date",
-  //   };
-
-  //   const completedLeads = filteredLeads.map((lead) => {
-  //     const formattedLead = {};
-
-  //     selectedColumns.forEach((col) => {
-  //       const newKey = columnMapping[col] || col;
-
-  //       if (
-  //         ["actual_date", "createdTime", "visit_date", "d_closeDate"].includes(
-  //           col
-  //         )
-  //       ) {
-  //         formattedLead[newKey] =
-  //           lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
-  //             ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-  //             : "pending";
-  //       } else {
-  //         formattedLead[newKey] = lead[col];
-  //       }
-  //     });
-
-  //     return formattedLead;
-  //   });
-
-  //   // Generate Excel file
-  //   const worksheet = XLSX.utils.json_to_sheet(completedLeads);
-  //   const workbook = XLSX.utils.book_new();
-  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Visit Report");
-  //   XLSX.writeFile(workbook, `Visit of ${duration} Report.xlsx`);
-  // };
 
   const downloadExcel = () => {
     const completedLeads = currentLeads.map((lead) => ({ ...lead }));

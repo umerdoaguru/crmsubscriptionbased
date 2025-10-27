@@ -64,9 +64,7 @@ const DealClosedGraph = () => {
       );
 
       const data = response.data;
-      console.log(data);
       const formattedData = generateStaticData(data);
-
       setDealStatusData(formattedData);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -76,8 +74,6 @@ const DealClosedGraph = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
-  console.log(dealStatusData);
 
   return (
     <>

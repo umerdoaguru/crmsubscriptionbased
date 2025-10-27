@@ -61,7 +61,13 @@ const SuperLeadsTable = ({ isSidebarOpen, type }) => {
   const getOrgDataById = async () => {
     try {
       const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/getOrgDetailsById/${superadminuser?.staff_org_id}`
+        `https://crm-generalize.dentalguru.software/api/getOrgDetailsById/${superadminuser?.staff_org_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setOrgData(data[0]);
     } catch (error) {
@@ -105,6 +111,12 @@ const SuperLeadsTable = ({ isSidebarOpen, type }) => {
           pageId: orgData?.org_page_id,
           accessToken: orgData?.org_page_access_token,
           meta_org_id: superadminuser.staff_org_id,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       cogoToast.success("New Meta Leads Fetched Successfully");

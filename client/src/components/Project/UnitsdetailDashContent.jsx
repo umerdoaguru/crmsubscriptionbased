@@ -15,7 +15,6 @@ const UnitDetailDashContent = () => {
   const [units, setUnits] = useState([]);
   const navigate = useNavigate();
   const [statusFilter, setStatusFilter] = useState("");
-
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
 
@@ -77,11 +76,16 @@ const UnitDetailDashContent = () => {
       console.log("Updating unit:", editProject);
       const { data } = await axios.put(
         `https://crm-generalize.dentalguru.software/api/editUnitdetailsinner/${editProject.id}`,
-        editProject
+        editProject,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
-      console.log("Updating unit with id:", editProject.id, editProject);
-      cogoToast.success(data.message || "Unit updated successfully!");
 
+      cogoToast.success(data.message || "Unit updated successfully!");
       setUnits((prev) =>
         prev.map((unit) =>
           unit.id === editProject.id ? { ...unit, ...editProject } : unit

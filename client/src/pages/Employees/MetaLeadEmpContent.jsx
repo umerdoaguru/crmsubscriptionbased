@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import cogoToast from "cogo-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
@@ -11,19 +10,7 @@ const MetaLeadEmpContent = ({ isSidebarOpen }) => {
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterDate, setFilterDate] = useState("");
-  const [leadSourceFilter, setLeadSourceFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [visitFilter, setVisitFilter] = useState("");
-  const [dealFilter, setDealFilter] = useState("");
   const [soldunitFilter, setSoldUnitFilter] = useState("");
-  const [leadStatusFilter, setLeadStatusFilter] = useState("");
-  const [leadnotInterestedStatusFilter, setLeadnotInterestedStatusFilter] =
-    useState("");
-  const [meetingStatusFilter, setMeetingStatusFilter] = useState("");
-  const [visitmonthFilter, setVisitMonthFilter] = useState("");
-  const [monthFilter, setMonthFilter] = useState("");
-  const [yearFilter, setYearFilter] = useState("");
   const [sortOrder, setSortOrder] = useState("desce");
   const [currentPage, setCurrentPage] = useState(0);
   const [leadsPerPage, setLeadsPerPage] = useState(10);
@@ -55,8 +42,6 @@ const MetaLeadEmpContent = ({ isSidebarOpen }) => {
     }
   };
 
-  console.log(leads);
-
   const applyFilters = () => {
     let filtered = [...leads];
 
@@ -66,7 +51,6 @@ const MetaLeadEmpContent = ({ isSidebarOpen }) => {
       return sortOrder === "desce" ? dateB - dateA : dateA - dateB;
     });
 
-    // ✅ Filter by search term (supports name, phone, email)
     if (searchTerm) {
       const trimmedSearchTerm = searchTerm.toLowerCase().trim();
       filtered = filtered.filter((lead) => {
@@ -95,7 +79,6 @@ const MetaLeadEmpContent = ({ isSidebarOpen }) => {
       });
     }
 
-    // ✅ Filter by date range using meta_updated_at
     if (fromDate || toDate) {
       filtered = filtered.filter((lead) => {
         if (!lead.meta_updated_at) return false;
@@ -133,10 +116,8 @@ const MetaLeadEmpContent = ({ isSidebarOpen }) => {
     setCurrentPage(0);
   }, [searchTerm, fromDate, toDate, leads, soldunitFilter, sortOrder]);
 
-  // Total Leads
   const totalLeads = applyFilters().length;
 
-  // Total Closed Leads
   const totalClosedLeads = applyFilters().filter(
     (lead) => lead.deal_status === "close"
   ).length;

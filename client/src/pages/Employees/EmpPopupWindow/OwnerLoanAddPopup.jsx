@@ -9,8 +9,8 @@ const OwnerLoanAddPopup = ({
   unitSoldData,
   fetchUnitSoldData,
 }) => {
-  console.log(unitSoldData);
-
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const user = useSelector((state) => state.auth.user);
   const [loading, setLoading] = useState(false);
   const [companies, setCompanies] = useState([]);
@@ -36,7 +36,13 @@ const OwnerLoanAddPopup = ({
 
     try {
       const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/getFinanceCompanyByOrg/${user.staff_org_id}`
+        `https://crm-generalize.dentalguru.software/api/getFinanceCompanyByOrg/${user.staff_org_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setCompanies(data || []);
     } catch (error) {
@@ -86,7 +92,6 @@ const OwnerLoanAddPopup = ({
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Validation for loan_principal
     if (name === "loan_principal") {
       const payableAmount = Number(unitSoldData[0]?.remaining_amount || 0);
       const enteredAmount = Number(value);
@@ -148,7 +153,13 @@ const OwnerLoanAddPopup = ({
     try {
       const res = await axios.post(
         "https://crm-generalize.dentalguru.software/api/createOwnerLoan",
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (res.data.success) {
@@ -162,15 +173,12 @@ const OwnerLoanAddPopup = ({
       }
       setLoading(false);
     } catch (error) {
-      console.error(error);
       setLoading(false);
       cogoToast.error("Error while saving data");
     }
   };
 
   if (!isOpen) return null;
-
-  console.log(formData);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">

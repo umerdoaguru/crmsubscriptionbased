@@ -75,7 +75,7 @@ const SuperLeadAllVisitChart = () => {
           {loading ? (
             <p>Loading...</p>
           ) : error ? (
-            <p className="text-red-500">{error}</p> // Display error message
+            <p className="text-red-500">{error}</p>
           ) : (
             <ResponsiveContainer width="100%" height={300}>
               <BarChart

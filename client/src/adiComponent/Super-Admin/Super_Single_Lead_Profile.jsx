@@ -129,7 +129,6 @@ function Super_Single_Lead_Profile({ selectedLeadId, closeModalLead, type }) {
         },
       });
 
-      // Ensure proper comparison with 'Created', trim any spaces and normalize the case
       setemployeeunitsoldCreated(response.data[0]);
     } catch (error) {
       console.error("Error fetching quotations:", error);
@@ -137,7 +136,7 @@ function Super_Single_Lead_Profile({ selectedLeadId, closeModalLead, type }) {
   };
 
   const handleBackClick = () => {
-    navigate(-1); // -1 navigates to the previous page in history
+    navigate(-1);
   };
   const fetchVisit = async () => {
     try {

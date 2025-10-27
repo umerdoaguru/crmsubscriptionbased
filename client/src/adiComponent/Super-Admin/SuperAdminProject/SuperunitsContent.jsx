@@ -77,7 +77,13 @@ const SuperunitsContent = () => {
       console.log("Updating unit:", editProject);
       const { data } = await axios.put(
         `https://crm-generalize.dentalguru.software/api/edit-unit/${editProject.unit_id}`,
-        editProject
+        editProject,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       cogoToast.success(data.message || "Unit updated successfully!");
 
@@ -104,7 +110,13 @@ const SuperunitsContent = () => {
 
     try {
       const res = await axios.delete(
-        `https://crm-generalize.dentalguru.software/api/delete-unit/${id}`
+        `https://crm-generalize.dentalguru.software/api/delete-unit/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       fetchUnits();
     } catch (error) {

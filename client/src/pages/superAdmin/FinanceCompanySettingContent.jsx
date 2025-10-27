@@ -25,7 +25,10 @@ const FinanceCompanySettingContent = () => {
 
     try {
       const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/getFinanceCompanyByOrg/${user.staff_org_id}`
+        `https://crm-generalize.dentalguru.software/api/getFinanceCompanyByOrg/${user.staff_org_id}`,
+        {
+          headers: { Authorization: `Bearer ${user?.token}` },
+        }
       );
       setCompanies(data || []);
     } catch (error) {
@@ -44,7 +47,10 @@ const FinanceCompanySettingContent = () => {
       );
       if (confirm) {
         const res = await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/deleteFinanceCompany/${id}`
+          `https://crm-generalize.dentalguru.software/api/deleteFinanceCompany/${id}`,
+          {
+            headers: { Authorization: `Bearer ${user?.token}` },
+          }
         );
         cogoToast.success("company deleted successfully");
         fetchCompanies();

@@ -39,8 +39,6 @@ const EmpWebLeads = () => {
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
   const currentLeads = leads.slice(indexOfFirstLead, indexOfLastLead);
 
-  console.log(currentLeads);
-
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };

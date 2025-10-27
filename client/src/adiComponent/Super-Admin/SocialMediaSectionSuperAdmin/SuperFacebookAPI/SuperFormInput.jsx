@@ -1,7 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const SuperFormInput = ({ setShowForm, onFormSubmit, id }) => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const [formId, setFormId] = useState("");
   const [formName, setFormName] = useState("");
   const [success, setSuccess] = useState("");
@@ -19,6 +22,12 @@ const SuperFormInput = ({ setShowForm, onFormSubmit, id }) => {
           formId,
           formName,
           project_id: id,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 

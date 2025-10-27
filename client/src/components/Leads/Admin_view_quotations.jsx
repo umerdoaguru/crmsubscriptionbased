@@ -4,22 +4,21 @@ import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import ReactPaginate from "react-paginate";
-
-import MainHeader from '../MainHeader';
-import Sider from '../Sider';
-import { IoIosArrowBack } from "react-icons/io";
+import MainHeader from "../MainHeader";
+import Sider from "../Sider";
 
 const Admin_view_quotations = () => {
   const [quotations, setQuotations] = useState([]);
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage] = useState(10); // Number of items per page
+  const [itemsPerPage] = useState(10);
   const [filterText, setFilterText] = useState("");
   const [sortAsc, setSortAsc] = useState(true);
   const [render, setRender] = useState(false);
   const { id } = useParams();
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
+
   useEffect(() => {
     fetchQuotations();
   }, [id, render]);
@@ -30,12 +29,12 @@ const Admin_view_quotations = () => {
         `https://crm-generalize.dentalguru.software/api/get-quotation-byLead/${id}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }}
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setQuotations(response.data);
-      console.log(response);
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
@@ -48,12 +47,18 @@ const Admin_view_quotations = () => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/quotation/${id}`
+          `https://crm-generalize.dentalguru.software/api/quotation/${id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         if (response.status === 200) {
           console.log("Quotation deleted successfully");
         }
-        console.log(response);
+
         setRender(!render);
       } catch (error) {
         console.error("Error deleting quotation:", error);
@@ -97,15 +102,14 @@ const Admin_view_quotations = () => {
   );
   const pageCount = Math.ceil(filteredQuotations.length / itemsPerPage);
 
-
   return (
     <>
       <MainHeader />
       <Sider />
       <div className="container mt-4 2xl:w-[91%] 2xl:ml-36">
         <div className="w-full px-2 mx-auto p-4">
-        <button
-              onClick={() => navigate(-1)}
+          <button
+            onClick={() => navigate(-1)}
             className="bg-blue-500 text-white mt-5 px-4 py-2 rounded"
           >
             Go Back
@@ -162,7 +166,7 @@ const Admin_view_quotations = () => {
                             View
                           </button>
                         </Link>
-                    
+
                         {/* <button
                         className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded m-1"
                         onClick={() =>
@@ -181,7 +185,7 @@ const Admin_view_quotations = () => {
                 nextLabel={"next"}
                 breakLabel={"..."}
                 pageCount={pageCount}
-forcePage={currentPage}
+                forcePage={currentPage}
                 marginPagesDisplayed={2}
                 pageRangeDisplayed={5}
                 onPageChange={handlePageClick}

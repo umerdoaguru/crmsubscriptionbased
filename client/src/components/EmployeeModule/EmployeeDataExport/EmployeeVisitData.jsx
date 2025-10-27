@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
@@ -87,80 +86,6 @@ const EmployeeVisitData = () => {
     setFilteredLeads(filtered);
   }, [startDate, endDate, leads]);
 
-  // const downloadExcel = () => {
-  //   const columnMapping = {
-  //     lead_no: "Lead Number",
-  //     assignedTo: "Assigned To",
-  //     name: "Name",
-  //     phone: "Phone",
-  //     leadSource: "Lead Source",
-  //     remark_status: "Remark Status",
-  //     answer_remark: "Answer Remark",
-  //     meeting_status: "Meeting Status",
-  //     assignedBy: "Assigned By",
-  //     lead_status: "Lead Status",
-  //     address: "Address",
-  //     booking_amount: "Booking Amount",
-  //     deal_status: "Deal Status",
-  //     employeeId: "Employee ID",
-  //     follow_up_status: "Follow-up Status",
-  //     payment_mode: "Payment Mode",
-  //     quotation: "Quotation",
-  //     quotation_status: "Quotation Status",
-  //     reason: "Reason",
-  //     registry: "Registry",
-  //     project_name: "Project",
-  //     subject: "Project",
-  //     visit: "Visit",
-  //     visit_date: "Visit Date",
-  //     d_closeDate: "Close Date",
-  //     createdTime: "Assigned Date",
-  //     actual_date: "Actual Date",
-  //   };
-
-  //   const completedLeads = filteredLeads.map((lead) => {
-  //     const formattedLead = {};
-
-  //     selectedColumns.forEach((col) => {
-  //       const newKey = columnMapping[col] || col;
-
-  //       if (
-  //         ["actual_date", "createdTime", "visit_date", "d_closeDate"].includes(
-  //           col
-  //         )
-  //       ) {
-  //         // Check if date exists and is valid
-  //         formattedLead[newKey] =
-  //           lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
-  //             ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-  //             : "pending"; // If invalid or missing, set as "PENDING"
-  //       } else {
-  //         formattedLead[newKey] = lead[col]; // Assign other fields normally
-  //       }
-  //     });
-
-  //     return formattedLead;
-  //   });
-  //   // Ensure we handle empty reports gracefully
-  //   if (completedLeads.length === 0) {
-  //     alert("No data available for the selected date range.");
-  //     return;
-  //   }
-
-  //   // Generate the Excel workbook
-  //   const worksheet = XLSX.utils.json_to_sheet(completedLeads);
-  //   const workbook = XLSX.utils.book_new();
-  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
-
-  //   // Generate a valid filename
-  //   const filename = ` Lead Report ${
-  //     startDate ? moment(startDate).format("DD-MM-YYYY") : "Start"
-  //   } to ${endDate ? moment(endDate).format("DD-MM-YYYY") : "End"}.xlsx`;
-
-  //   // Download the Excel file
-  //   XLSX.writeFile(workbook, filename);
-  // };
-
   const downloadExcel = () => {
     const completedLeads = currentLeads.map((lead) => ({ ...lead }));
 
@@ -170,10 +95,8 @@ const EmployeeVisitData = () => {
     XLSX.writeFile(workbook, `Visit Report.xlsx`);
   };
 
-  // Calculate total number of pages
   const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
 
-  // Pagination logic
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
   const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);

@@ -74,7 +74,13 @@ const SuperUnitsDetailsContent = () => {
       console.log("Updating unit:", editProject);
       const { data } = await axios.put(
         `https://crm-generalize.dentalguru.software/api/editUnitdetailsinner/${editProject.id}`,
-        editProject
+        editProject,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       console.log("Updating unit with id:", editProject.id, editProject);
       cogoToast.success(data.message || "Unit updated successfully!");

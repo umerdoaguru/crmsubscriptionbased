@@ -36,7 +36,6 @@ const EmployeeOverview = () => {
       );
       setLeads(response.data);
     } catch (error) {
-      console.error("Error fetching leads:", error);
       if (error?.response?.status === 401) {
         navigate("/main_page_crm");
         dispatch(logoutUser());
@@ -63,8 +62,6 @@ const EmployeeOverview = () => {
     }
   };
 
-  console.log(invoice, quotation, leads);
-
   const fetchVisit = async () => {
     try {
       const { data } = await axios.get(
@@ -76,14 +73,11 @@ const EmployeeOverview = () => {
           },
         }
       );
-      console.log(data);
       setVisit(data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
   };
-
-  console.log(visit);
 
   const employeesoldunit = async () => {
     try {
@@ -96,7 +90,7 @@ const EmployeeOverview = () => {
           },
         }
       );
-      console.log(data);
+
       setemployeesold(data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
@@ -111,9 +105,6 @@ const EmployeeOverview = () => {
   }, []);
 
   const leadCount = leads.length;
-
-  console.log(employeesold);
-
   const soldunit = employeesold.length;
 
   const closedCount = leads.filter(

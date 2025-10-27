@@ -6,10 +6,6 @@ import ReactPaginate from "react-paginate";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 
-const Wrapper = styled.div`
-  /* Add your styled-components CSS here */
-`;
-
 function EmployeeLeadData() {
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
@@ -36,7 +32,6 @@ function EmployeeLeadData() {
     "employeeId",
     "follow_up_status",
     "payment_mode",
-
     "reason",
     "registry",
     "visit",
@@ -47,7 +42,6 @@ function EmployeeLeadData() {
   ]);
   const token = EmpId?.token;
 
-  // Fetch leads from the API
   useEffect(() => {
     fetchLeads();
   }, []);
@@ -72,7 +66,6 @@ function EmployeeLeadData() {
   useEffect(() => {
     let filtered = leads;
 
-    // Filter by date range if specified
     if (startDate && endDate) {
       filtered = filtered.filter((lead) => {
         const createdTime = moment(lead.createdTime, "YYYY-MM-DD");
@@ -80,11 +73,8 @@ function EmployeeLeadData() {
       });
     }
 
-    // Filter by lead_status 'completed'
-    // filtered = filtered.filter((lead) => lead.lead_status === "completed");
-
     setFilteredLeads(filtered);
-    setCurrentPage(0); // Reset to first page on filter change
+    setCurrentPage(0);
   }, [startDate, endDate, leads]);
 
   const downloadExcel = () => {
@@ -105,10 +95,8 @@ function EmployeeLeadData() {
       employeeId: "Employee ID",
       follow_up_status: "Follow-up Status",
       payment_mode: "Payment Mode",
-
       reason: "Reason",
       registry: "Registry",
-
       visit: "Visit",
       visit_date: "Visit Date",
       d_closeDate: "Close Date",
@@ -128,7 +116,6 @@ function EmployeeLeadData() {
             col
           )
         ) {
-          // Check if date exists and is valid
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
               ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()

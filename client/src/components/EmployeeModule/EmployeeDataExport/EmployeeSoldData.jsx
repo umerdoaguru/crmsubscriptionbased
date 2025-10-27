@@ -39,7 +39,7 @@ const EmployeeSoldData = () => {
           },
         }
       );
-      console.log("Fetched Leads:", response.data);
+
       const fetchedLeads = response.data.data || response.data || [];
       setLeads(fetchedLeads);
       setFilteredLeads(fetchedLeads);
@@ -61,62 +61,6 @@ const EmployeeSoldData = () => {
     setFilteredLeads(filtered);
   }, [startDate, endDate, leads]);
 
-  // const downloadExcel = () => {
-  //   const columnMapping = {
-  //     lead_id: "lead id",
-  //     project_name: "Project Name",
-  //     name: "Costumer name",
-  //     unit_no: "unit Id",
-  //     employee_name: "Employee Name",
-  //     unit_status: "Unit Status",
-  //     date: "Date",
-  //   };
-
-  //   const completedLeads = filteredLeads.map((lead) => {
-  //     const formattedLead = {};
-
-  //     selectedColumns.forEach((col) => {
-  //       const newKey = columnMapping[col] || col;
-
-  //       if (
-  //         [
-  //           "actual_date",
-  //           "createdTime",
-  //           "visit_date",
-  //           "d_closeDate",
-  //           "date",
-  //         ].includes(col)
-  //       ) {
-  //         formattedLead[newKey] =
-  //           lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
-  //             ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-  //             : "pending";
-  //       } else {
-  //         formattedLead[newKey] = lead[col];
-  //       }
-  //     });
-
-  //     return formattedLead;
-  //   });
-  //   // Ensure we handle empty reports gracefully
-  //   if (completedLeads.length === 0) {
-  //     alert("No data available for the selected date range.");
-  //     return;
-  //   }
-
-  //   // Generate the Excel workbook
-  //   const worksheet = XLSX.utils.json_to_sheet(completedLeads);
-  //   const workbook = XLSX.utils.book_new();
-  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
-
-  //   // Generate a valid filename
-  //   const filename = ` Lead Report ${
-  //     startDate ? moment(startDate).format("DD-MM-YYYY") : "Start"
-  //   } to ${endDate ? moment(endDate).format("DD-MM-YYYY") : "End"}.xlsx`;
-
-  //   XLSX.writeFile(workbook, filename);
-  // };
-
   const downloadExcel = () => {
     const completedLeads = currentLeads.map((lead) => ({ ...lead }));
 
@@ -137,8 +81,6 @@ const EmployeeSoldData = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
-
-  console.log(currentLeads);
 
   return (
     <>

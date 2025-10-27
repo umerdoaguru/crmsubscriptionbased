@@ -71,6 +71,7 @@ const SuperUnitUpdatePopup = ({ isOpen, onClose, fetchUnits, selected }) => {
         {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         }
       );

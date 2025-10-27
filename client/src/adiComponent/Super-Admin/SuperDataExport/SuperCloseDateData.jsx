@@ -7,6 +7,7 @@ import * as XLSX from "xlsx";
 import styled from "styled-components";
 
 const SuperCloseData = () => {
+  
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [startDate, setStartDate] = useState("");

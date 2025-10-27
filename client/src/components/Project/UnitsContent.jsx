@@ -74,10 +74,15 @@ const UnitsContent = () => {
     }
 
     try {
-      console.log("Updating unit:", editProject);
       const { data } = await axios.put(
         `https://crm-generalize.dentalguru.software/api/edit-unit/${editProject.unit_id}`,
-        editProject
+        editProject,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       cogoToast.success(data.message || "Unit updated successfully!");
 
@@ -91,7 +96,6 @@ const UnitsContent = () => {
 
       setShowModal(false);
     } catch (error) {
-      console.error("Error updating unit:", error);
       cogoToast.error("An error occurred while updating the unit.");
     }
   };
@@ -108,7 +112,6 @@ const UnitsContent = () => {
       );
       fetchUnits();
     } catch (error) {
-      console.error("Error deleting unit:", error);
       cogoToast.error("An error occurred while deleting the unit.");
     }
   };

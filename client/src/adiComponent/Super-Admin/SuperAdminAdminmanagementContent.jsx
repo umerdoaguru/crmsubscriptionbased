@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
 import { BsPencilSquare, BsTrash, BsPlusCircle } from "react-icons/bs";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import cogoToast from "cogo-toast"; // Import CogoToast
+import { useNavigate } from "react-router-dom";
+import cogoToast from "cogo-toast";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Modal from "../Modal";
 import ReactPaginate from "react-paginate";
@@ -28,8 +27,8 @@ function SuperAdminAdminmanagementContent() {
   const [validationErrors, setValidationErrors] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 7;
-  const navigate = useNavigate(); // Initialize useNavigate
-  const [showPassword, setShowPassword] = useState(false); // State to manage password visibility
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   // Fetch admins when component loads
   useEffect(() => {
@@ -41,8 +40,8 @@ function SuperAdminAdminmanagementContent() {
   };
 
   const handleCancel = () => {
-    setNewAdmin(initialAdminState); // Reset the form state
-    setShowForm(false); // Close the modal
+    setNewAdmin(initialAdminState);
+    setShowForm(false);
     setValidationErrors({});
   };
 
@@ -94,8 +93,7 @@ function SuperAdminAdminmanagementContent() {
     if (!newAdmin.email) errors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(newAdmin.email))
       errors.email = "Email is invalid";
-    // else if (await isEmailTaken(newAdmin.email))
-    //   errors.email = "Email is already taken";
+
     if (!newAdmin.password) errors.password = "Password is required";
     if (!newAdmin.position) errors.position = "Position is required";
     if (!newAdmin.phone) errors.phone = "Phone number is required";
@@ -109,54 +107,47 @@ function SuperAdminAdminmanagementContent() {
   // Save or update admin
   const handleSaveAdmin = async (e) => {
     e.preventDefault();
-    console.log("Form submission started.");
 
     if (!(await validateForm())) {
       alert("Form validation failed.");
-      console.log("Form validation failed.");
       return;
     }
 
     try {
       if (editingIndex !== null) {
         const adminToUpdate = admins[editingIndex];
-        console.log("Updating admin:", adminToUpdate);
-        console.log("Admin ID to update:", adminToUpdate.admin_id);
-        console.log("Data to be sent for update:", newAdmin);
-
-        // Check for the specific fields
-        console.log("Phone to update:", newAdmin);
-        // console.log("Password to update:", newAdmin.password);
 
         await axios.put(
           `https://crm-generalize.dentalguru.software/api/updateAdmin/${adminToUpdate.admin_id}`,
-          newAdmin
+          newAdmin,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
-
         cogoToast.success("Admin updated successfully!");
-
-        console.log("Admin updated successfully!");
       } else {
-        console.log("Adding new admin:", newAdmin);
-
         const response = await axios.post(
           "https://crm-generalize.dentalguru.software/api/addAdmin",
-          newAdmin
+          newAdmin,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
 
         if (response.data.success) {
           cogoToast.success(response.data.message);
-
-          console.log("Admin added successfully:", response.data.message);
         }
       }
 
       setNewAdmin(initialAdminState);
-      console.log("Form inputs cleared.");
-      await fetchAdmins(); // Refresh admin list
-      console.log("Fetched updated list of admins.");
-      setShowForm(false); // Close modal
-      console.log("Modal closed after saving admin.");
+      await fetchAdmins();
+      setShowForm(false);
     } catch (error) {
       console.error(
         "Error saving Admin:",
@@ -169,17 +160,13 @@ function SuperAdminAdminmanagementContent() {
 
       if (error.response && error.response.status === 400) {
         cogoToast.error(error.response.data.message);
-        console.log("Error response 400:", error.response.data.message);
       } else {
         cogoToast.error("Error saving Admin.");
-        console.log("General error saving Admin.");
       }
     }
   };
 
-  // Handle edit admin
   const handleEditAdmin = (index) => {
-    console.log("Editing admin at index:", index);
     const adminToEdit = admins[index];
 
     setNewAdmin({
@@ -189,21 +176,24 @@ function SuperAdminAdminmanagementContent() {
       position: adminToEdit.position || "",
       phone: adminToEdit.phone || "",
     });
-
     setEditingIndex(index);
     setShowForm(true);
-    console.log("Form populated with admin details for editing:", adminToEdit);
   };
 
   const handleDeleteAdmin = async (admin_id) => {
-    console.log("Admin ID:", admin_id);
     const isConfirmed = window.confirm(
       "Are you sure you want to delete this admin?"
     );
     if (isConfirmed) {
       try {
         await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/deleteAdmin/${admin_id}`
+          `https://crm-generalize.dentalguru.software/api/deleteAdmin/${admin_id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         fetchAdmins();
       } catch (error) {
@@ -220,7 +210,6 @@ function SuperAdminAdminmanagementContent() {
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
-    console.log("change current page ", data.selected);
   };
 
   return (

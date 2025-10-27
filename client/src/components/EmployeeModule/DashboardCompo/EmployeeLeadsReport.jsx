@@ -39,8 +39,6 @@ const EmployeeLeadsReport = () => {
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
   const currentLeads = leads.slice(indexOfFirstLead, indexOfLastLead);
 
-  console.log(currentLeads);
-
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
@@ -54,7 +52,6 @@ const EmployeeLeadsReport = () => {
             <thead>
               <tr>
                 <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
-
                 <th className="px-6 py-3 border-b-2 border-gray-300">Name</th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">Phone</th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">

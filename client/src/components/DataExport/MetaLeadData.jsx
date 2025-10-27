@@ -129,9 +129,9 @@ function MetaLeadData() {
 
   return (
     <div className="container mx-auto w-[95%]">
-      <h1 className="text-2xl text-center mt-6 font-semibold text-gray-700">
+      <h2 className="text-2xl text-center mt-6 font-semibold text-gray-700">
         Meta Leads Data
-      </h1>
+      </h2>
       <div className="mx-auto h-[3px] w-16 bg-cyan-700 my-3"></div>
 
       {/* ✅ Filters Section */}

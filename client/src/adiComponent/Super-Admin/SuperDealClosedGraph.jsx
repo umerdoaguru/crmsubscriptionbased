@@ -77,8 +77,6 @@ const SuperDealClosedGraph = () => {
     fetchData();
   }, []);
 
-  console.log(dealStatusData);
-
   return (
     <>
       <div className="mx-2">

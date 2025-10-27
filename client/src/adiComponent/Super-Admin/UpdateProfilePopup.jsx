@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import cogoToast from "cogo-toast";
 import { useSelector } from "react-redux";
-import { IoCloseSharp, IoEye, IoEyeOff } from "react-icons/io5";
+import { IoCloseSharp } from "react-icons/io5";
 
 const UpdateProfilePopup = ({
   isOpen,
@@ -16,7 +16,6 @@ const UpdateProfilePopup = ({
   const token = EmpId?.token;
   const userId = EmpId.staff_id;
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [newEmployee, setNewEmployee] = useState({
     staff_role: "",
     staff_name: "",
@@ -71,7 +70,13 @@ const UpdateProfilePopup = ({
     try {
       const res = await axios.put(
         `https://crm-generalize.dentalguru.software/api/updateEmployeeDetails/${selected?.staff_id}`,
-        newEmployee
+        newEmployee,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       fetchEmployeeData();
       setLoading(false);

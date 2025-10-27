@@ -4,23 +4,12 @@ import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import cogoToast from "cogo-toast";
-
-const getFieldValue = (dataString, fieldName) => {
-  try {
-    const data = JSON.parse(dataString);
-    const field = data.find((item) => item.name === fieldName);
-    return field ? field.values[0] : "";
-  } catch (error) {
-    console.error("Invalid question_fields_data:", error);
-    return "";
-  }
-};
+import getFieldValue from "../../utils/getFieldValue";
 
 const ViewAllFollowUpContent = () => {
   const [follow_up, setFollow_Up] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10);
-  const [filterText, setFilterText] = useState("");
   const [render, setRender] = useState(false);
   const { type, id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,8 +45,6 @@ const ViewAllFollowUpContent = () => {
     }
   };
 
-  console.log(follow_up);
-
   const handleDelete = async (followup) => {
     const isConfirmed = window.confirm(
       "Are you sure you want to delete this follow up?"
@@ -65,7 +52,13 @@ const ViewAllFollowUpContent = () => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/employe-follow-up/${followup.follow_up_id}`
+          `https://crm-generalize.dentalguru.software/api/employe-follow-up/${followup.follow_up_id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         fetchFollowUp();
         setRender(!render);
@@ -74,7 +67,7 @@ const ViewAllFollowUpContent = () => {
       }
     }
   };
-  // Function to send the PUT request to update the visit data
+
   const openModal = (data) => {
     setModalData(data);
     setIsModalOpen(true);
@@ -85,7 +78,6 @@ const ViewAllFollowUpContent = () => {
     setModalData(null);
   };
 
-  // Handle updating field values in modalData
   const handleInputChange = (e) => {
     setModalData({
       ...modalData,
@@ -97,7 +89,13 @@ const ViewAllFollowUpContent = () => {
     try {
       const response = await axios.put(
         `https://crm-generalize.dentalguru.software/api/employe-follow-up/${modalData?.follow_up_id}`,
-        modalData
+        modalData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       if (response.status === 200) {
         cogoToast.success("Follow Up updated successfully!");
@@ -155,9 +153,7 @@ const ViewAllFollowUpContent = () => {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Name
                         </th>
-                        {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Assigned To
-                        </th> */}
+
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Follow Up Type
                         </th>
@@ -191,9 +187,7 @@ const ViewAllFollowUpContent = () => {
                                 "full_name"
                               )}
                           </td>
-                          {/* <td className="px-6 py-4 whitespace-nowrap">
-                            {followup.employee_name}
-                          </td> */}
+
                           <td className="px-6 py-4 whitespace-nowrap">
                             {followup.follow_up_type}
                           </td>

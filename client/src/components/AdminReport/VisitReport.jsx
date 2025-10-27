@@ -36,7 +36,6 @@ const VisitReport = () => {
     "quotation_status",
     "reason",
     "registry",
-
     "project_name",
     "visit",
     "visit_date",
@@ -114,8 +113,6 @@ const VisitReport = () => {
     }
   };
 
-  // Automatically apply date filter when start or end date changes
-
   useEffect(() => {
     let filtered = leads;
 
@@ -152,7 +149,6 @@ const VisitReport = () => {
       quotation_status: "Quotation Status",
       reason: "Reason",
       registry: "Registry",
-
       project_name: "Project",
       visit: "Visit",
       visit_date: "Visit Date",

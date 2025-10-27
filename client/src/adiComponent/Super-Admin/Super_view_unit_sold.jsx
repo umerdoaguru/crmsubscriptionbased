@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
@@ -9,11 +8,6 @@ const Super_view_unit_sold = ({ selectedLeadId, closeModalUnitSold, type }) => {
   const [render, setRender] = useState(false);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
-
-  console.log(selectedLeadId);
-  console.log(type);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchEmployeeUnitSold();
@@ -36,7 +30,6 @@ const Super_view_unit_sold = ({ selectedLeadId, closeModalUnitSold, type }) => {
         },
       });
       setEmployeeUnitSold(response.data);
-      console.log(response);
     } catch (error) {
       console.error("Error fetching visit:", error);
     }
@@ -45,8 +38,6 @@ const Super_view_unit_sold = ({ selectedLeadId, closeModalUnitSold, type }) => {
   const handleClose = () => {
     closeModalUnitSold();
   };
-
-  console.log(employeeunitsold);
 
   return (
     <>

@@ -4,17 +4,7 @@ import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import cogoToast from "cogo-toast";
-
-const getFieldValue = (dataString, fieldName) => {
-  try {
-    const data = JSON.parse(dataString);
-    const field = data.find((item) => item.name === fieldName);
-    return field ? field.values[0] : "";
-  } catch (error) {
-    console.error("Invalid question_fields_data:", error);
-    return "";
-  }
-};
+import getFieldValue from "../../utils/getFieldValue";
 
 const ViewAllVisitContent = () => {
   const [visit, setVisit] = useState([]);
@@ -51,8 +41,6 @@ const ViewAllVisitContent = () => {
     }
   };
 
-  console.log(visit);
-
   const handleDelete = async (visit) => {
     const isConfirmed = window.confirm(
       "Are you sure you want to delete this visit?"
@@ -67,7 +55,6 @@ const ViewAllVisitContent = () => {
       cogoToast.success("visit data deleted successfully");
       fetchvisit();
     } catch (error) {
-      console.error("Error occurred during the deletion process:", error);
       cogoToast.error("An error occurred. Please try again.");
     }
   };
@@ -98,7 +85,13 @@ const ViewAllVisitContent = () => {
     try {
       const response = await axios.put(
         `https://crm-generalize.dentalguru.software/api/employe-visit/${modalData?.visit_id}`,
-        modalData
+        modalData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       if (response.status === 200) {
         cogoToast.success("Visit updated successfully!");

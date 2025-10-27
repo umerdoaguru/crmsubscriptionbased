@@ -2,7 +2,6 @@ import { useState } from "react";
 import React from "react";
 import Sidebar from "../../utils/Sidebar";
 import Topbar from "../../utils/Topbar";
-import EmployeeProfileContent from "../../components/EmployeeModule/EmployeeProfileContent";
 import Admin_RemarksViewContent from "./Admin_RemarksViewContent";
 
 const Admin_RemarksView = () => {

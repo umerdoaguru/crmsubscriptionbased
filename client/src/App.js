@@ -2,12 +2,9 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
 import "./index.css";
-// Routes
 import AdminRoutes from "./routes/AdminRoutes";
 import EmployeeRoutes from "./routes/EmployeeRoutes";
 import SuperAdminRoutes from "./routes/SuperAdminRoutes";
-
-// Auth Components
 import GoogleOAuthCallback from "./components/GoogleOAuthCallback";
 import OneLoginOnly from "./utils/OneLoginOnly";
 import ResetPasswordOnly from "./utils/ResetPasswordOnly";

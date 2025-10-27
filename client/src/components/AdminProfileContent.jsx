@@ -7,13 +7,13 @@ import UpdateProfilePopup from "../adiComponent/Super-Admin/UpdateProfilePopup";
 import ChangePasswordPopup from "../adiComponent/Super-Admin/ChangePasswordPopup";
 
 const AdminProfileContent = () => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const superAdmin = useSelector((state) => state.auth.user);
   const [profileData, setProfileData] = useState([]);
   const [updateModal, setUpdateModal] = useState(false);
   const [passwordModal, setPasswordModal] = useState(false);
   const [selected, setSelected] = useState(null);
-
-  console.log(superAdmin);
 
   const openPopupWindow = (data) => {
     setSelected(data);
@@ -28,7 +28,13 @@ const AdminProfileContent = () => {
   const fetchEmployeeData = async () => {
     try {
       const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/getEmployeeDetails/${superAdmin?.staff_id}`
+        `https://crm-generalize.dentalguru.software/api/getEmployeeDetails/${superAdmin?.staff_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setProfileData(data);
     } catch (error) {

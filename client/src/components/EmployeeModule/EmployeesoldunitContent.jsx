@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import ReactPaginate from "react-paginate";
-import moment from "moment";
 
 const EmployeesoldunitContent = () => {
   const [leads, setLeads] = useState([]);
@@ -11,7 +10,6 @@ const EmployeesoldunitContent = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [leadsPerPage, setLeadsPerPage] = useState(7);
-
   const EmpId = useSelector((state) => state.auth.user);
   const token = EmpId?.token;
   const navigate = useNavigate();
@@ -35,7 +33,6 @@ const EmployeesoldunitContent = () => {
       );
       setLeads(response.data);
       setFilteredLeads(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
@@ -66,7 +63,6 @@ const EmployeesoldunitContent = () => {
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
-    console.log("Current page:", data.selected);
   };
 
   const handleLeadsPerPageChange = (e) => {

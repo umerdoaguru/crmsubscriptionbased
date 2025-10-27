@@ -7,15 +7,10 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const EmployeeSingleContent = () => {
   const { employeeId } = useParams();
-  console.log(employeeId);
   const navigate = useNavigate();
-
   const [user, setUser] = useState([]);
   const EmpId = useSelector((state) => state.auth.user);
-  console.log(EmpId);
-
   const userId = employeeId ? employeeId : EmpId?.staff_id;
-  console.log(userId);
 
   const token = EmpId?.token;
   useEffect(() => {
@@ -31,7 +26,6 @@ const EmployeeSingleContent = () => {
           }
         );
         setUser(response.data[0]);
-        console.log(response.data);
       } catch (error) {
         console.error("Error fetching employee data:", error);
       }
@@ -39,8 +33,6 @@ const EmployeeSingleContent = () => {
 
     fetchEmployee();
   }, [EmpId]);
-
-  console.log(user);
 
   const onBack = () => {
     navigate(-1);

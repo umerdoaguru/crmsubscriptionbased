@@ -12,7 +12,7 @@ const EmployeeCloseData = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const leadsPerPage = 7; // Number of leads to display per page
+  const leadsPerPage = 7;
   const EmpId = useSelector((state) => state.auth.user);
   const [selectedColumns, setSelectedColumns] = useState([
     "project_name",
@@ -88,81 +88,6 @@ const EmployeeCloseData = () => {
     setFilteredLeads(filtered);
   }, [startDate, endDate, leads]);
 
-  // const downloadExcel = () => {
-  //   const columnMapping = {
-  //     project_name: "Project Name",
-  //     lead_no: "Lead Number",
-  //     assignedTo: "Assigned To",
-  //     name: "Name",
-  //     phone: "Phone",
-  //     leadSource: "Lead Source",
-  //     remark_status: "Remark Status",
-  //     answer_remark: "Answer Remark",
-  //     meeting_status: "Meeting Status",
-  //     assignedBy: "Assigned By",
-  //     lead_status: "Lead Status",
-  //     address: "Address",
-  //     booking_amount: "Booking Amount",
-  //     deal_status: "Deal Status",
-  //     employeeId: "Employee ID",
-  //     follow_up_status: "Follow-up Status",
-  //     payment_mode: "Payment Mode",
-
-  //     reason: "Reason",
-  //     registry: "Registry",
-
-  //     subject: "Project",
-  //     visit: "Visit",
-  //     visit_date: "Visit Date",
-  //     d_closeDate: "Close Date",
-  //     createdTime: "Assigned Date",
-  //     actual_date: "Actual Date",
-  //   };
-
-  //   // Filter and format data for the Excel report
-  //   const completedLeads = filteredLeads.map((lead) => {
-  //     const formattedLead = {};
-
-  //     selectedColumns.forEach((col) => {
-  //       const newKey = columnMapping[col] || col;
-
-  //       if (
-  //         ["actual_date", "createdTime", "visit_date", "d_closeDate"].includes(
-  //           col
-  //         )
-  //       ) {
-  //         // Check if date exists and is valid
-  //         formattedLead[newKey] =
-  //           lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
-  //             ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-  //             : "pending";
-  //       } else {
-  //         formattedLead[newKey] = lead[col];
-  //       }
-  //     });
-
-  //     return formattedLead;
-  //   });
-
-  //   if (completedLeads.length === 0) {
-  //     alert("No data available for the selected date range.");
-  //     return;
-  //   }
-
-  //   // Generate the Excel workbook
-  //   const worksheet = XLSX.utils.json_to_sheet(completedLeads);
-  //   const workbook = XLSX.utils.book_new();
-  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
-
-  //   // Generate a valid filename
-  //   const filename = `Closed Lead Report ${
-  //     startDate ? moment(startDate).format("DD-MM-YYYY") : "Start"
-  //   } to ${endDate ? moment(endDate).format("DD-MM-YYYY") : "End"}.xlsx`;
-
-  //   // Download the Excel file
-  //   XLSX.writeFile(workbook, filename);
-  // };
-
   const downloadExcel = () => {
     const completedLeads = currentLeads.map((lead) => ({ ...lead }));
 
@@ -183,8 +108,6 @@ const EmployeeCloseData = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
-
-  console.log(currentLeads);
 
   return (
     <Wrapper>

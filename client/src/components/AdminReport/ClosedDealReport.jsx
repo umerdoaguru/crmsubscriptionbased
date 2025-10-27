@@ -8,8 +8,6 @@ import * as XLSX from "xlsx";
 const ClosedDealReport = () => {
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const leadsPerPage = 6;
   const EmpId = useSelector((state) => state.auth.user.id);
@@ -33,10 +31,8 @@ const ClosedDealReport = () => {
     "employeeId",
     "follow_up_status",
     "payment_mode",
-
     "reason",
     "registry",
-
     "project_name",
     "visit",
     "visit_date",
@@ -48,7 +44,6 @@ const ClosedDealReport = () => {
   const token = adminuser.token;
   const userId = adminuser.user_id;
 
-  // Fetch leads from the API
   useEffect(() => {
     fetchLeads();
     fetchEmployees();
@@ -65,13 +60,13 @@ const ClosedDealReport = () => {
           },
         }
       );
-      // Filter out leads where deal status is "pending"
+
       const nonPendingLeads = response.data.filter(
-        (lead) => lead.deal_status == "close"
+        (lead) => lead.deal_status === "close"
       );
 
       setLeads(nonPendingLeads);
-      setFilteredLeads(nonPendingLeads); // Initial data set for filtering
+      setFilteredLeads(nonPendingLeads);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
@@ -116,11 +111,9 @@ const ClosedDealReport = () => {
     }
   };
 
-  // Automatically apply date filter when start or end date changes
   useEffect(() => {
     let filtered = leads;
 
-    // Filter by selected employee
     if (selectedEmployee) {
       filtered = filtered.filter(
         (lead) => lead.assignedTo === selectedEmployee
@@ -128,12 +121,10 @@ const ClosedDealReport = () => {
     }
 
     filtered = filterByDuration(filtered, duration);
-
     setFilteredLeads(filtered);
   }, [selectedEmployee, duration, leads]);
 
   const downloadExcel = () => {
-    // Map to rename keys for export
     const columnMapping = {
       lead_no: "Lead Number",
       assignedTo: "Assigned To",
@@ -174,13 +165,12 @@ const ClosedDealReport = () => {
             col
           )
         ) {
-          // Check if date exists and is valid
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
               ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-              : "pending"; // If invalid or missing, set as "PENDING"
+              : "pending";
         } else {
-          formattedLead[newKey] = lead[col]; // Assign other fields normally
+          formattedLead[newKey] = lead[col];
         }
       });
 

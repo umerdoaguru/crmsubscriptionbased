@@ -79,11 +79,7 @@ const EmployeeCloseGraph = () => {
         }
       );
       const data = response.data;
-      console.log(data[0]?.esu_sold_date);
-
       const formattedData = generateStaticData(data);
-      console.log("Formatted Data: ", formattedData);
-
       setDealStatusData(formattedData);
     } catch (error) {
       console.error("Error fetching data:", error);

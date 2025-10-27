@@ -35,7 +35,6 @@ const AdminFollowUpViewContent = () => {
         }
       );
       setFollow_Up(response.data);
-      console.log(response);
     } catch (error) {
       console.error("Error fetching visit:", error);
     }
@@ -83,7 +82,13 @@ const AdminFollowUpViewContent = () => {
     try {
       const response = await axios.put(
         `https://crm-generalize.dentalguru.software/api/employe-follow-up`,
-        modalData
+        modalData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       if (response.status === 200) {
         cogoToast.success("Follow Up updated successfully!");

@@ -4,6 +4,7 @@ import axios from "axios";
 import cogoToast from "cogo-toast";
 import getFieldValue from "../../utils/getFieldValue";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const FollowUpCreationPopUp = ({
   isOpen,
@@ -13,6 +14,8 @@ const FollowUpCreationPopUp = ({
   fetchMetaLeads,
   leads,
 }) => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const modalRef = useRef();
   const { type, id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -36,8 +39,6 @@ const FollowUpCreationPopUp = ({
       [name]: value,
     }));
   };
-
-  console.log(follow_up);
 
   useEffect(() => {
     setFollow_Up({
@@ -67,10 +68,15 @@ const FollowUpCreationPopUp = ({
     try {
       const response = await axios.post(
         `https://crm-generalize.dentalguru.software/api/employe-follow-up`,
-        follow_up
+        follow_up,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
-      console.log("Follow-up created successfully:", response.data);
       cogoToast.success("Follow-up created successfully");
 
       fetchFollowUp();
@@ -79,7 +85,6 @@ const FollowUpCreationPopUp = ({
       setLoading(false);
       onClose();
     } catch (error) {
-      console.error("Request failed:", error);
       cogoToast.error("Failed to create follow-up.");
       setLoading(false);
     }

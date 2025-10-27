@@ -115,11 +115,9 @@ const SuperClosedDealReport = () => {
     }
   };
 
-  // Automatically apply date filter when start or end date changes
   useEffect(() => {
     let filtered = leads;
 
-    // Filter by selected employee
     if (selectedEmployee) {
       filtered = filtered.filter(
         (lead) => lead.assignedTo === selectedEmployee
@@ -174,13 +172,13 @@ const SuperClosedDealReport = () => {
             col
           )
         ) {
-          // Check if date exists and is valid
+         
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
               ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-              : "pending"; // If invalid or missing, set as "PENDING"
+              : "pending";
         } else {
-          formattedLead[newKey] = lead[col]; // Assign other fields normally
+          formattedLead[newKey] = lead[col];
         }
       });
 

@@ -13,6 +13,8 @@ const VisitCreationPopup = ({
   fetchMetaLeads,
   leads,
 }) => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const modalRef = useRef();
   const { type, id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -30,8 +32,6 @@ const VisitCreationPopup = ({
     leadType: type,
   });
 
-  console.log(id);
-
   const handleInputChangeVisit = (e) => {
     const { name, value } = e.target;
     setVisitLead((prevLead) => ({
@@ -48,7 +48,13 @@ const VisitCreationPopup = ({
       // First API call: Create a visit
       const response = await axios.post(
         `https://crm-generalize.dentalguru.software/api/employe-visit`,
-        visitLead
+        visitLead,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (response.status === 201) {

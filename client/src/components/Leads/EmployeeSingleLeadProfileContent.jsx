@@ -10,21 +10,10 @@ import FollowUpCreationPopUp from "./FollowUpCreationPopUp";
 import RemarkCreationPopup from "./RemarkCreationPopup";
 import UnitSoldCreationPopup from "./UnitSoldCreationPopup";
 import UpdateLeadStatusPopup from "./UpdateLeadStatusPopup";
-
-const getFieldValue = (dataString, fieldName) => {
-  try {
-    const data = JSON.parse(dataString);
-    const field = data.find((item) => item.name === fieldName);
-    return field ? field.values[0] : "";
-  } catch (error) {
-    console.error("Invalid question_fields_data:", error);
-    return "";
-  }
-};
+import getFieldValue from "../../utils/getFieldValue";
 
 function EmployeeSingleLeadProfileContent() {
   const { type, id } = useParams();
-  console.log(`lead Id`, id);
 
   const navigate = useNavigate();
   const [leads, setLeads] = useState([]);
@@ -101,7 +90,7 @@ function EmployeeSingleLeadProfileContent() {
           },
         }
       );
-      console.log(response.data);
+
       setLeads(response.data);
 
       response.data.forEach((lead) => {
@@ -113,10 +102,6 @@ function EmployeeSingleLeadProfileContent() {
           lead.quotation && lead.quotation.trim().toLowerCase() === "created"
       );
 
-      console.log(
-        "Has created quotation (normalized check)?",
-        hasCreatedQuotation
-      );
       setQuotationCreated(hasCreatedQuotation);
     } catch (error) {
       console.error("Error fetching quotations:", error);
@@ -134,14 +119,12 @@ function EmployeeSingleLeadProfileContent() {
           },
         }
       );
-      console.log(data);
+
       setLeads(data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
   };
-
-  console.log(leads);
 
   const fetchVisit = async () => {
     try {
@@ -154,14 +137,12 @@ function EmployeeSingleLeadProfileContent() {
           },
         }
       );
-      console.log(data);
+
       setVisit(data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
   };
-
-  console.log(visit);
 
   const fetchFollowUp = async () => {
     try {
@@ -186,8 +167,6 @@ function EmployeeSingleLeadProfileContent() {
     }
   };
 
-  console.log(followCreated);
-
   const fetchUnitSoldEmployee = async () => {
     try {
       let apiUrl = "";
@@ -204,8 +183,6 @@ function EmployeeSingleLeadProfileContent() {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      console.log(response);
 
       setemployeeunitsoldCreated(response.data[0]);
     } catch (error) {
@@ -229,14 +206,11 @@ function EmployeeSingleLeadProfileContent() {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response.data);
       setRemarkCreated(response.data.length > 0);
     } catch (error) {
       console.error("Error fetching remarks:", error);
     }
   };
-
-  console.log(remarkCreated);
 
   const fetchUnitdata = async () => {
     try {
@@ -250,7 +224,6 @@ function EmployeeSingleLeadProfileContent() {
         }
       );
       setUnitData(response.data);
-      console.log(unitdata);
     } catch (error) {
       console.error("Error fetching Unit Data:", error);
     }
@@ -267,9 +240,8 @@ function EmployeeSingleLeadProfileContent() {
   const handleViewQuotation = (lead) => {
     console.log("Lead Object:", lead);
     const name = lead.name;
-    console.log("Lead Name:", name); // Log the name
+    console.log("Lead Name:", name);
     navigate(`/View_quotations/${lead.lead_id}`);
-    // navigate("/View_quotations");
   };
 
   const handleInputChange = (e) => {
@@ -300,7 +272,6 @@ function EmployeeSingleLeadProfileContent() {
     navigate(
       `/view_unit_sold/${type}/${leads[0].lead_id || leads[0].leadgen_id}`
     );
-    console.log(leads[0].employeeId);
   };
 
   const handleViewFollowUp = () => {
@@ -343,18 +314,22 @@ function EmployeeSingleLeadProfileContent() {
       setLoading(true);
       const response = await axios.put(
         `https://crm-generalize.dentalguru.software/api/updateLeadStatus/${currentLead.lead_id}`,
-        leadData
+        leadData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (response.status === 200) {
-        console.log("Updated successfully:", response.data);
         cogoToast.success("Lead status updated successfully");
         setRender(!render);
         closePopup();
         fetchLeads();
         setLoading(false);
       } else {
-        console.error("Error updating:", response.data);
         setLoading(false);
         cogoToast.error({ general: "Failed to update the lead status." });
       }
@@ -370,7 +345,6 @@ function EmployeeSingleLeadProfileContent() {
   };
 
   const totalVisit = visit.length;
-  console.log(totalVisit);
 
   return (
     <>

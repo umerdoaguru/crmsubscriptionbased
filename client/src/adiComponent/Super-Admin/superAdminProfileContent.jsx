@@ -7,6 +7,8 @@ import UpdateProfilePopup from "./UpdateProfilePopup";
 import ChangePasswordPopup from "./ChangePasswordPopup";
 
 const SuperAdminProfileContent = () => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const superAdmin = useSelector((state) => state.auth.user);
   const [profileData, setProfileData] = useState([]);
   const [updateModal, setUpdateModal] = useState(false);
@@ -28,7 +30,13 @@ const SuperAdminProfileContent = () => {
   const fetchEmployeeData = async () => {
     try {
       const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/getEmployeeDetails/${superAdmin?.staff_id}`
+        `https://crm-generalize.dentalguru.software/api/getEmployeeDetails/${superAdmin?.staff_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setProfileData(data);
     } catch (error) {

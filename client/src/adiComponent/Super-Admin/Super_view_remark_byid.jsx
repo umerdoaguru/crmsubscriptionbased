@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import moment from "moment";
-
-
-
-
-
 import { useSelector } from "react-redux";
-import MainHeader from '../../components/MainHeader';
-import SuperAdminSider from './SuperAdminSider';
-
+import MainHeader from "../../components/MainHeader";
+import SuperAdminSider from "./SuperAdminSider";
 
 const Super_view_remark_byid = () => {
   const [remarks, setRemarks] = useState([]);
@@ -30,12 +23,15 @@ const Super_view_remark_byid = () => {
 
   const fetchRemarks = async () => {
     try {
-      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/remarks-super-admin/${id}`,
+      const response = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/remarks-super-admin/${id}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }});
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setRemarks(response.data);
       console.log(response);
     } catch (error) {
@@ -43,9 +39,6 @@ const Super_view_remark_byid = () => {
     }
   };
 
- 
-
- 
   const filteredRemarks = remarks.filter((remark) =>
     remark.name.toLowerCase().includes(filterText.toLowerCase())
   );
@@ -95,26 +88,36 @@ const Super_view_remark_byid = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Date
                     </th>
-                 
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {currentRemarks.map((remark, index) => (
                     <tr key={remark.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">{offset + index + 1}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{remark.lead_id}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{remark.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{remark.employee_name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{remark.remark_status}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{remark.answer_remark}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{remark.date}</td>
-                  
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {offset + index + 1}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {remark.lead_id}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {remark.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {remark.employee_name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {remark.remark_status}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {remark.answer_remark}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {remark.date}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-
-             
             </div>
           </div>
         </div>

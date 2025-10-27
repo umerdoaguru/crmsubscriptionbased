@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
-import moment from "moment";
 
 const EmployeesoldUnitCardsContent = () => {
   const [leads, setLeads] = useState([]);

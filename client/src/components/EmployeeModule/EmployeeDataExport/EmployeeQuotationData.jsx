@@ -9,6 +9,8 @@ import styled from "styled-components";
 import EmployeeSider from "../EmployeeSider";
 
 const EmployeeQuotationData = () => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const [quotations, setQuotations] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10);
@@ -20,7 +22,13 @@ const EmployeeQuotationData = () => {
     const fetchQuotations = async () => {
       try {
         const response = await axios.get(
-          `https://crm-generalize.dentalguru.software/api/get-quotation-byEmploye/${EmpId}`
+          `https://crm-generalize.dentalguru.software/api/get-quotation-byEmploye/${EmpId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setQuotations(response.data);
       } catch (error) {

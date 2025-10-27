@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 
 const FinanceCompanySavePopup = ({ isOpen, onClose, fetchCompanies }) => {
   const user = useSelector((state) => state.auth.user);
+  const token = user.token;
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     fc_org_id: user?.staff_org_id,
@@ -56,7 +57,13 @@ const FinanceCompanySavePopup = ({ isOpen, onClose, fetchCompanies }) => {
     try {
       const res = await axios.post(
         "https://crm-generalize.dentalguru.software/api/finance-companies/create",
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (res.data.success) {

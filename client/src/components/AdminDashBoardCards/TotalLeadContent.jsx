@@ -31,7 +31,6 @@ const AdminTotalLeadContent = () => {
           },
         }
       );
-      console.log(response);
       setLeads(response.data);
     } catch (error) {
       console.error("Error fetching leads:", error);
@@ -41,7 +40,6 @@ const AdminTotalLeadContent = () => {
   useEffect(() => {
     let filtered = leads;
 
-    // Filter by search term
     if (searchTerm) {
       const trimmedSearchTerm = searchTerm.toLowerCase().trim();
       filtered = filtered.filter((lead) =>
@@ -51,16 +49,14 @@ const AdminTotalLeadContent = () => {
       );
     }
 
-    // Update the filtered leads and reset to the first page
     setFilteredLeads(filtered);
-    setCurrentPage(0); // Reset to the first page when the search term changes
+    setCurrentPage(0);
   }, [searchTerm, leads]);
 
   // Pagination logic
   const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-  // const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
   const currentLeads =
     leadsPerPage === Infinity
       ? filteredLeads
@@ -73,7 +69,7 @@ const AdminTotalLeadContent = () => {
   const handleLeadsPerPageChange = (e) => {
     const value = e.target.value;
     setLeadsPerPage(value === "All" ? Infinity : parseInt(value, 10));
-    setCurrentPage(0); // Reset to the first page
+    setCurrentPage(0);
   };
 
   return (

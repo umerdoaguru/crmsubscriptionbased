@@ -204,10 +204,15 @@ const AdminEditLeadPopup = ({
       try {
         setLoading(true);
         if (isEditing) {
-          // Update existing lead
           await axios.put(
             `https://crm-generalize.dentalguru.software/api/leads/${selectedLead?.lead_id}`,
-            leadData
+            leadData,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
           );
 
           fetchLeads();
@@ -217,16 +222,21 @@ const AdminEditLeadPopup = ({
           // Create new lead
           await axios.post(
             "https://crm-generalize.dentalguru.software/api/leads",
-            leadData
+            leadData,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
           );
 
           // Construct WhatsApp message link with encoded parameters
           const whatsappLink = `https://wa.me/${currentLead.employeephone}?text=Hi%20${currentLead.assignedTo},%20you%20have%20been%20assigned%20a%20new%20lead%20with%20the%20following%20details:%0A%0A1)%20Lead%20No.%20${currentLead.lead_no}%0A2)%20Name:%20${currentLead.name}%0A3)%20Phone%20Number:%20${currentLead.phone}%0A4)%20Lead%20Source:%20${currentLead.leadSource}%0A5)%20Address:%20${currentLead.address}%0A6)%20Project Name:%20${currentLead.project_name}%0A%0APlease%20check%20your%20dashboard%20for%20details.`;
 
-          // Open WhatsApp link in a new tab
           window.open(whatsappLink, "_blank");
           setIsEditing(false);
-          fetchLeads(); // Refresh the list
+          fetchLeads();
           onClose();
         }
         setLoading(false);

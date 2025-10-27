@@ -3,35 +3,23 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
-import ReactPaginate from "react-paginate";
-
-import cogoToast from "cogo-toast";
-import MainHeader from '../../components/MainHeader';
-import SuperAdminSider from './SuperAdminSider';
+import MainHeader from "../../components/MainHeader";
+import SuperAdminSider from "./SuperAdminSider";
 
 const Super_view_unit_byid = () => {
   const [employeeunitsold, setEmployeeUnitSold] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage] = useState(10); // Number of items per page
+  const [itemsPerPage] = useState(10);
   const [filterText, setFilterText] = useState("");
-
   const [render, setRender] = useState(false);
-
   const { id } = useParams();
- 
   const navigate = useNavigate();
   const adminuser = useSelector((state) => state.auth.user);
-
   const token = adminuser?.token;
-  
+
   useEffect(() => {
     fetchEmployeeUnitSold();
- 
   }, [id, render]);
-
- 
-
-
 
   const fetchEmployeeUnitSold = async () => {
     try {
@@ -39,22 +27,17 @@ const Super_view_unit_byid = () => {
         `https://crm-generalize.dentalguru.software/api/super-admin-unit-sold-lead-id/${id}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }}
-        
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setEmployeeUnitSold(response.data);
       console.log(response);
-
     } catch (error) {
       console.error("Error fetching visit:", error);
     }
   };
-
-  
- 
-
 
   const filteredEmployeeUnitSold = employeeunitsold.filter((unitsold) =>
     unitsold.name.toLowerCase().includes(filterText.toLowerCase())
@@ -68,8 +51,7 @@ const Super_view_unit_byid = () => {
   const pageCount = Math.ceil(filteredEmployeeUnitSold.length / itemsPerPage);
 
   const handleBackClick = () => {
-    navigate(-1); // -1 navigates to the previous page in history
-    
+    navigate(-1);
   };
 
   return (
@@ -77,7 +59,7 @@ const Super_view_unit_byid = () => {
       <MainHeader />
       <SuperAdminSider />
       <div className="container mt-4 2xl:w-[91%] 2xl:ml-36">
-      <div className="mt-[7rem] ">
+        <div className="mt-[7rem] ">
           <button
             onClick={() => navigate(-1)}
             className="bg-blue-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-blue-600 transition-colors"
@@ -98,20 +80,18 @@ const Super_view_unit_byid = () => {
                       S.no
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Unit No
+                      Unit No
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Project Name
+                      Project Name
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Unit Status
+                      Unit Status
                     </th>
-                    
+
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Date
+                      Date
                     </th>
-                  
-                  
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -129,24 +109,16 @@ const Super_view_unit_byid = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         {unitsold.unit_status}
                       </td>
-                      
+
                       <td className="px-6 py-4 whitespace-nowrap">
-                       {moment(unitsold.date).format("DD MMM YYYY").toUpperCase()}
+                        {moment(unitsold.date)
+                          .format("DD MMM YYYY")
+                          .toUpperCase()}
                       </td>
-                    
-                    
                     </tr>
                   ))}
                 </tbody>
               </table>
-
-
-
-
-              
-
-             
-
             </div>
           </div>
         </div>
@@ -155,4 +127,4 @@ const Super_view_unit_byid = () => {
   );
 };
 
-export default Super_view_unit_byid
+export default Super_view_unit_byid;

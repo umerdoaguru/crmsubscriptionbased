@@ -267,7 +267,13 @@ function AdminLeadsContent({ isSidebarOpen }) {
     if (isConfirmed) {
       try {
         await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/leads/${id}`
+          `https://crm-generalize.dentalguru.software/api/leads/${id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         fetchLeads();
       } catch (error) {

@@ -82,7 +82,6 @@ const EmployeeSoldDataDetails = () => {
         }
       );
       setSoldUnits(response.data.data || response.data || []);
-      console.log("Fetched Sold Units:", response.data);
     } catch (error) {
       console.error("Error fetching Sold Units:", error);
     }
@@ -99,7 +98,6 @@ const EmployeeSoldDataDetails = () => {
           },
         }
       );
-      console.log("Fetched Employee Data:", response.data);
       const employeeData = response.data.data || response.data || [];
       setLeads(employeeData);
       setFilteredLeads(employeeData);

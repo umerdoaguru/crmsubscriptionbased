@@ -7,6 +7,8 @@ import cogoToast from "cogo-toast";
 import Super_Single_Lead_Profile from "./Super_Single_Lead_Profile";
 import { useSelector } from "react-redux";
 import SuperAdminEditLeadPopup from "./SuperAdminEditLeadPopup";
+import BulkLeadUploadPopup from "../../pages/superAdmin/popupWindows/BulkLeadUploadPopup";
+import { FaDatabase } from "react-icons/fa6";
 
 function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   const superadminuser = useSelector((state) => state.auth.user);
@@ -42,12 +44,12 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   const [sortOrder, setSortOrder] = useState("desce");
   const [isEditing, setIsEditing] = useState(false);
   const [selectedLead, setSelectedLead] = useState();
-
   const [showPopup, setShowPopup] = useState(false);
   const [projects, setProjects] = useState([]);
   const [projectunit, setProjectUnit] = useState([]);
   const [visitmonthFilter, setVisitMonthFilter] = useState("");
   const [yearFilter, setYearFilter] = useState("");
+  const [showBulkModal, setShowBulkModal] = useState(false);
 
   // Fetch leads from the API
   useEffect(() => {
@@ -83,8 +85,6 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
       console.error("Error fetching leads:", error);
     }
   };
-
-  console.log(leads);
 
   const fetchEmployees = async () => {
     try {
@@ -159,7 +159,13 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
     try {
       const response = await axios.put(
         `https://crm-generalize.dentalguru.software/api/updateOnlyAnswerRemark`,
-        modalData
+        modalData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       if (response.status === 200) {
         cogoToast.success("AnswerRemark updated successfully!");
@@ -315,7 +321,13 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
     if (isConfirmed) {
       try {
         await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/leads/${id}`
+          `https://crm-generalize.dentalguru.software/api/leads/${id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         fetchLeads();
       } catch (error) {
@@ -346,7 +358,6 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   ];
 
   const handleReset = () => {
-    // window.location.reload();
     setSearchTerm("");
     setStartDate("");
     setEndDate("");
@@ -376,15 +387,20 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
                   Leads Management
                 </h2>
               </div>
-              <div className="mb-4">
+              <div className="flex mb-4 gap-2">
                 <button
                   className="bg-cyan-600 text-white mt-2 px-4 py-2 rounded hover:bg-cyan-700 font-medium"
                   onClick={handleCreateClick}
                 >
                   Add Lead
                 </button>
+                <button
+                  className="bg-green-600 text-white mt-2 px-4 py-2 rounded hover:bg-green-700 font-medium flex gap-2 items-center"
+                  onClick={() => setShowBulkModal(true)}
+                >
+                  <FaDatabase /> Add Lead Bulk
+                </button>
               </div>
-              {/* <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-5 mb-4"></div> */}
 
               <div className="grid max-sm:grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
                 {/* Search */}
@@ -805,6 +821,12 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
         currentLeads={currentLeads}
         selectedLead={selectedLead}
         setIsEditing={setIsEditing}
+      />
+
+      <BulkLeadUploadPopup
+        isOpen={showBulkModal}
+        onClose={() => setShowBulkModal(false)}
+        fetchLeads={fetchLeads}
       />
     </>
   );

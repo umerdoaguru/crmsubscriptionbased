@@ -1,66 +1,73 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
-const SuperFormSelector = ({  setLoading, setMe, setError,id, onFormSelect  }) => {
+const SuperFormSelector = ({
+  setLoading,
+  setMe,
+  setError,
+  id,
+  onFormSelect,
+}) => {
   const [forms, setForms] = useState([]);
-  const [selectedFormId, setSelectedFormId] = useState('');
-  const [selectedFormName, setSelectedFormName] = useState('');
+  const [selectedFormId, setSelectedFormId] = useState("");
+  const [selectedFormName, setSelectedFormName] = useState("");
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
 
   // Fetch forms from backend
   const fetchForms = async () => {
     try {
-      const response = await axios.get(`https://crm-generalize.dentalguru.software/api/forms/${id}`,
+      const response = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/forms/${id}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }});
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setForms(response.data.reverse());
     } catch (err) {
-      console.error('Error fetching forms:', err);
-      setError('Failed to fetch forms');
+      console.error("Error fetching forms:", err);
+      setError("Failed to fetch forms");
     }
   };
 
   // Handle form selection change
   const handleFormChange = (e) => {
-    // const formId = e.target.value;
-    // setMe(formId);
-    // setSelectedFormId(formId);
-    // onFormSelect(formId); //pass form id to parents me kiya
     const formId = e.target.value;
-    const formName = forms.find((form) => form.form_id === formId)?.form_name; // Get the form name based on the selected form ID
+    const formName = forms.find((form) => form.form_id === formId)?.form_name;
 
     setMe(formId);
     setSelectedFormId(formId);
     setSelectedFormName(formName);
-    onFormSelect(formId, formName); // Pass both form ID and form name to parent
-
+    onFormSelect(formId, formName);
   };
 
   // Handle fetch leads button click
   const handleFetchLeads = async () => {
     if (!selectedFormId) {
-      setError('Please select a form');
+      setError("Please select a form");
       return;
     }
 
     setLoading(true);
-    setError('Wait');
+    setError("Wait");
 
     try {
       // Fetch leads from Meta API via backend
-      const response = await axios.post('https://crm-generalize.dentalguru.software/api/leads/fetch', {
-        formId: selectedFormId
-      });
-      setError('Fetch leads Done');
+      const response = await axios.post(
+        "https://crm-generalize.dentalguru.software/api/leads/fetch",
+        {
+          formId: selectedFormId,
+        }
+      );
+      setError("Fetch leads Done");
       setLoading(false);
     } catch (err) {
-      console.error('Error fetching leads:', err);
-      setError('Failed to fetch leads');
+      console.error("Error fetching leads:", err);
+      setError("Failed to fetch leads");
       setLoading(false);
     }
   };
@@ -87,13 +94,6 @@ const SuperFormSelector = ({  setLoading, setMe, setError,id, onFormSelect  }) =
           </option>
         ))}
       </select>
-
-      {/* <button
-        onClick={handleFetchLeads}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2"
-      >
-        Fetch Leads
-      </button> */}
     </div>
   );
 };

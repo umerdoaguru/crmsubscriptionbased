@@ -114,8 +114,6 @@ const SuperVisitReport = () => {
     }
   };
 
-  // Automatically apply date filter when start or end date changes
-
   useEffect(() => {
     let filtered = leads;
 

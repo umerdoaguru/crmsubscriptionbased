@@ -8,8 +8,6 @@ const Super_view_followup = ({ selectedLeadId, closeModalFollowUp, type }) => {
   const [follow_up, setFollow_Up] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10);
-  const [filterText, setFilterText] = useState("");
-
   const [render, setRender] = useState(false);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
@@ -46,10 +44,6 @@ const Super_view_followup = ({ selectedLeadId, closeModalFollowUp, type }) => {
       console.error("Error fetching visit:", error);
     }
   };
-
-  // const filteredfollowup = follow_up.filter((follow) =>
-  //   follow.name.toLowerCase().includes(filterText.toLowerCase())
-  // );
 
   const offset = currentPage * itemsPerPage;
   const currentfollow = follow_up.slice(offset, offset + itemsPerPage);

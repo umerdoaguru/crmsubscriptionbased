@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { FaCamera } from "react-icons/fa"; // Import the upload (camera) icon from react-icons
+import { FaCamera } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const UserProfile = () => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const [profile, setProfile] = useState({
     user_name: "",
     email: "",
     phone: "",
     mobile: "",
     address: "",
-    bio: "", // Added bio to the profile state
-    image: null, // Store file object here instead of Data URL
+    bio: "",
+    image: null,
   });
 
   const [profileStrength, setProfileStrength] = useState(0);
@@ -22,7 +25,7 @@ const UserProfile = () => {
   }, [profile]);
 
   const calculateProfileStrength = () => {
-    if (!profile) return; // Return early if profile is null
+    if (!profile) return;
 
     let score = 0;
     const fields = ["user_name", "email", "phone", "mobile", "address", "bio"];
@@ -49,24 +52,26 @@ const UserProfile = () => {
     setLoading(true);
     setError(null);
 
-    // Use FormData for file and text fields
     const formData = new FormData();
     formData.append("user_name", profile.user_name);
     formData.append("email", profile.email);
     formData.append("phone", profile.phone);
     formData.append("mobile", profile.mobile);
     formData.append("address", profile.address);
-    formData.append("bio", profile.bio); // Added bio to FormData
-    // Add image file to the formData if an image is present
+    formData.append("bio", profile.bio);
+
     if (profile.image) {
-      formData.append("profile_picture", profile.image); // Match field name with backend
+      formData.append("profile_picture", profile.image);
     }
 
     try {
-      const response = await fetch("https://crm-generalize.dentalguru.software/api/editProfile", {
-        method: "POST",
-        body: formData, // Send the formData instead of JSON
-      });
+      const response = await fetch(
+        "https://crm-generalize.dentalguru.software/api/editProfile",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to save profile");
@@ -74,7 +79,6 @@ const UserProfile = () => {
 
       const result = await response.json();
       alert("Profile saved successfully!");
-      console.log(result);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -86,20 +90,24 @@ const UserProfile = () => {
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete your profile?")) {
       try {
-        const response = await fetch("https://crm-generalize.dentalguru.software/api/deleteUser", {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: profile.email }), // Pass email in the request body
-        });
+        const response = await fetch(
+          "https://crm-generalize.dentalguru.software/api/deleteUser",
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ email: profile.email }),
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to delete profile");
         }
 
         alert("Profile deleted successfully!");
-        setProfile(null); // Clear profile data on successful deletion
+        setProfile(null);
       } catch (err) {
         setError(err.message);
       }

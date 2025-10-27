@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import cogoToast from "cogo-toast";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const RemarkCreationPopup = ({
   isOpen,
@@ -12,6 +13,8 @@ const RemarkCreationPopup = ({
   fetchMetaLeads,
   leads,
 }) => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const modalRef = useRef();
   const { type, id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -25,8 +28,6 @@ const RemarkCreationPopup = ({
     lead_status: "Remark created",
     leadType: type,
   });
-
-  console.log(leads);
 
   useEffect(() => {
     setRemark({
@@ -60,7 +61,13 @@ const RemarkCreationPopup = ({
     try {
       const response = await axios.post(
         `https://crm-generalize.dentalguru.software/api/remarks`,
-        remark
+        remark,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       cogoToast.success("Remark created and lead updated successfully");
 

@@ -44,6 +44,7 @@ function LeadData() {
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
   const userId = superadminuser.staff_id;
+
   useEffect(() => {
     fetchLeads();
     fetchEmployees();
@@ -85,7 +86,6 @@ function LeadData() {
     }
   };
 
-  // Add a filter for completed leads within the useEffect for filtering
   useEffect(() => {
     let filtered = leads;
 
@@ -101,9 +101,6 @@ function LeadData() {
         (lead) => lead.assignedTo === Number(selectedEmployee)
       );
     }
-
-    // Filter by lead_status 'completed'
-    // filtered = filtered.filter((lead) => lead.lead_status === "completed");
 
     setFilteredLeads(filtered);
     setCurrentPage(0);
@@ -152,16 +149,15 @@ function LeadData() {
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
               ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-              : "pending"; // If invalid or missing, set as "PENDING"
+              : "pending";
         } else {
-          formattedLead[newKey] = lead[col]; // Assign other fields normally
+          formattedLead[newKey] = lead[col];
         }
       });
 
       return formattedLead;
     });
 
-    // Ensure we handle empty reports gracefully
     if (completedLeads.length === 0) {
       alert("No data available for the selected date range.");
       return;
@@ -194,8 +190,6 @@ function LeadData() {
   };
   return (
     <>
-      {/* <Header /> */}
-      {/* <Sider /> */}
       <div className="container 2xl:w-[95%] ">
         <h1 className="text-2xl text-center mt-[2rem] font-medium">
           Leads Data

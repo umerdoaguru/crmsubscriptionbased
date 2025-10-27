@@ -17,7 +17,6 @@ const EmployeeLeadsGraph = () => {
   const [chartData, setChartData] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser?.token;
   const orgId = superadminuser?.staff_org_id;
@@ -27,7 +26,6 @@ const EmployeeLeadsGraph = () => {
       try {
         setLoading(true);
 
-        // ✅ Fetch only Leads and MetaLeads
         const [leadsRes, metaLeadsRes] = await Promise.all([
           axios.get(
             `https://crm-generalize.dentalguru.software/api/employe-leads/${superadminuser?.staff_id}`,
@@ -54,7 +52,6 @@ const EmployeeLeadsGraph = () => {
         const startDate = moment().subtract(28, "days");
         const formatDate = (date) => moment(date).format("MMM DD");
 
-        // ✅ Helper: group data by date (custom date key)
         const groupByDate = (data, dateKey) =>
           data.reduce((acc, item) => {
             const dateValue = item[dateKey];
@@ -74,11 +71,9 @@ const EmployeeLeadsGraph = () => {
             return acc;
           }, {});
 
-        // ✅ Use correct date keys for each dataset
         const leadsGrouped = groupByDate(allLeads, "createdTime");
         const metaLeadsGrouped = groupByDate(allMetaLeads, "generated_time");
 
-        // ✅ Prepare chart data for last 28 days
         const finalData = [];
         for (let i = 0; i <= 27; i++) {
           const date = moment().subtract(i, "days");
@@ -93,7 +88,6 @@ const EmployeeLeadsGraph = () => {
         finalData.reverse();
         setChartData(finalData);
       } catch (error) {
-        console.error("Error fetching chart data:", error);
         setError("Failed to load chart data");
       } finally {
         setLoading(false);

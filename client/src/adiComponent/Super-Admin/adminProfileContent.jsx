@@ -3,20 +3,26 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import MainHeader from "../../components/MainHeader";
-import SuperAdminSider from "./SuperAdminSider";
 
 function AdminProfileContent() {
-  const [user, setUser] = useState([]); // Initialize state for employee data
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
+  const [user, setUser] = useState([]);
   const { adminId } = useParams();
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
         const response = await axios.get(
-          `https://crm-generalize.dentalguru.software/api/getAdminById/${adminId}`
-        ); // Fetch employee data
-        setUser(response.data.admin); // Set employee data to state
-        console.log(response.data); // Debug: log employee data
+          `https://crm-generalize.dentalguru.software/api/getAdminById/${adminId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUser(response.data.admin);
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching employee data:", error);
       }

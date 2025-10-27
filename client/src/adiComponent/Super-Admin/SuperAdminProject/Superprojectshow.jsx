@@ -14,7 +14,6 @@ const Superprojectshow = () => {
   const [showModal, setShowModal] = useState(false);
   const [editProject, setEditProject] = useState({});
   const [addProject, setAddProject] = useState();
-
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
   const userId = superadminuser.staff_id;
@@ -35,7 +34,13 @@ const Superprojectshow = () => {
     try {
       const response = await axios.post(
         "https://crm-generalize.dentalguru.software/api/project-add",
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (response.status === 200) {
@@ -99,7 +104,13 @@ const Superprojectshow = () => {
 
     try {
       const res = await axios.delete(
-        `https://crm-generalize.dentalguru.software/api/delete-project/${id}`
+        `https://crm-generalize.dentalguru.software/api/delete-project/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       toast.success("project deleted successful");
       fetchProjects();
@@ -118,7 +129,13 @@ const Superprojectshow = () => {
     try {
       const { data } = await axios.put(
         `https://crm-generalize.dentalguru.software/api/edit-project/${editProject.project_id}`,
-        editProject
+        editProject,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       cogoToast.success(data.message || "Project updated successfully!");
       fetchProjects();

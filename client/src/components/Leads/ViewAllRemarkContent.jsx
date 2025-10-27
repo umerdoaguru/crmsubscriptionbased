@@ -4,17 +4,7 @@ import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import cogoToast from "cogo-toast";
-
-const getFieldValue = (dataString, fieldName) => {
-  try {
-    const data = JSON.parse(dataString);
-    const field = data.find((item) => item.name === fieldName);
-    return field ? field.values[0] : "";
-  } catch (error) {
-    console.error("Invalid question_fields_data:", error);
-    return "";
-  }
-};
+import getFieldValue from "../../utils/getFieldValue";
 
 const ViewAllRemarkContent = () => {
   const [remarks, setRemarks] = useState([]);
@@ -67,7 +57,13 @@ const ViewAllRemarkContent = () => {
     try {
       // Delete the remark
       const deleteResponse = await axios.delete(
-        `https://crm-generalize.dentalguru.software/api/remarks/${remark.remark_id}`
+        `https://crm-generalize.dentalguru.software/api/remarks/${remark.remark_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       console.log("Remark deleted successfully");
@@ -102,7 +98,13 @@ const ViewAllRemarkContent = () => {
     try {
       const response = await axios.put(
         `https://crm-generalize.dentalguru.software/api/remarks/${modalData?.remark_id}`,
-        modalData
+        modalData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       cogoToast.success("Remark updated successfully!");
       fetchRemarks();

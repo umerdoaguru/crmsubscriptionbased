@@ -9,6 +9,8 @@ const EMIPayPopup = ({
   selectedEMI,
   fetchLoanInstallments,
 }) => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const user = useSelector((state) => state.auth.user);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -60,7 +62,13 @@ const EMIPayPopup = ({
     try {
       const res = await axios.put(
         `https://crm-generalize.dentalguru.software/api/updateInstallments/${selectedEMI?.installment_id}`,
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (res.data.success) {
@@ -81,8 +89,6 @@ const EMIPayPopup = ({
   };
 
   if (!isOpen) return null;
-
-  console.log(formData);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">

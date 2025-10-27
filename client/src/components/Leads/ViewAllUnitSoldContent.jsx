@@ -80,12 +80,6 @@ const ViewAllUnitSoldContent = () => {
     }
   };
 
-  console.log(leads);
-
-  console.log(unitSoldData[0]?.esu_id);
-
-  console.log(ownPayment?.length === 0, loanInstallment.length === 0);
-
   useEffect(() => {
     fetchUnitSoldData();
   }, [id]);
@@ -93,7 +87,13 @@ const ViewAllUnitSoldContent = () => {
   const fetchLoanInstallments = async () => {
     try {
       const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/getLoanEmiDetailsByLoanID/${unitSoldData[0]?.esu_owner_id}/${EmpId?.staff_org_id}/${unitSoldData[0]?.esu_id}`
+        `https://crm-generalize.dentalguru.software/api/getLoanEmiDetailsByLoanID/${unitSoldData[0]?.esu_owner_id}/${EmpId?.staff_org_id}/${unitSoldData[0]?.esu_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setLoanInstallment(data);
     } catch (error) {
@@ -102,10 +102,6 @@ const ViewAllUnitSoldContent = () => {
   };
 
   const fetchOwnerPayments = async () => {
-    console.log(
-      `${unitSoldData[0]?.esu_id} - ${unitSoldData[0]?.esu_owner_id}`
-    );
-
     try {
       const { data } = await axios.get(
         `https://crm-generalize.dentalguru.software/api/getOwnerPaymentsByMultiIds/${unitSoldData[0]?.esu_id}/${unitSoldData[0]?.esu_owner_id}/${EmpId?.staff_org_id}`
@@ -122,9 +118,6 @@ const ViewAllUnitSoldContent = () => {
       fetchLoanInstallments();
     }
   }, [unitSoldData]);
-
-  console.log(ownPayment);
-  console.log(loanInstallment);
 
   const fetchUnitSoldData = async () => {
     try {
@@ -143,7 +136,6 @@ const ViewAllUnitSoldContent = () => {
 
       setUnitSoldData(Array.isArray(data) ? data : [data]);
     } catch (error) {
-      console.error("Error fetching unit sold data:", error);
       cogoToast.error("Failed to fetch unit sold details");
     } finally {
       setLoading(false);
@@ -158,12 +150,17 @@ const ViewAllUnitSoldContent = () => {
 
     try {
       await axios.delete(
-        `https://crm-generalize.dentalguru.software/api/unit-sold/${type}/${esu_id}`
+        `https://crm-generalize.dentalguru.software/api/unit-sold/${type}/${esu_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       cogoToast.success("Unit Sold deleted successfully!");
       fetchUnitSoldData();
     } catch (error) {
-      console.error("Error deleting unit:", error);
       cogoToast.error("Failed to delete record");
     }
   };

@@ -8,6 +8,8 @@ import * as XLSX from "xlsx";
 import styled from "styled-components";
 
 const InvoiceData = () => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const [invoices, setInvoices] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10);
@@ -18,7 +20,13 @@ const InvoiceData = () => {
     const fetchInvoices = async () => {
       try {
         const response = await axios.get(
-          `https://crm-generalize.dentalguru.software/api/invoice-data`
+          `https://crm-generalize.dentalguru.software/api/invoice-data`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setInvoices(response.data);
       } catch (error) {
@@ -58,9 +66,9 @@ const InvoiceData = () => {
     <Wrapper>
       <div className="container mx-auto px-4">
         <div className="container mx-auto mt-4">
-          <h1 className="text-2xl text-center mt-[2rem] font-medium">
+          <h2 className="text-2xl text-center mt-[2rem] font-medium">
             Invoice Data
-          </h1>
+          </h2>
           <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
           {/* Filter Section */}
           <div className="flex space-x-1 mb-4 sm:flex-row flex-col">
@@ -132,7 +140,7 @@ const InvoiceData = () => {
               nextLabel={"next"}
               breakLabel={"..."}
               pageCount={pageCount}
-forcePage={currentPage}
+              forcePage={currentPage}
               marginPagesDisplayed={2}
               pageRangeDisplayed={5}
               onPageChange={handlePageClick}

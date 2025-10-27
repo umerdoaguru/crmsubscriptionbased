@@ -54,7 +54,10 @@ const MetaAssignedPopup = ({ isOpen, onClose, lead, fetchAllMetaLeads }) => {
     if (!inputField?.meta_project_id) return;
     try {
       const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/getAllUnitsByProjectId/${inputField?.meta_project_id}`
+        `https://crm-generalize.dentalguru.software/api/getAllUnitsByProjectId/${inputField?.meta_project_id}`,
+        {
+          headers: { Authorization: `Bearer ${user?.token}` },
+        }
       );
       setUnits(data);
     } catch (error) {
@@ -105,7 +108,10 @@ const MetaAssignedPopup = ({ isOpen, onClose, lead, fetchAllMetaLeads }) => {
         const updateRequests = lead.map((item) =>
           axios.put(
             `https://crm-generalize.dentalguru.software/api/updateAndAssignedMetaLeads/${item.meta_id}`,
-            inputField
+            inputField,
+            {
+              headers: { Authorization: `Bearer ${user?.token}` },
+            }
           )
         );
 
@@ -114,7 +120,10 @@ const MetaAssignedPopup = ({ isOpen, onClose, lead, fetchAllMetaLeads }) => {
       } else {
         await axios.put(
           `https://crm-generalize.dentalguru.software/api/updateAndAssignedMetaLeads/${lead?.meta_id}`,
-          inputField
+          inputField,
+          {
+            headers: { Authorization: `Bearer ${user?.token}` },
+          }
         );
         cogoToast.success("Meta Lead details updated successfully");
       }

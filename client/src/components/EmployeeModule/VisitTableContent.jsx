@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import moment from "moment";
 import { useSelector } from "react-redux";
 import ReactPaginate from "react-paginate";
 
@@ -38,7 +37,6 @@ const VisitTableContent = () => {
   useEffect(() => {
     let filtered = leads;
 
-    // Filter by search term
     if (searchTerm) {
       const trimmedSearchTerm = searchTerm.toLowerCase().trim();
       filtered = filtered.filter((lead) =>
@@ -64,14 +62,14 @@ const VisitTableContent = () => {
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
-    console.log("change current page ", data.selected);
   };
 
   const handleLeadsPerPageChange = (e) => {
     const value = e.target.value;
     setLeadsPerPage(value === "All" ? Infinity : parseInt(value, 10));
-    setCurrentPage(0); // Reset to the first page
+    setCurrentPage(0);
   };
+
   return (
     <>
       <div className="flex mt-20">

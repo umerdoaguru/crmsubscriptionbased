@@ -3,25 +3,22 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
-import ReactPaginate from "react-paginate";
 import MainHeader from "../MainHeader";
-
 import cogoToast from "cogo-toast";
 import EmployeeeSider from "../EmployeeModule/EmployeeSider";
 
 const EmployeeQuotationList = () => {
   const [quotations, setQuotations] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage] = useState(10); // Number of items per page
+  const [itemsPerPage] = useState(10);
   const [filterText, setFilterText] = useState("");
   const [sortAsc, setSortAsc] = useState(true);
   const [render, setRender] = useState(false);
   const { id } = useParams();
-const navigate  = useNavigate();
-  
-const EmpId = useSelector((state) => state.auth.user);
+  const navigate = useNavigate();
+  const EmpId = useSelector((state) => state.auth.user);
+  const token = EmpId?.token;
 
-const token = EmpId?.token;
   useEffect(() => {
     fetchQuotations();
   }, [id, render]);
@@ -32,39 +29,16 @@ const token = EmpId?.token;
         `https://crm-generalize.dentalguru.software/api/get-quotation-byLead/${id}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }}
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setQuotations(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
   };
-
-  console.log(quotations);
-  
-
-  // const handleDelete = async (id) => {
-  //   const isConfirmed = window.confirm(
-  //     "Are you sure you want to delete this quotation?"
-  //   );
-  //   if (isConfirmed) {
-  //     try {
-  //       const response = await axios.delete(
-  //         `https://crm-generalize.dentalguru.software/api/quotation/${id}`
-  //       );
-  //       if (response.status === 200) {
-  //         console.log("Quotation deleted successfully");
-  //       }
-  //       console.log(response);
-  //       setRender(!render);
-  //     } catch (error) {
-  //       console.error("Error deleting quotation:", error);
-  //     }
-  //   }
-  // };
 
   const handleDelete = async (quotation) => {
     const isConfirmed = window.confirm(
@@ -72,30 +46,38 @@ const token = EmpId?.token;
     );
     if (isConfirmed) {
       try {
-        // Delete the quotation
         const response = await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/quotation/${quotation.id}`
+          `https://crm-generalize.dentalguru.software/api/quotation/${quotation.id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
-        
+
         if (response.status === 200) {
           console.log("Quotation deleted successfully");
-  
-          // After deletion, update the leads table status
           try {
             const updateResponse = await axios.put(
               `https://crm-generalize.dentalguru.software/api/updateOnlyQuotationStatus/${quotation.lead_id}`,
-              { quotation: "not created" }
+              { quotation: "not created" },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+              }
             );
-  
+
             if (updateResponse.status === 200) {
-              console.log("Status updated successfully:", updateResponse.data);
-              cogoToast.success("Quotation deleted and status updated successfully");
+              cogoToast.success(
+                "Quotation deleted and status updated successfully"
+              );
             } else {
-              console.error("Error updating status:", updateResponse.data);
               cogoToast.error("Failed to update the quotation status.");
             }
           } catch (error) {
-            console.error("Request failed while updating status:", error);
             cogoToast.error("Failed to update the quotation status.");
           }
         }
@@ -105,7 +87,6 @@ const token = EmpId?.token;
       }
     }
   };
-  
 
   const handleCopyQuotation = async (quotationId) => {
     try {
@@ -136,25 +117,23 @@ const token = EmpId?.token;
       quotation.customer_name.toLowerCase().includes(filterText.toLowerCase())
   );
 
-  console.log('filteredQuotations', filteredQuotations);
-  
+  console.log("filteredQuotations", filteredQuotations);
 
   const offset = currentPage * itemsPerPage;
   const currentQuotations = filteredQuotations.slice(
     offset,
     offset + itemsPerPage
   );
-  console.log('User Quotation Data :',currentQuotations);
-  
-  const pageCount = Math.ceil(filteredQuotations.length / itemsPerPage);
+  console.log("User Quotation Data :", currentQuotations);
 
+  const pageCount = Math.ceil(filteredQuotations.length / itemsPerPage);
 
   return (
     <>
       <MainHeader />
       <EmployeeeSider />
       <div className="container mt-4 2xl:w-[91%] 2xl:ml-36">
-      <div className="mt-[7rem] ">
+        <div className="mt-[7rem] ">
           <button
             onClick={() => navigate(-1)}
             className="bg-blue-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-blue-600 transition-colors"
@@ -178,7 +157,7 @@ const token = EmpId?.token;
                       Quotation Name
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Created By 
+                      Created By
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Created Date
@@ -210,7 +189,9 @@ const token = EmpId?.token;
                         {quotation.status}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <Link to={`/final-quotationBy-emp/${id}/${quotation.id}`}>
+                        <Link
+                          to={`/final-quotationBy-emp/${id}/${quotation.id}`}
+                        >
                           <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded m-1">
                             View
                           </button>
@@ -221,9 +202,7 @@ const token = EmpId?.token;
                         >
                           Delete
                         </button>
-                        <Link
-                          to={`/update-quotation-name/${quotation.id}`}
-                        >
+                        <Link to={`/update-quotation-name/${quotation.id}`}>
                           <button className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded m-1">
                             Edit
                           </button>
@@ -241,7 +220,6 @@ const token = EmpId?.token;
                   ))}
                 </tbody>
               </table>
-            
             </div>
           </div>
         </div>

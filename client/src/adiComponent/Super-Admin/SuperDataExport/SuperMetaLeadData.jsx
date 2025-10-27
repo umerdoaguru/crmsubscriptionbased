@@ -63,7 +63,6 @@ function SuperMetaLeadData() {
   useEffect(() => {
     let filtered = leads;
 
-    // Filter by date range
     if (startDate && endDate) {
       filtered = filtered.filter((lead) => {
         const created = moment(lead.meta_updated_at, "YYYY-MM-DD");

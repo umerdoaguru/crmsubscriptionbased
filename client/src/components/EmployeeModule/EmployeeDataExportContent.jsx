@@ -50,7 +50,7 @@ function EmployeeDataExportContent() {
           },
         }
       );
-      console.log("setLeads", response.data);
+
       setMetaLeads(response.data);
     } catch (error) {
       console.error("Error fetching leads:", error);
@@ -68,7 +68,7 @@ function EmployeeDataExportContent() {
           },
         }
       );
-      console.log(response.data);
+
       setVisit(response.data);
     } catch (error) {
       console.error("Error fetching quotations:", error);

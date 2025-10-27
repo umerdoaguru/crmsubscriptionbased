@@ -1,16 +1,15 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import MainHeader from '../../components/MainHeader';
-import SuperAdminSider from './SuperAdminSider';
-import { useNavigate } from 'react-router-dom';
-import ReactPaginate from 'react-paginate';
-import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import MainHeader from "../../components/MainHeader";
+import SuperAdminSider from "./SuperAdminSider";
+import { useNavigate } from "react-router-dom";
+import ReactPaginate from "react-paginate";
+import { useSelector } from "react-redux";
 
 function SuperAdminTotalEmployee() {
   const [employees, setEmployees] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const employeesPerPage = 7; // Number of employees to display per page
+  const employeesPerPage = 7;
   const navigate = useNavigate();
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
@@ -21,16 +20,19 @@ function SuperAdminTotalEmployee() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get('https://crm-generalize.dentalguru.software/api/getAllEmployees-super-admin',
+      const response = await axios.get(
+        "https://crm-generalize.dentalguru.software/api/getAllEmployees-super-admin",
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }});
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const { employees } = response.data;
-      setEmployees(employees || []); // Ensure employees is always an array
+      setEmployees(employees || []);
     } catch (error) {
-      console.error('Error fetching employees:', error);
+      console.error("Error fetching employees:", error);
     }
   };
 
@@ -40,7 +42,7 @@ function SuperAdminTotalEmployee() {
   const indexOfLastLead = (currentPage + 1) * employeesPerPage;
   const indexOfFirstLead = indexOfLastLead - employeesPerPage;
   const currentemployees = employees.slice(indexOfFirstLead, indexOfLastLead);
-  
+
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
     console.log("change current page ", data.selected);
@@ -55,7 +57,7 @@ function SuperAdminTotalEmployee() {
       <MainHeader />
       <SuperAdminSider />
       <div className="container mt-[5rem]">
-      <div className="mt-[7rem] 2xl:ml-40 ">
+        <div className="mt-[7rem] 2xl:ml-40 ">
           <button
             onClick={() => navigate(-1)}
             className="bg-blue-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-blue-600 transition-colors"
@@ -95,7 +97,9 @@ function SuperAdminTotalEmployee() {
                 ))
             ) : (
               <tr>
-                <td colSpan="4" className="py-4 text-center">No employees found</td>
+                <td colSpan="4" className="py-4 text-center">
+                  No employees found
+                </td>
               </tr>
             )}
           </tbody>
@@ -108,7 +112,7 @@ function SuperAdminTotalEmployee() {
           nextLabel={"Next"}
           breakLabel={"..."}
           pageCount={pageCount}
-forcePage={currentPage}
+          forcePage={currentPage}
           marginPagesDisplayed={2}
           pageRangeDisplayed={3}
           onPageChange={handlePageClick}
@@ -123,10 +127,9 @@ forcePage={currentPage}
           breakClassName={"page-item"}
           breakLinkClassName={"page-link"}
         />
-</div>
+      </div>
     </>
   );
 }
 
 export default SuperAdminTotalEmployee;
-

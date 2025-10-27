@@ -48,8 +48,6 @@ const EmployeeManagementContent = () => {
     }
   };
 
-  console.log(employees);
-
   const filterEmp = employees?.filter((item) => {
     return item?.staff_role === "employee";
   });
@@ -77,7 +75,13 @@ const EmployeeManagementContent = () => {
     if (isConfirmed) {
       try {
         await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/deleteEmployee/${employeeId}`
+          `https://crm-generalize.dentalguru.software/api/deleteEmployee/${employeeId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         fetchEmployees();
       } catch (error) {
@@ -99,7 +103,6 @@ const EmployeeManagementContent = () => {
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
-    console.log("change current page ", data.selected);
   };
 
   return (

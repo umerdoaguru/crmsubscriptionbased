@@ -24,7 +24,6 @@ function SoldUnitsReport() {
   const token = superadminuser.token;
   const userId = superadminuser.staff_id;
 
-  // Fetch leads from the API without appending an ID
   useEffect(() => {
     fetchLeads();
   }, []);
@@ -47,8 +46,6 @@ function SoldUnitsReport() {
       console.error("Error fetching leads:", error);
     }
   };
-
-  console.log(leads);
 
   // Filter leads by duration
   const filterByDuration = (leads, duration) => {

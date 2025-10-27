@@ -32,7 +32,6 @@ function EmployeeMetaLeadData() {
     "employeeId",
     "follow_up_status",
     "payment_mode",
-
     "reason",
     "registry",
     "visit",

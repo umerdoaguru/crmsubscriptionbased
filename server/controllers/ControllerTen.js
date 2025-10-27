@@ -3,6 +3,7 @@ const axios = require("axios");
 const cors = require("cors");
 const { db } = require("../db");
 const moment = require("moment-timezone");
+const xlsx = require("xlsx");
 
 const metaLeadFetchByPageId = async (req, res) => {
   const { pageId, accessToken, meta_org_id } = req.body;
@@ -980,6 +981,75 @@ const updateCompanySubscription = (req, res) => {
   }
 };
 
+const bulkUploadLeads = (req, res) => {
+  try {
+    const { lead_org_id } = req.body;
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No file uploaded" });
+    }
+
+    if (!lead_org_id) {
+      return res
+        .status(400)
+        .json({ success: false, message: "lead_org_id is required" });
+    }
+
+    const filePath = req.file.path;
+
+    const workbook = xlsx.readFile(filePath);
+    const sheetName = workbook.SheetNames[0];
+    const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+    if (!sheetData.length) {
+      fs.unlinkSync(filePath);
+      return res
+        .status(400)
+        .json({ success: false, message: "Excel file is empty" });
+    }
+
+    const values = sheetData.map((row) => [
+      lead_org_id,
+      row.name || null,
+      row.phone || null,
+      row.lead_email || null,
+      row.leadSource || null,
+      null,
+      row.unit_type || null,
+      null,
+      row.address || null,
+      dateTime,
+      row.actual_date || null,
+    ]);
+
+    const sql = `
+      INSERT INTO leads (
+        lead_org_id, name, phone, lead_email, leadSource,
+        main_project_id, unit_type, unit_id, address, createdTime, actual_date
+      ) VALUES ?
+    `;
+
+    db.query(sql, [values], (err, result) => {
+      fs.unlinkSync(filePath);
+
+      if (err) {
+        return res.status(500).json({ success: false, message: err.message });
+      }
+
+      res.status(201).json({
+        success: true,
+        message: `${result.affectedRows} leads added successfully.`,
+      });
+    });
+  } catch (error) {
+    if (req.file?.path) fs.unlinkSync(req.file.path);
+    res.status(500).json({ success: false, message: "Something went wrong" });
+  }
+};
+
 module.exports = {
   metaLeadFetchByPageId,
   getMetaLeadsByOrgId,
@@ -1000,4 +1070,5 @@ module.exports = {
   updateEmployeeUnitSoldUpdate,
   getSubscriptionDetailsByOrg,
   updateCompanySubscription,
+  bulkUploadLeads,
 };

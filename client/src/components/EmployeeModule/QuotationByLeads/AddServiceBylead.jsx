@@ -10,9 +10,10 @@ const AddServiceByLead = () => {
   const { id } = useParams();
   const userId = useSelector((state) => state.auth.user.id);
   const navigate = useNavigate();
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const [quotationName, setQuotationName] = useState("");
   const [serviceslist, setServiceslist] = useState([]);
-
   const [services, setServices] = useState([
     {
       service_type: "",
@@ -41,10 +42,8 @@ const AddServiceByLead = () => {
 
   const handleServiceChange = (index, field, value) => {
     const newServices = [...services];
-    // newServices[index][field] = value;
 
     if (field === "service_type" && value === "Complimentary") {
-      // If the service type is 'Complimentary', disable the offer price and set it to 0
       newServices[index]["offer_price"] = 0;
     }
 
@@ -52,17 +51,14 @@ const AddServiceByLead = () => {
       field === "offer_price" &&
       newServices[index].service_type === "Complimentary"
     ) {
-      // If the service type is 'Complimentary', set offer price to 0 and disable the input
       newServices[index][field] = 0;
     } else if (
       field === "offer_price" &&
       value > newServices[index].actual_price
     ) {
-      // If offer price is greater than actual price, set it to actual price and alert
       alert("Offer price cannot be greater than actual price");
       newServices[index][field] = newServices[index].actual_price;
     } else {
-      // Otherwise, update the field normally
       newServices[index][field] = value;
     }
     setServices(newServices);
@@ -117,6 +113,12 @@ const AddServiceByLead = () => {
         {
           quotation_name: quotationName,
           services: servicesToSave,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -134,7 +136,13 @@ const AddServiceByLead = () => {
   const getQuotationName = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/quotation/${id}`
+        `https://crm-generalize.dentalguru.software/api/quotation/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setQuotationName(response.data[0].quotation_name);
     } catch (error) {
@@ -145,7 +153,13 @@ const AddServiceByLead = () => {
   const getServicelist = async () => {
     try {
       const res = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/servicelist/${userId}`
+        `https://crm-generalize.dentalguru.software/api/servicelist/${userId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       console.log(res.data);
       setServiceslist(res.data);

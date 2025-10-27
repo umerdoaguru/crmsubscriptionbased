@@ -3,13 +3,10 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import MainHeader from "../../components/MainHeader";
-import SuperAdminSider from "./SuperAdminSider";
 import ReactPaginate from "react-paginate";
-import styled from "styled-components";
 
 function EmployeeProfileContent() {
-  const [user, setUser] = useState([]); // Initialize state for employee data
+  const [user, setUser] = useState([]);
   const { employeeId } = useParams();
   const [leads, setLeads] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -60,9 +57,9 @@ function EmployeeProfileContent() {
               Authorization: `Bearer ${token}`,
             },
           }
-        ); // Fetch employee data
-        setUser(response.data[0]); // Set employee data to state
-        console.log(response.data); // Debug: log employee data
+        );
+        setUser(response.data[0]);
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching employee data:", error);
       }

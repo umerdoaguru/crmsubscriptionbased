@@ -6,7 +6,7 @@ function Layouts() {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => {
-    console.log("toggleSidebar clicked"); // Add this to check if it’s firing
+    console.log("toggleSidebar clicked"); 
     setIsOpen(!isOpen);
   };
 

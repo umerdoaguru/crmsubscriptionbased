@@ -8,9 +8,11 @@ import * as XLSX from "xlsx";
 import styled from "styled-components";
 
 const QuotationData = () => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const [quotations, setQuotations] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage] = useState(10); // Number of items per page
+  const [itemsPerPage] = useState(10);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
@@ -18,7 +20,13 @@ const QuotationData = () => {
     const fetchQuotations = async () => {
       try {
         const response = await axios.get(
-          `https://crm-generalize.dentalguru.software/api/quotation-data`
+          `https://crm-generalize.dentalguru.software/api/quotation-data`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setQuotations(response.data);
       } catch (error) {
@@ -126,7 +134,7 @@ const QuotationData = () => {
               nextLabel={"next"}
               breakLabel={"..."}
               pageCount={pageCount}
-forcePage={currentPage}
+              forcePage={currentPage}
               marginPagesDisplayed={2}
               pageRangeDisplayed={5}
               onPageChange={handlePageClick}

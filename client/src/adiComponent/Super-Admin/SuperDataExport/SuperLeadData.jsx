@@ -102,9 +102,6 @@ function SuperLeadData() {
       );
     }
 
-    // Filter by lead_status 'completed'
-    // filtered = filtered.filter((lead) => lead.lead_status === "completed");
-
     setFilteredLeads(filtered);
     setCurrentPage(0);
   }, [startDate, endDate, selectedEmployee, leads]);
@@ -148,20 +145,18 @@ function SuperLeadData() {
             col
           )
         ) {
-          // Check if date exists and is valid
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
               ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-              : "pending"; // If invalid or missing, set as "PENDING"
+              : "pending";
         } else {
-          formattedLead[newKey] = lead[col]; // Assign other fields normally
+          formattedLead[newKey] = lead[col];
         }
       });
 
       return formattedLead;
     });
 
-    // Ensure we handle empty reports gracefully
     if (completedLeads.length === 0) {
       alert("No data available for the selected date range.");
       return;

@@ -18,6 +18,7 @@ const LeadsGraph = () => {
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
   const userId = superadminuser.staff_id;
+
   useEffect(() => {
     const fetchLeadsData = async () => {
       try {
@@ -31,10 +32,8 @@ const LeadsGraph = () => {
           }
         );
         const allLeads = response.data;
-
         const today = moment();
         const startDate = moment().subtract(28, "days");
-
         const formatDate = (date) => moment(date).format("MMM DD");
 
         const filteredLeads = allLeads.filter((lead) => {

@@ -9,10 +9,11 @@ import { useSelector } from "react-redux";
 function TotalEmployee() {
   const [employees, setEmployees] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const leadsPerPage = 7; // Default leads per page
+  const leadsPerPage = 7;
   const navigate = useNavigate();
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
+
   useEffect(() => {
     fetchEmployees();
   }, []);
@@ -23,12 +24,13 @@ function TotalEmployee() {
         "https://crm-generalize.dentalguru.software/api/getAllEmployees",
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }}
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       const { employees } = response.data;
-      setEmployees(employees || []); // Ensure employees is always an array
+      setEmployees(employees || []);
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
@@ -38,13 +40,13 @@ function TotalEmployee() {
     navigate(`/employee-single/${employeeId}`);
   };
 
- const pageCount = Math.ceil(employees.length / leadsPerPage);
+  const pageCount = Math.ceil(employees.length / leadsPerPage);
 
   // Pagination logic
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
   const currentemployees = employees.slice(indexOfFirstLead, indexOfLastLead);
-  
+
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
     console.log("change current page ", data.selected);
@@ -54,7 +56,7 @@ function TotalEmployee() {
       <MainHeader />
       <Sider />
       <div className="container">
-      <div className="mt-[7rem] 2xl:ml-40 ">
+        <div className="mt-[7rem] 2xl:ml-40 ">
           <button
             onClick={() => navigate(-1)}
             className="bg-blue-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-blue-600 transition-colors"
@@ -66,7 +68,6 @@ function TotalEmployee() {
         <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
       </div>
       <div className="overflow-x-auto rounded-lg shadow-md 2xl:ml-40 mx-12">
-        
         <table className="container bg-white">
           <thead>
             <tr className="text-sm font-semibold text-left text-gray-600 uppercase bg-gray-200">
@@ -108,7 +109,7 @@ function TotalEmployee() {
           nextLabel={"Next"}
           breakLabel={"..."}
           pageCount={pageCount}
-forcePage={currentPage}
+          forcePage={currentPage}
           marginPagesDisplayed={2}
           pageRangeDisplayed={3}
           onPageChange={handlePageClick}
@@ -123,7 +124,7 @@ forcePage={currentPage}
           breakClassName={"page-item"}
           breakLinkClassName={"page-link"}
         />
-</div>
+      </div>
     </>
   );
 }

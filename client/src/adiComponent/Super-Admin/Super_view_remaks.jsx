@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import getFieldValue from "../../utils/getFieldValue";
@@ -8,7 +8,6 @@ const Super_view_remarks = ({ selectedLeadId, closeModalRemark, type }) => {
   const [remarks, setRemarks] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10);
-  const [filterText, setFilterText] = useState("");
   const [render, setRender] = useState(false);
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;

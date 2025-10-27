@@ -15,11 +15,11 @@ const LeadsTable = () => {
   const [loadingsave, setLoadingsave] = useState(false);
   const [error, setError] = useState("");
   const [gotId, setGotId] = useState("");
-  const [selectedFormId, setSelectedFormId] = useState(""); // Store selected form ID
+  const [selectedFormId, setSelectedFormId] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [leadsAssigned, setLeadsAssigned] = useState([]);
-  const [refreshLeads, setRefreshLeads] = useState(false); // State to trigger refresh
+  const [refreshLeads, setRefreshLeads] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
   const [employees, setEmployees] = useState([]);
@@ -87,16 +87,15 @@ const LeadsTable = () => {
         }
       );
       setLeadsAssigned(response.data);
-      // console.log(leadsAssigned);
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
   };
 
   const handleFormSelect = (formId, formName) => {
-    setSelectedFormId(formId); // Set the selected form ID
-    setFormName(formName); // Set the selected form name
-    fetchLeadsByFormId(formId); // Fetch leads based on selected form ID
+    setSelectedFormId(formId);
+    setFormName(formName);
+    fetchLeadsByFormId(formId);
   };
 
   const handleInputChange = (e) => {
@@ -104,17 +103,16 @@ const LeadsTable = () => {
     setCurrentLead((prevLead) => {
       const updatedLead = { ...prevLead, [name]: value };
 
-      // If assignedTo changes, update employeeId and employeephone accordingly
       if (name === "assignedTo") {
         const selectedEmployee = employees.find(
           (employee) => employee.name === value
         );
         if (selectedEmployee) {
           updatedLead.employeeId = selectedEmployee.employeeId;
-          updatedLead.employeephone = selectedEmployee.phone; // Store employee's phone number in employeephone
+          updatedLead.employeephone = selectedEmployee.phone;
         } else {
-          updatedLead.employeeId = ""; // Reset if no match
-          updatedLead.employeephone = ""; // Reset employeephone if no match
+          updatedLead.employeeId = "";
+          updatedLead.employeephone = "";
         }
       }
 
@@ -124,37 +122,43 @@ const LeadsTable = () => {
 
   const saveChanges = async () => {
     if (!currentLead.assignedTo) {
-      alert("Please assign the lead to an employee."); // Show an alert message
-      return; // Stop further execution if the field is empty
+      alert("Please assign the lead to an employee.");
+      return;
     }
     if (!currentLead.createdTime) {
-      alert("Please Select Assign Date."); // Show an alert message
-      return; // Stop further execution if the field is empty
+      alert("Please Select Assign Date.");
+      return;
     }
     try {
       setLoadingsave(true);
-      await axios.post("https://crm-generalize.dentalguru.software/api/leads", {
-        lead_no: selectedLead.leadId,
-        assignedTo: currentLead.assignedTo,
-        employeeId: currentLead.employeeId,
-        createdTime: currentLead.createdTime,
-        actual_date: selectedLead.date,
-        name: selectedLead.fullName,
-        phone: selectedLead.phoneNumber,
-        leadSource: "Facebook",
-        subject: formName,
-        address: selectedLead.address,
-        assignedBy: "Admin",
-      });
-      fetchLeadsByFormId(); // Refresh the list
+      await axios.post(
+        "https://crm-generalize.dentalguru.software/api/leads",
+        {
+          lead_no: selectedLead.leadId,
+          assignedTo: currentLead.assignedTo,
+          employeeId: currentLead.employeeId,
+          createdTime: currentLead.createdTime,
+          actual_date: selectedLead.date,
+          name: selectedLead.fullName,
+          phone: selectedLead.phoneNumber,
+          leadSource: "Facebook",
+          subject: formName,
+          address: selectedLead.address,
+          assignedBy: "Admin",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      fetchLeadsByFormId();
       fetchLeadassigned();
-      // Reset form data
       setCurrentLead({
         assignedTo: "",
         employeeId: "",
         createdTime: "",
-
-        // Add other fields here if needed
       });
       setSelectedLead({
         leadId: "",
@@ -162,13 +166,12 @@ const LeadsTable = () => {
         fullName: "",
         phoneNumber: "",
         address: "",
-        // Add other fields here if needed
       });
       closePopup();
       // Format the createdTime using moment
       const formattedDate = moment(currentLead.createdTime).format(
         "DD-MM-YYYY"
-      ); // Format the date as 'DD-MM-YYYY'
+      );
 
       // Generate the WhatsApp link with the formatted date
       const whatsappLink = `https://wa.me/${currentLead.employeephone}?text=Hi%20${currentLead.assignedTo},%20you%20have%20been%20assigned%20a%20new%20lead%20with%20the%20following%20details:%0A%0A1)%20Date:-${formattedDate}%0A2)%20Lead%20No.%20${selectedLead.leadId}%0A3)%20Name:%20${selectedLead.fullName}%0A4)%20Phone%20Number:%20${selectedLead.phoneNumber}%0A5)%20Lead%20Source:%20Facebook%20Campaign%0A6)%20Address:%20${selectedLead.address}%0A7)%20Project:%20${formName}%0A%0APlease%20check%20your%20dashboard%20for%20details.`;

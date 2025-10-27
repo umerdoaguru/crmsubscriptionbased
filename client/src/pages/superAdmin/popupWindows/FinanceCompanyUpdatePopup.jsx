@@ -10,6 +10,7 @@ const FinanceCompanyUpdatePopup = ({
   selected,
 }) => {
   const user = useSelector((state) => state.auth.user);
+  const token = user.token;
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     fc_org_id: user?.staff_org_id,
@@ -72,7 +73,13 @@ const FinanceCompanyUpdatePopup = ({
     try {
       const res = await axios.put(
         `https://crm-generalize.dentalguru.software/api/updateFinanceCompany/${selected?.finance_company_id}`,
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (res.data.success) {

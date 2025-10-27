@@ -2,7 +2,6 @@ import axios from "axios";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import { useSelector } from "react-redux";
 import ReactPaginate from "react-paginate";
 
@@ -52,7 +51,6 @@ const SuperAdminTotalLeadContent = () => {
       );
     }
 
-    // Update the filtered leads and reset to the first page
     setFilteredLeads(filtered);
     setCurrentPage(0);
   }, [searchTerm, leads]);

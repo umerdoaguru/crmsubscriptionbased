@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import moment from "moment";
-import { useSelector } from "react-redux";
-
 import cogoToast from "cogo-toast";
 import ReactPaginate from "react-paginate";
+import { useSelector } from "react-redux";
 
 const UpdateForm = ({ setShowUpdateForm, id }) => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const [form, setForm] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage] = useState(4); // Number of items per page
+  const [itemsPerPage] = useState(4);
   const [filterText, setFilterText] = useState("");
   const [sortAsc, setSortAsc] = useState(true);
   const [render, setRender] = useState(false);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
   const navigate = useNavigate();
@@ -26,7 +25,13 @@ const UpdateForm = ({ setShowUpdateForm, id }) => {
   const fetchFormData = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/forms/${id}`
+        `https://crm-generalize.dentalguru.software/api/forms/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setForm(response.data.reverse());
       console.log(response);
@@ -42,7 +47,13 @@ const UpdateForm = ({ setShowUpdateForm, id }) => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/deleteform/${form.id}`
+          `https://crm-generalize.dentalguru.software/api/deleteform/${form.id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         if (response.status === 200) {
           console.log("form deleted successfully");
@@ -81,7 +92,13 @@ const UpdateForm = ({ setShowUpdateForm, id }) => {
     try {
       const response = await axios.put(
         `https://crm-generalize.dentalguru.software/api/updateform`,
-        modalData
+        modalData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       if (response.status === 200) {
         cogoToast.success("Form updated successfully!");

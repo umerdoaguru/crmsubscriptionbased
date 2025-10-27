@@ -23,7 +23,10 @@ const SuperSettingContent = () => {
   const getOrgDataById = async () => {
     try {
       const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/getSubscriptionDetailsByOrg/${user?.staff_org_id}`
+        `https://crm-generalize.dentalguru.software/api/getSubscriptionDetailsByOrg/${user?.staff_org_id}`,
+        {
+          headers: { Authorization: `Bearer ${user?.token}` },
+        }
       );
       setOrgData(data[0]);
     } catch (error) {
@@ -35,7 +38,6 @@ const SuperSettingContent = () => {
     getOrgDataById();
   }, []);
 
-  console.log(orgData);
 
   return (
     <>

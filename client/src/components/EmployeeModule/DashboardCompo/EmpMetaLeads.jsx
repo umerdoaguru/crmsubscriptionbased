@@ -10,10 +10,8 @@ const EmpMetaLeads = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [leadsPerPage] = useState(7);
   const superadminuser = useSelector((state) => state.auth.user);
-
   const userId = superadminuser.staff_id;
   const token = superadminuser.token;
-  console.log(token);
 
   const fetchLeads = async () => {
     try {

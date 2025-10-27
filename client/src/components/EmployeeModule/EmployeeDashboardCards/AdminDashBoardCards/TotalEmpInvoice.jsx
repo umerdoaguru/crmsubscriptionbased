@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-
 import axios from "axios";
 import moment from "moment";
-import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import MainHeader from "../../../MainHeader";
 import EmployeeSider from "./../../EmployeeSider";
@@ -11,6 +9,7 @@ function TotalEmpInvoice() {
   const [invoices, setInvoices] = useState([]);
   const EmpId = useSelector((state) => state.auth.user);
   const token = EmpId?.token;
+
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
@@ -18,9 +17,10 @@ function TotalEmpInvoice() {
           `https://crm-generalize.dentalguru.software/api/get-employee-invoice/${EmpId.id}`,
           {
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-          }}
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setInvoices(response.data);
         console.log(response);

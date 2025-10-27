@@ -242,6 +242,7 @@ const {
   updateEmployeeUnitSoldUpdate,
   getSubscriptionDetailsByOrg,
   updateCompanySubscription,
+  bulkUploadLeads,
 } = require("../controllers/ControllerTen");
 
 // ========== Router Begins =====================
@@ -724,5 +725,8 @@ router.put(
   "/updateCompanySubscription/:org_id/:cp_subscription_id",
   updateCompanySubscription
 );
+
+const excelUpload = multer({ dest: "uploads/" });
+router.post("/bulk-upload-leads", excelUpload.single("file"), bulkUploadLeads);
 
 module.exports = router;

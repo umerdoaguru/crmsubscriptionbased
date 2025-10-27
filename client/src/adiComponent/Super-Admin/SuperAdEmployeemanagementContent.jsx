@@ -73,7 +73,13 @@ const SuperAdEmployeemanagementContent = () => {
     if (isConfirmed) {
       try {
         await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/deleteEmployee/${employeeId}`
+          `https://crm-generalize.dentalguru.software/api/deleteEmployee/${employeeId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         fetchEmployees();
       } catch (error) {

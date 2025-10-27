@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import getFieldValue from "../../utils/getFieldValue";
@@ -8,10 +7,7 @@ const Super_view_visit = ({ selectedLeadId, closeModalVisit, type }) => {
   const [visit, setVisit] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10);
-  const [filterText, setFilterText] = useState("");
-  const [sortAsc, setSortAsc] = useState(true);
   const [render, setRender] = useState(false);
-  const navigate = useNavigate();
 
   const handleClose = () => {
     closeModalVisit();
@@ -47,8 +43,6 @@ const Super_view_visit = ({ selectedLeadId, closeModalVisit, type }) => {
   const offset = currentPage * itemsPerPage;
   const currentvisit = visit.slice(offset, offset + itemsPerPage);
   const pageCount = Math.ceil(visit.length / itemsPerPage);
-
-  console.log(currentvisit);
 
   return (
     <>

@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
 import SuperLeadReport from "./SuperAdminReport/SuperLeadReport";
 import SuperVisitReport from "./SuperAdminReport/SuperVisitReport";
 import SuperClosedDealReport from "./SuperAdminReport/SuperClosedDealReport";

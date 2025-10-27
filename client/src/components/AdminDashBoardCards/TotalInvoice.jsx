@@ -4,15 +4,24 @@ import Sider from "../Sider";
 import axios from "axios";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function TotalInvoice() {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const [invoices, setInvoices] = useState([]);
 
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
         const response = await axios.get(
-          `https://crm-generalize.dentalguru.software/api/invoice-data`
+          `https://crm-generalize.dentalguru.software/api/invoice-data`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setInvoices(response.data);
         console.log(response);

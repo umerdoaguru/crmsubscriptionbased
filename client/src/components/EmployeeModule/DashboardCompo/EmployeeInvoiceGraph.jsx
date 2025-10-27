@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-// import { useDispatch, useSelector } from "react-redux";
 import {
   BarChart,
   Bar,
@@ -16,8 +15,8 @@ import styled from "styled-components";
 
 const EmployeeInvoiceGraph = () => {
   const [loading, setLoading] = useState(false);
-  const [invoiceData, setInvoiceData] = useState([]); // Update to store structured data
-  const EmpId = useSelector((state) => state.auth.user);  
+  const [invoiceData, setInvoiceData] = useState([]);
+  const EmpId = useSelector((state) => state.auth.user);
   const token = EmpId?.token;
   useEffect(() => {
     const getAppointList = async () => {
@@ -27,18 +26,16 @@ const EmployeeInvoiceGraph = () => {
           `https://crm-generalize.dentalguru.software/api/get-employee-invoice/${EmpId.id}`,
           {
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-          }}
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         const invoiceList = response.data;
 
-        // Get the current date and the date 28 days ago
         const today = new Date();
         const pastDate = new Date(today);
-        pastDate.setDate(today.getDate() - 28); // Subtract 28 days
-
-        // Convert dates to ISO strings for easy comparison
+        pastDate.setDate(today.getDate() - 28);
         const formattedToday = today.toISOString().split("T")[0];
         const formattedPastDate = pastDate.toISOString().split("T")[0];
 
@@ -50,25 +47,21 @@ const EmployeeInvoiceGraph = () => {
           );
         });
 
-        console.log(filteredInvoices);
-
         let result = {};
 
         // Group and calculate data
         filteredInvoices.forEach((item) => {
-          const date = item.created_date.split("T")[0]; // Extract the date part
+          const date = item.created_date.split("T")[0];
           if (!result[date]) {
-            result[date] = { date, invoices: 0, Amount: 0 }; // Initialize
+            result[date] = { date, invoices: 0, Amount: 0 };
           }
           result[date].invoices += 1; // Count invoices
-          result[date].Amount += parseFloat(item.offer_price); // Sum amounts
+          result[date].Amount += parseFloat(item.offer_price);
         });
 
-        // Convert the result object to an array of objects
         const structuredData = Object.values(result);
-        console.log(structuredData);
 
-        setInvoiceData(structuredData); // Set the structured data in state
+        setInvoiceData(structuredData);
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -110,10 +103,21 @@ const EmployeeInvoiceGraph = () => {
                   // fontWeight: "bold",
                 }}
               />
-              <YAxis yAxisId="left"   allowDecimals={false} 
-  tickFormatter={(value) => Number.isInteger(value) ? value : ''}/>
-              <YAxis yAxisId="right" orientation="right"   allowDecimals={false} 
-  tickFormatter={(value) => Number.isInteger(value) ? value : ''}/>
+              <YAxis
+                yAxisId="left"
+                allowDecimals={false}
+                tickFormatter={(value) =>
+                  Number.isInteger(value) ? value : ""
+                }
+              />
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                allowDecimals={false}
+                tickFormatter={(value) =>
+                  Number.isInteger(value) ? value : ""
+                }
+              />
               <Tooltip />
               <Legend />
               <Bar

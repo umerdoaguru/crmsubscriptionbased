@@ -8,6 +8,8 @@ import * as XLSX from "xlsx";
 import styled from "styled-components";
 
 const InvoiceData = () => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const [invoices, setInvoices] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10);
@@ -18,7 +20,13 @@ const InvoiceData = () => {
     const fetchInvoices = async () => {
       try {
         const response = await axios.get(
-          `https://crm-generalize.dentalguru.software/api/invoice-data`
+          `https://crm-generalize.dentalguru.software/api/invoice-data`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setInvoices(response.data);
       } catch (error) {
@@ -132,7 +140,7 @@ const InvoiceData = () => {
               nextLabel={"next"}
               breakLabel={"..."}
               pageCount={pageCount}
-forcePage={currentPage}
+              forcePage={currentPage}
               marginPagesDisplayed={2}
               pageRangeDisplayed={5}
               onPageChange={handlePageClick}

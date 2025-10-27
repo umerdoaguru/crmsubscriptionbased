@@ -18,14 +18,12 @@ const SuperAdminEditLeadPopup = ({
 }) => {
   const modalRef = useRef();
   const EmpId = useSelector((state) => state.auth.user);
-
   const token = EmpId?.token;
   const userId = EmpId?.staff_id;
-
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [customLeadSource, setCustomLeadSource] = useState("");
-  const [projectUnit, setProjectUnit] = useState([]); // will hold fetched units
+  const [projectUnit, setProjectUnit] = useState([]);
   const [currentLead, setCurrentLead] = useState({
     lead_org_id: EmpId?.staff_org_id,
     lead_no: "",
@@ -73,7 +71,6 @@ const SuperAdminEditLeadPopup = ({
     }
   };
 
-  // Reset lead data when editing
   useEffect(() => {
     if (isEditing && selectedLead) {
       setCurrentLead({
@@ -81,7 +78,7 @@ const SuperAdminEditLeadPopup = ({
         employeephone: "",
         user_id: userId,
       });
-      // also fetch units for its current project if editing existing lead
+
       if (selectedLead.main_project_id) {
         fetchProjectsUnit(selectedLead.main_project_id);
       }
@@ -145,7 +142,6 @@ const SuperAdminEditLeadPopup = ({
       updated = { ...updated, [name]: value };
 
       if (name === "main_project_id") {
-        // when project changes, clear unit fields and fetch new units
         updated.main_project_id = value;
         updated.unit_type = "";
         updated.unit_id = "";
@@ -183,13 +179,25 @@ const SuperAdminEditLeadPopup = ({
       if (isEditing) {
         await axios.put(
           `https://crm-generalize.dentalguru.software/api/leads/${selectedLead?.lead_id}`,
-          leadData
+          leadData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         fetchLeads();
       } else {
         await axios.post(
           "https://crm-generalize.dentalguru.software/api/leads",
-          leadData
+          leadData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
       }
       setIsEditing(false);

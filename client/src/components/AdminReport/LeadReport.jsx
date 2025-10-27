@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
 import * as XLSX from "xlsx";
-import ReactPaginate from "react-paginate"; // Import react-paginate
-
+import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
 
 function LeadReport() {
@@ -11,7 +10,7 @@ function LeadReport() {
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
-  const [duration, setDuration] = useState("all"); // Default is "all"
+  const [duration, setDuration] = useState("all");
   const [selectedColumns, setSelectedColumns] = useState([
     "lead_no",
     "assignedTo",
@@ -43,7 +42,7 @@ function LeadReport() {
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
   const userId = superadminuser.staff_id;
-  // Fetch leads and employees from the API
+
   useEffect(() => {
     fetchLeads();
     fetchEmployees();
@@ -66,8 +65,6 @@ function LeadReport() {
       console.error("Error fetching leads:", error);
     }
   };
-
-  console.log(leads);
 
   const fetchEmployees = async () => {
     try {
@@ -109,7 +106,6 @@ function LeadReport() {
     }
   };
 
-  // Filter leads when employee or duration changes
   useEffect(() => {
     let filtered = leads;
 
@@ -120,9 +116,7 @@ function LeadReport() {
       });
     }
 
-    // filtered = filtered.filter((lead) => lead.lead_status === "completed");
     filtered = filterByDuration(filtered, duration);
-
     setFilteredLeads(filtered);
     setCurrentPage(0);
   }, [selectedEmployee, duration, leads]);
@@ -149,7 +143,6 @@ function LeadReport() {
       quotation_status: "Quotation Status",
       reason: "Reason",
       registry: "Registry",
-
       project_name: "Project",
       visit: "Visit",
       visit_date: "Visit Date",
@@ -169,7 +162,6 @@ function LeadReport() {
             col
           )
         ) {
-          // Check if date exists and is valid
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
               ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()

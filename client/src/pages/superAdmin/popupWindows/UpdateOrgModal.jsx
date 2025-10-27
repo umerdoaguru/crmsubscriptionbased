@@ -71,7 +71,10 @@ const UpdateOrgModal = ({ isOpen, onClose, getOrgDataById, selected }) => {
     try {
       const res = await axios.put(
         `https://crm-generalize.dentalguru.software/api/updateOrgDetails/${user?.staff_org_id}`,
-        inputField
+        inputField,
+        {
+          headers: { Authorization: `Bearer ${user?.token}` },
+        }
       );
       cogoToast.success("Organization details updated successfully");
       setLoading(false);

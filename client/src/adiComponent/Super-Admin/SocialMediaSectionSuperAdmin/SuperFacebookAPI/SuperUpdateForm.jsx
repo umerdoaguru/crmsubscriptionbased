@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import moment from "moment";
 import { useSelector } from "react-redux";
-
 import cogoToast from "cogo-toast";
 import ReactPaginate from "react-paginate";
 
 const SuperUpdateForm = ({ setShowUpdateForm, id }) => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const [form, setForm] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage] = useState(4); // Number of items per page
+  const [itemsPerPage] = useState(4);
   const [filterText, setFilterText] = useState("");
   const [sortAsc, setSortAsc] = useState(true);
   const [render, setRender] = useState(false);
@@ -26,7 +26,13 @@ const SuperUpdateForm = ({ setShowUpdateForm, id }) => {
   const fetchFormData = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/forms/${id}`
+        `https://crm-generalize.dentalguru.software/api/forms/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setForm(response.data.reverse());
       console.log(response);
@@ -42,7 +48,13 @@ const SuperUpdateForm = ({ setShowUpdateForm, id }) => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/deleteform/${form.id}`
+          `https://crm-generalize.dentalguru.software/api/deleteform/${form.id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         if (response.status === 200) {
           console.log("form deleted successfully");
@@ -55,7 +67,7 @@ const SuperUpdateForm = ({ setShowUpdateForm, id }) => {
       }
     }
   };
-  // Function to send the PUT request to update the Form data
+
   const openModal = (data) => {
     setModalData(data);
     console.log(data);
@@ -68,7 +80,6 @@ const SuperUpdateForm = ({ setShowUpdateForm, id }) => {
     setModalData(null);
   };
 
-  // Handle updating field values in modalData
   const handleInputChange = (e) => {
     setModalData({
       ...modalData,
@@ -76,17 +87,22 @@ const SuperUpdateForm = ({ setShowUpdateForm, id }) => {
     });
   };
 
-  // Function to send the PUT request to update the Form data
   const updateFrom = async () => {
     try {
       const response = await axios.put(
         `https://crm-generalize.dentalguru.software/api/updateform`,
-        modalData
+        modalData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       if (response.status === 200) {
         cogoToast.success("Form updated successfully!");
-        setRender(!render); // Refresh the list after updating
-        closeModal(); // Close the modal
+        setRender(!render);
+        closeModal();
       }
     } catch (error) {
       console.error("Error updating Form:", error);

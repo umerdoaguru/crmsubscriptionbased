@@ -31,7 +31,6 @@ const AdminViewAllUnitSoldContent = () => {
         }
       );
       setEmployeeUnitSold(response.data);
-      console.log(response);
     } catch (error) {
       console.error("Error fetching visit:", error);
     }

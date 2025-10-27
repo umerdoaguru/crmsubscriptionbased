@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import Sider from "../Sider";
-import MainHeader from "../MainHeader";
 import { useSelector } from "react-redux";
 
 const Admin_RemarksViewContent = () => {
@@ -33,7 +31,6 @@ const Admin_RemarksViewContent = () => {
         }
       );
       setRemarks(response.data);
-      console.log(response);
     } catch (error) {
       console.error("Error fetching remarks:", error);
     }

@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import axios from "axios";
 import cogoToast from "cogo-toast";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../store/UserSlice";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 function Login() {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const [formData, setFormData] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -19,7 +21,16 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("https://crm-generalize.dentalguru.software/api/login", formData);
+      const res = await axios.post(
+        "https://crm-generalize.dentalguru.software/api/login",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       if (res.data.success) {
         dispatch(loginUser(res.data.user));
         cogoToast.success(res.data.message);

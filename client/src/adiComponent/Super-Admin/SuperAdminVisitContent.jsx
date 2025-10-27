@@ -8,9 +8,7 @@ import ReactPaginate from "react-paginate";
 const SuperAdminVisitContent = () => {
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
-  const [startDate, setStartDate] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [leadsPerPage, setLeadsPerPage] = useState(7);
   const navigate = useNavigate();
@@ -44,7 +42,7 @@ const SuperAdminVisitContent = () => {
   useEffect(() => {
     let filtered = leads;
     console.log(filtered);
-    // Filter by search term
+
     if (searchTerm) {
       const trimmedSearchTerm = searchTerm.toLowerCase().trim();
       filtered = filtered.filter((lead) =>
@@ -76,7 +74,7 @@ const SuperAdminVisitContent = () => {
   const handleLeadsPerPageChange = (e) => {
     const value = e.target.value;
     setLeadsPerPage(value === "All" ? Infinity : parseInt(value, 10));
-    setCurrentPage(0); // Reset to the first page
+    setCurrentPage(0);
   };
 
   return (

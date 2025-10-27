@@ -35,7 +35,13 @@ const Projectshow = () => {
     try {
       const response = await axios.post(
         "https://crm-generalize.dentalguru.software/api/project-add",
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (response.status === 200) {
@@ -99,7 +105,13 @@ const Projectshow = () => {
 
     try {
       const res = await axios.delete(
-        `https://crm-generalize.dentalguru.software/api/delete-project/${id}`
+        `https://crm-generalize.dentalguru.software/api/delete-project/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       toast.success("project deleted successful");
       fetchProjects();
@@ -118,7 +130,13 @@ const Projectshow = () => {
     try {
       const { data } = await axios.put(
         `https://crm-generalize.dentalguru.software/api/edit-project/${editProject.project_id}`,
-        editProject
+        editProject,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       cogoToast.success(data.message || "Project updated successfully!");
       fetchProjects();

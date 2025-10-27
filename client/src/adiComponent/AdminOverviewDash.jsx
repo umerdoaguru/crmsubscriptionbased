@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { MdOutlineNextWeek } from "react-icons/md";
-import { GiFiles } from "react-icons/gi";
 import { AiOutlineProject } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
@@ -39,7 +38,6 @@ const AdminOverviewDash = () => {
       );
       setLeads(response.data);
     } catch (error) {
-      console.error("Error fetching leads:", error);
       if (error?.response?.status === 401) {
         navigate("/main_page_crm");
         dispatch(logoutUser());
@@ -76,7 +74,6 @@ const AdminOverviewDash = () => {
           },
         }
       );
-      console.log(response.data);
       setVisit(response.data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
@@ -111,7 +108,6 @@ const AdminOverviewDash = () => {
           },
         }
       );
-      console.log(response.data);
       setProjects(response.data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
@@ -129,7 +125,6 @@ const AdminOverviewDash = () => {
           },
         }
       );
-      console.log(response.data);
       setemployeesold(response.data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
@@ -181,10 +176,7 @@ const AdminOverviewDash = () => {
 
         <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-3 ">
           <Link to="/admin-total-leads">
-            <div
-              className="shadow-lg rounded-lg overflow-hidden cursor-pointer text-gray-600 border-1" // Change background color if active
-              //   onClick={() => setSelectedComponent('LeadData')}  // Set selected component
-            >
+            <div className="shadow-lg rounded-lg overflow-hidden cursor-pointer text-gray-600 border-1">
               <div className="p-4 flex flex-col items-center text-center">
                 <div className=" text-3xl text-cyan-600">
                   <SiGoogleads />

@@ -26,8 +26,6 @@ const SuperLeadGraph = () => {
     const fetchAllData = async () => {
       try {
         setLoading(true);
-
-        // ✅ Fetch only Leads and MetaLeads
         const [leadsRes, metaLeadsRes] = await Promise.all([
           axios.get(
             `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${orgId}`,
@@ -54,7 +52,6 @@ const SuperLeadGraph = () => {
         const startDate = moment().subtract(28, "days");
         const formatDate = (date) => moment(date).format("MMM DD");
 
-        // ✅ Helper: group data by date (custom date key)
         const groupByDate = (data, dateKey) =>
           data.reduce((acc, item) => {
             const dateValue = item[dateKey];
@@ -74,11 +71,9 @@ const SuperLeadGraph = () => {
             return acc;
           }, {});
 
-        // ✅ Use correct date keys for each dataset
         const leadsGrouped = groupByDate(allLeads, "createdTime");
         const metaLeadsGrouped = groupByDate(allMetaLeads, "generated_time");
 
-        // ✅ Prepare chart data for last 28 days
         const finalData = [];
         for (let i = 0; i <= 27; i++) {
           const date = moment().subtract(i, "days");

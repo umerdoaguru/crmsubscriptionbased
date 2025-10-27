@@ -5,8 +5,11 @@ import Sider from "../components/Sider";
 import Modal from "../adiComponent/Modal";
 import { useNavigate } from "react-router-dom";
 import MainHeader from "../components/MainHeader";
+import { useSelector } from "react-redux";
 
 const Overview = () => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const [companies, setCompanies] = useState([]);
   const [newCompany, setNewCompany] = useState({
     name: "",
@@ -35,7 +38,13 @@ const Overview = () => {
   const fetchCompanies = async () => {
     try {
       const response = await axios.get(
-        "https://crm-generalize.dentalguru.software/api/getOrganization"
+        "https://crm-generalize.dentalguru.software/api/getOrganization",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       const { organizations } = response.data;
       setCompanies(organizations);
@@ -46,7 +55,6 @@ const Overview = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    // Allow only numeric values and limit to 10 characters for specific fields
     const numericFields = ["contact", "zip_code", "acc_no"];
     const numericValue = numericFields.includes(name)
       ? value.replace(/[^0-9]/g, "").slice(0, 10)
@@ -55,7 +63,6 @@ const Overview = () => {
   };
 
   const handleKeyPress = (e) => {
-    // Allow only numeric keys and control keys (e.g., backspace, arrow keys)
     if (
       !/[0-9]/.test(e.key) &&
       !["Backspace", "ArrowLeft", "ArrowRight"].includes(e.key)
@@ -94,7 +101,7 @@ const Overview = () => {
   };
 
   const handleSaveCompany = async () => {
-    if (!validateForm()) return; // Prevent submission if validation fails
+    if (!validateForm()) return;
 
     try {
       const formData = new FormData();
@@ -121,6 +128,7 @@ const Overview = () => {
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },
+            Authorization: `Bearer ${token}`,
           }
         );
         const updatedCompanies = [...companies];
@@ -133,6 +141,7 @@ const Overview = () => {
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },
+            Authorization: `Bearer ${token}`,
           }
         );
         setCompanies((prev) => [
@@ -202,8 +211,8 @@ const Overview = () => {
       zip_code: companyToEdit.zip_code,
       location: companyToEdit.location,
       district: companyToEdit.district,
-      signature: null, // File inputs won't be prefilled
-      logo: null, // File inputs won't be prefilled
+      signature: null,
+      logo: null,
     });
     setEditingIndex(index);
     setShowForm(true);
@@ -216,7 +225,13 @@ const Overview = () => {
     if (isConfirmed) {
       try {
         await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/deleteOrganization/${companyId}`
+          `https://crm-generalize.dentalguru.software/api/deleteOrganization/${companyId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setCompanies(
           companies.filter((company) => company.companyId !== companyId)

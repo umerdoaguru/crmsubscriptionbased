@@ -1,37 +1,48 @@
-import { useState } from 'react';
-import axios from 'axios';
+import { useState } from "react";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
-const FormInput = ({ setShowForm,onFormSubmit,id }) => {
-  const [formId, setFormId] = useState('');
-  const [formName, setFormName] = useState('');
-  const [success, setSuccess] = useState('');
-  const [error, setError] = useState('');
-  const project_id = id
+const FormInput = ({ setShowForm, onFormSubmit, id }) => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
+  const [formId, setFormId] = useState("");
+  const [formName, setFormName] = useState("");
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
+  const project_id = id;
   // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
     try {
       // Make POST request to save form ID and form name
-      const response = await axios.post('https://crm-generalize.dentalguru.software/api/forms', {
-        formId,
-        formName,project_id:id
-      });
+      const response = await axios.post(
+        "https://crm-generalize.dentalguru.software/api/forms",
+        {
+          formId,
+          formName,
+          project_id: id,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.status === 200) {
-        setSuccess('Form saved successfully!');
-        setError('');
-        setFormId('');
-        setFormName('');
-        setShowForm(false);  // Hide form on successful submit
-          // Trigger LeadsTable refresh
-          onFormSubmit();
+        setSuccess("Form saved successfully!");
+        setError("");
+        setFormId("");
+        setFormName("");
+        setShowForm(false);
+        onFormSubmit();
       }
     } catch (err) {
-      console.error('Error saving form:', err);
-      setError('Failed to save form');
-      setSuccess('');
+      console.error("Error saving form:", err);
+      setError("Failed to save form");
+      setSuccess("");
     }
   };
 
@@ -80,7 +91,7 @@ const FormInput = ({ setShowForm,onFormSubmit,id }) => {
           </button>
           <button
             type="button"
-            onClick={() => setShowForm(false)}  // Hide form on cancel
+            onClick={() => setShowForm(false)} // Hide form on cancel
             className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
           >
             Cancel

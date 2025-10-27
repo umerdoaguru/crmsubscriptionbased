@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
 import * as XLSX from "xlsx";
-import ReactPaginate from "react-paginate"; // Import react-paginate
-
+import ReactPaginate from "react-paginate"; 
 import { useSelector } from "react-redux";
 
 function SuperLeadReport() {
@@ -11,7 +10,7 @@ function SuperLeadReport() {
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
-  const [duration, setDuration] = useState("all"); // Default is "all"
+  const [duration, setDuration] = useState("all"); 
   const [selectedColumns, setSelectedColumns] = useState([
     "lead_no",
     "assignedTo",
@@ -120,7 +119,6 @@ function SuperLeadReport() {
       });
     }
 
-    // filtered = filtered.filter((lead) => lead.lead_status === "completed");
     filtered = filterByDuration(filtered, duration);
 
     setFilteredLeads(filtered);

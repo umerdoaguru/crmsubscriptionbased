@@ -11,15 +11,15 @@ function Logout() {
   const [isMobile, setIsMobile] = useState(false);
 
   const handleResize = () => {
-    setIsMobile(window.innerWidth <= 1280); // Adjust threshold as needed
+    setIsMobile(window.innerWidth <= 1280);
   };
 
   useEffect(() => {
-    handleResize(); // Set initial state
-    window.addEventListener("resize", handleResize); // Listen for window resize
+    handleResize();
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("resize", handleResize); // Cleanup listener on unmount
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -32,7 +32,6 @@ function Logout() {
   };
 
   const handlePower = () => {
-    // Add your logic for the power button here
     console.log("Power button clicked");
   };
 
@@ -46,10 +45,6 @@ function Logout() {
           <FaPowerOff className="ms-2" />
         </button>
       ) : (
-        // <FaPowerOff
-        //   className=" text font-bold py-2 px-4 rounded"
-        //   onClick={handlePower}
-        // />
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={handleLogout}

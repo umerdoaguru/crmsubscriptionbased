@@ -86,32 +86,32 @@ const EmployeeLeadContent = ({ isSidebarOpen }) => {
         }
       );
       const data = response.data;
-      console.log(data);
-      setLeads(data); // Reverse the data here
+      setLeads(data);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
   };
 
-  console.log(leads);
-
   const handleUpdate = async (lead) => {
     try {
       const response = await axios.put(
         `https://crm-generalize.dentalguru.software/api/updateOnlyLeadStatus/${lead.lead_id}`,
-        { lead_status: "active lead" }
+        { lead_status: "active lead" },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (response.status === 200) {
-        console.log("Updated successfully:", response.data);
         cogoToast.success("Lead status updated successfully");
         navigate(`/employee-lead-single-data/general/${lead.lead_id}`);
       } else {
-        console.error("Error updating:", response.data);
         cogoToast.error("Failed to update the lead status.");
       }
     } catch (error) {
-      console.error("Request failed:", error);
       cogoToast.error("Failed to update the lead status.");
     }
   };

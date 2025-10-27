@@ -62,9 +62,6 @@ const MetaLeads = () => {
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Assigned To
                 </th>
-                {/* <th className="px-6 py-3 border-b-2 border-gray-300">
-                  Lead Source
-                </th> */}
                 <th className="px-6 py-3 border-b-2 border-gray-300">
                   Lead Status
                 </th>
@@ -97,10 +94,6 @@ const MetaLeads = () => {
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.staff_name}
                     </td>
-                    {/* <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                      {lead.leadSource}
-                    </td> */}
-
                     <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                       {lead.meta_lead_status}
                     </td>

@@ -15,7 +15,6 @@ import { useSelector } from "react-redux";
 const EmployeeQuotationGraph = () => {
   const [quotationData, setQuotationData] = useState([]);
   const EmpId = useSelector((state) => state.auth.user.id);
-  // Function to format the date to "DD MMM" format
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("default", {
@@ -24,12 +23,10 @@ const EmployeeQuotationGraph = () => {
     });
   };
 
-  // Generate static structure for the past 28 days
   const generateStaticData = (fetchedData) => {
     const data = [];
     const today = new Date();
 
-    // Iterate over the past 28 days
     for (let i = 0; i < 28; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() - i);
@@ -37,18 +34,11 @@ const EmployeeQuotationGraph = () => {
         day: "2-digit",
         month: "short",
       });
-      const formattedDate = date.toISOString().split("T")[0]; // Format date as "YYYY-MM-DD"
-
-      // Filter quotations that match the `created_date` for this specific day
+      const formattedDate = date.toISOString().split("T")[0];
       const matchedQuotations = fetchedData.filter(
         (item) => item.created_date.split("T")[0] === formattedDate
       );
 
-      console.log(
-        `Date: ${formattedDate}, Quotations: ${matchedQuotations.length}`
-      );
-
-      // Push the day and the number of quotations created on that day
       data.push({
         day: formattedDay, // Day in "DD MMM" format
         Quotation: matchedQuotations.length, // Count the number of matched quotations
@@ -92,8 +82,10 @@ const EmployeeQuotationGraph = () => {
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="day" />
-          <YAxis   allowDecimals={false} 
-  tickFormatter={(value) => Number.isInteger(value) ? value : ''} />
+          <YAxis
+            allowDecimals={false}
+            tickFormatter={(value) => (Number.isInteger(value) ? value : "")}
+          />
           <Tooltip />
           <Legend />
           <Line

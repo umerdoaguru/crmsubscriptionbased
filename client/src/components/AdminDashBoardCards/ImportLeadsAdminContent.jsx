@@ -8,21 +8,17 @@ const ImportLeadsAdminContent = () => {
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
   const userId = adminuser.user_id;
-
   const [file, setFile] = useState(null);
   const [employees, setEmployees] = useState([]);
   const [projects, setProjects] = useState([]);
   const [projectUnits, setProjectUnits] = useState([]);
-
   const [selectedProjectId, setSelectedProjectId] = useState("");
   const [selectedUnitType, setSelectedUnitType] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState("");
-
   const [selectedProjectName, setSelectedProjectName] = useState("");
   const [selectedUnitId, setSelectedUnitId] = useState("");
   const [selectedEmployeeName, setSelectedEmployeeName] = useState("");
   const [assignedDate, setAssignedDate] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [fileKey, setFileKey] = useState(Date.now());

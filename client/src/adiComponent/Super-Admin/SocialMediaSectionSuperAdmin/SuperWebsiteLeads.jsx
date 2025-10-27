@@ -1,10 +1,8 @@
 import axios from "axios";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { BsPencilSquare } from "react-icons/bs";
 import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
 
 function SuperWebsiteLeads() {
   const [websiteleads, setWebsiteLeads] = useState([]);

@@ -7,10 +7,9 @@ import { MdOutlineManageAccounts } from "react-icons/md";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 
 const SuperAdminSider = () => {
-  const location = useLocation(); // To get the current route
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
-  // Function to get active class for the sidebar links
   const getSidebarClass = (path) => {
     return location.pathname === path ? "bg-blue-800 shadow-lg" : "";
   };
@@ -21,7 +20,6 @@ const SuperAdminSider = () => {
 
   return (
     <>
-      {/* Hamburger Button - Hidden on large screens */}
       <button
         className="fixed top-16 md:top-20 left-4 z-50 text-black "
         onClick={toggleSidebar}
@@ -35,9 +33,8 @@ const SuperAdminSider = () => {
           isOpen ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300 ease-in-out w-20 md:w-[150px] z-50`}
       >
-        {/* Close (Cross) Button - Hidden on large screens */}
         <button
-          className="absolute left-14 md:left-32 lg-left-32 text-gray-400 2xl:hidden" // Hidden on large screens (lg)
+          className="absolute left-14 md:left-32 lg-left-32 text-gray-400 2xl:hidden"
           onClick={toggleSidebar}
         >
           <AiOutlineClose size={25} />

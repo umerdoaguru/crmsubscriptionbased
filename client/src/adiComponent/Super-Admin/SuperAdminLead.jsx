@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
-
 import moment from "moment";
 import { Link, useNavigate } from "react-router-dom";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
-
 import styled from "styled-components";
 import ReactPaginate from "react-paginate";
-import SuperAdminSider from './SuperAdminSider';
-import MainHeader from '../../components/MainHeader';
+import SuperAdminSider from "./SuperAdminSider";
+import MainHeader from "../../components/MainHeader";
+import { useSelector } from "react-redux";
 
 function SuperAdminLead() {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const navigate = useNavigate();
   const [leads, setLeads] = useState([]);
   const [employees, setEmployees] = useState([]);
@@ -19,7 +19,7 @@ function SuperAdminLead() {
     lead_no: "",
     assignedTo: "",
     employeeId: "",
-    createdTime: "", 
+    createdTime: "",
     name: "",
     phone: "",
     leadSource: "",
@@ -29,13 +29,11 @@ function SuperAdminLead() {
     visit_date: "",
   });
   const [showPopup, setShowPopup] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const [errors, setErrors] = useState({});
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(0);
   const [leadsPerPage] = useState(10);
   const [leadSourceFilter, setLeadSourceFilter] = useState("");
@@ -51,7 +49,15 @@ function SuperAdminLead() {
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get("https://crm-generalize.dentalguru.software/api/leads");
+      const response = await axios.get(
+        "https://crm-generalize.dentalguru.software/api/leads",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       console.log(response.data);
       setLeads(response.data);
     } catch (error) {
@@ -61,7 +67,15 @@ function SuperAdminLead() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crm-generalize.dentalguru.software/api/employee");
+      const response = await axios.get(
+        "https://crm-generalize.dentalguru.software/api/employee",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setEmployees(response.data);
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -113,7 +127,6 @@ function SuperAdminLead() {
     setCurrentLead((prevLead) => {
       const updatedLead = { ...prevLead, [name]: value };
 
-      // If assignedTo changes, update employeeId accordingly
       if (name === "assignedTo") {
         const selectedEmployee = employees.find(
           (employee) => employee.name === value
@@ -121,7 +134,7 @@ function SuperAdminLead() {
         if (selectedEmployee) {
           updatedLead.employeeId = selectedEmployee.employeeId;
         } else {
-          updatedLead.employeeId = ""; // Reset employeeId if no match found
+          updatedLead.employeeId = "";
         }
       }
 
@@ -129,27 +142,32 @@ function SuperAdminLead() {
     });
   };
 
-
   const handleEditClick = (lead) => {
     setCurrentLead({
       ...lead,
-      createdTime: moment(lead.createdTime).format("YYYY-MM-DD"), // Format the createdTime
+      createdTime: moment(lead.createdTime).format("YYYY-MM-DD"),
     });
     setShowPopup(true);
   };
 
   const saveChanges = async () => {
     if (validateForm()) {
-        try {
-          await axios.put(
-            `https://crm-generalize.dentalguru.software/api/leads/${currentLead.lead_id}`,
-            currentLead
-          );
-          fetchLeads(); // Refresh the list
-          closePopup();
-        } catch (error) {
-          console.error("Error updating lead:", error);
-        } 
+      try {
+        await axios.put(
+          `https://crm-generalize.dentalguru.software/api/leads/${currentLead.lead_id}`,
+          currentLead,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        fetchLeads();
+        closePopup();
+      } catch (error) {
+        console.error("Error updating lead:", error);
+      }
     }
   };
 
@@ -159,8 +177,16 @@ function SuperAdminLead() {
     );
     if (isConfirmed) {
       try {
-        await axios.delete(`https://crm-generalize.dentalguru.software/api/leads/${id}`);
-        fetchLeads(); // Refresh the list after deletion
+        await axios.delete(
+          `https://crm-generalize.dentalguru.software/api/leads/${id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        fetchLeads();
       } catch (error) {
         console.error("Error deleting lead:", error);
       }
@@ -209,7 +235,16 @@ function SuperAdminLead() {
     }
 
     setFilteredLeads(filtered);
-  }, [searchTerm, startDate, endDate, leads, leadSourceFilter, statusFilter, visitFilter, dealFilter]);
+  }, [
+    searchTerm,
+    startDate,
+    endDate,
+    leads,
+    leadSourceFilter,
+    statusFilter,
+    visitFilter,
+    dealFilter,
+  ]);
 
   const closePopup = () => {
     setShowPopup(false);
@@ -224,8 +259,6 @@ function SuperAdminLead() {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
-
-  
 
   return (
     <>
@@ -308,7 +341,9 @@ function SuperAdminLead() {
                   <option value="One Realty Website">pending</option>
                   <option value="Trade Shows">confirm</option>
                   <option value="Cold Calling">Cold Calling</option> */}
-                  <option default value="pending">Pending</option>
+                  <option default value="pending">
+                    Pending
+                  </option>
                   <option value="interested">Interested</option>
                   <option value="non interested">Non-Interested</option>
                 </select>

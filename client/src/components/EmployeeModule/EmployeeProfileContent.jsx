@@ -7,15 +7,10 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const EmployeeProfileContent = () => {
   const { employeeId } = useParams();
-  console.log(employeeId);
   const navigate = useNavigate();
-
   const [user, setUser] = useState([]);
   const EmpId = useSelector((state) => state.auth.user);
-  console.log(EmpId);
-
   const userId = employeeId ? employeeId : EmpId?.staff_id;
-  console.log(userId);
 
   const token = EmpId?.token;
   useEffect(() => {
@@ -31,7 +26,6 @@ const EmployeeProfileContent = () => {
           }
         );
         setUser(response.data[0]);
-        console.log(response.data);
       } catch (error) {
         console.error("Error fetching employee data:", error);
       }
@@ -39,8 +33,6 @@ const EmployeeProfileContent = () => {
 
     fetchEmployee();
   }, [EmpId]);
-
-  console.log(user);
 
   const onBack = () => {
     navigate(-1);
@@ -62,7 +54,7 @@ const EmployeeProfileContent = () => {
             <h2 className="text-3xl font-bold text-cyan-700 tracking-wide">
               Employee Profile
             </h2>
-            <div className="w-10" /> {/* spacer for balance */}
+            <div className="w-10" />
           </div>
 
           {/* Divider */}

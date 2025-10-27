@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
 import * as XLSX from "xlsx";
-import ReactPaginate from "react-paginate"; // Import ReactPaginate
-// import Sider from "../Sider";
+import ReactPaginate from "react-paginate";
 import Header from "../../pages/Quotation/Header";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
@@ -14,21 +13,25 @@ function Employees() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const leadsPerPage = 6; // Default leads per page
+  const leadsPerPage = 6;
   const adminuser = useSelector((state) => state.auth.user);
   const token = adminuser.token;
+
   useEffect(() => {
     fetchEmployees();
   }, []);
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get("https://crm-generalize.dentalguru.software/api/employee",
+      const response = await axios.get(
+        "https://crm-generalize.dentalguru.software/api/employee",
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }});
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setEmployee(response.data);
       setFilteredEmployee(response.data);
     } catch (error) {
@@ -48,8 +51,6 @@ function Employees() {
     }
   }, [startDate, endDate, employee]);
 
-
-
   const downloadExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(filteredEmployee);
     const workbook = XLSX.utils.book_new();
@@ -57,19 +58,20 @@ function Employees() {
     XLSX.writeFile(workbook, "employeeData.xlsx");
   };
 
-  // Pagination logic
-   // Calculate total number of pages
-   const pageCount = Math.ceil(filteredEmployee.length / leadsPerPage);
+  const pageCount = Math.ceil(filteredEmployee.length / leadsPerPage);
 
-   // Pagination logic
-   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
-   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-   const currentItems = filteredEmployee.slice(indexOfFirstLead, indexOfLastLead);
-   
-   const handlePageClick = (data) => {
-     setCurrentPage(data.selected);
-     console.log("change current page ", data.selected);
-   };
+  // Pagination logic
+  const indexOfLastLead = (currentPage + 1) * leadsPerPage;
+  const indexOfFirstLead = indexOfLastLead - leadsPerPage;
+  const currentItems = filteredEmployee.slice(
+    indexOfFirstLead,
+    indexOfLastLead
+  );
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected);
+    console.log("change current page ", data.selected);
+  };
   return (
     <>
       <Header />
@@ -113,24 +115,51 @@ function Employees() {
             <thead>
               <tr>
                 <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">Employees Number</th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">
+                  Employees Number
+                </th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">Name</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">Email Id</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">Position</th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">
+                  Email Id
+                </th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">
+                  Position
+                </th>
                 <th className="px-6 py-3 border-b-2 border-gray-300">Phone</th>
-                <th className="px-6 py-3 border-b-2 border-gray-300">Created Date</th>
+                <th className="px-6 py-3 border-b-2 border-gray-300">
+                  Created Date
+                </th>
               </tr>
             </thead>
             <tbody>
               {currentItems.map((employees, index) => (
-                <tr key={employees.id} className={index % 2 === 0 ? "bg-gray-100" : ""}>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{index + 1}</td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{employees.employeeId}</td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{employees.name}</td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{employees.email}</td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{employees.position}</td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{employees.phone}</td>
-                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">{moment(employees.createdTime).format("DD MMM YYYY").toUpperCase()}</td>
+                <tr
+                  key={employees.id}
+                  className={index % 2 === 0 ? "bg-gray-100" : ""}
+                >
+                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                    {index + 1}
+                  </td>
+                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                    {employees.employeeId}
+                  </td>
+                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                    {employees.name}
+                  </td>
+                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                    {employees.email}
+                  </td>
+                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                    {employees.position}
+                  </td>
+                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                    {employees.phone}
+                  </td>
+                  <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                    {moment(employees.createdTime)
+                      .format("DD MMM YYYY")
+                      .toUpperCase()}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -139,32 +168,30 @@ function Employees() {
 
         {/* Pagination */}
         <div className="mt-2 mb-2 flex justify-center">
-        <ReactPaginate
-          previousLabel={"Previous"}
-          nextLabel={"Next"}
-          breakLabel={"..."}
-          pageCount={pageCount}
-forcePage={currentPage}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={3}
-          onPageChange={handlePageClick}
-          containerClassName={"pagination"}
-          activeClassName={"active"}
-          pageClassName={"page-item"}
-          pageLinkClassName={"page-link"}
-          previousClassName={"page-item"}
-          nextClassName={"page-item"}
-          previousLinkClassName={"page-link"}
-          nextLinkClassName={"page-link"}
-          breakClassName={"page-item"}
-          breakLinkClassName={"page-link"}
-        />
-</div>
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            breakLabel={"..."}
+            pageCount={pageCount}
+            forcePage={currentPage}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination"}
+            activeClassName={"active"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            nextClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextLinkClassName={"page-link"}
+            breakClassName={"page-item"}
+            breakLinkClassName={"page-link"}
+          />
+        </div>
       </div>
     </>
   );
 }
 
 export default Employees;
-
-

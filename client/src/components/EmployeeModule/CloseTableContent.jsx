@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import moment from "moment";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 
@@ -31,13 +30,13 @@ const CloseTableContent = () => {
           },
         }
       );
-      // Filter out leads where deal_status is not "pending"
+
       const nonPendingLeads = response.data.filter(
         (lead) => lead.unit_status === "sold"
       );
 
       setLeads(nonPendingLeads);
-      setFilteredLeads(nonPendingLeads); // Initial data set for filtering
+      setFilteredLeads(nonPendingLeads);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
@@ -47,8 +46,6 @@ const CloseTableContent = () => {
   useEffect(() => {
     let filtered = leads;
 
-    // Filter by search term
-    // Filter by search term
     if (searchTerm) {
       const trimmedSearchTerm = searchTerm.toLowerCase().trim();
       filtered = filtered.filter((lead) =>
@@ -58,16 +55,14 @@ const CloseTableContent = () => {
       );
     }
 
-    // Update the filtered leads and reset to the first page
     setFilteredLeads(filtered);
-    setCurrentPage(0); // Reset to the first page when the search term changes
+    setCurrentPage(0);
   }, [searchTerm, leads]);
 
   // Pagination logic
   const pageCount = Math.ceil(filteredLeads.length / leadsPerPage);
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-  // const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
 
   const currentLeads =
     leadsPerPage === Infinity
@@ -84,8 +79,6 @@ const CloseTableContent = () => {
     setLeadsPerPage(value === "All" ? Infinity : parseInt(value, 10));
     setCurrentPage(0); // Reset to the first page
   };
-
-  console.log(currentLeads);
 
   return (
     <>

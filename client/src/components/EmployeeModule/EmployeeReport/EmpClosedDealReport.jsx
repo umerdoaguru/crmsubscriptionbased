@@ -8,12 +8,9 @@ import * as XLSX from "xlsx";
 const EmpClosedDealReport = () => {
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const leadsPerPage = 6;
-
-  const [duration, setDuration] = useState("all"); // Default is "all"
+  const [duration, setDuration] = useState("all");
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [selectedColumns, setSelectedColumns] = useState([
     "project_name",
@@ -33,7 +30,6 @@ const EmpClosedDealReport = () => {
     "employeeId",
     "follow_up_status",
     "payment_mode",
-
     "reason",
     "registry",
     "visit",
@@ -43,7 +39,6 @@ const EmpClosedDealReport = () => {
     "actual_date",
   ]);
   const EmpId = useSelector((state) => state.auth.user);
-
   const token = EmpId?.token;
 
   // Fetch leads from the API
@@ -64,11 +59,11 @@ const EmpClosedDealReport = () => {
       );
       // Filter out leads where deal status is "pending"
       const nonPendingLeads = response.data.filter(
-        (lead) => lead.deal_status == "close"
+        (lead) => lead.deal_status === "close"
       );
 
       setLeads(nonPendingLeads);
-      setFilteredLeads(nonPendingLeads); // Initial data set for filtering
+      setFilteredLeads(nonPendingLeads);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
@@ -96,17 +91,14 @@ const EmpClosedDealReport = () => {
     }
   };
 
-  // Automatically apply date filter when start or end date changes
   useEffect(() => {
     let filtered = leads;
 
     filtered = filterByDuration(filtered, duration);
-
     setFilteredLeads(filtered);
   }, [selectedEmployee, duration, leads]);
 
   const downloadExcel = () => {
-    // Map to rename keys for export
     const columnMapping = {
       project_name: "Project Name",
       lead_no: "Lead Number",
@@ -125,10 +117,8 @@ const EmpClosedDealReport = () => {
       employeeId: "Employee ID",
       follow_up_status: "Follow-up Status",
       payment_mode: "Payment Mode",
-
       reason: "Reason",
       registry: "Registry",
-
       visit: "Visit",
       visit_date: "Visit Date",
       d_closeDate: "Close Date",
@@ -147,13 +137,12 @@ const EmpClosedDealReport = () => {
             col
           )
         ) {
-          // Check if date exists and is valid
           formattedLead[newKey] =
             lead[col] && moment(lead[col], moment.ISO_8601, true).isValid()
               ? moment(lead[col]).format("DD MMM YYYY").toUpperCase()
-              : "pending"; // If invalid or missing, set as "PENDING"
+              : "pending";
         } else {
-          formattedLead[newKey] = lead[col]; // Assign other fields normally
+          formattedLead[newKey] = lead[col];
         }
       });
 

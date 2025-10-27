@@ -11,6 +11,7 @@ const LeadsReport = () => {
   const adminuser = useSelector((state) => state.auth.user);
   const userId = adminuser.user_id;
   const token = adminuser.token;
+
   useEffect(() => {
     const fetchLeads = async () => {
       try {

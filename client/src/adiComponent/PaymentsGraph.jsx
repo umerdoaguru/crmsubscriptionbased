@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const PaymentsGraph = () => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const [chartData, setChartData] = useState({
     received: [],
     due: [],
@@ -11,7 +14,15 @@ const PaymentsGraph = () => {
     // Fetch data from the API
     const fetchData = async () => {
       try {
-        const response = await fetch("https://crm-generalize.dentalguru.software/api/payments");
+        const response = await fetch(
+          "https://crm-generalize.dentalguru.software/api/payments",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const data = await response.json();
 
         data.forEach((item) => {

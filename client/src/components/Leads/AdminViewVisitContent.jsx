@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import moment from "moment";
 import { useSelector } from "react-redux";
 import ReactPaginate from "react-paginate";
 import cogoToast from "cogo-toast";
@@ -11,7 +10,6 @@ const AdminViewVisitContent = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10);
   const [filterText, setFilterText] = useState("");
-  const [sortAsc, setSortAsc] = useState(true);
   const [render, setRender] = useState(false);
   const { id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,7 +34,6 @@ const AdminViewVisitContent = () => {
         }
       );
       setVisit(response.data);
-      console.log(response);
     } catch (error) {
       console.error("Error fetching visit:", error);
     }
@@ -72,7 +69,6 @@ const AdminViewVisitContent = () => {
     setModalData(null);
   };
 
-  // Handle updating field values in modalData
   const handleInputChange = (e) => {
     setModalData({
       ...modalData,
@@ -80,12 +76,17 @@ const AdminViewVisitContent = () => {
     });
   };
 
-  // Function to send the PUT request to update the visit data
   const updateVisit = async () => {
     try {
       const response = await axios.put(
         `https://crm-generalize.dentalguru.software/api/employe-visit`,
-        modalData
+        modalData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       if (response.status === 200) {
         cogoToast.success("Visit updated successfully!");

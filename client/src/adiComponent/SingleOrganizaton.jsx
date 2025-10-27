@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import MainHeader from "../components/MainHeader";
+import { useSelector } from "react-redux";
 
 const SingleOrganization = () => {
+  const superadminuser = useSelector((state) => state.auth.user);
+  const token = superadminuser.token;
   const { id } = useParams();
   const [organization, setOrganization] = useState(null);
-  const [error, setError] = useState(null); // To handle any errors
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchOrganization();
@@ -15,7 +18,13 @@ const SingleOrganization = () => {
   const fetchOrganization = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/getOrganization/${id}`
+        `https://crm-generalize.dentalguru.software/api/getOrganization/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setOrganization(response.data.organization);
     } catch (error) {
@@ -25,14 +34,13 @@ const SingleOrganization = () => {
   };
 
   if (error) {
-    return <div className="text-red-500">{error}</div>; // Show error message if there is an error
+    return <div className="text-red-500">{error}</div>;
   }
 
   if (!organization) {
-    return <div className="text-center text-gray-600">Loading...</div>; // Show loading while fetching organization details
+    return <div className="text-center text-gray-600">Loading...</div>;
   }
 
-  // Basic validation: Display default placeholders if any critical data is missing
   const displayLogo = organization.logo
     ? organization.logo
     : "/default-logo.png";

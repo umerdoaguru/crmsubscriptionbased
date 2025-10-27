@@ -16,11 +16,7 @@ const UnitSoldUpdatePopup = ({
   const { type } = useParams();
   const user = useSelector((state) => state.auth.user);
   const token = user?.token;
-
-  console.log(selectedUnit);
-
   const [loading, setLoading] = useState(false);
-
   const [unitsold, setUnitSold] = useState({
     esu_lead_id: "",
     esu_staff_id: "",
@@ -103,7 +99,6 @@ const UnitSoldUpdatePopup = ({
     }
   };
 
-  // 🔸 Modal Close (outside click or Esc)
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (modalRef.current && !modalRef.current.contains(e.target)) onClose();

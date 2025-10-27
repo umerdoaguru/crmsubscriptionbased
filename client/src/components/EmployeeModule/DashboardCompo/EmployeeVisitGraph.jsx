@@ -11,13 +11,11 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import styled from "styled-components";
 
 const EmployeeVisitGraph = () => {
   const [loading, setLoading] = useState(false);
-  const [visitData, setVisitData] = useState([]); // Update to store visit data
+  const [visitData, setVisitData] = useState([]);
   const EmpId = useSelector((state) => state.auth.user);
-
   const token = EmpId?.token;
 
   useEffect(() => {
@@ -54,24 +52,22 @@ const EmployeeVisitGraph = () => {
           return visitDate >= formattedPastDate && visitDate <= formattedToday;
         });
 
-        console.log(filteredVisits);
-
         let result = {};
 
         // Group and calculate data
         filteredVisits.forEach((item) => {
-          const date = item.visit_date.split("T")[0]; // Extract the date part
+          const date = item.visit_date.split("T")[0];
           if (!result[date]) {
-            result[date] = { date, visits: 0 }; // Initialize
+            result[date] = { date, visits: 0 };
           }
-          result[date].visits += 1; // Count visits
+          result[date].visits += 1;
         });
 
         // Convert the result object to an array of objects
         const structuredData = Object.values(result);
         console.log(structuredData);
 
-        setVisitData(structuredData); // Set the structured data in state
+        setVisitData(structuredData);
         setLoading(false);
       } catch (error) {
         setLoading(false);

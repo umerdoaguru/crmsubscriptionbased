@@ -12,7 +12,6 @@ import { FaMeta } from "react-icons/fa6";
 
 const Overview2 = () => {
   const [leads, setLeads] = useState([]);
-  const [employee, setEmployee] = useState([]);
   const [selectedComponent, setSelectedComponent] = useState("LeadData");
   const [visit, setVisit] = useState([]);
   const superadminuser = useSelector((state) => state.auth.user);
@@ -75,14 +74,11 @@ const Overview2 = () => {
           },
         }
       );
-      console.log(response.data);
       setVisit(response.data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
     }
   };
-
-  console.log("visit data", visit);
 
   const fetchProjects = async () => {
     try {
@@ -95,7 +91,7 @@ const Overview2 = () => {
           },
         }
       );
-      console.log(response.data);
+
       setProjects(response.data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
@@ -114,7 +110,7 @@ const Overview2 = () => {
           },
         }
       );
-      console.log(response.data);
+
       setemployeesold(response.data);
     } catch (error) {
       console.error("Error fetching quotations:", error);
@@ -131,8 +127,6 @@ const Overview2 = () => {
 
   const leadCount = leads.length;
 
-  console.log(leads);
-
   const soldunit = employeesold.length;
 
   const visitCount = visit?.length;
@@ -142,8 +136,6 @@ const Overview2 = () => {
   const closedCount = leads.filter(
     (lead) => lead.unit_status === "sold"
   ).length;
-
-  console.log(closedCount);
 
   return (
     <>

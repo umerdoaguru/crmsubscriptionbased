@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import moment from "moment";
 import { useSelector } from "react-redux";
 import ReactPaginate from "react-paginate";
-
-
 import cogoToast from "cogo-toast";
-
-
-import MainHeader from './../../components/MainHeader';
-import SuperAdminSider from './SuperAdminSider';
+import MainHeader from "./../../components/MainHeader";
+import SuperAdminSider from "./SuperAdminSider";
 
 const Super_view_visit_by_id = () => {
   const [visit, setVisit] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage] = useState(10); // Number of items per page
+  const [itemsPerPage] = useState(10);
   const [filterText, setFilterText] = useState("");
   const [sortAsc, setSortAsc] = useState(true);
   const [render, setRender] = useState(false);
@@ -36,9 +31,10 @@ const Super_view_visit_by_id = () => {
         `https://crm-generalize.dentalguru.software/api/employe-visit-super-admin/${id}`,
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }}
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setVisit(response.data);
       console.log(response);
@@ -54,7 +50,13 @@ const Super_view_visit_by_id = () => {
     if (isConfirmed) {
       try {
         const response = await axios.delete(
-          `https://crm-generalize.dentalguru.software/api/employe-visit/${id}`
+          `https://crm-generalize.dentalguru.software/api/employe-visit/${id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         if (response.status === 200) {
           console.log("visit deleted successfully");
@@ -66,8 +68,8 @@ const Super_view_visit_by_id = () => {
       }
     }
   };
- // Function to send the PUT request to update the visit data
- const openModal = (data) => {
+
+  const openModal = (data) => {
     setModalData(data);
     setIsModalOpen(true);
   };
@@ -77,7 +79,6 @@ const Super_view_visit_by_id = () => {
     setModalData(null);
   };
 
-  // Handle updating field values in modalData
   const handleInputChange = (e) => {
     setModalData({
       ...modalData,
@@ -85,40 +86,42 @@ const Super_view_visit_by_id = () => {
     });
   };
 
-  // Function to send the PUT request to update the visit data
   const updateVisit = async () => {
     try {
-      const response = await axios.put(`https://crm-generalize.dentalguru.software/api/employe-visit`, modalData);
+      const response = await axios.put(
+        `https://crm-generalize.dentalguru.software/api/employe-visit`,
+        modalData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       if (response.status === 200) {
         cogoToast.success("Visit updated successfully!");
-        setRender(!render); // Refresh the list after updating
-        closeModal(); // Close the modal
+        setRender(!render);
+        closeModal();
       }
     } catch (error) {
       console.error("Error updating visit:", error);
     }
   };
 
-
   const handlePageClick = ({ selected }) => {
     setCurrentPage(selected);
   };
-
-
 
   const filteredvisit = visit.filter((visit) =>
     visit.name.toLowerCase().includes(filterText.toLowerCase())
   );
 
   const offset = currentPage * itemsPerPage;
-  const currentvisit = filteredvisit.slice(
-    offset,
-    offset + itemsPerPage
-  );
+  const currentvisit = filteredvisit.slice(offset, offset + itemsPerPage);
   const pageCount = Math.ceil(filteredvisit.length / itemsPerPage);
 
   const handleBackClick = () => {
-    navigate(-1); // -1 navigates to the previous page in history
+    navigate(-1);
   };
 
   return (
@@ -126,12 +129,12 @@ const Super_view_visit_by_id = () => {
       <MainHeader />
       <SuperAdminSider />
       <div className="container mt-4 2xl:w-[91%] 2xl:ml-36">
-      <button
-            onClick={handleBackClick}
-            className="bg-blue-500 text-white mt-5 px-4 py-2 rounded"
-          >
-            Go Back
-          </button>
+        <button
+          onClick={handleBackClick}
+          className="bg-blue-500 text-white mt-5 px-4 py-2 rounded"
+        >
+          Go Back
+        </button>
         <div className="w-full px-2 mx-auto p-4">
           <div className="w-full px-2 mt-4">
             <h2 className="text-2xl font-bold mb-4 text-center">
@@ -145,16 +148,16 @@ const Super_view_visit_by_id = () => {
                       S.no
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                     Lead Id 
+                      Lead Id
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                     Name
+                      Name
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Assigned To
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Visit 
+                      Visit
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Visit Date
@@ -162,7 +165,6 @@ const Super_view_visit_by_id = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Report
                     </th>
-           
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -178,32 +180,28 @@ const Super_view_visit_by_id = () => {
                         {visit.name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                       {visit.employee_name}
+                        {visit.employee_name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                       {visit.visit}
+                        {visit.visit}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                       {visit.visit_date}
+                        {visit.visit_date}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                       {visit.report}
+                        {visit.report}
                       </td>
-                     
                     </tr>
                   ))}
                 </tbody>
               </table>
-
-
-
 
               <ReactPaginate
                 previousLabel={"previous"}
                 nextLabel={"next"}
                 breakLabel={"..."}
                 pageCount={pageCount}
-forcePage={currentPage}
+                forcePage={currentPage}
                 marginPagesDisplayed={2}
                 pageRangeDisplayed={5}
                 onPageChange={handlePageClick}
@@ -227,88 +225,88 @@ forcePage={currentPage}
                 activeClassName={"bg-gray-200"}
               />
 
+              {/* Modal for Editing Visit Data */}
+              {isModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                  <div className="bg-white p-6 rounded-lg shadow-lg w-[500px]">
+                    <h2 className="text-xl mb-4 font-bold">Edit Visit</h2>
+                    <form>
+                      <div className="mb-4">
+                        <label className="block text-gray-700">Lead ID:</label>
+                        <input
+                          type="text"
+                          name="lead_id"
+                          value={modalData.lead_id || ""}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded"
+                        />
+                      </div>
 
-                    {/* Modal for Editing Visit Data */}
-                    {isModalOpen && (
-  <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-[500px]">
-      <h2 className="text-xl mb-4 font-bold">Edit Visit</h2>
-      <form>
-        <div className="mb-4">
-          <label className="block text-gray-700">Lead ID:</label>
-          <input
-            type="text"
-            name="lead_id"
-            value={modalData.lead_id || ""}
-            onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded"
-          />
-        </div>
-        
-        <div className="mb-4">
-          <label className="block text-gray-700">Name:</label>
-          <input
-            type="text"
-            name="name"
-            value={modalData.name || ""}
-            onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded"
-          />
-        </div>
+                      <div className="mb-4">
+                        <label className="block text-gray-700">Name:</label>
+                        <input
+                          type="text"
+                          name="name"
+                          value={modalData.name || ""}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded"
+                        />
+                      </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700">Visit:</label>
-          <input
-            type="text"
-            name="visit"
-            value={modalData.visit || ""}
-            onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded"
-          />
-        </div>
+                      <div className="mb-4">
+                        <label className="block text-gray-700">Visit:</label>
+                        <input
+                          type="text"
+                          name="visit"
+                          value={modalData.visit || ""}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded"
+                        />
+                      </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700">Visit Date:</label>
-          <input
-            type="date"
-            name="visit_date"
-            value={modalData.visit_date || ""}
-            onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
-          />
-        </div>
+                      <div className="mb-4">
+                        <label className="block text-gray-700">
+                          Visit Date:
+                        </label>
+                        <input
+                          type="date"
+                          name="visit_date"
+                          value={modalData.visit_date || ""}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
+                        />
+                      </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700">Report:</label>
-          <textarea
-            name="report"
-            value={modalData.report || ""}
-            onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded"
-          ></textarea>
-        </div>
+                      <div className="mb-4">
+                        <label className="block text-gray-700">Report:</label>
+                        <textarea
+                          name="report"
+                          value={modalData.report || ""}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded"
+                        ></textarea>
+                      </div>
 
-        <div className="flex justify-end">
-          <button
-            type="button"
-            onClick={updateVisit}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
-          >
-            Update
-          </button>
-          <button
-            type="button"
-            onClick={closeModal}
-            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-)}
-
+                      <div className="flex justify-end">
+                        <button
+                          type="button"
+                          onClick={updateVisit}
+                          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2"
+                        >
+                          Update
+                        </button>
+                        <button
+                          type="button"
+                          onClick={closeModal}
+                          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

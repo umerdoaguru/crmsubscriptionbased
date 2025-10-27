@@ -22,8 +22,6 @@ const UnitSoldCreationPopup = ({
   const token = Emp?.token;
   const owner_org_id = Emp?.staff_org_id;
 
-  console.log(leads);
-
   const [loading, setLoading] = useState(false);
   const [unitsold, setUnitSold] = useState({
     esu_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
@@ -64,7 +62,7 @@ const UnitSoldCreationPopup = ({
     const { name, value } = e.target;
 
     if (name === "owner_phone") {
-      const numericValue = value.replace(/\D/g, ""); // allow only digits
+      const numericValue = value.replace(/\D/g, "");
       if (numericValue.length <= 10) {
         setUnitSold((prev) => ({ ...prev, [name]: numericValue }));
       }

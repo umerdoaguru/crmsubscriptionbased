@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import MainHeader from "../MainHeader";
-import Sider from "../Sider";
-
-import { GiFiles } from "react-icons/gi";
 import { SiGoogleads, SiMoneygram } from "react-icons/si";
-
 import WebsiteLeads from "../SocialMediaLeads/WebsiteApi/WebsiteLeads";
 import Accrs from "../SocialMediaLeads/AccrsLeads";
 import LeadsTable from "../SocialMediaLeads/FacebookAPI/LeadsTable";
@@ -13,8 +8,9 @@ import { FaMeta } from "react-icons/fa6";
 import { CgWebsite } from "react-icons/cg";
 
 function SocialMediaLeadsContent() {
-  const [selectedComponent, setSelectedComponent] = useState("FacebookData"); // Set 'FacebookData' as default
+  const [selectedComponent, setSelectedComponent] = useState("FacebookData");
   const navigate = useNavigate();
+
   return (
     <>
       <div className="flex mt-20">

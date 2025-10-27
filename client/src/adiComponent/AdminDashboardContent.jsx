@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-import LeadsReport from "./LeadsReport";
-import Invoice from "./Invoice";
-import LeadsGraph from "./LeadsGraph";
 import AdminOverviewDash from "./AdminOverviewDash";
 import DealClosedGraph from "./DealClosedGraph";
 import LeadVisitChart from "./AdminComp/LeadVisitChart";
@@ -34,7 +31,7 @@ const AdminDashboardContent = () => {
                 <DealClosedGraph />
               </div>
               {/* <LeadsReport /> */}
-               <SuperLeadsToday />
+              <SuperLeadsToday />
             </div>
           </div>
         </div>

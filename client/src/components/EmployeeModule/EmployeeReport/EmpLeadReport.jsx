@@ -3,14 +3,13 @@ import axios from "axios";
 import moment from "moment";
 import * as XLSX from "xlsx";
 import ReactPaginate from "react-paginate";
-
 import { useSelector } from "react-redux";
 
 function EmpLeadReport() {
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
-  const [duration, setDuration] = useState("all"); // Default is "all"
+  const [duration, setDuration] = useState("all");
   const [selectedColumns, setSelectedColumns] = useState([
     "project_name",
     "lead_no",
@@ -40,7 +39,6 @@ function EmpLeadReport() {
   const [currentPage, setCurrentPage] = useState(0);
   const leadsPerPage = 6;
   const EmpId = useSelector((state) => state.auth.user);
-
   const token = EmpId?.token;
 
   // Fetch leads and employees from the API
@@ -89,15 +87,9 @@ function EmpLeadReport() {
     }
   };
 
-  console.log(leads);
-
-  // Filter leads when employee or duration changes
   useEffect(() => {
     let filtered = leads;
-
-    // filtered = filtered.filter((lead) => lead.lead_status === "completed");
     filtered = filterByDuration(filtered, duration);
-
     setFilteredLeads(filtered);
     setCurrentPage(0);
   }, [selectedEmployee, duration, leads]);

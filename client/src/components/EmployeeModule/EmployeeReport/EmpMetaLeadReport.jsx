@@ -11,7 +11,7 @@ function EmpMetaLeadReport() {
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [duration, setDuration] = useState("all");
   const [currentPage, setCurrentPage] = useState(0);
-  const leadsPerPage = 10; // Increased for better pagination flow
+  const leadsPerPage = 10;
   const EmpId = useSelector((state) => state.auth.user);
   const token = EmpId?.token;
 
