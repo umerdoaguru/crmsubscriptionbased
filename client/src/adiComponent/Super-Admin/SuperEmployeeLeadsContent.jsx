@@ -376,6 +376,8 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
     setSoldUnitFilter("");
   };
 
+  console.log(leads);
+
   return (
     <>
       <div className="flex mt-20">
@@ -463,9 +465,6 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
                   >
                     <option value="">Select Lead Source</option>
                     <option value="Facebook">Facebook</option>
-                    <option value="One Realty Website">
-                      One Realty Website
-                    </option>
                     <option value="99 Acres">99 Acres</option>
                     <option value="Referrals">Referrals</option>
                     <option value="Cold Calling">Cold Calling</option>
@@ -668,44 +667,43 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
                           {lead.createdTime}
                         </td>
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-700 font-semibold text-nowrap">
-                          {lead.unit_status !== "sold" ||
-                            (lead.lead_status !== "Sold" ? (
-                              <>
-                                <button
-                                  className="text-cyan-600 hover:text-cyan-700"
-                                  onClick={() => handleEditClick(lead)}
-                                >
-                                  <BsPencilSquare size={20} />
-                                </button>
-                                <button
-                                  className="text-red-500 hover:text-red-700 mx-2"
-                                  onClick={() =>
-                                    handleDeleteClick(lead.lead_id)
-                                  }
-                                >
-                                  <BsTrash size={20} />
-                                </button>
-                              </>
-                            ) : (
-                              <>
-                                <button
-                                  className="text-gray-600"
-                                  disabled
-                                  // onClick={() => handleEditClick(lead)}
-                                >
-                                  <BsPencilSquare size={20} />
-                                </button>
-                                <button
-                                  className="text-gray-600 mx-2"
-                                  disabled
-                                  // onClick={() =>
-                                  //   handleDeleteClick(lead.lead_id)
-                                  // }
-                                >
-                                  <BsTrash size={20} />
-                                </button>
-                              </>
-                            ))}
+                          {lead.lead_status !== "Sold" ||
+                          lead.unit_status ||
+                          lead.unit_status !== "sold" ? (
+                            <>
+                              <button
+                                className="text-cyan-600 hover:text-cyan-700"
+                                onClick={() => handleEditClick(lead)}
+                              >
+                                <BsPencilSquare size={20} />
+                              </button>
+                              <button
+                                className="text-red-500 hover:text-red-700 mx-2"
+                                onClick={() => handleDeleteClick(lead.lead_id)}
+                              >
+                                <BsTrash size={20} />
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                className="text-gray-600"
+                                disabled
+                                // onClick={() => handleEditClick(lead)}
+                              >
+                                <BsPencilSquare size={20} />
+                              </button>
+                              <button
+                                className="text-gray-600 mx-2"
+                                disabled
+                                // onClick={() =>
+                                //   handleDeleteClick(lead.lead_id)
+                                // }
+                              >
+                                <BsTrash size={20} />
+                              </button>
+                            </>
+                          )}
                         </td>
                       </tr>
                     ))

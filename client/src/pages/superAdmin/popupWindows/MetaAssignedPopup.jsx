@@ -164,7 +164,7 @@ const MetaAssignedPopup = ({ isOpen, onClose, lead, fetchAllMetaLeads }) => {
         >
           <motion.div
             ref={modalRef}
-            className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-4xl mx-2 h-[95%] overflow-y-auto"
+            className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-4xl mx-2 h-auto overflow-y-auto"
             initial={{ scale: 0.9, opacity: 0, y: -30 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 30 }}

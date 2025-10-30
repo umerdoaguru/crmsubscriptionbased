@@ -536,7 +536,8 @@ const EmployeeLeadContent = ({ isSidebarOpen }) => {
                               >
                                 Not Start Work
                               </button>
-                            ) : lead.lead_status === "completed" ? (
+                            ) : lead.lead_status === "completed" ||
+                              lead.lead_status === "Sold" ? (
                               <button
                                 className="text-gray-400 font-semibold cursor-not-allowed"
                                 disabled

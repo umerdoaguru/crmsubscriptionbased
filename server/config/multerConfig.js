@@ -1,25 +1,53 @@
-const multer = require('multer');
-const path = require('path');
+const multer = require("multer");
+const path = require("path");
 
-// Configure disk storage for multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    // Set the destination folder for saving files with an absolute path
-    cb(null, path.resolve(__dirname, '../Assets'));
+    cb(null, path.resolve(__dirname, "../Assets"));
   },
   filename: function (req, file, cb) {
-    // Generate a unique file name
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + '-' + file.originalname);
-  }
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  },
 });
 
-// Set file upload limits and storage config
-const upload = multer({
+const generalUpload = multer({
   storage: storage,
   limits: {
-    fileSize: 10 * 1024 * 1024 // 10 MB limit
-  }
+    fileSize: 10 * 1024 * 1024,
+  },
 });
 
-module.exports = upload;
+const blogStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "/blog_image"));
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const base = path
+      .basename(file.originalname, ext)
+      .replace(/[^a-z0-9]/gi, "_")
+      .toLowerCase();
+    cb(null, `${Date.now()}_${base}${ext}`);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  const allowedMime = "image/webp";
+  const allowedExt = ".webp";
+  const ext = path.extname(file.originalname).toLowerCase();
+
+  if (file.mimetype === allowedMime && ext === allowedExt) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only .webp images are allowed!"), false);
+  }
+};
+
+const blogUpload = multer({
+  storage: blogStorage,
+  fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
+
+module.exports = { generalUpload, blogUpload };

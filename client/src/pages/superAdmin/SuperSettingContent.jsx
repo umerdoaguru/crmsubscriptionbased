@@ -38,6 +38,7 @@ const SuperSettingContent = () => {
     getOrgDataById();
   }, []);
 
+  console.log(orgData);
 
   return (
     <>

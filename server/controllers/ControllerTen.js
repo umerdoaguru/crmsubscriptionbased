@@ -4,6 +4,7 @@ const cors = require("cors");
 const { db } = require("../db");
 const moment = require("moment-timezone");
 const xlsx = require("xlsx");
+const { sendEmail } = require("../utils/emailService");
 
 const metaLeadFetchByPageId = async (req, res) => {
   const { pageId, accessToken, meta_org_id } = req.body;
@@ -192,10 +193,57 @@ const updateAndAssignedMetaLeads = (req, res) => {
           .json({ success: false, message: "Invalid Meta Lead ID" });
       }
 
-      res.status(200).json({
-        success: true,
-        message: "Meta Leads details updated successfully",
-      });
+      if (meta_assignedTo) {
+        const staffQuery =
+          "SELECT staff_name, staff_email FROM company_staff WHERE staff_id = ?";
+        db.query(staffQuery, [meta_assignedTo], async (err, staffResult) => {
+          if (err) {
+            console.error("Error fetching staff details:", err.message);
+          } else if (staffResult.length > 0) {
+            const staff = staffResult[0];
+
+            // Step 3: Send email notification
+            const subject = "CRMGuru - New Lead Assigned";
+            const text = `Dear ${staff.staff_name},
+
+A new lead has been assigned to you in CRMGuru.
+
+Please log in to your dashboard to view the lead details.
+
+Best regards,
+CRMGuru Team`;
+
+            const html = `
+              <p>Dear <strong>${staff.staff_name}</strong>,</p>
+              <p>A new lead has been <strong>assigned to you</strong> in <b>CRMGuru</b>.</p>
+              <p>Please log in to your dashboard to check the details.</p>
+              <br/>
+              <p>Best regards,<br/>CRMGuru Team</p>
+            `;
+
+            try {
+              await sendEmail(staff.staff_email, subject, text, html);
+              console.log("Lead assignment email sent to:", staff.staff_email);
+            } catch (emailErr) {
+              console.error("Email sending failed:", emailErr.message);
+            }
+          } else {
+            console.warn("No staff found with ID:", meta_assignedTo);
+          }
+
+          // Step 4: Send API response
+          return res.status(200).json({
+            success: true,
+            message:
+              "Meta Lead details updated successfully and notification sent.",
+          });
+        });
+      } else {
+        return res.status(200).json({
+          success: true,
+          message: "Meta Lead details updated successfully.",
+        });
+      }
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

@@ -20,7 +20,6 @@ function EmployeeSingleLeadProfileContent() {
   const [loading, setLoading] = useState(false);
   const [visit, setVisit] = useState([]);
   const [unitdata, setUnitData] = useState([]);
-  const [unitemployeesolddata, setUnitEmployeeSoldData] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupVisit, setShowPopupVisit] = useState(false);
   const [showPopupUnitSold, setShowPopupUnitSold] = useState(false);
@@ -366,7 +365,7 @@ function EmployeeSingleLeadProfileContent() {
                 <div className="w-full lg:w-1/3">
                   <img src={img} alt="doctor-profile" className=" rounded-lg" />
                 </div>
-                {leads.map((lead, index) => (
+                {leads?.slice(1).map((lead, index) => (
                   <div className="w-full lg:w-2/3 ">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                       {/* <div>
@@ -618,7 +617,7 @@ function EmployeeSingleLeadProfileContent() {
                     </tr>
                   </thead>
                   <tbody>
-                    {leads.map((lead, index) => (
+                    {leads?.slice(1).map((lead, index) => (
                       <tr
                         key={lead.id}
                         className={index % 2 === 0 ? "bg-gray-100" : ""}

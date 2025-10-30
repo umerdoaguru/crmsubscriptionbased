@@ -1,5 +1,6 @@
 const { db } = require("../db");
 const moment = require("moment-timezone");
+const { sendWhatsAppSoldAlert } = require("../utils/whatsappUtils");
 
 const getEmployeeInvoice = async (req, res) => {
   try {
@@ -269,6 +270,93 @@ const getEmployeeVisit = async (req, res) => {
   }
 };
 
+// const createVisit = (req, res) => {
+//   const {
+//     vis_staff_id,
+//     vis_lead_id,
+//     visit_details,
+//     visit_type,
+//     visit_date,
+//     vis_status,
+//     lead_status,
+//     lead_type,
+//   } = req.body;
+
+//   if ((!vis_lead_id || !vis_staff_id || !lead_status, !lead_type)) {
+//     return res.status(400).json({
+//       success: false,
+//       message: "Missing required fields",
+//     });
+//   }
+
+//   const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+//   const insertSql = `
+//     INSERT INTO visit (
+//       vis_staff_id, vis_lead_id, visit_details, visit_type, visit_date, vis_status, vis_created_at
+//     ) VALUES (?,?,?,?,?,?,?)
+//   `;
+
+//   const insertParams = [
+//     vis_staff_id,
+//     vis_lead_id,
+//     visit_details,
+//     visit_type,
+//     visit_date,
+//     vis_status,
+//     dateTime,
+//   ];
+
+//   db.query(insertSql, insertParams, (err, results) => {
+//     if (err) {
+//       console.error("Error inserting visit:", err);
+//       return res.status(500).json({ success: false, message: err.message });
+//     }
+
+//     let updateSql = "";
+//     let updateParams = [];
+
+//     if (lead_type && lead_type === "meta") {
+//       updateSql = `
+//         UPDATE meta_leads
+//         SET meta_lead_status = ?, meta_updated_at = ?
+//         WHERE meta_id = ?
+//       `;
+//       updateParams = [lead_status, dateTime, vis_lead_id];
+//     } else {
+//       updateSql = `
+//         UPDATE leads
+//         SET lead_status = ?, lead_updated_at = ?
+//         WHERE lead_id = ?
+//       `;
+//       updateParams = [lead_status, dateTime, vis_lead_id];
+//     }
+
+//     db.query(updateSql, updateParams, (updateErr, updateResult) => {
+//       if (updateErr) {
+//         console.error("Error updating lead status:", updateErr);
+//         return res.status(500).json({
+//           success: false,
+//           message: "Error updating lead status",
+//           error: updateErr.message,
+//         });
+//       }
+
+//       if (updateResult.affectedRows === 0) {
+//         return res.status(404).json({
+//           success: false,
+//           message: "Lead not found for status update",
+//         });
+//       }
+
+//       return res.status(201).json({
+//         success: true,
+//         message: "Visit submitted and lead status updated successfully",
+//       });
+//     });
+//   });
+// };
+
 const createVisit = (req, res) => {
   const {
     vis_staff_id,
@@ -281,7 +369,8 @@ const createVisit = (req, res) => {
     lead_type,
   } = req.body;
 
-  if ((!vis_lead_id || !vis_staff_id || !lead_status, !lead_type)) {
+  // Basic validation
+  if (!vis_lead_id || !vis_staff_id || !lead_status || !lead_type) {
     return res.status(400).json({
       success: false,
       message: "Missing required fields",
@@ -290,6 +379,7 @@ const createVisit = (req, res) => {
 
   const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
 
+  // Step 1️⃣: Insert visit entry
   const insertSql = `
     INSERT INTO visit (
       vis_staff_id, vis_lead_id, visit_details, visit_type, visit_date, vis_status, vis_created_at
@@ -308,10 +398,11 @@ const createVisit = (req, res) => {
 
   db.query(insertSql, insertParams, (err, results) => {
     if (err) {
-      console.error("Error inserting visit:", err);
+      console.error("❌ Error inserting visit:", err);
       return res.status(500).json({ success: false, message: err.message });
     }
 
+    // Step 2️⃣: Update lead or meta_lead status
     let updateSql = "";
     let updateParams = [];
 
@@ -333,7 +424,7 @@ const createVisit = (req, res) => {
 
     db.query(updateSql, updateParams, (updateErr, updateResult) => {
       if (updateErr) {
-        console.error("Error updating lead status:", updateErr);
+        console.error("❌ Error updating lead status:", updateErr);
         return res.status(500).json({
           success: false,
           message: "Error updating lead status",
@@ -348,9 +439,87 @@ const createVisit = (req, res) => {
         });
       }
 
-      return res.status(201).json({
-        success: true,
-        message: "Visit submitted and lead status updated successfully",
+      // Step 3️⃣: Fetch organization email from company_profile
+      const orgQuery = `
+        SELECT cp.email_id, cp.company_name, cs.staff_name 
+        FROM company_staff cs
+        JOIN company_profile cp ON cs.staff_org_id = cp.org_id
+        WHERE cs.staff_id = ?
+      `;
+
+      db.query(orgQuery, [vis_staff_id], async (orgErr, orgResult) => {
+        if (orgErr) {
+          console.error("❌ Error fetching organization email:", orgErr);
+          return res.status(500).json({
+            success: false,
+            message: "Error fetching organization email",
+          });
+        }
+
+        if (orgResult.length === 0) {
+          console.warn("⚠️ No organization found for staff ID:", vis_staff_id);
+          return res.status(200).json({
+            success: true,
+            message:
+              "Visit created and lead updated, but no organization email found.",
+          });
+        }
+
+        const { email_id, company_name, staff_name } = orgResult[0];
+
+        // Step 4️⃣: Prepare and send email to admin/company email
+        const subject = `CRMGuru - Visit Scheduled Successfully (${company_name})`;
+
+        const text = `Dear Admin,
+
+A new visit has been successfully scheduled by ${staff_name}.
+
+Visit Details:
+- Visit Type: ${visit_type || "N/A"}
+- Visit Date: ${visit_date || "N/A"}
+- Visit Status: ${vis_status || "N/A"}
+
+Please check your CRM dashboard for more information.
+
+Best regards,
+CRMGuru Team`;
+
+        const html = `
+          <div style="font-family: Arial, sans-serif; line-height:1.6;">
+            <p>Dear <strong>Admin</strong>,</p>
+            <p>A new visit has been successfully <b>scheduled</b> by <b>${staff_name}</b> in <b>${company_name}</b>.</p>
+            <h3 style="margin-top: 20px;">🗓️ Visit Details</h3>
+            <table style="border-collapse: collapse; width: 100%; max-width: 600px;">
+              <tr><td><b>Visit Type:</b></td><td>${
+                visit_type || "N/A"
+              }</td></tr>
+              <tr><td><b>Visit Date:</b></td><td>${
+                visit_date || "N/A"
+              }</td></tr>
+              <tr><td><b>Visit Status:</b></td><td>${
+                vis_status || "N/A"
+              }</td></tr>
+            </table>
+            <br/>
+            <p>Please log in to your CRM dashboard to review details.</p>
+            <br/>
+            <p>Best regards,<br/><strong>CRMGuru Team</strong></p>
+          </div>
+        `;
+
+        try {
+          await sendEmail(email_id, subject, text, html);
+          console.log(`📩 Visit notification email sent to admin: ${email_id}`);
+        } catch (emailErr) {
+          console.error("❌ Email sending failed:", emailErr.message);
+        }
+
+        // Step 5️⃣: Final API response
+        return res.status(201).json({
+          success: true,
+          message:
+            "Visit submitted, lead status updated, and admin notified successfully.",
+        });
       });
     });
   });
@@ -892,60 +1061,291 @@ const updateOnlyRemarkAnswer = async (req, res) => {
 //       esu_project_id,
 //       esu_sold_date,
 //       esu_notes,
+//       lead_status,
+//       leadType,
+//       esu_sale_price,
+//       esu_token_amount,
+//       esu_token_amount_status,
+//       esu_booking_date,
+//       esu_final_date,
+//       esu_registery_name,
+//       esu_registery_date,
+//       esu_payment_method,
+//       owner_org_id,
+//       owner_name,
+//       owner_email,
+//       owner_phone,
+//       owner_address,
+//       remaining_amount,
 //     } = req.body;
+
+//     if (
+//       !esu_lead_id ||
+//       !esu_staff_id ||
+//       !esu_unit_id ||
+//       !lead_status ||
+//       !leadType ||
+//       !owner_org_id ||
+//       !owner_name ||
+//       !owner_email ||
+//       !owner_phone
+//     ) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "Missing required fields" });
+//     }
 
 //     const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
 
-//     const insertSql = `INSERT INTO employee_sold_units (
-//       esu_lead_id,
-//       esu_staff_id,
-//       esu_unit_id,
-//       esu_project_id,
-//       esu_sold_date,
-//       esu_notes,
-//       esu_created_at
-//     ) VALUES (?,?,?,?,?,?,?)`;
+//     // Step 1️⃣: Prevent duplicate sold record for the same lead
+//     const checkDuplicateSql =
+//       "SELECT esu_id FROM employee_sold_units WHERE esu_lead_id = ? LIMIT 1";
+//     db.query(checkDuplicateSql, [esu_lead_id], (dupErr, dupResult) => {
+//       if (dupErr)
+//         return res
+//           .status(400)
+//           .json({ success: false, message: dupErr.message });
 
-//     db.query(
-//       insertSql,
-//       [
-//         esu_lead_id,
-//         esu_staff_id,
-//         esu_unit_id,
-//         esu_project_id,
-//         esu_sold_date,
-//         esu_notes,
-//         dateTime,
-//       ],
-//       (err, results) => {
-//         if (err) {
-//           return res.status(500).json({
-//             success: false,
-//             message: "Error inserting data",
-//             error: err.message,
-//           });
-//         }
-
-//         const updateSql = `UPDATE units SET unit_status = ? WHERE unit_id = ?`;
-//         db.query(updateSql, ["sold", esu_unit_id], (err2, result2) => {
-//           if (err2) {
-//             return res.status(500).json({
-//               success: false,
-//               message: "Error updating unit status",
-//               error: err2.message,
-//             });
-//           }
-
-//           res.status(201).json({
-//             success: true,
-//             message:
-//               "Unit Number data successfully submitted and unit status updated",
-//           });
+//       if (dupResult.length > 0) {
+//         return res.status(409).json({
+//           success: false,
+//           message: "This lead is already marked as sold.",
 //         });
 //       }
-//     );
+
+//       // Step 2️⃣: Insert owner
+//       const insertOwnerSql = `
+//         INSERT INTO owner
+//           (owner_org_id, owner_name, owner_email, owner_phone, owner_address, owner_created_at)
+//         VALUES (?, ?, ?, ?, ?, ?)
+//       `;
+//       const ownerParams = [
+//         owner_org_id,
+//         owner_name,
+//         owner_email,
+//         owner_phone,
+//         owner_address,
+//         dateTime,
+//       ];
+
+//       db.query(insertOwnerSql, ownerParams, (ownerErr, ownerResult) => {
+//         if (ownerErr)
+//           return res
+//             .status(400)
+//             .json({ success: false, message: ownerErr.message });
+
+//         const ownerId = ownerResult.insertId;
+
+//         // Step 3️⃣: Insert sold record
+//         const insertSoldSql = `
+//           INSERT INTO employee_sold_units (
+//             esu_lead_id,
+//             esu_staff_id,
+//             esu_unit_id,
+//             esu_project_id,
+//             esu_owner_id,
+//             esu_sold_date,
+//             esu_notes,
+//             esu_sale_price,
+//             esu_token_amount,
+//             esu_token_paid_status,
+//             esu_booking_date,
+//             esu_final_date,
+//             registry_name,
+//             registry_date,
+//             esu_payment_method,
+//             remaining_amount,
+//             esu_created_at
+//           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+//         `;
+//         const soldParams = [
+//           esu_lead_id,
+//           esu_staff_id,
+//           esu_unit_id,
+//           esu_project_id,
+//           ownerId,
+//           esu_sold_date,
+//           esu_notes,
+//           esu_sale_price || null,
+//           esu_token_amount || null,
+//           esu_token_amount_status || null,
+//           esu_booking_date || null,
+//           esu_final_date || null,
+//           esu_registery_name || null,
+//           esu_registery_date || null,
+//           esu_payment_method || null,
+//           remaining_amount || null,
+//           dateTime,
+//         ];
+
+//         db.query(insertSoldSql, soldParams, (soldErr, soldResult) => {
+//           if (soldErr)
+//             return res
+//               .status(400)
+//               .json({ success: false, message: soldErr.message });
+
+//           // Step 4️⃣: Update unit status
+//           const updateUnitSql = `
+//             UPDATE units
+//             SET unit_status = ?, unit_updated_at = ?
+//             WHERE unit_id = ?
+//           `;
+//           db.query(
+//             updateUnitSql,
+//             ["sold", dateTime, esu_unit_id],
+//             (unitErr) => {
+//               if (unitErr)
+//                 return res
+//                   .status(400)
+//                   .json({ success: false, message: unitErr.message });
+
+//               // Step 5️⃣: Update lead status
+//               let updateLeadSql = "";
+//               let leadParams = [];
+
+//               if (leadType === "meta") {
+//                 updateLeadSql = `
+//                   UPDATE meta_leads
+//                   SET meta_lead_status = ?, meta_updated_at = ?
+//                   WHERE leadgen_id = ?
+//                 `;
+//                 leadParams = [lead_status, dateTime, esu_lead_id];
+//               } else {
+//                 updateLeadSql = `
+//                   UPDATE leads
+//                   SET lead_status = ?, lead_updated_at = ?
+//                   WHERE lead_id = ?
+//                 `;
+//                 leadParams = [lead_status, dateTime, esu_lead_id];
+//               }
+
+//               db.query(updateLeadSql, leadParams, (leadErr, leadResult) => {
+//                 if (leadErr)
+//                   return res
+//                     .status(400)
+//                     .json({ success: false, message: leadErr.message });
+
+//                 if (leadResult.affectedRows === 0) {
+//                   return res.status(404).json({
+//                     success: false,
+//                     message: "Lead not found",
+//                   });
+//                 }
+
+//                 // Step 6️⃣: Fetch company & admin email info
+//                 const orgQuery = `
+//                   SELECT cp.email_id, cp.company_name, cs.staff_name
+//                   FROM company_staff cs
+//                   JOIN company_profile cp ON cs.staff_org_id = cp.org_id
+//                   WHERE cs.staff_id = ?
+//                 `;
+//                 db.query(
+//                   orgQuery,
+//                   [esu_staff_id],
+//                   async (orgErr, orgResult) => {
+//                     if (orgErr) {
+//                       console.error(
+//                         "❌ Error fetching organization email:",
+//                         orgErr
+//                       );
+//                       return res.status(500).json({
+//                         success: false,
+//                         message: "Error fetching organization email",
+//                       });
+//                     }
+
+//                     if (orgResult.length === 0) {
+//                       console.warn(
+//                         "⚠️ No organization found for staff ID:",
+//                         esu_staff_id
+//                       );
+//                       return res.status(200).json({
+//                         success: true,
+//                         message:
+//                           "Sale recorded, lead updated, but no organization email found.",
+//                       });
+//                     }
+
+//                     const { email_id, company_name, staff_name } = orgResult[0];
+
+//                     // Step 7️⃣: Prepare email
+//                     const subject = `CRMGuru - Unit Sold Successfully (${company_name})`;
+//                     const text = `Dear Admin,
+
+// A new unit has been marked as SOLD by ${staff_name}.
+
+// Sold Details:
+// - Unit ID: ${esu_unit_id}
+// - Project ID: ${esu_project_id || "N/A"}
+// - Sold Date: ${esu_sold_date || "N/A"}
+// - Sale Price: ${esu_sale_price || "N/A"}
+// - Payment Method: ${esu_payment_method || "N/A"}
+// - Owner Name: ${owner_name}
+
+// Please check your CRM dashboard for complete details.
+
+// Best regards,
+// CRMGuru Team`;
+
+//                     const html = `
+//                     <div style="font-family: Arial, sans-serif; line-height:1.6;">
+//                       <p>Dear <strong>Admin</strong>,</p>
+//                       <p>A new unit has been successfully <b>sold</b> by <b>${staff_name}</b> in <b>${company_name}</b>.</p>
+//                       <h3 style="margin-top: 20px;">🏠 Sold Details</h3>
+//                       <table style="border-collapse: collapse; width: 100%; max-width: 600px;">
+//                         <tr><td><b>Unit ID:</b></td><td>${esu_unit_id}</td></tr>
+//                         <tr><td><b>Project ID:</b></td><td>${
+//                           esu_project_id || "N/A"
+//                         }</td></tr>
+//                         <tr><td><b>Sold Date:</b></td><td>${
+//                           esu_sold_date || "N/A"
+//                         }</td></tr>
+//                         <tr><td><b>Sale Price:</b></td><td>${
+//                           esu_sale_price || "N/A"
+//                         }</td></tr>
+//                         <tr><td><b>Payment Method:</b></td><td>${
+//                           esu_payment_method || "N/A"
+//                         }</td></tr>
+//                         <tr><td><b>Owner Name:</b></td><td>${owner_name}</td></tr>
+//                       </table>
+//                       <br/>
+//                       <p>Please log in to your CRM dashboard for full transaction details.</p>
+//                       <br/>
+//                       <p>Best regards,<br/><strong>CRMGuru Team</strong></p>
+//                     </div>
+//                   `;
+
+//                     try {
+//                       await sendEmail(email_id, subject, text, html);
+//                       console.log(
+//                         `📩 Sale notification email sent to admin: ${email_id}`
+//                       );
+//                     } catch (emailErr) {
+//                       console.error(
+//                         "❌ Email sending failed:",
+//                         emailErr.message
+//                       );
+//                     }
+
+//                     // Step 8️⃣: Final response
+//                     return res.status(201).json({
+//                       success: true,
+//                       message:
+//                         "Owner added, sold details recorded, unit marked as sold, lead updated, and admin notified successfully.",
+//                       owner_id: ownerId,
+//                       sold_id: soldResult.insertId,
+//                     });
+//                   }
+//                 );
+//               });
+//             }
+//           );
+//         });
+//       });
+//     });
 //   } catch (error) {
-//     res.status(500).json({ success: false, error: error.message });
+//     console.error("createEmployeeUnitSold Error:", error);
+//     res.status(500).json({ success: false, message: error.message });
 //   }
 // };
 
@@ -973,9 +1373,9 @@ const createEmployeeUnitSold = (req, res) => {
       owner_email,
       owner_phone,
       owner_address,
+      remaining_amount,
     } = req.body;
 
-    // 🔒 Required field validation
     if (
       !esu_lead_id ||
       !esu_staff_id ||
@@ -994,15 +1394,14 @@ const createEmployeeUnitSold = (req, res) => {
 
     const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
 
-    // 🧩 Step 1: Check duplicate entry before insert
+    // Step 1️⃣: Prevent duplicate sold record for the same lead
     const checkDuplicateSql =
       "SELECT esu_id FROM employee_sold_units WHERE esu_lead_id = ? LIMIT 1";
     db.query(checkDuplicateSql, [esu_lead_id], (dupErr, dupResult) => {
-      if (dupErr) {
+      if (dupErr)
         return res
           .status(400)
           .json({ success: false, message: dupErr.message });
-      }
 
       if (dupResult.length > 0) {
         return res.status(409).json({
@@ -1011,13 +1410,12 @@ const createEmployeeUnitSold = (req, res) => {
         });
       }
 
-      // 🧩 Step 2: Insert Owner
+      // Step 2️⃣: Insert owner
       const insertOwnerSql = `
         INSERT INTO owner 
           (owner_org_id, owner_name, owner_email, owner_phone, owner_address, owner_created_at) 
         VALUES (?, ?, ?, ?, ?, ?)
       `;
-
       const ownerParams = [
         owner_org_id,
         owner_name,
@@ -1028,15 +1426,14 @@ const createEmployeeUnitSold = (req, res) => {
       ];
 
       db.query(insertOwnerSql, ownerParams, (ownerErr, ownerResult) => {
-        if (ownerErr) {
+        if (ownerErr)
           return res
             .status(400)
             .json({ success: false, message: ownerErr.message });
-        }
 
         const ownerId = ownerResult.insertId;
 
-        // 🧩 Step 3: Insert Employee Sold Unit
+        // Step 3️⃣: Insert sold record
         const insertSoldSql = `
           INSERT INTO employee_sold_units (
             esu_lead_id,
@@ -1054,10 +1451,10 @@ const createEmployeeUnitSold = (req, res) => {
             registry_name,
             registry_date,
             esu_payment_method,
+            remaining_amount,
             esu_created_at
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
-
         const soldParams = [
           esu_lead_id,
           esu_staff_id,
@@ -1074,34 +1471,32 @@ const createEmployeeUnitSold = (req, res) => {
           esu_registery_name || null,
           esu_registery_date || null,
           esu_payment_method || null,
+          remaining_amount || null,
           dateTime,
         ];
 
         db.query(insertSoldSql, soldParams, (soldErr, soldResult) => {
-          if (soldErr) {
+          if (soldErr)
             return res
               .status(400)
               .json({ success: false, message: soldErr.message });
-          }
 
-          // 🧩 Step 4: Update Unit status
+          // Step 4️⃣: Update unit status
           const updateUnitSql = `
             UPDATE units 
             SET unit_status = ?, unit_updated_at = ? 
             WHERE unit_id = ?
           `;
-
           db.query(
             updateUnitSql,
             ["sold", dateTime, esu_unit_id],
             (unitErr) => {
-              if (unitErr) {
+              if (unitErr)
                 return res
                   .status(400)
                   .json({ success: false, message: unitErr.message });
-              }
 
-              // 🧩 Step 5: Update Lead Status (meta / normal)
+              // Step 5️⃣: Update lead status
               let updateLeadSql = "";
               let leadParams = [];
 
@@ -1122,26 +1517,149 @@ const createEmployeeUnitSold = (req, res) => {
               }
 
               db.query(updateLeadSql, leadParams, (leadErr, leadResult) => {
-                if (leadErr) {
+                if (leadErr)
                   return res
                     .status(400)
                     .json({ success: false, message: leadErr.message });
-                }
 
                 if (leadResult.affectedRows === 0) {
-                  return res
-                    .status(404)
-                    .json({ success: false, message: "Lead not found" });
+                  return res.status(404).json({
+                    success: false,
+                    message: "Lead not found",
+                  });
                 }
 
-                // ✅ Final success response
-                res.status(201).json({
-                  success: true,
-                  message:
-                    "Owner added, sold details recorded, unit marked as sold and lead status updated successfully",
-                  owner_id: ownerId,
-                  sold_id: soldResult.insertId,
-                });
+                // Step 6️⃣: Fetch company & admin email info
+                const orgQuery = `
+                  SELECT cp.email_id, cp.company_name, cs.staff_name 
+                  FROM company_staff cs
+                  JOIN company_profile cp ON cs.staff_org_id = cp.org_id
+                  WHERE cs.staff_id = ?
+                `;
+                db.query(
+                  orgQuery,
+                  [esu_staff_id],
+                  async (orgErr, orgResult) => {
+                    if (orgErr) {
+                      console.error(
+                        "❌ Error fetching organization email:",
+                        orgErr
+                      );
+                      return res.status(500).json({
+                        success: false,
+                        message: "Error fetching organization email",
+                      });
+                    }
+
+                    if (orgResult.length === 0) {
+                      console.warn(
+                        "⚠️ No organization found for staff ID:",
+                        esu_staff_id
+                      );
+                      return res.status(200).json({
+                        success: true,
+                        message:
+                          "Sale recorded, lead updated, but no organization email found.",
+                      });
+                    }
+
+                    const { email_id, company_name, staff_name } = orgResult[0];
+
+                    // Step 7️⃣: Prepare email
+                    const subject = `CRMGuru - Unit Sold Successfully (${company_name})`;
+                    const text = `Dear Admin,
+
+A new unit has been marked as SOLD by ${staff_name}.
+
+Sold Details:
+- Unit ID: ${esu_unit_id}
+- Project ID: ${esu_project_id || "N/A"}
+- Sold Date: ${esu_sold_date || "N/A"}
+- Sale Price: ${esu_sale_price || "N/A"}
+- Owner Name: ${owner_name}
+
+Please check your CRM dashboard for complete details.
+
+Best regards,
+CRMGuru Team`;
+
+                    const html = `
+                    <div style="font-family: Arial, sans-serif; line-height:1.6;">
+                      <p>Dear <strong>Admin</strong>,</p>
+                      <p>A new unit has been successfully <b>sold</b> by <b>${staff_name}</b> in <b>${company_name}</b>.</p>
+                      <h3 style="margin-top: 20px;">🏠 Sold Details</h3>
+                      <table style="border-collapse: collapse; width: 100%; max-width: 600px;">
+                        <tr><td><b>Unit ID:</b></td><td>${esu_unit_id}</td></tr>
+                        <tr><td><b>Project ID:</b></td><td>${
+                          esu_project_id || "N/A"
+                        }</td></tr>
+                        <tr><td><b>Sold Date:</b></td><td>${
+                          esu_sold_date || "N/A"
+                        }</td></tr>
+                        <tr><td><b>Sale Price:</b></td><td>${
+                          esu_sale_price || "N/A"
+                        }</td></tr>
+                        <tr><td><b>Owner Name:</b></td><td>${owner_name}</td></tr>
+                      </table>
+                      <br/>
+                      <p>Please log in to your CRM dashboard for full transaction details.</p>
+                      <br/>
+                      <p>Best regards,<br/><strong>CRMGuru Team</strong></p>
+                    </div>
+                  `;
+
+                    try {
+                      await sendEmail(email_id, subject, text, html);
+                      console.log(
+                        `📩 Sale notification email sent to admin: ${email_id}`
+                      );
+                    } catch (emailErr) {
+                      console.error(
+                        "❌ Email sending failed:",
+                        emailErr.message
+                      );
+                    }
+
+                    let whatsappStatus = null;
+                    try {
+                      const adminNumber = process.env.ADMIN_WHATSAPP_NUMBER;
+                      const waResponse = await sendWhatsAppSoldAlert(
+                        adminNumber,
+                        staff_name,
+                        esu_unit_id,
+                        esu_project_id,
+                        esu_sold_date,
+                        esu_sale_price,
+                        owner_name
+                      );
+
+                      whatsappStatus = {
+                        success: true,
+                        message: `WhatsApp sale alert sent to admin: ${adminNumber}`,
+                        wa_message_id: waResponse.messages?.[0]?.id || null,
+                      };
+                    } catch (waErr) {
+                      whatsappStatus = {
+                        success: false,
+                        message: "WhatsApp alert failed",
+                        error:
+                          waErr?.error?.message ||
+                          waErr?.message ||
+                          "Unknown error",
+                      };
+                    }
+
+                    // Step 8️⃣: Final response
+                    return res.status(201).json({
+                      success: true,
+                      message:
+                        "Owner added, sold details recorded, unit marked as sold, lead updated, and admin notified successfully.",
+                      owner_id: ownerId,
+                      sold_id: soldResult.insertId,
+                      whatsapp: whatsappStatus,
+                    });
+                  }
+                );
               });
             }
           );

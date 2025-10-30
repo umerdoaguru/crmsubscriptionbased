@@ -2,7 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const router = express.Router();
 const upload = require("../controllers/fileUploadController");
-const upload1 = require("../config/multerConfig");
+const { generalUpload, blogUpload } = require("../config/multerConfig");
 
 const {
   getEmployeeInvoice,
@@ -244,6 +244,17 @@ const {
   updateCompanySubscription,
   bulkUploadLeads,
 } = require("../controllers/ControllerTen");
+const {
+  registerLandingAdmin,
+  landingAdminlogin,
+  sendOtpForlandAdmin,
+  createBlog,
+  getAllBlogs,
+  getBlogsById,
+  deleteBlogsById,
+  updateBlog,
+  getOnlyPublishedBlogs,
+} = require("../controllers/LandingController");
 
 // ========== Router Begins =====================
 router.post("/register", register);
@@ -374,7 +385,11 @@ router.get("/get-quotation-data", getAllQuotation);
 
 // Fetch all users
 router.get("/getUser", getAllUsers);
-router.post("/editProfile", upload1.single("profile_picture"), editProfile);
+router.post(
+  "/editProfile",
+  generalUpload.single("profile_picture"),
+  editProfile
+);
 router.delete("/deleteUser", deleteProfile);
 router.use((err, req, res, next) => {
   console.error(err.stack);
@@ -728,5 +743,16 @@ router.put(
 
 const excelUpload = multer({ dest: "uploads/" });
 router.post("/bulk-upload-leads", excelUpload.single("file"), bulkUploadLeads);
+
+// landing page admin route
+router.post("/registerLandingAdmin", registerLandingAdmin);
+router.post("/landingAdminlogin", landingAdminlogin);
+router.post("/sendOtpForlandAdmin", sendOtpForlandAdmin);
+router.post("/createBlog", blogUpload.single("feature_image"), createBlog);
+router.get("/getAllBlogs", getAllBlogs);
+router.get("/getBlogsById/:bid", getBlogsById);
+router.delete("/deleteBlogsById/:bid", deleteBlogsById);
+router.put("/updateBlog/:bid", blogUpload.single("feature_image"), updateBlog);
+router.get("/getOnlyPublishedBlogs", getOnlyPublishedBlogs);
 
 module.exports = router;
