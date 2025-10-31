@@ -87,10 +87,10 @@ const SuperAdminProfileContent = () => {
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
           {/* Header with Button */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             {/* Left side - Heading */}
             <motion.h2
-              className="text-3xl font-bold text-cyan-700"
+              className="text-2xl sm:text-3xl font-bold text-cyan-700 text-center sm:text-left"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
@@ -99,9 +99,9 @@ const SuperAdminProfileContent = () => {
             </motion.h2>
 
             {/* Right side - Buttons */}
-            <div className="flex gap-3">
+            <div className="flex flex-wrap justify-center sm:justify-end gap-2 sm:gap-3">
               <motion.button
-                className="px-5 py-2 bg-cyan-600 text-white font-medium rounded-lg shadow hover:bg-cyan-700 transition"
+                className="w-full sm:w-auto px-4 sm:px-5 py-2 bg-cyan-600 text-white font-medium rounded-lg shadow hover:bg-cyan-700 transition text-sm sm:text-base"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => openPopupWindow(profileData[0])}
@@ -110,7 +110,7 @@ const SuperAdminProfileContent = () => {
               </motion.button>
 
               <motion.button
-                className="px-5 py-2 bg-cyan-600 text-white font-medium rounded-lg shadow hover:bg-cyan-700 transition"
+                className="w-full sm:w-auto px-4 sm:px-5 py-2 bg-cyan-600 text-white font-medium rounded-lg shadow hover:bg-cyan-700 transition text-sm sm:text-base"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => changePopupWindow(profileData[0])}

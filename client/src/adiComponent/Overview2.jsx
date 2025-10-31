@@ -140,7 +140,7 @@ const Overview2 = () => {
   return (
     <>
       <div className="flex flex-wrap justify-around">
-        <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-3 ">
+        <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-2">
           <Link to="/Super-admin-project">
             <div className="shadow-lg rounded-lg overflow-hidden cursor-pointer text-gray-600 border-1">
               <div className="p-4 flex flex-col items-center text-center">
@@ -160,7 +160,7 @@ const Overview2 = () => {
           </Link>
         </div>
 
-        <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-3 ">
+        <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-2 ">
           <Link to="/super-admin-total-lead">
             <div className="shadow-lg rounded-lg overflow-hidden cursor-pointer text-gray-600 border-1">
               <div className="p-4 flex flex-col items-center text-center">
@@ -181,7 +181,7 @@ const Overview2 = () => {
         </div>
 
         {/* Card for Closed Data */}
-        <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-3">
+        <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-2">
           <Link to="/social-media-superleads">
             <div
               className={`shadow-lg rounded-lg overflow-hidden cursor-pointer ${
@@ -226,7 +226,7 @@ const Overview2 = () => {
           </Link>
         </div>
 
-        <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-3">
+        <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-2">
           <Link to="/super-admin-total-visit">
             <div className="shadow-lg rounded-lg overflow-hidden cursor-pointer text-gray-600">
               <div className="p-4 flex flex-col items-center text-center">

@@ -15,7 +15,7 @@ const SuperDashContent = () => {
   return (
     <>
       <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
+        <div className="w-[90%] sm:w-full min-h-screen bg-[#F9FAFF] p-2">
           <div className="">
             <div className="text-center sm:text-left">
               <h2 className="text-2xl font-bold text-gray-600 mt-2">

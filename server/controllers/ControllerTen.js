@@ -5,6 +5,7 @@ const { db } = require("../db");
 const moment = require("moment-timezone");
 const xlsx = require("xlsx");
 const { sendEmail } = require("../utils/emailService");
+const { sendWhatsAppLeadAssignedAlert } = require("../utils/whatsappUtils");
 
 const metaLeadFetchByPageId = async (req, res) => {
   const { pageId, accessToken, meta_org_id } = req.body;
@@ -193,18 +194,40 @@ const updateAndAssignedMetaLeads = (req, res) => {
           .json({ success: false, message: "Invalid Meta Lead ID" });
       }
 
-      if (meta_assignedTo) {
-        const staffQuery =
-          "SELECT staff_name, staff_email FROM company_staff WHERE staff_id = ?";
-        db.query(staffQuery, [meta_assignedTo], async (err, staffResult) => {
-          if (err) {
-            console.error("Error fetching staff details:", err.message);
-          } else if (staffResult.length > 0) {
-            const staff = staffResult[0];
+      if (!meta_assignedTo) {
+        return res.status(200).json({
+          success: true,
+          message:
+            "Meta Lead details updated successfully (no staff assigned).",
+        });
+      }
 
-            // Step 3: Send email notification
-            const subject = "CRMGuru - New Lead Assigned";
-            const text = `Dear ${staff.staff_name},
+      const staffQuery =
+        "SELECT staff_name, staff_email, staff_phone FROM company_staff WHERE staff_id = ?";
+      db.query(staffQuery, [meta_assignedTo], async (err, staffResult) => {
+        if (err) {
+          console.error("Error fetching staff details:", err.message);
+          return res.status(500).json({
+            success: false,
+            message: "Database error while fetching staff details",
+            error: err.message,
+          });
+        }
+
+        if (staffResult.length === 0) {
+          return res.status(404).json({
+            success: false,
+            message: "No staff found with the provided ID",
+          });
+        }
+
+        const staff = staffResult[0];
+        let whatsappStatus = "Not sent";
+
+        // --- Send Email ---
+        try {
+          const subject = "CRMGuru - New Meta Lead Assigned";
+          const text = `Dear ${staff.staff_name},
 
 A new lead has been assigned to you in CRMGuru.
 
@@ -213,40 +236,53 @@ Please log in to your dashboard to view the lead details.
 Best regards,
 CRMGuru Team`;
 
-            const html = `
-              <p>Dear <strong>${staff.staff_name}</strong>,</p>
-              <p>A new lead has been <strong>assigned to you</strong> in <b>CRMGuru</b>.</p>
-              <p>Please log in to your dashboard to check the details.</p>
-              <br/>
-              <p>Best regards,<br/>CRMGuru Team</p>
-            `;
+          const html = `
+            <p>Dear <strong>${staff.staff_name}</strong>,</p>
+            <p>A new lead has been <strong>assigned to you</strong> in <b>CRMGuru</b>.</p>
+            <p>Please log in to your dashboard to check the details.</p>
+            <br/>
+            <p>Best regards,<br/>CRMGuru Team</p>
+          `;
 
-            try {
-              await sendEmail(staff.staff_email, subject, text, html);
-              console.log("Lead assignment email sent to:", staff.staff_email);
-            } catch (emailErr) {
-              console.error("Email sending failed:", emailErr.message);
-            }
-          } else {
-            console.warn("No staff found with ID:", meta_assignedTo);
+          await sendEmail(staff.staff_email, subject, text, html);
+          console.log("📧 Email sent to:", staff.staff_email);
+        } catch (emailErr) {
+          console.error("Email sending failed:", emailErr.message);
+        }
+
+        // --- Send WhatsApp Alert ---
+        if (staff.staff_phone) {
+          try {
+            await sendWhatsAppLeadAssignedAlert(
+              staff.staff_phone,
+              staff.staff_name
+            );
+            whatsappStatus = "Sent successfully";
+          } catch (waErr) {
+            console.error("WhatsApp alert failed:", waErr.message);
+            whatsappStatus = `Failed - ${waErr.message}`;
           }
+        } else {
+          whatsappStatus = "Failed - No WhatsApp number found";
+        }
 
-          // Step 4: Send API response
-          return res.status(200).json({
-            success: true,
-            message:
-              "Meta Lead details updated successfully and notification sent.",
-          });
-        });
-      } else {
+        // --- Final Response ---
         return res.status(200).json({
           success: true,
-          message: "Meta Lead details updated successfully.",
+          message:
+            "Meta Lead details updated successfully and notifications sent.",
+          whatsapp_status: whatsappStatus,
+          staff_name: staff.staff_name,
         });
-      }
+      });
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error("Unexpected error:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
   }
 };
 
@@ -1098,6 +1134,21 @@ const bulkUploadLeads = (req, res) => {
   }
 };
 
+const checkSubscriptionValidity = (req, res) => {
+  try {
+    const { orgId } = req.params;
+    const selectQuery = `select * from company_profile join subscriptions on subscriptions.subscription_id = company_profile.cp_subscription_id where company_profile.org_id = ?`;
+    db.query(selectQuery, orgId, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+      return res.status(200).send(result);
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   metaLeadFetchByPageId,
   getMetaLeadsByOrgId,
@@ -1119,4 +1170,5 @@ module.exports = {
   getSubscriptionDetailsByOrg,
   updateCompanySubscription,
   bulkUploadLeads,
+  checkSubscriptionValidity,
 };

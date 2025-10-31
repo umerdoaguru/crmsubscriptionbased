@@ -213,7 +213,7 @@ const SuperSoldnit = () => {
         </div>
 
         {/* Separator "to" */}
-        <div className="flex items-center justify-center text-gray-600 font-medium">
+        <div className="flex items-center justify-center text-gray-600 font-medium hidden sm:flex">
           <span className="px-2">to</span>
         </div>
 
@@ -262,8 +262,8 @@ const SuperSoldnit = () => {
 
       {/* Table */}
       <div className="mt-4">
-        <div className="border rounded-lg shadow-sm">
-          <table className="min-w-full bg-white border">
+        <div className="border rounded-lg shadow-sm overflow-x-auto">
+          <table className="min-w-[900px] w-full bg-white border">
             <thead className="sticky top-0 bg-gray-200 z-10">
               <tr>
                 <th className="px-6 py-3 border-b-2 border-gray-300">S.no</th>

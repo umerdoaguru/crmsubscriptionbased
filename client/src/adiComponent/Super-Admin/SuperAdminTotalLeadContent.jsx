@@ -77,7 +77,7 @@ const SuperAdminTotalLeadContent = () => {
   return (
     <>
       <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
+        <div className="w-[90%] sm:w-full min-h-screen bg-[#F9FAFF] p-2">
           <div>
             <div className="container  mt-[2rem]">
               <div className="">

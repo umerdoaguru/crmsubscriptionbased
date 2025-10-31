@@ -2,6 +2,7 @@ const moment = require("moment-timezone");
 const schedule = require("node-schedule");
 const dotenv = require("dotenv");
 const axios = require("axios");
+const { type } = require("server/reply");
 dotenv.config();
 
 const sendWhatsAppSoldAlert = async (
@@ -98,4 +99,45 @@ const sendWhatsAppVisitAlert = async (toNumber, name, type, date, status) => {
   }
 };
 
-module.exports = { sendWhatsAppSoldAlert, sendWhatsAppVisitAlert };
+const sendWhatsAppLeadAssignedAlert = async (toNumber, name) => {
+  try {
+    const url = `https://graph.facebook.com/v18.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`;
+
+    const data = {
+      messaging_product: "whatsapp",
+      to: toNumber,
+      type: "template",
+      template: {
+        name: "crmguru_new_lead_assigned",
+        language: { code: "en" },
+        components: [
+          {
+            type: "body",
+            parameters: [{ type: "text", text: name || "N/A" }],
+          },
+        ],
+      },
+    };
+
+    const headers = {
+      Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`,
+      "Content-Type": "application/json",
+    };
+
+    const response = await axios.post(url, data, { headers });
+    console.log(`✅ WhatsApp lead assigned alert sent to ${toNumber}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      `❌ WhatsApp alert failed to ${toNumber}:`,
+      error.response?.data || error.message
+    );
+    throw error.response?.data || error;
+  }
+};
+
+module.exports = {
+  sendWhatsAppSoldAlert,
+  sendWhatsAppVisitAlert,
+  sendWhatsAppLeadAssignedAlert,
+};

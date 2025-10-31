@@ -15,7 +15,7 @@ function EmployeeDashboardContent() {
   return (
     <>
       <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
+        <div className="w-[93%] sm:w-full min-h-screen bg-[#F9FAFF] p-2">
           <h2 className="text-2xl text-center mt-[2rem]">Employee Dashboard</h2>
           <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
           <div className="flex min-h-screen overflow-hidden">
@@ -24,7 +24,7 @@ function EmployeeDashboardContent() {
               <div>
                 <EmployeeOverview />
               </div>
-              <div className="grid grid-cols-1 gap-2 mt-6 mx-8 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+              <div className="grid grid-cols-1 gap-2 mt-6 mx-2 sm:mx-8 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
                 <EmployeeLeadsGraph />
                 <EmployeeVisitGraph />
                 <EmployeeCloseGraph />

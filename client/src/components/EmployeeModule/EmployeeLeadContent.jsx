@@ -300,7 +300,7 @@ const EmployeeLeadContent = ({ isSidebarOpen }) => {
   return (
     <>
       <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
+        <div className="sm:w-full w-[90%] min-h-screen bg-[#F9FAFF] p-2">
           <div className="flex flex-col overflow-x-hidden">
             <div className="flex-grow p-2 sm:p-4 mt-4 lg:mt-2 sm:ml-0">
               <center className="text-2xl text-center font-medium">
@@ -310,38 +310,47 @@ const EmployeeLeadContent = ({ isSidebarOpen }) => {
 
               {/* Button to create a new lead */}
 
-              <div className="grid grid-cols-12 gap-4 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 gap-y-3 mb-4">
+                {/* Search */}
                 <div className="col-span-12 sm:col-span-4">
-                  <label htmlFor="">Search</label>
+                  <label className="block mb-1 text-sm font-semibold text-gray-700">
+                    Search
+                  </label>
                   <input
                     type="text"
-                    placeholder=" Name, Lead Source, Assigned To, Phone No"
+                    placeholder="Name, Lead Source, Assigned To, Phone No"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className={`border rounded p-2 w-full ${
+                    className={`border rounded p-2 w-full focus:outline-none transition-colors duration-200 ${
                       searchTerm ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   />
                 </div>
 
+                {/* Assigned Date */}
                 <div className="col-span-12 sm:col-span-2">
-                  <label htmlFor="">Filtered Assigned Date</label>
+                  <label className="block mb-1 text-sm font-semibold text-gray-700">
+                    Filtered Assigned Date
+                  </label>
                   <input
                     type="date"
                     value={filterDate}
                     onChange={(e) => setFilterDate(e.target.value)}
-                    className={`border rounded p-2 w-full ${
+                    className={`border rounded p-2 w-full focus:outline-none transition-colors duration-200 ${
                       filterDate ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   />
                 </div>
 
+                {/* Lead Source */}
                 <div className="col-span-12 sm:col-span-2">
-                  <label htmlFor="">Lead Source Filter</label>
+                  <label className="block mb-1 text-sm font-semibold text-gray-700">
+                    Lead Source Filter
+                  </label>
                   <select
                     value={leadSourceFilter}
                     onChange={(e) => setLeadSourceFilter(e.target.value)}
-                    className={`border rounded p-2 w-full ${
+                    className={`border rounded p-2 w-full focus:outline-none transition-colors duration-200 ${
                       leadSourceFilter ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   >
@@ -369,12 +378,15 @@ const EmployeeLeadContent = ({ isSidebarOpen }) => {
                   </select>
                 </div>
 
+                {/* Unit Sold */}
                 <div className="col-span-12 sm:col-span-2">
-                  <label htmlFor="">Unit Sold Filter</label>
+                  <label className="block mb-1 text-sm font-semibold text-gray-700">
+                    Unit Sold Filter
+                  </label>
                   <select
                     value={soldunitFilter}
                     onChange={(e) => setSoldUnitFilter(e.target.value)}
-                    className={`border rounded p-2 w-full ${
+                    className={`border rounded p-2 w-full focus:outline-none transition-colors duration-200 ${
                       soldunitFilter ? "bg-cyan-600 text-white" : "bg-white"
                     }`}
                   >
@@ -384,40 +396,48 @@ const EmployeeLeadContent = ({ isSidebarOpen }) => {
                   </select>
                 </div>
 
-                <div className="col-span-12 sm:col-span-2 mt-4">
+                {/* Reset Button */}
+                <div className="col-span-12 sm:col-span-2 flex items-end">
                   <button
                     onClick={handleReset}
-                    className="bg-cyan-600 text-white py-2 px-4 rounded hover:bg-cyan-600 transition-colors"
+                    className="bg-cyan-600 text-white py-2 px-4 rounded hover:bg-cyan-700 transition-colors w-full sm:w-auto"
                   >
                     Reset
                   </button>
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4 text-xl font-semibold my-3 mt-5">
-                {/* Total Lead Count */}
-                <h2 className="text-md text-gray-600">
-                  Total Lead: {totalLeads}
-                </h2>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-6 text-xl font-semibold my-3 mt-5">
+                {/* Stats Section */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 w-full sm:w-auto">
+                  {/* Total Lead Count */}
+                  <h2 className="text-base sm:text-md text-gray-600">
+                    Total Lead: {totalLeads}
+                  </h2>
 
-                {/* Total Lead Visits */}
-                <h2 className="text-md text-gray-600">
-                  Total Site Visit: {totalVisits}
-                </h2>
+                  {/* Total Lead Visits */}
+                  <h2 className="text-base sm:text-md text-gray-600">
+                    Total Site Visit: {totalVisits}
+                  </h2>
 
-                {/* Total Closed Leads */}
-                <h2 className="text-md text-gray-600">
-                  Total Closed Lead: {totalClosedLeads}
-                </h2>
-                <select
-                  onChange={handleLeadsPerPageChange}
-                  className="border border-cyan-600 rounded text-md text-gray-600 p-1 w-full sm:w-1/2 lg:w-1/4"
-                >
-                  <option value={10}>Number of rows: 10</option>
-                  <option value={20}>20</option>
-                  <option value={50}>50</option>
-                  <option value="All">All</option>
-                </select>
+                  {/* Total Closed Leads */}
+                  <h2 className="text-base sm:text-md text-gray-600">
+                    Total Closed Lead: {totalClosedLeads}
+                  </h2>
+                </div>
+
+                {/* Dropdown */}
+                <div className="w-full sm:w-auto">
+                  <select
+                    onChange={handleLeadsPerPageChange}
+                    className="border border-cyan-600 rounded text-md text-gray-600 p-2 w-full sm:w-48"
+                  >
+                    <option value={10}>Number of rows: 10</option>
+                    <option value={20}>20</option>
+                    <option value={50}>50</option>
+                    <option value="All">All</option>
+                  </select>
+                </div>
               </div>
 
               <div className={`w-auto overflow-x-auto`}>

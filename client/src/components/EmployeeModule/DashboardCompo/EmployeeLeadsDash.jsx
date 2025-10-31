@@ -8,10 +8,10 @@ const EmployeeLeadsDash = () => {
   const [activeTab, setActiveTab] = useState("general");
 
   const tabs = [
-    { id: "general", label: "General Leads" },
-    { id: "meta", label: "Meta Leads" },
-    { id: "website", label: "Website Leads" },
-    { id: "google", label: "Google Leads" },
+    { id: "general", label: "General" },
+    { id: "meta", label: "Meta" },
+    { id: "website", label: "Website" },
+    { id: "google", label: "Google" },
   ];
 
   const renderComponent = () => {
@@ -41,7 +41,7 @@ const EmployeeLeadsDash = () => {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-5 py-2 rounded-md font-medium text-sm transition-all duration-200 
+            className={`px-2 sm:px-5 py-2 rounded-md font-medium text-sm transition-all duration-200 
               ${
                 activeTab === tab.id
                   ? "bg-sky-600 text-white shadow-md"

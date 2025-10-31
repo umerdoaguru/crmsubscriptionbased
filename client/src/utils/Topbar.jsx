@@ -162,7 +162,7 @@ const Topbar = ({ isSidebarOpen }) => {
       <div className="flex items-center gap-6 relative">
         {/* Search */}
 
-        <div className="relative w-64">
+        <div className="relative w-64 hidden sm:block">
           <div className="flex items-center bg-gray-100 px-4 py-2 rounded-full text-gray-600 focus-within:ring-2 focus-within:ring-cyan-600 transition">
             <input
               type="text"
@@ -202,7 +202,7 @@ const Topbar = ({ isSidebarOpen }) => {
           >
             {getInitials(user?.staff_name)}
           </button>
-          <div className="flex flex-col items-start mr-2">
+          <div className="flex flex-col items-start mr-2 hidden sm:flex">
             <span className="text-sm font-semibold text-gray-700 capitalize">
               {user?.staff_name}
             </span>

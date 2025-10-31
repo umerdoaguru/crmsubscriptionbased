@@ -83,9 +83,9 @@ const SuperDashProjectContent = () => {
   return (
     <>
       <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
+        <div className="w-[90%] sm:w-full min-h-screen bg-[#F9FAFF] p-2">
           <div className="container">
-            <div className="mt-[1rem] ">
+            <div className="mt-[2rem] ">
               <button
                 onClick={() => navigate(-1)}
                 className="bg-cyan-600 text-white px-3 py-1 rounded-lg hover:bg-cyan-700 transition-colors"

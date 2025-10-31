@@ -245,17 +245,19 @@ const SuperLeadsTable = ({ isSidebarOpen, type }) => {
     <>
       <div className={`container mx-auto p-2`}>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold mb-4">Meta Leads Table</h2>
+          <h2 className="text-md sm:text-2xl font-bold mb-4">
+            Meta Leads Table
+          </h2>
           <div className="gap-2 flex">
             <button
-              className="bg-orange-500 p-2 px-4 rounded hover:bg-orange-600 font-semibold text-white"
+              className="bg-orange-500 p-2 px-2 sm:px-4 rounded hover:bg-orange-600 font-semibold text-white text-sm sm:text-lg"
               onClick={generateNewMetaLeads}
               disabled={newLoading}
             >
               {newLoading ? "Generating..." : "Fetch New Meta Leads"}
             </button>
             <button
-              className="bg-green-600 p-2 px-4 rounded hover:bg-green-700 font-semibold text-white"
+              className="bg-green-600 p-2 px-2 sm:px-4 rounded hover:bg-green-700 font-semibold text-white text-sm sm:text-lg"
               onClick={exportToExcel}
             >
               Export Meta Leads

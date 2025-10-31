@@ -109,7 +109,7 @@ const SuperAdEmployeemanagementContent = () => {
       <div className="flex mt-20">
         <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
           <div className=" container px-3">
-            <h2 className="text-2xl text-center mt-[2rem] font-medium">
+            <h2 className="text-2xl text-center mt-[4rem] font-medium">
               Employee Management
             </h2>
             <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>

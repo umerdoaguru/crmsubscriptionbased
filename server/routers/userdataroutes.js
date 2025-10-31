@@ -243,6 +243,7 @@ const {
   getSubscriptionDetailsByOrg,
   updateCompanySubscription,
   bulkUploadLeads,
+  checkSubscriptionValidity,
 } = require("../controllers/ControllerTen");
 const {
   registerLandingAdmin,
@@ -754,5 +755,6 @@ router.get("/getBlogsById/:bid", getBlogsById);
 router.delete("/deleteBlogsById/:bid", deleteBlogsById);
 router.put("/updateBlog/:bid", blogUpload.single("feature_image"), updateBlog);
 router.get("/getOnlyPublishedBlogs", getOnlyPublishedBlogs);
+router.get("/checkSubscriptionValidity/:orgId", checkSubscriptionValidity);
 
 module.exports = router;

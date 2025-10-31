@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
 import * as XLSX from "xlsx";
-import ReactPaginate from "react-paginate"; 
+import ReactPaginate from "react-paginate";
 import { useSelector } from "react-redux";
 
 function SuperLeadReport() {
@@ -10,7 +10,7 @@ function SuperLeadReport() {
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
-  const [duration, setDuration] = useState("all"); 
+  const [duration, setDuration] = useState("all");
   const [selectedColumns, setSelectedColumns] = useState([
     "lead_no",
     "assignedTo",
@@ -203,7 +203,7 @@ function SuperLeadReport() {
 
   return (
     <>
-      <div className="container 2xl:w-[95%] ">
+      <div className="container w-full 2xl:w-[95%] ">
         {/* Filters */}
         <div className="flex mb-4 sm:flex-row justify-end flex-col gap-2">
           <div>

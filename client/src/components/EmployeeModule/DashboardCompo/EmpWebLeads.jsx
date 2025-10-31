@@ -44,7 +44,7 @@ const EmpWebLeads = () => {
   };
 
   return (
-    <div className="mx-7">
+    <div className="sm:mx-7 mx-2">
       <div className="p-4 mt-6 bg-white rounded-lg shadow-lg">
         <h3 className="mb-4 text-lg font-semibold">Recently Assigned Leads</h3>
         <div className="overflow-x-auto mt-4">

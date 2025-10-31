@@ -49,7 +49,7 @@ const MetaLeads = () => {
 
   return (
     <>
-      <div className="p-4 mt-6 bg-white rounded-lg shadow-lg mx-7 mb-2 ">
+      <div className="p-4 mt-6 bg-white rounded-lg shadow-lg sm:mx-7 mb-2 ">
         <h3 className="mb-4 text-lg font-semibold">Recently Assigned Leads</h3>
         <div className="overflow-x-auto mt-4">
           <table className="min-w-full bg-white border">

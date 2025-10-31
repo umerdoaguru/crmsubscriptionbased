@@ -76,8 +76,8 @@ const SuperAdminSoldUnitsContent = () => {
   return (
     <>
       <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
-          <div className="mt-[1rem]">
+        <div className="w-[90%] sm:w-full min-h-screen bg-[#F9FAFF] p-2">
+          <div className="mt-[2rem]">
             <button
               onClick={() => navigate(-1)}
               className="bg-cyan-600 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-cyan-700 transition-colors"
@@ -86,7 +86,7 @@ const SuperAdminSoldUnitsContent = () => {
             </button>
           </div>
           <div className="flex flex-col">
-            <div className="flex-grow p-4 sm:ml-0">
+            <div className="flex-grow sm:p-4 p-2 pt-4 sm:ml-0">
               <h2 className="text-2xl text-center mt-2 font-medium">
                 Employee Sold Units
               </h2>

@@ -8,10 +8,10 @@ const LeadsDashboard = () => {
   const [activeTab, setActiveTab] = useState("general");
 
   const tabs = [
-    { id: "general", label: "General Leads" },
-    { id: "meta", label: "Meta Leads" },
-    { id: "website", label: "Website Leads" },
-    { id: "google", label: "Google Leads" },
+    { id: "general", label: "General" },
+    { id: "meta", label: "Meta" },
+    { id: "website", label: "Website" },
+    { id: "google", label: "Google" },
   ];
 
   const renderComponent = () => {
@@ -30,18 +30,18 @@ const LeadsDashboard = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-2 pt-4 sm:p-6">
       <h2 className="text-2xl font-semibold mb-6 text-gray-800">
         Leads Dashboard
       </h2>
 
       {/* Tabs */}
-      <div className="flex flex-wrap gap-3 mb-6 border-b border-gray-200 pb-2">
+      <div className="flex flex-wrap gap-1 sm:gap-3 mb-6 border-b border-gray-200 pb-2">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-5 py-2 rounded-md font-medium text-sm transition-all duration-200 
+            className={`px-2 sm:px-5 py-2 rounded-md font-medium text-xs sm:text-sm transition-all duration-200 
               ${
                 activeTab === tab.id
                   ? "bg-sky-600 text-white shadow-md"

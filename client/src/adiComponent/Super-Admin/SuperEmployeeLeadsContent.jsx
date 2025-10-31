@@ -381,8 +381,8 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   return (
     <>
       <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
-          <div className="container pt-2">
+        <div className="w-[90%] sm:w-full min-h-screen bg-[#F9FAFF] p-2">
+          <div className="container pt-4">
             <div className="main 2xl:w-[89%] ">
               <div>
                 <h2 className="text-xl sm:text-2xl text-start my-2 font-semibold text-gray-600">
@@ -415,7 +415,7 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
                     placeholder="Search By Name, Lead Source, Assigned To, Phone No..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className={`w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 transition ${
+                    className={`w-auto sm:w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 transition ${
                       searchTerm
                         ? "bg-cyan-600 text-white placeholder-white"
                         : "bg-white"
@@ -536,17 +536,17 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
 
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 rounded-lg my-1">
               {/* Stats */}
-              <div className="flex flex-wrap gap-6 text-lg font-semibold text-gray-700">
+              <div className="flex flex-wrap gap-2 sm:gap-6 text-sm sm:text-lg font-semibold text-gray-700">
                 <div className="px-4 py-2 bg-cyan-50 rounded-lg shadow-sm hover:shadow-md transition">
-                  <span className="text-gray-500">Total Lead:</span>{" "}
+                  <span className="text-gray-900">Total Lead:</span>{" "}
                   {totalLeads}
                 </div>
                 <div className="px-4 py-2 bg-green-50 rounded-lg shadow-sm hover:shadow-md transition">
-                  <span className="text-gray-500">Total Site Visit:</span>{" "}
+                  <span className="text-gray-900">Total Site Visit:</span>{" "}
                   {totalVisits}
                 </div>
                 <div className="px-4 py-2 bg-yellow-50 rounded-lg shadow-sm hover:shadow-md transition">
-                  <span className="text-gray-500">Closed Leads:</span>{" "}
+                  <span className="text-gray-900">Closed Leads:</span>{" "}
                   {totalClosedLeads}
                 </div>
               </div>
@@ -567,7 +567,7 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
 
             <div
               className={`overflow-x-auto mt-2 ${
-                isSidebarOpen ? "w-[78rem]" : "w-[86rem]"
+                isSidebarOpen ? "w-[78rem]" : "sm:w-[86rem]"
               }`}
             >
               <table className="tt min-w-full bg-white border whitespace-nowrap">

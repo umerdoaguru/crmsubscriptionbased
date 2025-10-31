@@ -1,5 +1,5 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaMoneyCheck } from "react-icons/fa";
 import { AiOutlineLogout } from "react-icons/ai";
 import { GiHamburgerMenu, GiTeacher } from "react-icons/gi";
@@ -22,6 +22,7 @@ import logoTwo from "../assets/favicon_one.png";
 import logoOne from "../assets/CRMGuruLogo.png";
 import { IoSettings } from "react-icons/io5";
 import { path } from "framer-motion/client";
+import axios from "axios";
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const user = useSelector((state) => state.auth.user);
@@ -29,6 +30,29 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [subStatus, setSubStatus] = useState([]);
+
+  const checkSubStatus = async () => {
+    try {
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/checkSubscriptionValidity/${user?.staff_org_id}`,
+        {
+          headers: { Authorization: `Bearer ${user?.token}` },
+        }
+      );
+      setSubStatus(data);
+    } catch (error) {
+      console.log(error);
+      if (error?.response?.data?.message === "Unauthorized - Token Expired") {
+        dispatch(logoutUser());
+        navigate("/");
+      }
+    }
+  };
+
+  useEffect(() => {
+    checkSubStatus();
+  }, [user]);
 
   const menuItems = [
     ...(user?.staff_role === "superadmin"

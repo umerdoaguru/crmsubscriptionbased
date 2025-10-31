@@ -45,7 +45,7 @@ const SuperSettingContent = () => {
       <div className="flex mt-20">
         <div className="w-full min-h-full bg-[#F9FAFF] p-2">
           <div className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8">
-            <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div className="w-full sm:max-w-5xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
               {/* HEADER */}
               <div className="bg-gradient-to-r from-sky-400 to-sky-600 text-white py-5 px-6">
                 <h1 className="text-2xl font-bold">Company Profile</h1>

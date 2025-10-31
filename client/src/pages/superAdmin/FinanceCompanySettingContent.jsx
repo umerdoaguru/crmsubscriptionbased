@@ -77,7 +77,7 @@ const FinanceCompanySettingContent = () => {
       <div className="flex mt-20">
         <div className="w-full min-h-full bg-[#F9FAFF] p-2">
           <div className="p-4 md:p-8">
-            <h2 className="text-2xl font-semibold mb-4 text-center text-gray-800">
+            <h2 className="text-2xl font-semibold mb-4 text-center text-gray-800 pt-4 sm:pt-0">
               Finance Companies
             </h2>
 

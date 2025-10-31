@@ -20,7 +20,7 @@ const SuperSetting = () => {
         {/* Main Content */}
         <div
           className={`main-content transition-all w-full duration-300 ${
-            isSidebarOpen ? "ml-60" : "ml-28"
+            isSidebarOpen ? "ml-60" : "sm:ml-28 ml-8"
           }`}
         >
           <Topbar isSidebarOpen={isSidebarOpen} />
