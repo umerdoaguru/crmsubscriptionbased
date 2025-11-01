@@ -2,7 +2,6 @@ import { useState } from "react";
 import React from "react";
 import Sidebar from "../../utils/Sidebar";
 import Topbar from "../../utils/Topbar";
-import AdminProfileContent from "../../adiComponent/Super-Admin/adminProfileContent";
 import AdminLeadsContent from "../AdminLeadsContent";
 
 const AdminLeads = () => {
@@ -21,7 +20,7 @@ const AdminLeads = () => {
         {/* Main Content */}
         <div
           className={`main-content transition-all w-full duration-300 ${
-            isSidebarOpen ? "ml-60" : "ml-28"
+            isSidebarOpen ? "ml-60" : "sm:ml-28 ml-10"
           }`}
         >
           <Topbar isSidebarOpen={isSidebarOpen} />

@@ -9,6 +9,9 @@ import { useSelector } from "react-redux";
 import SuperAdminEditLeadPopup from "./SuperAdminEditLeadPopup";
 import BulkLeadUploadPopup from "../../pages/superAdmin/popupWindows/BulkLeadUploadPopup";
 import { FaDatabase } from "react-icons/fa6";
+import { BiExport } from "react-icons/bi";
+import * as XLSX from "xlsx";
+import GenLeadAssignedPopup from "../../pages/superAdmin/popupWindows/GenLeadAssignedPopup";
 
 function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   const superadminuser = useSelector((state) => state.auth.user);
@@ -50,6 +53,8 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   const [visitmonthFilter, setVisitMonthFilter] = useState("");
   const [yearFilter, setYearFilter] = useState("");
   const [showBulkModal, setShowBulkModal] = useState(false);
+  const [selectedLeads, setSelectedLeads] = useState([]);
+  const [isBulkAssignOpen, setIsBulkAssignOpen] = useState(false);
 
   // Fetch leads from the API
   useEffect(() => {
@@ -378,6 +383,61 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
 
   console.log(leads);
 
+  // ✅ Export filtered leads to Excel
+  const handleExportToExcel = () => {
+    const dataToExport =
+      filteredLeads && filteredLeads.length > 0 ? filteredLeads : leads;
+
+    if (!dataToExport || dataToExport.length === 0) {
+      cogoToast.warn("No leads available to export!");
+      return;
+    }
+
+    const exportData = dataToExport.map((lead, index) => ({
+      "S.No": index + 1,
+      "Lead ID": lead.lead_id,
+      "Project Name": lead.project_name,
+      Name: lead.name,
+      Phone: lead.phone,
+      "Lead Source": lead.leadSource,
+      "Unit Type": lead.unit_type,
+      "Assigned To": lead.staff_name,
+      "Lead Status": lead.lead_status,
+      "Unit Status": lead.unit_status,
+      "Created Date": moment(lead.createdTime).format("YYYY-MM-DD HH:mm"),
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Leads");
+
+    XLSX.writeFile(
+      workbook,
+      `General_Leads_${moment().format("YYYY-MM-DD_HH-mm")}.xlsx`
+    );
+  };
+
+  // Handle selecting single lead
+  const handleSelectLead = (leadId) => {
+    setSelectedLeads((prevSelected) =>
+      prevSelected.includes(leadId)
+        ? prevSelected.filter((id) => id !== leadId)
+        : [...prevSelected, leadId]
+    );
+  };
+
+  // Handle "select all" checkbox
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      const allVisibleLeadIds = currentLeads.map((lead) => lead.lead_id);
+      setSelectedLeads(allVisibleLeadIds);
+    } else {
+      setSelectedLeads([]);
+    }
+  };
+
+  console.log(leads);
+
   return (
     <>
       <div className="flex mt-20">
@@ -464,8 +524,6 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
                     }`}
                   >
                     <option value="">Select Lead Source</option>
-                    <option value="Facebook">Facebook</option>
-                    <option value="99 Acres">99 Acres</option>
                     <option value="Referrals">Referrals</option>
                     <option value="Cold Calling">Cold Calling</option>
                     <option value="Email Campaigns">Email Campaigns</option>
@@ -481,6 +539,7 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
                     <option value="Online Directories">
                       Online Directories
                     </option>
+                    <option value="others">Others</option>
                   </select>
                 </div>
 
@@ -563,6 +622,23 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
                   <option value="All">All</option>
                 </select>
               </div>
+
+              <div className="flex gap-2">
+                <button
+                  className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex gap-2 items-center cursor-pointer"
+                  onClick={handleExportToExcel}
+                >
+                  <BiExport /> Export Leads
+                </button>
+                {selectedLeads.length > 0 && (
+                  <button
+                    onClick={() => setIsBulkAssignOpen(true)}
+                    className="bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-700 flex items-center gap-2"
+                  >
+                    <FaDatabase /> Assign Selected ({selectedLeads.length})
+                  </button>
+                )}
+              </div>
             </div>
 
             <div
@@ -573,6 +649,17 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
               <table className="tt min-w-full bg-white border whitespace-nowrap">
                 <thead>
                   <tr>
+                    <th className="px-4 py-2 border-y-2 border-gray-300 text-left text-cyan-700">
+                      <input
+                        type="checkbox"
+                        checked={
+                          currentLeads.length > 0 &&
+                          selectedLeads.length === currentLeads.length
+                        }
+                        onChange={handleSelectAll}
+                      />
+                    </th>
+
                     <th className="px-4 py-2 sm:px-6 sm:py-3 text-xs sm:text-sm border-y-2 border-gray-300 text-left text-cyan-700">
                       S.no
                     </th>
@@ -627,6 +714,14 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
                         key={index}
                         className={index % 2 === 0 ? "bg-gray-100" : ""}
                       >
+                        <td className="px-4 py-2 border-b border-gray-200">
+                          <input
+                            type="checkbox"
+                            checked={selectedLeads.includes(lead.lead_id)}
+                            onChange={() => handleSelectLead(lead.lead_id)}
+                          />
+                        </td>
+
                         <td className="px-6 py-4 border-b border-gray-200 text-gray-700 ">
                           {leadsPerPage === Infinity
                             ? index + 1
@@ -825,6 +920,13 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
         isOpen={showBulkModal}
         onClose={() => setShowBulkModal(false)}
         fetchLeads={fetchLeads}
+      />
+      <GenLeadAssignedPopup
+        isOpen={isBulkAssignOpen}
+        onClose={() => setIsBulkAssignOpen(false)}
+        fetchLeads={fetchLeads}
+        selectedLeads={selectedLeads}
+        isBulkAssignOpen={isBulkAssignOpen}
       />
     </>
   );

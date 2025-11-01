@@ -1149,6 +1149,98 @@ const checkSubscriptionValidity = (req, res) => {
   }
 };
 
+const updateLeadAssignment = async (req, res) => {
+  try {
+    const { leadId } = req.params;
+    const { assignedTo, main_project_id, unit_id } = req.body;
+
+    if (!leadId) {
+      return res.status(400).json({ message: "leadId is required" });
+    }
+
+    if (!assignedTo && !main_project_id && !unit_id) {
+      return res.status(400).json({
+        message:
+          "At least one field (assignedTo, main_project_id, unit_id) is required",
+      });
+    }
+
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+    const fields = [];
+    const values = [];
+
+    if (assignedTo !== undefined) {
+      fields.push("assignedTo = ?");
+      values.push(assignedTo);
+    }
+    if (main_project_id !== undefined) {
+      fields.push("main_project_id = ?");
+      values.push(main_project_id);
+    }
+    if (unit_id !== undefined) {
+      fields.push("unit_id = ?");
+      values.push(unit_id);
+    }
+
+    fields.push("lead_updated_at = ?");
+    values.push(dateTime);
+
+    values.push(leadId);
+
+    const sql = `UPDATE leads SET ${fields.join(", ")} WHERE lead_id = ?`;
+
+    await new Promise((resolve, reject) => {
+      db.query(sql, values, (err, result) => {
+        if (err) reject(err);
+        else resolve(result);
+      });
+    });
+
+    if (assignedTo) {
+      const staffQuery = `
+        SELECT staff_name, staff_email 
+        FROM company_staff 
+        WHERE staff_id = ?`;
+
+      db.query(staffQuery, [assignedTo], async (err, staffResult) => {
+        if (err) {
+          console.error("Error fetching staff details:", err.message);
+        } else if (staffResult.length > 0) {
+          const staff = staffResult[0];
+
+          const subject = "CRMGuru - New Lead Assigned";
+          const text = `Dear ${staff.staff_name}, 
+A new lead has been assigned to you in CRMGuru.
+Please log in to your dashboard to view details.
+Best regards,
+CRMGuru Team`;
+
+          const html = `
+            <p>Dear <strong>${staff.staff_name}</strong>,</p>
+            <p>A new lead has been <strong>assigned to you</strong> in <b>CRMGuru</b>.</p>
+            <p>Please log in to your dashboard to check the details.</p>
+            <br/>
+            <p>Best regards,<br/>CRMGuru Team</p>
+          `;
+
+          try {
+            await sendEmail(staff.staff_email, subject, text, html);
+            console.log("Assignment email sent to:", staff.staff_email);
+          } catch (emailErr) {
+            console.error("Email sending failed:", emailErr.message);
+          }
+        }
+      });
+    }
+
+    res.status(200).json({ message: "Lead assignment updated successfully" });
+  } catch (error) {
+    console.error("Error updating lead assignment:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   metaLeadFetchByPageId,
   getMetaLeadsByOrgId,
@@ -1171,4 +1263,5 @@ module.exports = {
   updateCompanySubscription,
   bulkUploadLeads,
   checkSubscriptionValidity,
+  updateLeadAssignment,
 };

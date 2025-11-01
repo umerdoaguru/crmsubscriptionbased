@@ -107,7 +107,7 @@ const EmployeeManagementContent = () => {
 
   return (
     <>
-      <div className="flex mt-20">
+      <div className="flex sm:mt-20 mt-16">
         <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
           <div className=" container px-3">
             <h2 className="text-2xl text-center mt-[2rem] font-medium">

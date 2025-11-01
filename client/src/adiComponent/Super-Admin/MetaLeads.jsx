@@ -126,16 +126,32 @@ const MetaLeads = () => {
             marginPagesDisplayed={2}
             pageRangeDisplayed={3}
             onPageChange={handlePageClick}
-            containerClassName={"pagination"}
-            activeClassName={"active"}
-            pageClassName={"page-item"}
-            pageLinkClassName={"page-link"}
-            previousClassName={"page-item"}
-            nextClassName={"page-item"}
-            previousLinkClassName={"page-link"}
-            nextLinkClassName={"page-link"}
-            breakClassName={"page-item"}
-            breakLinkClassName={"page-link"}
+            containerClassName={
+              "pagination flex flex-wrap sm:flex-nowrap items-center justify-center gap-2 sm:gap-3 overflow-x-auto px-2 py-2"
+            }
+            activeClassName={"active bg-blue-500 text-white"}
+            pageClassName={
+              "page-item border border-gray-300 rounded-md text-sm sm:text-base"
+            }
+            pageLinkClassName={
+              "page-link px-2 sm:px-3 py-1 sm:py-1.5 hover:bg-blue-100 transition-colors duration-200"
+            }
+            previousClassName={
+              "page-item border border-gray-300 rounded-md text-sm sm:text-base"
+            }
+            nextClassName={
+              "page-item border border-gray-300 rounded-md text-sm sm:text-base"
+            }
+            previousLinkClassName={
+              "page-link px-2 sm:px-3 py-1 sm:py-1.5 hover:bg-blue-100 transition-colors duration-200"
+            }
+            nextLinkClassName={
+              "page-link px-2 sm:px-3 py-1 sm:py-1.5 hover:bg-blue-100 transition-colors duration-200"
+            }
+            breakClassName={
+              "page-item border border-gray-300 rounded-md text-sm sm:text-base"
+            }
+            breakLinkClassName={"page-link px-2 sm:px-3 py-1 sm:py-1.5"}
           />
         </div>
       </div>

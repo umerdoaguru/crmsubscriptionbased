@@ -157,15 +157,6 @@ const OneLoginOnly = () => {
         </div>
 
         <div className="relative w-full max-w-md">
-          {/* Back Button */}
-          <button
-            onClick={() => navigate(-1)}
-            className="absolute -top-16 left-0 flex items-center gap-2 text-white/80 hover:text-white transition-colors duration-300 group"
-          >
-            <FaArrowLeft className="text-sm group-hover:-translate-x-1 transition-transform duration-300" />
-            <span className="text-sm font-medium">Back to Home</span>
-          </button>
-
           {/* Login Card */}
           <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20">
             {/* Header */}

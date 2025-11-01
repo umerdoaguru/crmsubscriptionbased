@@ -23,6 +23,7 @@ import logoOne from "../assets/CRMGuruLogo.png";
 import { IoSettings } from "react-icons/io5";
 import { path } from "framer-motion/client";
 import axios from "axios";
+import { FaMeta } from "react-icons/fa6";
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const user = useSelector((state) => state.auth.user);
@@ -71,7 +72,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
           {
             name: "Digital Marketing Leads",
             path: "/social-media-superleads",
-            icon: <TiSocialInstagramCircular />,
+            icon: <FaMeta />,
           },
 
           {
@@ -123,7 +124,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
           {
             name: "Digital Marketing Leads",
             path: "/main-social-media-leads",
-            icon: <TiSocialInstagramCircular />,
+            icon: <FaMeta />,
           },
           {
             name: "Reports",
@@ -166,7 +167,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
           {
             name: "Assigned Meta Leads",
             path: "/meta-leads-employee",
-            icon: <GrTableAdd />,
+            icon: <FaMeta />,
           },
           {
             name: "Reports",

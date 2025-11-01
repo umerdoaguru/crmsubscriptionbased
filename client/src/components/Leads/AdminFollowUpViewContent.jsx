@@ -119,8 +119,8 @@ const AdminFollowUpViewContent = () => {
   return (
     <>
       <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
-          <div className="container mt-2">
+        <div className="w-[92%] sm:w-full min-h-screen bg-[#F9FAFF] p-2">
+          <div className="container sm:mt-2">
             <button
               onClick={handleBackClick}
               className="bg-cyan-500 text-white mt-1 px-4 py-2 rounded"

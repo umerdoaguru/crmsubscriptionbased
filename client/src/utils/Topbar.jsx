@@ -150,11 +150,13 @@ const Topbar = ({ isSidebarOpen }) => {
       }`}
     >
       {/* Logo */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center sm:gap-3 gap-1">
         <img src={logoTwo} alt="Logo" className="h-12 w-14 object-contain" />
-        <p className="text-xl font-bold text-cyan-600">
+        <p className="text-md sm:text-xl font-bold text-cyan-600">
           CRMGuru <br />
-          <span className="text-md font-bold text-gray-500">{pageTitle}</span>
+          <span className="text-xs sm:text-md font-bold text-gray-500">
+            {pageTitle}
+          </span>
         </p>
       </div>
 

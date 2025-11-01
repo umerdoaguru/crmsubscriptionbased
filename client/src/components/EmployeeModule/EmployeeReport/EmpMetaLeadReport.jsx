@@ -105,7 +105,7 @@ function EmpMetaLeadReport() {
   const handlePageClick = (data) => setCurrentPage(data.selected);
 
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="container mx-auto px-2 sm:px-4 py-6">
       {/* Filters */}
       <div className="flex flex-col sm:flex-row justify-end items-center gap-3 mb-4">
         <select

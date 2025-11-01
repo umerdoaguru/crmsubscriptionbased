@@ -345,12 +345,14 @@ function EmployeeSingleLeadProfileContent() {
 
   const totalVisit = visit.length;
 
+  const remainingLeads = leads?.length > 1 ? leads.slice(1) : leads;
+
   return (
     <>
       <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
+        <div className="w-[90%] sm:w-full min-h-screen bg-[#F9FAFF] p-2">
           <div className="flex flex-col">
-            <div className="container mt-1 px-2 mx-auto p-4">
+            <div className="container sm:mt-1 px-2 mx-auto p-4">
               <div className="">
                 <button
                   onClick={() => navigate(-1)}
@@ -359,13 +361,13 @@ function EmployeeSingleLeadProfileContent() {
                   Back
                 </button>
               </div>
-              <h1 className="text-2xl text-center mt-[2rem]">Leads Profile</h1>
+              <h2 className="text-2xl text-center mt-[2rem]">Leads Profile</h2>
               <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
-              <div className="flex flex-wrap mb-4">
-                <div className="w-full lg:w-1/3">
+              <div className="flex flex-wrap mb-4 hidden sm:flex">
+                <div className="w-full lg:w-1/3 hidden sm:block">
                   <img src={img} alt="doctor-profile" className=" rounded-lg" />
                 </div>
-                {leads?.slice(1).map((lead, index) => (
+                {remainingLeads?.map((lead, index) => (
                   <div className="w-full lg:w-2/3 ">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                       {/* <div>
@@ -559,7 +561,7 @@ function EmployeeSingleLeadProfileContent() {
                 </div>
               </div>
 
-              <div className="w-[78rem] overflow-x-auto mt-1">
+              <div className="w-auto sm:w-[78rem] overflow-x-auto mt-1">
                 <table className="min-w-full whitespace-nowrap bg-white border">
                   <thead>
                     <tr>
@@ -617,7 +619,7 @@ function EmployeeSingleLeadProfileContent() {
                     </tr>
                   </thead>
                   <tbody>
-                    {leads?.slice(1).map((lead, index) => (
+                    {remainingLeads?.map((lead, index) => (
                       <tr
                         key={lead.id}
                         className={index % 2 === 0 ? "bg-gray-100" : ""}

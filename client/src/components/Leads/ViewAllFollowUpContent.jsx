@@ -29,7 +29,7 @@ const ViewAllFollowUpContent = () => {
       if (type === "meta") {
         apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeFollow_UpMeta/${id}`;
       } else {
-        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeFollow_Up/${id}`;
+        apiUrl = `https://crm-generalize.dentalguru.software/api/employe-follow-up/${id}`;
       }
 
       const { data } = await axios.get(apiUrl, {
@@ -122,9 +122,9 @@ const ViewAllFollowUpContent = () => {
   return (
     <>
       <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
-          <div className="container mt-2">
-            <div className="mt-[1rem] ">
+        <div className="w-full min-h-screen bg-[rgb(249,250,255)] p-2">
+          <div className="container sm:mt-2">
+            <div className="sm:mt-[1rem] ml-6 sm:ml-0">
               <button
                 onClick={() => navigate(-1)}
                 className="bg-cyan-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-cyan-600 transition-colors"

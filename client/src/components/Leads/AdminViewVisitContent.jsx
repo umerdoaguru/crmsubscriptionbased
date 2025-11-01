@@ -117,7 +117,7 @@ const AdminViewVisitContent = () => {
   return (
     <>
       <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
+        <div className="w-[95%] sm:w-full min-h-screen bg-[#F9FAFF] p-2">
           <div className="container mt-2">
             <button
               onClick={handleBackClick}

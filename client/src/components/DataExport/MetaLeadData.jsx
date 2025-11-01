@@ -135,9 +135,9 @@ function MetaLeadData() {
       <div className="mx-auto h-[3px] w-16 bg-cyan-700 my-3"></div>
 
       {/* ✅ Filters Section */}
-      <div className="flex flex-col sm:flex-row flex-wrap items-end gap-4 mb-4">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap items-end gap-4 mb-4">
         {/* Start Date */}
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full sm:w-auto">
           <label className="mb-1 text-sm font-semibold text-gray-700">
             Start Date
           </label>
@@ -145,12 +145,12 @@ function MetaLeadData() {
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-cyan-500"
+            className="border rounded-lg px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-cyan-500 w-full sm:w-44"
           />
         </div>
 
         {/* End Date */}
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full sm:w-auto">
           <label className="mb-1 text-sm font-semibold text-gray-700">
             End Date
           </label>
@@ -158,19 +158,19 @@ function MetaLeadData() {
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-cyan-500"
+            className="border rounded-lg px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-cyan-500 w-full sm:w-44"
           />
         </div>
 
         {/* Employee */}
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full sm:w-auto">
           <label className="mb-1 text-sm font-semibold text-gray-700">
             Employee
           </label>
           <select
             value={selectedEmployee}
             onChange={(e) => setSelectedEmployee(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-cyan-500"
+            className="border rounded-lg px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-cyan-500 w-full sm:w-48"
           >
             <option value="">Select Employee</option>
             {employees.map((emp) => (
@@ -182,13 +182,13 @@ function MetaLeadData() {
         </div>
 
         {/* Download */}
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full sm:w-auto">
           <label className="mb-1 text-sm font-semibold text-gray-700 invisible">
             Download
           </label>
           <button
             onClick={downloadExcel}
-            className="bg-cyan-600 text-white font-medium px-5 py-2 rounded-lg shadow-md hover:bg-cyan-700 active:scale-95 transition"
+            className="bg-cyan-600 text-white font-medium px-5 py-2 rounded-lg shadow-md hover:bg-cyan-700 active:scale-95 transition w-full sm:w-auto"
           >
             Download Excel
           </button>

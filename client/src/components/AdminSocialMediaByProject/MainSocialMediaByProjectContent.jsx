@@ -22,9 +22,9 @@ function MainSocialMediaByProjectContent({ isSidebarOpen }) {
             </h2>
             <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
 
-            <div className="flex flex-wrap justify-center gap-6 mt-5 mb-3">
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-6 mt-5 mb-3">
               {/* Meta Leads Data */}
-              <div className={`w-full sm:w-1/2 lg:w-1/4 xl:w-1/5`}>
+              <div className={`w-1/4 sm:w-1/4 xl:w-1/5`}>
                 <div
                   className={`rounded-2xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
                     selectedComponent === "FacebookData"
@@ -33,7 +33,7 @@ function MainSocialMediaByProjectContent({ isSidebarOpen }) {
                   }`}
                   onClick={() => setSelectedComponent("FacebookData")}
                 >
-                  <div className="p-6 flex flex-col items-center text-center">
+                  <div className="p-4 sm:p-6 flex flex-col items-center text-center">
                     <div
                       className={`text-4xl mb-3 transition-colors duration-300 ${
                         selectedComponent === "FacebookData"
@@ -45,7 +45,7 @@ function MainSocialMediaByProjectContent({ isSidebarOpen }) {
                     </div>
                     <h5 className="text-lg font-semibold">Meta Leads Data</h5>
                     <p
-                      className={`text-sm mt-1 ${
+                      className={`text-sm hidden sm:block mt-1 ${
                         selectedComponent === "FacebookData"
                           ? "text-white/80"
                           : "text-gray-500"
@@ -58,7 +58,7 @@ function MainSocialMediaByProjectContent({ isSidebarOpen }) {
               </div>
 
               {/* Website Inquiries */}
-              <div className={`w-full sm:w-1/2 lg:w-1/4 xl:w-1/5`}>
+              <div className={`w-1/4 sm:w-1/4 xl:w-1/5`}>
                 <div
                   className={`rounded-2xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
                     selectedComponent === "WebsiteData"
@@ -81,7 +81,7 @@ function MainSocialMediaByProjectContent({ isSidebarOpen }) {
                       Website Inquiries Data
                     </h5>
                     <p
-                      className={`text-sm mt-1 ${
+                      className={`text-sm mt-1 hidden sm:block ${
                         selectedComponent === "WebsiteData"
                           ? "text-white/80"
                           : "text-gray-500"
@@ -94,7 +94,7 @@ function MainSocialMediaByProjectContent({ isSidebarOpen }) {
               </div>
 
               {/* Google Data */}
-              <div className={`w-full sm:w-1/2 lg:w-1/4 xl:w-1/5`}>
+              <div className={`w-1/4 sm:w-1/4 xl:w-1/5`}>
                 <div
                   className={`rounded-2xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
                     selectedComponent === "GoogleData"
@@ -115,7 +115,7 @@ function MainSocialMediaByProjectContent({ isSidebarOpen }) {
                     </div>
                     <h5 className="text-lg font-semibold">Google Leads Data</h5>
                     <p
-                      className={`text-sm mt-1 ${
+                      className={`text-sm mt-1 hidden sm:block ${
                         selectedComponent === "GoogleData"
                           ? "text-white/80"
                           : "text-gray-500"

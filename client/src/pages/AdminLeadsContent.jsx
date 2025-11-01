@@ -326,7 +326,7 @@ function AdminLeadsContent({ isSidebarOpen }) {
   return (
     <>
       <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
+        <div className="sm:w-full w-[90%] min-h-screen bg-[#F9FAFF] p-2">
           <div className="container">
             <div className="main">
               <h2 className="text-2xl text-center mt-[2rem] font-medium">
@@ -476,30 +476,40 @@ function AdminLeadsContent({ isSidebarOpen }) {
                 </div>
               </div>
             </div>
-            <div className="flex gap-10 text-xl font-semibold my-3 mt-5">
+
+            <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-10 text-base sm:text-xl font-semibold my-3 mt-5">
               {/* Total Lead Count */}
-              <div>Total Lead: {totalLeads}</div>
+              <div className="w-full sm:w-auto text-gray-700 text-sm sm:text-xl">
+                Total Lead: {totalLeads}
+              </div>
 
               {/* Total Lead Visits */}
-              <div>Total Site Visit: {totalVisits}</div>
+              <div className="w-full sm:w-auto text-gray-700 text-sm sm:text-xl">
+                Total Site Visit: {totalVisits}
+              </div>
 
               {/* Total Closed Leads */}
-              <div>Total Closed Lead: {totalClosedLeads}</div>
-              <select
-                onChange={handleLeadsPerPageChange}
-                className="border rounded-2xl w-1/4"
-              >
-                <option value={10}>Number of rows: 10</option>
+              <div className="w-full sm:w-auto text-gray-700 text-sm sm:text-xl">
+                Total Closed Lead: {totalClosedLeads}
+              </div>
 
-                <option value={20}>20</option>
-                <option value={50}>50</option>
-                <option value="All">All</option>
-              </select>
+              {/* Rows per page dropdown */}
+              <div className="w-full sm:w-auto text-sm sm:text-xl">
+                <select
+                  onChange={handleLeadsPerPageChange}
+                  className="border rounded-2xl w-full p-2"
+                >
+                  <option value={10}>Number of rows: 10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                  <option value="All">All</option>
+                </select>
+              </div>
             </div>
 
             <div
               className={`overflow-x-auto mt-4 ${
-                isSidebarOpen ? "w-[78rem]" : "w-[86rem]"
+                isSidebarOpen ? "w-[78rem]" : "sm:w-[86rem] w-auto"
               } `}
             >
               <table className="min-w-full bg-white border">

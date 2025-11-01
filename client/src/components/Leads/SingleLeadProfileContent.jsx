@@ -159,9 +159,9 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
   return (
     <>
       <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
+        <div className="w-[90%] sm:w-full min-h-screen bg-[#F9FAFF] p-2">
           <div className="container px-2 mx-auto p-4  ">
-            <div className=" mt-2">
+            <div className="sm:mt-2">
               <button
                 onClick={() => navigate(-1)}
                 className="bg-cyan-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-cyan-600 transition-colors"
@@ -171,7 +171,7 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
             </div>
             <h1 className="text-2xl text-center">Leads Profile</h1>
             <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
-            <div className="flex flex-wrap mb-4  mt-2">
+            <div className="flex flex-wrap mb-4  mt-2 hidden sm:flex">
               <div className="w-full lg:w-1/3">
                 <img src={img} alt="doctor-profile" className=" rounded-lg" />
               </div>
@@ -298,7 +298,7 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
 
             <div
               className={`overflow-x-auto mt-5 ${
-                isSidebarOpen ? "w-[78rem]" : "w-[85rem]"
+                isSidebarOpen ? "w-[78rem]" : "sm:w-[85rem] w-auto"
               } `}
             >
               <table className="min-w-full whitespace-nowrap bg-white border">

@@ -47,9 +47,9 @@ const Admin_RemarksViewContent = () => {
   return (
     <>
       <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
+        <div className="w-[90%] sm:w-full min-h-screen bg-[#F9FAFF] p-2">
           <div className="container">
-            <div className="mt-[1rem]">
+            <div className="sm:mt-[1rem]">
               <button
                 onClick={() => navigate(-1)}
                 className="bg-blue-500 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-blue-600 transition-colors"

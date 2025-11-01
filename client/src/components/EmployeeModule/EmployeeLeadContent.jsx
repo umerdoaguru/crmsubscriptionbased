@@ -302,7 +302,7 @@ const EmployeeLeadContent = ({ isSidebarOpen }) => {
       <div className="flex mt-20">
         <div className="sm:w-full w-[90%] min-h-screen bg-[#F9FAFF] p-2">
           <div className="flex flex-col overflow-x-hidden">
-            <div className="flex-grow p-2 sm:p-4 mt-4 lg:mt-2 sm:ml-0">
+            <div className="flex-grow p-2 sm:p-4 mt-0 lg:mt-2 sm:ml-0">
               <center className="text-2xl text-center font-medium">
                 Assigned Employee Leads
               </center>

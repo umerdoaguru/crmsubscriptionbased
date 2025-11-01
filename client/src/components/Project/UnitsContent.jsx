@@ -155,7 +155,7 @@ const UnitsContent = () => {
     <>
       <div className="flex mt-20">
         <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
-          <div className="mt-[2rem]">
+          <div className="sm:mt-[2rem] mt-0 ml-6 sm:ml-0">
             <button
               onClick={() => navigate(-1)}
               className="bg-cyan-500 text-white px-3 py-1 rounded-lg hover:bg-cyan-600 transition-colors"

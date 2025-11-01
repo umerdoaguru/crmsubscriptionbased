@@ -80,9 +80,9 @@ function TotalEmpLeadContent() {
   return (
     <>
       <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
+        <div className="sm:w-full w-[90%] min-h-screen bg-[#F9FAFF] p-2">
           <div className="flex flex-col">
-            <div className="mt-[2rem] ">
+            <div className="mt-0 sm:mt-[2rem]">
               <button
                 onClick={() => navigate(-1)}
                 className="bg-cyan-600 text-white px-3 mx-1 py-1 max-sm:hidden rounded-lg hover:bg-cyan-600 transition-colors"
@@ -119,32 +119,32 @@ function TotalEmpLeadContent() {
                 <table className="container bg-white border">
                   <thead>
                     <tr>
-                      <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                      <th className="sm:px-6 px-2 sm:py-3 py-2 border-b-2 border-gray-300 text-xs sm:text-sm text-left leading-4 text-gray-600 tracking-wider">
                         S.no
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                      <th className="sm:px-6 px-2 sm:py-3 py-2 border-b-2 border-gray-300 text-left text-xs sm:text-sm leading-4 text-gray-600 tracking-wider">
                         Project Name
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                      <th className="sm:px-6 px-2 sm:py-3 py-2 border-b-2 border-gray-300 text-left text-xs sm:text-sm leading-4 text-gray-600 tracking-wider">
                         Lead Id
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                      <th className="sm:px-6 px-2 sm:py-3 py-2 border-b-2 border-gray-300 text-left text-xs sm:text-sm leading-4 text-gray-600 tracking-wider">
                         Name
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                      <th className="sm:px-6 px-2 sm:py-3 py-2 border-b-2 border-gray-300 text-left text-xs sm:text-sm leading-4 text-gray-600 tracking-wider">
                         Phone
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                      <th className="sm:px-6 px-2 sm:py-3 py-2 border-b-2 border-gray-300 text-left text-xs sm:text-sm leading-4 text-gray-600 tracking-wider">
                         Lead Source
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                      <th className="sm:px-6 px-2 sm:py-3 py-2 border-b-2 border-gray-300 text-left text-xs sm:text-sm leading-4 text-gray-600 tracking-wider">
                         Assigned To
                       </th>
 
-                      <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                      <th className="sm:px-6 px-2 sm:py-3 py-2 border-b-2 border-gray-300 text-left text-xs sm:text-sm leading-4 text-gray-600 tracking-wider">
                         Lead Status
                       </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                      <th className="sm:px-6 px-2 sm:py-3 py-2 border-b-2 border-gray-300 text-left text-xs sm:text-sm leading-4 text-gray-600 tracking-wider">
                         Assigned Date
                       </th>
                     </tr>
@@ -155,15 +155,15 @@ function TotalEmpLeadContent() {
                         key={lead.lead_id}
                         className={index % 2 === 0 ? "bg-gray-100" : ""}
                       >
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                        <td className="sm:px-6 px-2 sm:py-4 py-2 border-b border-gray-200 text-gray-800 text-xs sm:text-sm">
                           {leadsPerPage === Infinity
                             ? index + 1
                             : index + 1 + currentPage * leadsPerPage}
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                        <td className="sm:px-6 px-2 sm:py-4 py-2 border-b border-gray-200 text-gray-800 text-xs sm:text-sm">
                           {lead.project_name}
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800 hover:text-cyan-600">
+                        <td className="sm:px-6 px-2 sm:py-4 py-2 border-b border-gray-200 text-gray-800 text-xs sm:text-sm hover:text-cyan-600">
                           <Link
                             to={`/employee-lead-single-data/${lead.lead_id}`}
                           >
@@ -171,23 +171,23 @@ function TotalEmpLeadContent() {
                           </Link>
                           {/* {lead.lead_id} */}
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                        <td className="sm:px-6 px-2 sm:py-4 py-2 border-b border-gray-200 text-gray-800 text-xs sm:text-sm">
                           {lead.name}
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                        <td className="sm:px-6 px-2 sm:py-4 py-2 border-b border-gray-200 text-gray-800 text-xs sm:text-sm">
                           {lead.phone}
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                        <td className="sm:px-6 px-2 sm:py-4 py-2 border-b border-gray-200 text-gray-800 text-xs sm:text-sm">
                           {lead.leadSource}
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                        <td className="sm:px-6 px-2 sm:py-4 py-2 border-b border-gray-200 text-gray-800 text-xs sm:text-sm">
                           {lead.staff_name}
                         </td>
 
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                        <td className="sm:px-6 px-2 sm:py-4 py-2 border-b border-gray-200 text-gray-800 text-xs sm:text-sm">
                           {lead.lead_status}
                         </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
+                        <td className="sm:px-6 px-2 sm:py-4 py-2 border-b border-gray-200 text-gray-800 text-xs sm:text-sm">
                           {moment(lead.createdTime)
                             .format("DD MMM YYYY")
                             .toUpperCase()}

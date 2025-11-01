@@ -211,7 +211,7 @@ const EmployeeSoldDataDetails = () => {
         </div>
 
         {/* Separator "to" */}
-        <div className="flex items-center justify-center text-gray-600 font-medium">
+        <div className="flex items-center justify-center text-gray-600 font-medium hidden sm:flex">
           <span className="px-2">to</span>
         </div>
 

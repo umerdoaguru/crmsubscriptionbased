@@ -127,8 +127,8 @@ const ViewAllRemarkContent = () => {
     <>
       <div className="flex mt-20">
         <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
-          <div className="container mt-2">
-            <div className="mt-[1rem]">
+          <div className="container sm:mt-2">
+            <div className="sm:mt-[1rem] ml-6 sm:ml-0">
               <button
                 onClick={() => navigate(-1)}
                 className="bg-cyan-600 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-cyan-600 transition-colors"

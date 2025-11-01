@@ -91,10 +91,10 @@ function EmployeeDataExportContent() {
 
   return (
     <>
-      <div className="flex mt-20">
+      <div className="flex sm:mt-20 mt-16">
         <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
           <div className="flex-grow p-4">
-            <center className="text-2xl text-center mt-2 font-medium">
+            <center className="text-2xl text-center mt-0 sm:mt-2 font-medium">
               Employee Data Export
             </center>
             <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>

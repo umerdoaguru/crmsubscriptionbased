@@ -5,7 +5,7 @@ import Topbar from "../../utils/Topbar";
 import SuperDashContent from "../../adiComponent/SuperDashContent";
 
 const SuperDash = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);

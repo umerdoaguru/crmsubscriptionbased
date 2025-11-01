@@ -159,9 +159,9 @@ const MetaLeadEmpContent = ({ isSidebarOpen }) => {
   return (
     <>
       <div className="flex mt-20">
-        <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
+        <div className="w-[90%] sm:w-full min-h-screen bg-[#F9FAFF] p-2">
           <div className="flex flex-col overflow-x-hidden">
-            <div className="flex-grow p-2 sm:p-4 mt-4 lg:mt-2 sm:ml-0">
+            <div className="flex-grow p-2 sm:p-4 mt-0 lg:mt-2 sm:ml-0">
               <center className="text-2xl text-center font-medium">
                 Assigned Meta Leads
               </center>

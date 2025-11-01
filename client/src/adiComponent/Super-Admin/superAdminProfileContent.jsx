@@ -79,7 +79,7 @@ const SuperAdminProfileContent = () => {
 
   return (
     <>
-      <div className="flex justify-center mt-36 px-4">
+      <div className="flex justify-center sm:mt-36 mt-24 px-4">
         <motion.div
           className="w-full max-w-5xl bg-gradient-to-br from-white via-blue-50 to-cyan-100 rounded-3xl shadow-2xl p-8"
           initial={{ opacity: 0, scale: 0.9, y: 40 }}
