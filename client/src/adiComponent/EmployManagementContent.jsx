@@ -105,6 +105,8 @@ const EmployeeManagementContent = () => {
     setCurrentPage(data.selected);
   };
 
+  console.log(employees);
+
   return (
     <>
       <div className="flex sm:mt-20 mt-16">

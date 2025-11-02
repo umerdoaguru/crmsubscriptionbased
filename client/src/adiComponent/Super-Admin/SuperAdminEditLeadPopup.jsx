@@ -226,7 +226,8 @@ const SuperAdminEditLeadPopup = ({
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ duration: 0.25 }}
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl mx-3 p-6"
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl mx-3 p-6 
+                   max-h-[90vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
           >
             {/* Header */}
             <div className="flex justify-between items-center mb-6">

@@ -179,7 +179,7 @@ const ViewAllUnitSoldContent = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-[#F9FAFF] pt-24 px-4">
+      <div className="min-h-screen bg-[#F9FAFF] pt-28 px-4">
         <div className="sm:max-w-7xl w-[90%] mx-auto">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-3xl font-bold text-gray-700">

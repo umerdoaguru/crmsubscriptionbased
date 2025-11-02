@@ -22,7 +22,7 @@ function MainSocialMediaByProjectContent({ isSidebarOpen }) {
             </h2>
             <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
 
-            <div className="flex flex-wrap justify-center gap-3 sm:gap-6 mt-5 mb-3">
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-6 mt-5 mb-3">
               {/* Meta Leads Data */}
               <div className={`w-1/4 sm:w-1/4 xl:w-1/5`}>
                 <div
@@ -33,7 +33,7 @@ function MainSocialMediaByProjectContent({ isSidebarOpen }) {
                   }`}
                   onClick={() => setSelectedComponent("FacebookData")}
                 >
-                  <div className="p-4 sm:p-6 flex flex-col items-center text-center">
+                  <div className="p-2 sm:p-6 flex flex-col items-center text-center">
                     <div
                       className={`text-4xl mb-3 transition-colors duration-300 ${
                         selectedComponent === "FacebookData"
@@ -67,7 +67,7 @@ function MainSocialMediaByProjectContent({ isSidebarOpen }) {
                   }`}
                   onClick={() => setSelectedComponent("WebsiteData")}
                 >
-                  <div className="p-6 flex flex-col items-center text-center">
+                  <div className="p-2 sm:p-6 flex flex-col items-center text-center">
                     <div
                       className={`text-4xl mb-3 transition-colors duration-300 ${
                         selectedComponent === "WebsiteData"
@@ -103,7 +103,7 @@ function MainSocialMediaByProjectContent({ isSidebarOpen }) {
                   }`}
                   onClick={() => setSelectedComponent("GoogleData")}
                 >
-                  <div className="p-6 flex flex-col items-center text-center">
+                  <div className="p-2 sm:p-6 flex flex-col items-center text-center">
                     <div
                       className={`text-4xl mb-3 transition-colors duration-300 ${
                         selectedComponent === "GoogleData"

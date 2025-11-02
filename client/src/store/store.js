@@ -2,6 +2,7 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import UserSlice from "./UserSlice";
+import UiSlice from "./UiSlice";
 
 // Set up persist configuration
 const persistConfig = {
@@ -12,6 +13,7 @@ const persistConfig = {
 // Combine all slices in case you add more in the future
 const rootReducer = combineReducers({
   auth: UserSlice,
+  ui: UiSlice,
 });
 
 // Persist the root reducer

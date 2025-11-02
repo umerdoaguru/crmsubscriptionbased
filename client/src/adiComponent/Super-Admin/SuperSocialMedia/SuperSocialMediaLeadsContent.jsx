@@ -36,9 +36,9 @@ function SuperSocialMediaLeadsContent({ isSidebarOpen }) {
             </h2>
             <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
 
-            <div className="flex flex-wrap justify-center gap-3 sm:gap-6 mt-5 mb-3">
+            <div className="flex flex-wrap justify-center sm:gap-6 mt-5 mb-3">
               {/* Meta Leads Data */}
-              <div className={`w-1/4 sm:w-1/4 xl:w-1/5`}>
+              <div className={`w-1/3 sm:w-1/4 xl:w-1/5`}>
                 <div
                   className={`rounded-2xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
                     selectedComponent === "FacebookData"
@@ -72,7 +72,7 @@ function SuperSocialMediaLeadsContent({ isSidebarOpen }) {
               </div>
 
               {/* Website Inquiries */}
-              <div className={`w-1/4 sm:w-1/4 xl:w-1/5`}>
+              <div className={`w-1/3 sm:w-1/4 xl:w-1/5`}>
                 <div
                   className={`rounded-2xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
                     selectedComponent === "WebsiteData"
@@ -108,7 +108,7 @@ function SuperSocialMediaLeadsContent({ isSidebarOpen }) {
               </div>
 
               {/* Google Data */}
-              <div className={`w-1/4 sm:w-1/4 xl:w-1/5`}>
+              <div className={`w-1/3 sm:w-1/4 xl:w-1/5`}>
                 <div
                   className={`rounded-2xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${
                     selectedComponent === "GoogleData"

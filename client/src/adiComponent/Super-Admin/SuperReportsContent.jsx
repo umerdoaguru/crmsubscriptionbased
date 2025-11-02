@@ -23,8 +23,9 @@ const SuperReportsContent = () => {
             <div className="mx-auto h-[3px] w-20 bg-cyan-600 my-4 rounded-full"></div>
 
             {/* Card Section */}
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mt-4 justify-items-center">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6 mt-4 justify-center">
               {/* Leads */}
+              <div className="hidden sm:block"></div>
               <div
                 className={`transition-all duration-300 transform hover:scale-105 shadow-md rounded-2xl cursor-pointer w-40 sm:w-48 ${
                   selectedComponent === "LeadData"
@@ -46,7 +47,6 @@ const SuperReportsContent = () => {
                   <p className="text-lg font-semibold">Leads</p>
                 </div>
               </div>
-
               {/* Meta Leads */}
               <div
                 className={`transition-all duration-300 transform hover:scale-105 shadow-md rounded-2xl cursor-pointer w-40 sm:w-48 ${
@@ -69,7 +69,6 @@ const SuperReportsContent = () => {
                   <p className="text-lg font-semibold">Meta Leads</p>
                 </div>
               </div>
-
               {/* Site Visit */}
               <div
                 className={`transition-all duration-300 transform hover:scale-105 shadow-md rounded-2xl cursor-pointer w-40 sm:w-48 ${
@@ -92,7 +91,6 @@ const SuperReportsContent = () => {
                   <h5 className="text-lg font-semibold">Site Visit</h5>
                 </div>
               </div>
-
               {/* Sold Units */}
               <div
                 className={`transition-all duration-300 transform hover:scale-105 shadow-md rounded-2xl cursor-pointer w-40 sm:w-48 ${

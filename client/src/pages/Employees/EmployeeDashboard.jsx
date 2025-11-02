@@ -3,13 +3,12 @@ import React from "react";
 import Sidebar from "../../utils/Sidebar";
 import Topbar from "../../utils/Topbar";
 import EmployeeDashboardContent from "../../components/EmployeeModule/EmployeeDashboardContent";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleSidebar } from "../../store/UiSlice";
 
 const EmployeeDashboard = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  const dispatch = useDispatch();
+  const isSidebarOpen = useSelector((state) => state.ui.isSidebarOpen);
 
   return (
     <div>

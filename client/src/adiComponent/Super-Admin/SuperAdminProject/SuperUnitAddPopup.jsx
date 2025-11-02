@@ -100,7 +100,8 @@ const SuperUnitAddPopup = ({ isOpen, onClose, fetchUnits }) => {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ duration: 0.3 }}
-            className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-3xl relative"
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl mx-3 p-6 
+                   max-h-[90vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
           >
             {/* Close button */}
             <button

@@ -217,7 +217,7 @@ function Super_Single_Lead_Profile({ selectedLeadId, closeModalLead, type }) {
 
   return (
     <>
-      <div className="relative  container px-2 mx-auto p-4">
+      <div className="relative container px-2 mx-auto p-4">
         <button
           onClick={closeModalLead}
           className="absolute top-2 left-2 text-[black] hover:text-gray-700 text-[3rem]"
@@ -225,7 +225,7 @@ function Super_Single_Lead_Profile({ selectedLeadId, closeModalLead, type }) {
         >
           ×
         </button>
-        <h1 className="text-2xl text-center mt-[2rem]">Leads Profile</h1>
+        <h2 className="text-2xl text-center mt-[2rem]">Leads Profile</h2>
         <div className="mx-auto h-[3px] w-16 bg-[#34495E] my-3"></div>
         <div className="flex flex-wrap mb-4  mt-2">
           <div className="w-full lg:w-1/3">
@@ -476,7 +476,7 @@ function Super_Single_Lead_Profile({ selectedLeadId, closeModalLead, type }) {
 
         {isModalOpenRemarks && (
           <div className=" fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 mx-2">
-            <div className="w-75 bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto mx-4 my-5">
+            <div className="w-full bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto sm:mx-4 my-5">
               <Super_view_remarks
                 selectedLeadId={selectedLeadId}
                 closeModalRemark={closeModalRemark}
@@ -487,7 +487,7 @@ function Super_Single_Lead_Profile({ selectedLeadId, closeModalLead, type }) {
         )}
         {isModalOpenFollowUp && (
           <div className=" fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 mx-2">
-            <div className="w-75 bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto mx-4 my-5">
+            <div className="w-full bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto mx-4 my-5">
               <Super_view_followup
                 selectedLeadId={selectedLeadId}
                 closeModalFollowUp={closeModalFollowUp}
@@ -498,7 +498,7 @@ function Super_Single_Lead_Profile({ selectedLeadId, closeModalLead, type }) {
         )}
         {isModalOpenVisit && (
           <div className=" fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 mx-2">
-            <div className="w-75 bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto mx-4 my-5">
+            <div className="w-full bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto mx-4 my-5">
               <Super_view_visit
                 selectedLeadId={selectedLeadId}
                 closeModalVisit={closeModalVisit}
@@ -509,7 +509,7 @@ function Super_Single_Lead_Profile({ selectedLeadId, closeModalLead, type }) {
         )}
         {isModalOpenUnitSold && (
           <div className=" fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 mx-2">
-            <div className="w-75 bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto mx-4 my-5">
+            <div className="w-full bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto mx-4 my-5">
               <Super_view_unit_sold
                 selectedLeadId={selectedLeadId}
                 closeModalUnitSold={closeModalUnitSold}

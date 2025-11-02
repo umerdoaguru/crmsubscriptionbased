@@ -890,7 +890,7 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
           </div>
           {isModalOpenLeadProfile && selectedLeadId && (
             <div className=" fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-[1055]">
-              <div className="w-75 bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto mx-4 my-5">
+              <div className="w-full bg-white p-6 rounded-lg shadow-lg max-h-[80vh] overflow-auto mx-4 my-5">
                 <Super_Single_Lead_Profile
                   selectedLeadId={selectedLeadId}
                   closeModalLead={closeModalLead}
