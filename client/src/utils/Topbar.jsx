@@ -154,7 +154,7 @@ const Topbar = ({ isSidebarOpen }) => {
         <img src={logoTwo} alt="Logo" className="h-12 w-14 object-contain" />
         <p className="text-md sm:text-xl font-bold text-cyan-600">
           CRMGuru <br />
-          <span className="text-xs sm:text-md font-bold text-gray-500">
+          <span className="text-xs sm:text-lg font-bold text-gray-500">
             {pageTitle}
           </span>
         </p>

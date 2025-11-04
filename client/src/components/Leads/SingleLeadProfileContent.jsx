@@ -140,7 +140,8 @@ function SingleLeadProfileContent({ isSidebarOpen }) {
     navigate(`/admin_view_remark/${leads[0].lead_id}`);
   };
   const handleViewEmployeeUnitSold = () => {
-    navigate(`/admin_view_unit_sold/${leads[0].lead_id}`);
+    // navigate(`/admin_view_unit_sold/${leads[0].lead_id}`);
+    navigate(`/view_unit_sold/general/${leads[0].lead_id}`)
   };
 
   useEffect(() => {

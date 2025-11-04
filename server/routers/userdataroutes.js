@@ -245,6 +245,7 @@ const {
   bulkUploadLeads,
   checkSubscriptionValidity,
   updateLeadAssignment,
+  addUnitsBulk,
 } = require("../controllers/ControllerTen");
 const {
   registerLandingAdmin,
@@ -758,5 +759,6 @@ router.put("/updateBlog/:bid", blogUpload.single("feature_image"), updateBlog);
 router.get("/getOnlyPublishedBlogs", getOnlyPublishedBlogs);
 router.get("/checkSubscriptionValidity/:orgId", checkSubscriptionValidity);
 router.put("/updateLeadAssignment/:leadId", updateLeadAssignment);
+router.post("/addUnitsBulk", excelUpload.single("file"), addUnitsBulk);
 
 module.exports = router;

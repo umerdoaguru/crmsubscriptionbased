@@ -14,6 +14,8 @@ function Super_Single_Lead_Profile({ selectedLeadId, closeModalLead, type }) {
   console.log(selectedLeadId);
   let id;
 
+  
+
   const navigate = useNavigate();
   const [leads, setLeads] = useState([]);
   const [visit, setVisit] = useState([]);
@@ -177,8 +179,11 @@ function Super_Single_Lead_Profile({ selectedLeadId, closeModalLead, type }) {
   const handleClickVisit = () => {
     setIsModalOpenVisit(true);
   };
+
+ 
   const handleClickUnitSold = () => {
-    setIsModalOpenUnitSold(true);
+    // setIsModalOpenUnitSold(true);
+    navigate(`/view_unit_sold/${type}/${type === "meta" ? selectedLeadId?.leadgen_id : selectedLeadId?.lead_id}`)
   };
 
   // Function to close the modal

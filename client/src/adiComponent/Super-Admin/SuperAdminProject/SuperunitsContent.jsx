@@ -8,12 +8,15 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import SuperUnitAddPopup from "./SuperUnitAddPopup";
 import SuperUnitUpdatePopup from "./SuperUnitUpdatePopup";
+import { FaDatabase } from "react-icons/fa6";
+import SuperBulkUnitUploadPopup from "../../../pages/superAdmin/popupWindows/SuperBulkUnitUploadPopup";
 
 const SuperunitsContent = () => {
   const { id } = useParams();
   const [currentPage, setCurrentPage] = useState(0);
   const [projectsPerPage] = useState(7);
   const [showModal, setShowModal] = useState(false);
+  const [showBulkModal, setShowBulkModal] = useState(false);
   const [editProject, setEditProject] = useState({});
   const [addUnit, setAddUnit] = useState(false);
   const [units, setUnits] = useState([]);
@@ -184,12 +187,21 @@ const SuperunitsContent = () => {
                   <h3 className="mb-4 text-lg font-semibold mt-2 mx-1">
                     All units associated with Project ID {id}
                   </h3>
-                  <button
+                  <div className="flex justify-end gap-2">
+                     <button
                     onClick={() => handleaddunit()}
                     className="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700"
                   >
                     Add Unit
                   </button>
+                   <button
+                    onClick={() => setShowBulkModal(true)}
+                    className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 flex gap-2 items-center"
+                  >
+                   <FaDatabase /> Add Bulk Unit
+                  </button>
+                  </div>
+                 
                 </div>
                 <div className="overflow-x-auto mt-4">
                   <table className="min-w-full bg-white border rounded-lg shadow-md mt-1">
@@ -324,6 +336,7 @@ const SuperunitsContent = () => {
         fetchUnits={fetchUnits}
         selected={selected}
       />
+      <SuperBulkUnitUploadPopup isOpen={showBulkModal} onClose={()=>setShowBulkModal(false)} fetchUnits={fetchUnits} />
     </>
   );
 };

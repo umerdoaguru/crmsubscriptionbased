@@ -1241,6 +1241,89 @@ CRMGuru Team`;
   }
 };
 
+const addUnitsBulk = async (req, res) => {
+  try {
+    const { unit_org_id, unit_project_id } = req.body;
+
+    // Validate org and project IDs
+    if (!unit_org_id || !unit_project_id) {
+      return res.status(400).json({
+        success: false,
+        message: "unit_org_id and unit_project_id are required",
+      });
+    }
+
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No Excel file uploaded" });
+    }
+
+    // Read Excel
+    const workbook = xlsx.readFile(req.file.path);
+    const sheetName = workbook.SheetNames[0];
+    const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+    if (!sheetData.length) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Excel file is empty" });
+    }
+
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+    // Prepare data
+    const unitsData = sheetData
+      .map((row, index) => {
+        if (!row.unit_number || !row.unit_area || !row.unit_type) {
+          console.warn(`Row ${index + 2} skipped — missing required fields`);
+          return null;
+        }
+
+        return [
+          unit_org_id,
+          unit_project_id,
+          row.unit_number,
+          row.unit_area,
+          row.unit_type,
+          row.custom_unit_type || null,
+          row.base_price || null,
+          row.unit_status || "available",
+          dateTime,
+          dateTime,
+        ];
+      })
+      .filter(Boolean);
+
+    if (!unitsData.length) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No valid rows found in Excel file" });
+    }
+
+    const insertQuery = `
+      INSERT INTO units 
+      (unit_org_id, unit_project_id, unit_number, unit_area, unit_type, custom_unit_type, base_price, unit_status, unit_created_at, unit_updated_at)
+      VALUES ?
+    `;
+
+    db.query(insertQuery, [unitsData], (err, result) => {
+      if (err) {
+        console.error("DB Insert Error:", err);
+        return res.status(500).json({ success: false, message: err.message });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: `${result.affectedRows} units added successfully`,
+      });
+    });
+  } catch (error) {
+    console.error("Bulk Upload Error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   metaLeadFetchByPageId,
   getMetaLeadsByOrgId,
@@ -1264,4 +1347,5 @@ module.exports = {
   bulkUploadLeads,
   checkSubscriptionValidity,
   updateLeadAssignment,
+  addUnitsBulk,
 };

@@ -142,6 +142,9 @@ const ViewAllUnitSoldContent = () => {
     }
   };
 
+  console.log(unitSoldData);
+  
+
   const handleDelete = async (esu_id) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this record?"
