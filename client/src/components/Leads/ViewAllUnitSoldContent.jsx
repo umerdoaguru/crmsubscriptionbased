@@ -143,7 +143,6 @@ const ViewAllUnitSoldContent = () => {
   };
 
   console.log(unitSoldData);
-  
 
   const handleDelete = async (esu_id) => {
     const confirmDelete = window.confirm(
@@ -268,36 +267,6 @@ const ViewAllUnitSoldContent = () => {
                 <h3 className="text-xl font-semibold mb-3 text-cyan-700">
                   Sale & Token Payment Details
                 </h3>
-                <div className="grid sm:grid-cols-2 gap-2 text-gray-700 mb-6">
-                  <p>
-                    <strong>Sold Date:</strong>{" "}
-                    {moment(data.esu_sold_date).format("DD MMM YYYY")}
-                  </p>
-                  <p>
-                    <strong>Booking Date:</strong>{" "}
-                    {moment(data.esu_booking_date).format("DD MMM YYYY")}
-                  </p>
-                  <p>
-                    <strong>Final Date:</strong>{" "}
-                    {moment(data.esu_final_date).format("DD MMM YYYY")}
-                  </p>
-                  <p>
-                    <strong>Registry Date:</strong>{" "}
-                    {data.registry_date
-                      ? moment(data.registry_date).format("DD MMM YYYY")
-                      : "—"}
-                  </p>
-                  <p>
-                    <strong>Payment Mode:</strong> {data.esu_payment_method}
-                  </p>
-                  <p>
-                    <strong>Token Amount:</strong> ₹{data.esu_token_amount}
-                  </p>
-                  <p>
-                    <strong>Token Status:</strong> {data.esu_token_paid_status}
-                  </p>
-                </div>
-
                 <div className="grid sm:grid-cols-2 gap-2 text-gray-700 mb-6">
                   <p>
                     <strong>Sold Date:</strong>{" "}

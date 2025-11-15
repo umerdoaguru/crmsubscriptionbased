@@ -3,13 +3,14 @@ import { Link, useParams } from "react-router-dom";
 import cogoToast from "cogo-toast";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
-import { FaTrash, FaEdit } from "react-icons/fa";
+import { FaTrash, FaEdit, FaDownload } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import SuperUnitAddPopup from "./SuperUnitAddPopup";
 import SuperUnitUpdatePopup from "./SuperUnitUpdatePopup";
 import { FaDatabase } from "react-icons/fa6";
 import SuperBulkUnitUploadPopup from "../../../pages/superAdmin/popupWindows/SuperBulkUnitUploadPopup";
+import * as XLSX from "xlsx";
 
 const SuperunitsContent = () => {
   const { id } = useParams();
@@ -163,6 +164,32 @@ const SuperunitsContent = () => {
     setCustomLeadSource(e.target.value);
   };
 
+  const downloadUnitsExcel = () => {
+    if (units.length === 0) {
+      cogoToast.error("No units to download");
+      return;
+    }
+
+    // Prepare data for Excel
+    const excelData = units.map((unit, index) => ({
+      "S.No": index + 1,
+      "Unit Number": unit.unit_number,
+      "Unit Area (sqft)": unit.unit_area,
+      "Unit Type": unit.unit_type,
+      "Base Price": unit.base_price,
+      Status: unit.unit_status,
+    }));
+
+    // Create worksheet & workbook
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Units");
+
+    // Download file
+    XLSX.writeFile(workbook, `Units_Project_${id}.xlsx`);
+  };
+
   return (
     <>
       <div className="flex mt-20">
@@ -188,20 +215,25 @@ const SuperunitsContent = () => {
                     All units associated with Project ID {id}
                   </h3>
                   <div className="flex justify-end gap-2">
-                     <button
-                    onClick={() => handleaddunit()}
-                    className="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700"
-                  >
-                    Add Unit
-                  </button>
-                   <button
-                    onClick={() => setShowBulkModal(true)}
-                    className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 flex gap-2 items-center"
-                  >
-                   <FaDatabase /> Add Bulk Unit
-                  </button>
+                    <button
+                      onClick={() => handleaddunit()}
+                      className="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700"
+                    >
+                      Add Unit
+                    </button>
+                    <button
+                      onClick={() => setShowBulkModal(true)}
+                      className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 flex gap-2 items-center"
+                    >
+                      <FaDatabase /> Add Bulk Unit
+                    </button>
+                    <button
+                      onClick={downloadUnitsExcel}
+                      className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 flex gap-2 items-center"
+                    >
+                      <FaDownload /> Export
+                    </button>
                   </div>
-                 
                 </div>
                 <div className="overflow-x-auto mt-4">
                   <table className="min-w-full bg-white border rounded-lg shadow-md mt-1">
@@ -226,6 +258,9 @@ const SuperunitsContent = () => {
                         <th className="px-6 py-3 border-b border-gray-300 text-left">
                           Status
                         </th>
+                        <th className="px-6 py-3 border-b border-gray-300 text-left">
+                          Previous Unit Number
+                        </th>
                         <th className="px-6 py-3 border-b-2 border-gray-300">
                           Action
                         </th>
@@ -244,7 +279,28 @@ const SuperunitsContent = () => {
                             <td className="px-6 py-4">
                               {currentPage * projectsPerPage + index + 1}
                             </td>
-                            <td className="px-6 py-4">{unit.unit_number}</td>
+                            <td className="px-6 py-4">
+                              {unit?.unit_status === "sold" ? (
+                                <>
+                                  <button
+                                    className="bg-cyan-600 text-white hover:bg-cyan-700 p-2 px-2 rounded"
+                                    onClick={() =>
+                                      window.open(
+                                        `/view_unit_sold/${unit.lead_type}/${
+                                          unit?.meta_owner_leadgen_id ||
+                                          unit?.owner_lead_id
+                                        }`,
+                                        "_blank"
+                                      )
+                                    }
+                                  >
+                                    {unit.unit_number}
+                                  </button>
+                                </>
+                              ) : (
+                                <>{unit.unit_number}</>
+                              )}
+                            </td>
                             <td className="px-6 py-4">{unit.unit_area} sqft</td>
                             <td className="px-6 py-4">{unit.unit_type}</td>
 
@@ -255,6 +311,10 @@ const SuperunitsContent = () => {
                             <td className="px-6 py-4 font-semibold">
                               {" "}
                               {unit.unit_status}
+                            </td>
+                            <td className="px-6 py-4 font-semibold">
+                              {" "}
+                              {unit?.old_unit_number || "--"}
                             </td>
                             <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
                               <button
@@ -336,7 +396,11 @@ const SuperunitsContent = () => {
         fetchUnits={fetchUnits}
         selected={selected}
       />
-      <SuperBulkUnitUploadPopup isOpen={showBulkModal} onClose={()=>setShowBulkModal(false)} fetchUnits={fetchUnits} />
+      <SuperBulkUnitUploadPopup
+        isOpen={showBulkModal}
+        onClose={() => setShowBulkModal(false)}
+        fetchUnits={fetchUnits}
+      />
     </>
   );
 };

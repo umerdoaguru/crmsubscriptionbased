@@ -58,8 +58,8 @@ const OneLoginOnly = () => {
         console.log(res);
       }
     } catch (error) {
-      console.log(error);
-      toast.error(error?.response?.data?.message, "65");
+      console.log(error?.response?.data?.message || "error");
+      cogoToast.error(error?.response?.data?.message || "failed to login");
       setLoading(false);
     }
   };
