@@ -1,3 +1,50 @@
+toggleSidebar={toggleSidebar}
+ 
+import { toggleSidebar } from "../../store/UiSlice";
+ 
+ Sort by monthOrder
+ 
+
+import EmployeeLeadContent from "../../components/EmployeeModule/EmployeeLeadContent";
+ 
+Status
+ 
+    <div className="grid sm:grid-cols-2 gap-2 text-gray-700 mb-6">
+                  <p>
+                    <strong>Sold Date:</strong>{" "}
+                    {moment(data.esu_sold_date).format("DD MMM YYYY")}
+                  </p>
+                  <p>
+                    <strong>Booking Date:</strong>{" "}
+                    {moment(data.esu_booking_date).format("DD MMM YYYY")}
+                  </p>
+                  <p>
+                    <strong>Final Date:</strong>{" "}
+                    {moment(data.esu_final_date).format("DD MMM YYYY")}
+                  </p>
+                  <p>
+                    <strong>Registry Date:</strong>{" "}
+                    {data.registry_date
+                      ? moment(data.registry_date).format("DD MMM YYYY")
+                      : "—"}
+                  </p>
+                  <p>
+                    <strong>Payment Mode:</strong> {data.esu_payment_method}
+                  </p>
+                  <p>
+                    <strong>Token Amount:</strong> ₹{data.esu_token_amount}
+                  </p>
+                  <p>
+                    <strong>Token Status:</strong> {data.esu_token_paid_status}
+                  </p>
+                </div>
+ 
+  remaining_amount:""
+ 
+Download
+ 
+Units
+ 
 sample-files/sample-unit-upload.xlsx
  
 

@@ -329,10 +329,18 @@ const MetaLeadEmpContent = ({ isSidebarOpen }) => {
                             )}
                           </td>
                           <td className="px-2 sm:px-2 py-3 border-b border-gray-200 text-gray-600 font-semibold whitespace-normal break-words text-wrap">
-                            {getFieldValue(
-                              lead.question_fields_data,
-                              "phone_number"
-                            )}
+                            <a
+                              href={`tel:${getFieldValue(
+                                lead.question_fields_data,
+                                "phone_number"
+                              )}`}
+                              className="text-cyan-600 cursor-pointer"
+                            >
+                              {getFieldValue(
+                                lead.question_fields_data,
+                                "phone_number"
+                              )}
+                            </a>
                           </td>
                           <td className="px-2 sm:px-2 py-3 border-b border-gray-200 text-gray-600 font-semibold whitespace-normal break-words text-wrap">
                             {getFieldValue(lead.question_fields_data, "email")}

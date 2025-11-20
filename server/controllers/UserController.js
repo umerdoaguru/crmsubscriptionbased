@@ -3,6 +3,7 @@ const { db } = require("../db");
 const bcrypt = require("bcrypt");
 const JWT = require("jsonwebtoken");
 const { sendEmail } = require("../utils/emailService");
+const { sendWhatsAppLeadAssignedAlert } = require("../utils/whatsappUtils");
 
 const Quotation = async (req, res) => {
   try {
@@ -631,16 +632,68 @@ const getnotes_text = (req, res) => {
   });
 };
 
+// const createLead = (req, res) => {
+//   const {
+//     lead_org_id,
+//     lead_no,
+//     name,
+//     phone,
+//     assignedTo,
+//     leadSource,
+//     employeeId,
+//     project_name,
+//     main_project_id,
+//     unit_type,
+//     unit_id,
+//     address,
+//     createdTime,
+//     actual_date,
+//     assignedBy,
+//     user_id,
+//   } = req.body;
+//   console.log(user_id);
+
+//   const sql = `INSERT INTO leads (lead_org_id, lead_no, name, phone, assignedTo, leadSource, employeeId,project_name,main_project_id,unit_type,unit_id,address,createdTime,actual_date,assignedBy,user_id) VALUES (?,?,?,?,?,?,?, ?,?, ?,?, ?, ?,?,?,?)`;
+//   db.query(
+//     sql,
+//     [
+//       lead_org_id,
+//       lead_no,
+//       name,
+//       phone,
+//       assignedTo,
+//       leadSource,
+//       employeeId,
+//       project_name,
+//       main_project_id,
+//       unit_type,
+//       unit_id,
+//       address,
+//       createdTime,
+//       actual_date,
+//       assignedBy,
+//       user_id,
+//     ],
+//     (err, results) => {
+//       if (err) {
+//         res.status(500).json({ error: "Error inserting data" });
+//       } else {
+//         res
+//           .status(201)
+//           .json({ success: true, message: "Lead data successfully submitted" });
+//       }
+//     }
+//   );
+// };
+
 const createLead = (req, res) => {
   const {
     lead_org_id,
-    lead_no,
     name,
     phone,
+    lead_email,
     assignedTo,
     leadSource,
-    employeeId,
-    project_name,
     main_project_id,
     unit_type,
     unit_id,
@@ -648,22 +701,21 @@ const createLead = (req, res) => {
     createdTime,
     actual_date,
     assignedBy,
-    user_id,
   } = req.body;
-  console.log(user_id);
 
-  const sql = `INSERT INTO leads (lead_org_id, lead_no, name, phone, assignedTo, leadSource, employeeId,project_name,main_project_id,unit_type,unit_id,address,createdTime,actual_date,assignedBy,user_id) VALUES (?,?,?,?,?,?,?, ?,?, ?,?, ?, ?,?,?,?)`;
+  const sql = `INSERT INTO leads 
+    (lead_org_id, name, phone, lead_email, assignedTo, leadSource, main_project_id, unit_type, unit_id, address, createdTime, actual_date, assignedBy) 
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+
   db.query(
     sql,
     [
       lead_org_id,
-      lead_no,
       name,
       phone,
+      lead_email,
       assignedTo,
       leadSource,
-      employeeId,
-      project_name,
       main_project_id,
       unit_type,
       unit_id,
@@ -671,16 +723,76 @@ const createLead = (req, res) => {
       createdTime,
       actual_date,
       assignedBy,
-      user_id,
     ],
-    (err, results) => {
+    async (err, results) => {
       if (err) {
-        res.status(500).json({ error: "Error inserting data" });
-      } else {
-        res
-          .status(201)
-          .json({ success: true, message: "Lead data successfully submitted" });
+        return res.status(500).json({ success: false, message: err.message });
       }
+
+      if (assignedTo) {
+        const staffQuery =
+          "SELECT staff_name, staff_email, staff_phone FROM company_staff WHERE staff_id = ?";
+
+        db.query(staffQuery, [assignedTo], async (err, staffResult) => {
+          if (err) {
+            console.error("Error fetching staff details:", err.message);
+          } else if (staffResult.length > 0) {
+            const staff = staffResult[0];
+
+            const subject = "CRMGuru - New General Lead Assigned";
+
+            const text = `Dear ${staff.staff_name},
+
+A new lead has been assigned to you in CRMGuru.
+
+Please log in to your dashboard to view the lead details.
+
+Best regards,
+CRMGuru Team`;
+
+            const html = `
+              <p>Dear <strong>${staff.staff_name}</strong>,</p>
+              <p>A new lead has been <strong>assigned to you</strong> in <b>CRMGuru</b>.</p>
+              <p>Please log in to your dashboard to check the details.</p>
+              <br/>
+              <p>Best regards,<br/>CRMGuru Team</p>
+            `;
+
+            // -----------------------------
+            // ✔ Send Email
+            // -----------------------------
+            try {
+              await sendEmail(staff.staff_email, subject, text, html);
+              console.log("Lead assignment email sent to:", staff.staff_email);
+            } catch (emailErr) {
+              console.error("Email sending failed:", emailErr.message);
+            }
+
+            // -----------------------------
+            // ✔ Send WhatsApp Alert
+            // -----------------------------
+            if (staff.staff_phone) {
+              try {
+                await sendWhatsAppLeadAssignedAlert(
+                  staff.staff_phone,
+                  staff.staff_name
+                );
+                console.log("WhatsApp lead alert sent to:", staff.staff_phone);
+              } catch (waErr) {
+                console.error("WhatsApp sending failed:", waErr);
+              }
+            } else {
+              console.warn("No phone number found for staff:", assignedTo);
+            }
+          } else {
+            console.warn("No staff found with ID:", assignedTo);
+          }
+        });
+      }
+
+      return res
+        .status(201)
+        .json({ success: true, message: "Lead data successfully submitted" });
     }
   );
 };

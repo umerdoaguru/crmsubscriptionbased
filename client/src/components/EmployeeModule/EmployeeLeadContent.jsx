@@ -55,7 +55,7 @@ const EmployeeLeadContent = ({ isSidebarOpen }) => {
         )
         .map((lead) => moment(lead.createdTime).format("MMMM"))
     ),
-  ].sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b)); // Sort by monthOrder
+  ].sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b));
 
   const uniqueVisitMonth = [
     ...new Set(
@@ -517,7 +517,12 @@ const EmployeeLeadContent = ({ isSidebarOpen }) => {
                             {lead.name}
                           </td>
                           <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-600 font-semibold whitespace-normal break-words">
-                            {lead.phone}
+                            <a
+                              href={`tel:${lead.phone}`}
+                              className="text-cyan-600 cursor-pointer"
+                            >
+                              {lead.phone}
+                            </a>
                           </td>
                           <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-600 font-semibold whitespace-normal break-words">
                             {lead.leadSource}

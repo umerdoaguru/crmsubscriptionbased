@@ -26,18 +26,13 @@ const getEmployeeInvoice = async (req, res) => {
 const getEmployeeLeads = async (req, res) => {
   try {
     const { id } = req.params;
-    const sql = `SELECT * FROM leads join company_staff on company_staff.staff_id = leads.assignedTo join projects on projects.project_id = leads.main_project_id join units on units.unit_id = leads.unit_id WHERE leads.assignedTo = ?`;
-
-    const result = await new Promise((resolve, reject) => {
-      db.query(sql, [id], (err, results) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(results);
-        }
-      });
+    const sql = `SELECT * FROM leads join company_staff on company_staff.staff_id = leads.assignedTo left join projects on projects.project_id = leads.main_project_id left join units on units.unit_id = leads.unit_id left join employee_sold_units on employee_sold_units.esu_lead_id = leads.lead_id WHERE leads.assignedTo = ?`;
+    db.query(sql, id, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+      return res.status(200).send(result);
     });
-    res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ message: "Internal Server Erro, error: errr" });
   }

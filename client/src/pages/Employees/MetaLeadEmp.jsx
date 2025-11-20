@@ -2,7 +2,6 @@ import { useState } from "react";
 import React from "react";
 import Sidebar from "../../utils/Sidebar";
 import Topbar from "../../utils/Topbar";
-import EmployeeLeadContent from "../../components/EmployeeModule/EmployeeLeadContent";
 import MetaLeadEmpContent from "./MetaLeadEmpContent";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "../../store/UiSlice";

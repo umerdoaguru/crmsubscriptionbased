@@ -14,7 +14,10 @@ const EmployeeDashboard = () => {
     <div>
       <div className="flex min-h-screen w-full">
         {/* Sidebar */}
-        <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+        <Sidebar
+          isSidebarOpen={isSidebarOpen}
+          toggleSidebar={() => dispatch(toggleSidebar())}
+        />
 
         {/* Main Content */}
         <div

@@ -25,6 +25,7 @@ const ResetPasswordOnly = () => {
         "https://crm-generalize.dentalguru.software/api/sendOtpOnlyOne",
         {
           email,
+          subject: "CRMGuru OTP for Password Reset!",
         }
       );
       console.log(response);

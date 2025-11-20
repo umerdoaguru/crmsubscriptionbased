@@ -25,6 +25,7 @@ const SuperunitsContent = () => {
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
   const [selected, setSelected] = useState();
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const openUpdateModal = (data) => {
     setSelected(data);
@@ -138,10 +139,15 @@ const SuperunitsContent = () => {
     fetchUnits();
   }, [id]);
 
-  const itemsPerPage = 4;
+  const filteredUnits = units.filter((unit) => {
+    if (statusFilter === "all") return true;
+    return unit.unit_status?.toLowerCase() === statusFilter.toLowerCase();
+  });
+
+  const itemsPerPage = 10;
   const offset = currentPage * itemsPerPage;
-  const currentItems = units.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(units.length / itemsPerPage);
+  const currentItems = filteredUnits?.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(filteredUnits?.length / itemsPerPage);
 
   const hardCodedLeadSources = [
     "1BHK",
@@ -214,7 +220,17 @@ const SuperunitsContent = () => {
                   <h3 className="mb-4 text-lg font-semibold mt-2 mx-1">
                     All units associated with Project ID {id}
                   </h3>
+
                   <div className="flex justify-end gap-2">
+                    <select
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value)}
+                      className="border px-3 py-2 rounded-md"
+                    >
+                      <option value="all">All Status</option>
+                      <option value="available">Available</option>
+                      <option value="sold">Sold</option>
+                    </select>
                     <button
                       onClick={() => handleaddunit()}
                       className="bg-cyan-600 text-white px-6 py-2 rounded-md hover:bg-cyan-700"

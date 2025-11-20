@@ -423,7 +423,12 @@ const SuperLeadsTable = ({ isSidebarOpen, type }) => {
                       <td className="py-2 px-4 border-b">{parsed.full_name}</td>
                       <td className="py-2 px-4 border-b">{parsed.email}</td>
                       <td className="py-2 px-4 border-b">
-                        {parsed.phone_number}
+                        <a
+                          href={`tel:${parsed.phone_number}`}
+                          className="text-cyan-600 cursor-pointer"
+                        >
+                          {parsed.phone_number}
+                        </a>
                       </td>
                       <td className="py-2 px-4 border-b">
                         {parsed.street_address}
