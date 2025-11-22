@@ -28,7 +28,7 @@ const EmployeeSingleLeadProfile = () => {
           <Topbar isSidebarOpen={isSidebarOpen} />
           <div className=""></div>
 
-          <EmployeeSingleLeadProfileContent />
+          <EmployeeSingleLeadProfileContent isSidebarOpen={isSidebarOpen} />
         </div>
       </div>
     </div>

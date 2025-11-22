@@ -4,9 +4,9 @@ import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import cogoToast from "cogo-toast";
-import getFieldValue from "../../utils/getFieldValue";
+import getFieldValue from "../../../utils/getFieldValue";
 
-const ViewAllVisitContent = () => {
+const VisitTab = () => {
   const [visit, setVisit] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10);
@@ -117,20 +117,12 @@ const ViewAllVisitContent = () => {
 
   return (
     <>
-      <div className="flex mt-20">
+      <div className="flex">
         <div className="w-full min-h-screen bg-[#F9FAFF] p-2">
           <div className="container sm:mt-2 mt-0">
-            <div className="sm:mt-[1rem] mt-0 ml-6 sm:ml-0">
-              <button
-                onClick={() => navigate(-1)}
-                className="bg-cyan-600 text-white px-3 py-1 max-sm:hidden rounded-lg hover:bg-cyan-700 transition-colors"
-              >
-                Back
-              </button>
-            </div>
-            <div className="w-full px-2 mx-auto p-4">
+            <div className="w-full px-2 mx-auto">
               <div className="w-full px-2 mt-4">
-                <h2 className="text-2xl font-bold mb-4 text-center">
+                <h2 className="text-2xl font-bold mb-4 text-left">
                   All Leads visit
                 </h2>
                 <div className=" overflow-x-auto">
@@ -325,4 +317,4 @@ const ViewAllVisitContent = () => {
   );
 };
 
-export default ViewAllVisitContent;
+export default VisitTab;

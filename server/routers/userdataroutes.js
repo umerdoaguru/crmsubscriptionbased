@@ -258,6 +258,10 @@ const {
   updateBlog,
   getOnlyPublishedBlogs,
 } = require("../controllers/LandingController");
+const {
+  createBooking,
+  getBookingBYleadId,
+} = require("../controllers/controllerEleven");
 
 // ========== Router Begins =====================
 router.post("/register", register);
@@ -760,5 +764,9 @@ router.get("/getOnlyPublishedBlogs", getOnlyPublishedBlogs);
 router.get("/checkSubscriptionValidity/:orgId", checkSubscriptionValidity);
 router.put("/updateLeadAssignment/:leadId", updateLeadAssignment);
 router.post("/addUnitsBulk", excelUpload.single("file"), addUnitsBulk);
+
+//controller eleven
+router.post("/createBooking", createBooking);
+router.get("/getBookingBYleadId/:leadId", getBookingBYleadId);
 
 module.exports = router;

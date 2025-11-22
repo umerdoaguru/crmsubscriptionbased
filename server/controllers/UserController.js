@@ -60,7 +60,7 @@ const Quotation = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Quotation and services added successfully",
+      message: "Quotation and services adduccessfully",
       quotation: {
         id: quotationId,
         quotation_name: quotationName,

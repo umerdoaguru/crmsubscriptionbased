@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import getFieldValue from "../../utils/getFieldValue";
 
-const UnitSoldCreationPopup = ({
+const BookingCreationPopup = ({
   isOpen,
   onClose,
   fetchUnitSoldEmployee,
@@ -20,19 +20,18 @@ const UnitSoldCreationPopup = ({
   const Emp = useSelector((state) => state.auth.user);
   const token = Emp?.token;
   const owner_org_id = Emp?.staff_org_id;
+  console.log(leads);
 
   const today = new Date().toISOString().split("T")[0];
 
-  // UPDATED STATE → matches new DB structure
   const [unitsold, setUnitSold] = useState({
     esu_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
     esu_staff_id: leads[0]?.staff_id || leads[0]?.meta_assignedTo,
     esu_unit_id: leads[0]?.unit_id || leads[0]?.meta_unit_id,
     esu_project_id: leads[0]?.project_id || leads[0]?.meta_project_id,
 
-    esu_sale_price: "",
-    esu_status: "sold",
-    esu_final_sold_date: "",
+    esu_sale_price: leads[0]?.base_price,
+    esu_status: "booked",
 
     leadType: type,
     owner_org_id: owner_org_id,
@@ -42,14 +41,25 @@ const UnitSoldCreationPopup = ({
     owner_address: "",
   });
 
+  const [booking, setBooking] = useState({
+    booking_esu_id: "",
+    booking_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
+    booking_org_id: owner_org_id,
+    booking_amount: "",
+    booking_date: today,
+    booking_notes: "",
+  });
+
   useEffect(() => {
     setUnitSold((prev) => ({
       ...prev,
       esu_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
+      booking_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
       esu_staff_id: leads[0]?.staff_id || leads[0]?.meta_assignedTo,
       esu_unit_id: leads[0]?.unit_id || leads[0]?.meta_unit_id,
       esu_project_id: leads[0]?.project_id || leads[0]?.meta_project_id,
       owner_org_id,
+      esu_sale_price: leads[0]?.base_price,
     }));
   }, [leads]);
 
@@ -57,17 +67,19 @@ const UnitSoldCreationPopup = ({
     const { name, value } = e.target;
 
     if (name === "owner_phone") {
-      const numericValue = value.replace(/\D/g, "");
-      if (numericValue.length <= 10) {
-        setUnitSold((prev) => ({ ...prev, [name]: numericValue }));
+      const numeric = value.replace(/\D/g, "");
+      if (numeric.length <= 10) {
+        setUnitSold((prev) => ({ ...prev, [name]: numeric }));
       }
       return;
     }
 
-    setUnitSold((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setUnitSold((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleInputChangeBooking = (e) => {
+    const { name, value } = e.target;
+    setBooking((prev) => ({ ...prev, [name]: value }));
   };
 
   const [loading, setLoading] = useState(false);
@@ -81,6 +93,7 @@ const UnitSoldCreationPopup = ({
     setLoading(true);
 
     try {
+      // Validation
       if (
         !unitsold.owner_name ||
         !unitsold.owner_phone ||
@@ -95,17 +108,13 @@ const UnitSoldCreationPopup = ({
         return;
       }
 
-      // ✅ Clean payload aligned with backend
-      const payload = {
+      const unitPayload = {
         esu_lead_id: unitsold.esu_lead_id,
         esu_staff_id: unitsold.esu_staff_id,
         esu_unit_id: unitsold.esu_unit_id,
         esu_project_id: unitsold.esu_project_id,
-
         esu_sale_price: unitsold.esu_sale_price,
         esu_status: unitsold.esu_status,
-        esu_final_sold_date: unitsold.esu_final_sold_date,
-        esu_payment_method: unitsold.esu_payment_method,
 
         owner_org_id: unitsold.owner_org_id,
         owner_name: unitsold.owner_name,
@@ -114,21 +123,43 @@ const UnitSoldCreationPopup = ({
         owner_address: unitsold.owner_address,
       };
 
-      await axios.post(
+      const soldRes = await axios.post(
         `https://crm-generalize.dentalguru.software/api/unit-sold`,
-        payload,
+        unitPayload,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      cogoToast.success("Unit Sold saved successfully");
+      const soldId =
+        soldRes?.data?.sold_id ||
+        soldRes?.data?.data?.sold_id ||
+        soldRes?.data?.esu_id;
+
+      if (!soldId) {
+        cogoToast.error("Sold ID not returned from server");
+        return;
+      }
+
+      const bookingPayload = {
+        ...booking,
+        booking_esu_id: soldId,
+      };
+
+      await axios.post(
+        "https://crm-generalize.dentalguru.software/api/createBooking",
+        bookingPayload
+      );
+
+      cogoToast.success("Unit Sold & Booking saved successfully");
+
       fetchUnitdata();
       fetchLeads();
       fetchMetaLeads();
       fetchUnitSoldEmployee();
+
       onClose();
-    } catch (error) {
-      console.error("Request failed:", error);
-      cogoToast.error("Failed to save Unit Sold data");
+    } catch (err) {
+      console.error(err);
+      cogoToast.error("Failed to save data");
     } finally {
       setLoading(false);
       setTimeout(() => (window.__UNIT_SOLD_SUBMITTING__ = false), 800);
@@ -171,14 +202,14 @@ const UnitSoldCreationPopup = ({
             transition={{ duration: 0.3 }}
           >
             <h2 className="text-2xl font-bold mb-4 text-center text-cyan-700">
-              Unit Sold Creation
+              Unit Booking Creation
             </h2>
 
             <form onSubmit={saveUnitSold} className="space-y-4">
-              {/* Basic Info */}
+              {/* ---------- BASIC INFO ---------- */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm">Project Name</label>
+                  <label className="text-sm">Project Name</label>
                   <input
                     type="text"
                     value={leads[0]?.project_name || ""}
@@ -188,7 +219,7 @@ const UnitSoldCreationPopup = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm">Lead Name</label>
+                  <label className="text-sm">Lead Name</label>
                   <input
                     type="text"
                     value={
@@ -201,7 +232,7 @@ const UnitSoldCreationPopup = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm">Unit Number</label>
+                  <label className="text-sm">Unit Number</label>
                   <input
                     type="text"
                     value={leads[0]?.unit_number || ""}
@@ -210,8 +241,8 @@ const UnitSoldCreationPopup = ({
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm">Final Sold Date</label>
+                {/* <div>
+                  <label className="text-sm">Final Sold Date</label>
                   <input
                     type="date"
                     name="esu_final_sold_date"
@@ -220,27 +251,27 @@ const UnitSoldCreationPopup = ({
                     max={today}
                     className="w-full px-3 py-2 border rounded"
                   />
-                </div>
+                </div> */}
               </div>
 
-              {/* Financial Details */}
+              {/* ---------- SALE DETAILS ---------- */}
               <div className="pt-4 border-t">
                 <h3 className="text-lg font-semibold mb-2">Sale Details</h3>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm">Final Sale Price</label>
+                    <label className="text-sm">Base Sale Price</label>
                     <input
                       type="number"
                       name="esu_sale_price"
                       value={unitsold.esu_sale_price}
                       onChange={handleInputChangeUnitSold}
-                      placeholder="Enter Sale Price"
                       className="w-full px-3 py-2 border rounded"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm">Sale Status</label>
+                  {/* <div>
+                    <label className="text-sm">Sale Status</label>
                     <select
                       name="esu_status"
                       value={unitsold.esu_status}
@@ -251,16 +282,19 @@ const UnitSoldCreationPopup = ({
                       <option value="registry_done">Registry Done</option>
                       <option value="sold">Sold</option>
                     </select>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
-              {/* Owner Details */}
+              {/* ---------- OWNER DETAILS ---------- */}
               <div className="pt-4 border-t">
                 <h3 className="text-lg font-semibold mb-2">Owner Details</h3>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm">Owner Name</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Owner Name
+                    </label>
                     <input
                       type="text"
                       name="owner_name"
@@ -272,7 +306,9 @@ const UnitSoldCreationPopup = ({
                   </div>
 
                   <div>
-                    <label className="block text-sm">Owner Email</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Owner Email
+                    </label>
                     <input
                       type="email"
                       name="owner_email"
@@ -284,19 +320,23 @@ const UnitSoldCreationPopup = ({
                   </div>
 
                   <div>
-                    <label className="block text-sm">Owner Phone</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Owner Phone
+                    </label>
                     <input
                       type="text"
                       name="owner_phone"
                       value={unitsold.owner_phone}
                       onChange={handleInputChangeUnitSold}
-                      placeholder="Enter 10-digit Phone Number"
+                      placeholder="10-digit Phone"
                       className="w-full px-3 py-2 border rounded"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm">Owner Address</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Owner Address
+                    </label>
                     <input
                       type="text"
                       name="owner_address"
@@ -309,15 +349,64 @@ const UnitSoldCreationPopup = ({
                 </div>
               </div>
 
-              {/* Buttons */}
+              {/* ---------- BOOKING DETAILS ---------- */}
+              <div className="pt-4 border-t">
+                <h3 className="text-lg font-semibold mb-2">Booking Details</h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Booking Amount
+                    </label>
+                    <input
+                      type="number"
+                      name="booking_amount"
+                      value={booking.booking_amount}
+                      onChange={handleInputChangeBooking}
+                      placeholder="Enter Booking Amount"
+                      className="w-full px-3 py-2 border rounded"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Booking Date
+                    </label>
+                    <input
+                      type="date"
+                      name="booking_date"
+                      value={booking.booking_date}
+                      onChange={handleInputChangeBooking}
+                      className="w-full px-3 py-2 border rounded"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-sm font-medium mb-1">
+                      Booking Notes
+                    </label>
+                    <input
+                      type="text"
+                      name="booking_notes"
+                      value={booking.booking_notes}
+                      onChange={handleInputChangeBooking}
+                      placeholder="Add any notes"
+                      className="w-full px-3 py-2 border rounded"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* ---------- BUTTONS ---------- */}
               <div className="flex justify-end gap-3 pt-4 border-t">
                 <button
                   type="button"
-                  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
+                  className="bg-gray-500 text-white px-4 py-2 rounded"
                   onClick={onClose}
                 >
                   Cancel
                 </button>
+
                 <button
                   type="submit"
                   disabled={loading}
@@ -325,7 +414,7 @@ const UnitSoldCreationPopup = ({
                     loading ? "bg-gray-600" : "bg-cyan-600 hover:bg-cyan-700"
                   }`}
                 >
-                  {loading ? "Saving..." : "Save"}
+                  {loading ? "Saving..." : "Save All"}
                 </button>
               </div>
             </form>
@@ -336,4 +425,4 @@ const UnitSoldCreationPopup = ({
   );
 };
 
-export default UnitSoldCreationPopup;
+export default BookingCreationPopup;

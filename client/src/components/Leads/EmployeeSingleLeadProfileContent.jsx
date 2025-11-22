@@ -11,8 +11,20 @@ import RemarkCreationPopup from "./RemarkCreationPopup";
 import UnitSoldCreationPopup from "./UnitSoldCreationPopup";
 import UpdateLeadStatusPopup from "./UpdateLeadStatusPopup";
 import getFieldValue from "../../utils/getFieldValue";
+import ViewAllUnitSold from "../../pages/Employees/ViewAllUnitSold";
+import LeadOverview from "./SingleLeadTabs/LeadOverview";
+import BookingDetails from "./SingleLeadTabs/BookingDetails";
+import RegistryDetails from "./SingleLeadTabs/RegistryDetails";
+import UtilityCharges from "./SingleLeadTabs/UtilityCharges";
+import AllReceipts from "./SingleLeadTabs/AllReceipts";
+import Transactions from "./SingleLeadTabs/Transactions";
+import VisitTab from "./SingleLeadTabs/VisitTab";
+import FollowUpTab from "./SingleLeadTabs/FollowUpTab";
+import RemarkTab from "./SingleLeadTabs/RemarkTab";
+import SoldUnitView from "./SingleLeadTabs/SoldUnitView";
+import BookingCreationPopup from "../EmployeePops/BookingCreationPopup";
 
-function EmployeeSingleLeadProfileContent() {
+function EmployeeSingleLeadProfileContent({ isSidebarOpen }) {
   const { type, id } = useParams();
 
   const navigate = useNavigate();
@@ -25,10 +37,12 @@ function EmployeeSingleLeadProfileContent() {
   const [showPopupUnitSold, setShowPopupUnitSold] = useState(false);
   const [showPopupFollowUp, setShowPopupFollowUp] = useState(false);
   const [showPopupRemark, setShowPopupRemark] = useState(false);
+  const [showBookPopup, setShowBookPopup] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [render, setRender] = useState(false);
   const [isOtherReason, setIsOtherReason] = useState(false);
   const EmpId = useSelector((state) => state.auth.user);
+  const [activeTab, setActiveTab] = useState("overview");
 
   const token = EmpId?.token;
   const userId = EmpId.user_id;
@@ -171,9 +185,9 @@ function EmployeeSingleLeadProfileContent() {
       let apiUrl = "";
 
       if (type === "meta") {
-        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeUnitSoldByLeadIdMeta/${leads[0].leadgen_id}`;
+        apiUrl = `https://crm-generalize.dentalguru.software/api/getEmployeeUnitSoldByLeadIdMeta/${leads[0]?.leadgen_id}`;
       } else {
-        apiUrl = `https://crm-generalize.dentalguru.software/api/unit-sold-lead-id/${leads[0].lead_id}`;
+        apiUrl = `https://crm-generalize.dentalguru.software/api/unit-sold-lead-id/${leads[0]?.lead_id}`;
       }
 
       const response = await axios.get(apiUrl, {
@@ -214,7 +228,7 @@ function EmployeeSingleLeadProfileContent() {
   const fetchUnitdata = async () => {
     try {
       const response = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/unit-data/${leads[0].unit_id}`,
+        `https://crm-generalize.dentalguru.software/api/unit-data/${leads[0]?.unit_id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -276,12 +290,6 @@ function EmployeeSingleLeadProfileContent() {
   const handleViewFollowUp = () => {
     navigate(
       `/view_follow_up/${type}/${leads[0].lead_id || leads[0].leadgen_id}`
-    );
-  };
-
-  const handleViewRemark = () => {
-    navigate(
-      `/view_remark/${type}/${leads[0].lead_id || leads[0]?.leadgen_id}`
     );
   };
 
@@ -347,10 +355,16 @@ function EmployeeSingleLeadProfileContent() {
 
   const remainingLeads = leads?.length > 1 ? leads.slice(1) : leads;
 
+  console.log(leads);
+
   return (
     <>
       <div className="flex mt-20">
-        <div className="w-[90%] sm:w-full min-h-screen bg-[#F9FAFF] p-2">
+        <div
+          className={`${
+            isSidebarOpen ? "w-[80rem]" : "w-[88rem]"
+          } min-h-screen bg-[#F9FAFF] p-2`}
+        >
           <div className="flex flex-col">
             <div className="container sm:mt-1 px-2 mx-auto p-4">
               <div className="">
@@ -363,22 +377,13 @@ function EmployeeSingleLeadProfileContent() {
               </div>
               <h2 className="text-2xl text-center mt-[2rem]">Leads Profile</h2>
               <div className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></div>
-              <div className="flex flex-wrap mb-4 hidden sm:flex">
+              <div className="flex-wrap mb-4 hidden sm:flex">
                 <div className="w-full lg:w-1/3 hidden sm:block">
                   <img src={img} alt="doctor-profile" className=" rounded-lg" />
                 </div>
                 {remainingLeads?.map((lead, index) => (
                   <div className="w-full lg:w-2/3 ">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                      {/* <div>
-                        <label className="text-cyan-600 font-semibold">
-                          Lead Number
-                        </label>
-                        <div className="p-2 bg-gray-100 rounded">
-                          <p className="m-0">{lead.lead_no}</p>
-                        </div>
-                      </div> */}
-
                       <div>
                         <label className="text-cyan-600 font-semibold">
                           Name
@@ -467,28 +472,27 @@ function EmployeeSingleLeadProfileContent() {
                     className="bg-orange-500 text-white px-4 py-2 rounded w-full sm:w-auto"
                     onClick={() => setShowPopupVisit(true)}
                   >
-                    Visit Creation
+                    + Add Visit
                   </button>
                   <button
                     className="bg-yellow-500 text-white px-4 py-2 rounded w-full sm:w-auto"
                     onClick={() => setShowPopupFollowUp(true)}
                   >
-                    Follow Up Creation
+                    + Add Follow-Up
                   </button>
                   <button
                     className="bg-purple-500 text-white px-4 py-2 rounded w-full sm:w-auto"
                     onClick={() => setShowPopupRemark(true)}
                   >
-                    Remark Creation
+                    + Add Remark
                   </button>
-                  {employeeunitsoldCreated ? (
+                  {/* {employeeunitsoldCreated ? (
                     <>
                       <button
                         className="bg-gray-600 text-white px-4 py-2 rounded w-full sm:w-auto"
                         disabled
-                        // onClick={() => setShowPopupUnitSold(true)}
                       >
-                        Unit Sold Created
+                        Final Unit Sold Added
                       </button>
                     </>
                   ) : (
@@ -497,211 +501,84 @@ function EmployeeSingleLeadProfileContent() {
                         className="bg-cyan-600 text-white px-4 py-2 rounded w-full sm:w-auto"
                         onClick={() => setShowPopupUnitSold(true)}
                       >
-                        Unit Sold Creation
+                        Create Final Unit Sold
                       </button>
                     </>
-                  )}
-                </div>
-
-                {/* Right Section for View Buttons */}
-                <div className="flex flex-wrap gap-2">
-                  {visit?.length > 0 ? (
-                    <button
-                      onClick={handleViewVisit}
-                      className="bg-green-500 text-white px-4 py-2 rounded w-full sm:w-auto"
-                    >
-                      View Visit
-                    </button>
-                  ) : (
-                    <p className="text-white bg-red-400 text-center px-4 py-2 rounded w-full sm:w-auto">
-                      Visit not yet created
-                    </p>
-                  )}
-
-                  {/* Follow Up */}
-                  {followCreated.length > 0 ? (
-                    <button
-                      onClick={handleViewFollowUp}
-                      className="bg-yellow-500 text-white px-4 py-2 rounded w-full sm:w-auto"
-                    >
-                      View Follow Up
-                    </button>
-                  ) : (
-                    <p className="text-white bg-red-400 text-center px-4 py-2 rounded w-full sm:w-auto">
-                      Follow Up not yet created
-                    </p>
-                  )}
-
-                  {/* Remark */}
-                  {remarkCreated ? (
-                    <button
-                      onClick={handleViewRemark}
-                      className="bg-purple-500 text-white px-4 py-2 rounded w-full sm:w-auto"
-                    >
-                      View Remark
-                    </button>
-                  ) : (
-                    <p className="text-white bg-red-400 text-center px-4 py-2 rounded w-full sm:w-auto">
-                      Remark not yet created
-                    </p>
-                  )}
-
-                  {employeeunitsoldCreated ? (
-                    <button
-                      onClick={handleViewEmployeeUnitSold}
-                      className="bg-cyan-600 text-white px-4 py-2 rounded w-full sm:w-auto"
-                    >
-                      View Unit Sold
-                    </button>
-                  ) : (
-                    <p className="text-white bg-red-400 text-center px-4 py-2 rounded w-full sm:w-auto">
-                      Unit not yet sold
-                    </p>
-                  )}
+                  )} */}
+                  <button
+                    className="bg-emerald-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+                    onClick={() => setShowBookPopup(true)}
+                  >
+                    + Add Booking
+                  </button>
+                  <button
+                    className="bg-red-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+                    onClick={() => setShowPopupRemark(true)}
+                  >
+                    + Add Registry
+                  </button>
+                  <button
+                    className="bg-cyan-700 text-white px-4 py-2 rounded w-full sm:w-auto"
+                    onClick={() => setShowPopupRemark(true)}
+                  >
+                    + Add Utility Charges
+                  </button>
+                  <button
+                    className="bg-green-700 text-white px-4 py-2 rounded w-full sm:w-auto"
+                    onClick={() => setShowPopupRemark(true)}
+                  >
+                    + Final Sale
+                  </button>
                 </div>
               </div>
 
-              <div className="w-auto sm:w-[78rem] overflow-x-auto mt-1">
-                <table className="min-w-full whitespace-nowrap bg-white border">
-                  <thead>
-                    <tr>
-                      {/* <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Lead Number
-                      </th> */}
-                      {/* <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Assigned To
-                      </th> */}
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Name
-                      </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Phone
-                      </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Lead Source
-                      </th>
-
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Assigned To
-                      </th>
-
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Address
-                      </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Lead Status
-                      </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Project Name
-                      </th>
-
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Unit Type
-                      </th>
-
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Unit Number
-                      </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Unit Base Price
-                      </th>
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Unit Status
-                      </th>
-
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Assigned Date
-                      </th>
-
-                      <th className="px-6 py-3 border-b-2 border-gray-300">
-                        Action
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {remainingLeads?.map((lead, index) => (
-                      <tr
-                        key={lead.id}
-                        className={index % 2 === 0 ? "bg-gray-100" : ""}
-                      >
-                        {/* <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.lead_no}
-                        </td> */}
-                        {/* <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.staff_name}
-                        </td> */}
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.name ||
-                            getFieldValue(
-                              lead.question_fields_data,
-                              "full_name"
-                            )}
-                        </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.phone ||
-                            getFieldValue(
-                              lead.question_fields_data,
-                              "phone_number"
-                            )}
-                        </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.leadSource || "Meta"}
-                        </td>
-
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.assignedBy || lead?.staff_name}
-                        </td>
-
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.address ||
-                            getFieldValue(
-                              lead.question_fields_data,
-                              "street_address"
-                            )}
-                        </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.lead_status || lead?.meta_lead_status}
-                        </td>
-
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.project_name}
-                        </td>
-
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.unit_type}
-                        </td>
-
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.unit_number}
-                        </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-green-800 font-bold">
-                          ₹{lead.base_price}
-                        </td>
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.unit_status}
-                        </td>
-
-                        <td className="px-6 py-4 border-b border-gray-200 text-gray-800">
-                          {lead.createdTime || lead?.meta_updated_at}
-                        </td>
-
-                        <td className="px-6 py-4 border-b border-gray-200">
-                          <button
-                            className="text-cyan-600 hover:text-cyan-700"
-                            onClick={() => handleUpdate(lead)}
-                          >
-                            Update
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              {/* Modern Tabs */}
+              <div className="flex flex-wrap gap-3 mt-6 bg-white p-3 rounded-xl shadow-sm border border-gray-200">
+                {[
+                  { key: "overview", label: "Lead Overview" },
+                  { key: "booking", label: "Booking Details" },
+                  { key: "registry", label: "Registry Details" },
+                  { key: "utility", label: "Utility Charges" },
+                  { key: "receipts", label: "All Receipts" },
+                  { key: "transactions", label: "Transactions" },
+                  { key: "visit", label: "Visit" },
+                  { key: "followup", label: "Follow-Up" },
+                  { key: "remark", label: "Remark" },
+                  { key: "unitsold", label: "View Sold Details" },
+                ].map((item) => (
+                  <button
+                    key={item.key}
+                    onClick={() => setActiveTab(item.key)}
+                    className={`
+        px-4 py-2 rounded-lg font-medium transition-all
+        ${
+          activeTab === item.key
+            ? "bg-cyan-600 text-white shadow-md"
+            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+        }
+      `}
+                  >
+                    {item.label}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
+          <div className="">
+            {activeTab === "overview" && <LeadOverview leads={leads} />}
+            {activeTab === "booking" && <BookingDetails />}
+            {activeTab === "registry" && <RegistryDetails />}
+            {activeTab === "utility" && <UtilityCharges />}
+            {activeTab === "receipts" && <AllReceipts />}
+            {activeTab === "transactions" && <Transactions />}
+            {activeTab === "visit" && <VisitTab />}
+            {activeTab === "followup" && <FollowUpTab />}
+            {activeTab === "remark" && <RemarkTab />}
+            {activeTab === "unitsold" && <SoldUnitView type={type} id={id} />}
+          </div>
         </div>
       </div>
+
       <VisitCreationPopup
         isOpen={showPopupVisit}
         onClose={() => setShowPopupVisit(false)}
@@ -732,6 +609,16 @@ function EmployeeSingleLeadProfileContent() {
       <UnitSoldCreationPopup
         isOpen={showPopupUnitSold}
         onClose={() => setShowPopupUnitSold(false)}
+        leads={leads}
+        fetchLeads={fetchLeads}
+        fetchUnitdata={fetchUnitdata}
+        fetchUnitSoldEmployee={fetchUnitSoldEmployee}
+        fetchMetaLeads={fetchMetaLeads}
+        unitdata={unitdata}
+      />
+      <BookingCreationPopup
+        isOpen={showBookPopup}
+        onClose={() => setShowBookPopup(false)}
         leads={leads}
         fetchLeads={fetchLeads}
         fetchUnitdata={fetchUnitdata}

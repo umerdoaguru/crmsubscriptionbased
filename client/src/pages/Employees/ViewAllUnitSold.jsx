@@ -6,7 +6,7 @@ import ViewAllUnitSoldContent from "../../components/Leads/ViewAllUnitSoldConten
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "../../store/UiSlice";
 
-const ViewAllUnitSold = () => {
+const ViewAllUnitSold = ({ type, id }) => {
   const dispatch = useDispatch();
   const isSidebarOpen = useSelector((state) => state.ui.isSidebarOpen);
 
