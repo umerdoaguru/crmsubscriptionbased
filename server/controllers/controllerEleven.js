@@ -44,12 +44,12 @@ const createBooking = (req, res) => {
           return res.status(500).json({ message: "Database Insert Error" });
         }
 
-        const booking_id = result.insertId;
+        const bookingId = result.insertId;
 
         return res.status(201).json({
           message: "Booking created successfully",
           data: {
-            booking_id,
+            bookingId,
             booking_esu_id,
             booking_org_id,
             booking_amount,
@@ -65,10 +65,10 @@ const createBooking = (req, res) => {
   }
 };
 
-const getBookingBYleadId = async (req, res) => {
+const getBookingBYleadId = (req, res) => {
   try {
-    const { leadId } = req.params.leadId;
-    const selectQuery = `select * from booking_details left join employee_sold_units on employee_sold_units.esu_id = booking_details.booking_esu_id left join owner on owner.owner_id = employee_sold_units.esu_owner_id where employee_sold_units.esu_lead_id = ?`;
+    const { leadId } = req.params;
+    const selectQuery = `select * from booking_details left join employee_sold_units on employee_sold_units.esu_id = booking_details.booking_esu_id left join owner on owner.owner_id = employee_sold_units.esu_owner_id left join projects on projects.project_id = employee_sold_units.esu_project_id left join units on units.unit_id = employee_sold_units.esu_unit_id where booking_details.booking_lead_id = ?`;
     db.query(selectQuery, leadId, (err, result) => {
       if (err) {
         return res.status(400).json({ success: false, message: err.message });
@@ -80,4 +80,285 @@ const getBookingBYleadId = async (req, res) => {
   }
 };
 
-module.exports = { createBooking, getBookingBYleadId };
+const updateBooking = (req, res) => {
+  try {
+    const { bookingId } = req.params;
+    const { booking_amount, booking_date, booking_notes } = req.body;
+
+    if (!bookingId) {
+      return res.status(400).json({ message: "bookingId is required" });
+    }
+
+    const fields = [];
+    const values = [];
+
+    if (booking_amount !== undefined) {
+      fields.push("booking_amount = ?");
+      values.push(booking_amount);
+    }
+
+    if (booking_date !== undefined) {
+      fields.push("booking_date = ?");
+      values.push(booking_date);
+    }
+
+    if (booking_notes !== undefined) {
+      fields.push("booking_notes = ?");
+      values.push(booking_notes || null);
+    }
+
+    if (fields.length === 0) {
+      return res.status(400).json({
+        message: "No valid fields provided for update",
+      });
+    }
+
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+    fields.push("booking_updated_at = ?");
+    values.push(dateTime);
+
+    values.push(bookingId);
+
+    const updateQuery = `
+      UPDATE booking_details
+      SET ${fields.join(", ")}
+      WHERE booking_id = ?
+    `;
+
+    db.query(updateQuery, values, (err, result) => {
+      if (err) {
+        console.error("Update Error:", err);
+        return res.status(500).json({ message: "Database Update Error" });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "Booking not found" });
+      }
+
+      return res.status(200).json({
+        message: "Booking updated successfully",
+        updated_fields: fields.map((f) => f.split("=")[0].trim()),
+      });
+    });
+  } catch (error) {
+    console.error("Unexpected Error:", error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const createRegistry = (req, res) => {
+  try {
+    const {
+      registry_esu_id,
+      registry_lead_id,
+      registry_amount,
+      registry_date,
+      registry_notes,
+    } = req.body;
+
+    const registry_document_url = req.file
+      ? `/registry_documents/${req.file.filename}`
+      : null;
+
+    if (
+      !registry_esu_id ||
+      !registry_lead_id ||
+      !registry_amount ||
+      !registry_date
+    ) {
+      return res.status(400).json({
+        message:
+          "registry_esu_id, registry_lead_id, registry_amount and registry_date are required",
+      });
+    }
+
+    const currentTime = moment()
+      .tz("Asia/Kolkata")
+      .format("YYYY-MM-DD HH:mm:ss");
+
+    const insertQuery = `
+      INSERT INTO registry_details 
+      (
+        registry_esu_id,
+        registry_lead_id,
+        registry_amount,
+        registry_date,
+        registry_document_url,
+        registry_notes,
+        registry_created_at,
+        registry_updated_at
+      ) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const values = [
+      registry_esu_id,
+      registry_lead_id,
+      registry_amount,
+      registry_date,
+      registry_document_url || null,
+      registry_notes || null,
+      currentTime,
+      currentTime,
+    ];
+
+    db.query(insertQuery, values, (err, result) => {
+      if (err) {
+        if (err.code === "ER_DUP_ENTRY") {
+          return res.status(409).json({
+            message:
+              "Duplicate: registry_lead_id or registry_esu_id must be unique",
+          });
+        }
+        return res.status(500).json({ message: "Database error", error: err });
+      }
+
+      res.status(200).json({
+        message: "Registry record created successfully",
+        registry_id: result.insertId,
+      });
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+const getRegistryBYleadId = async (req, res) => {
+  try {
+    const { leadId } = req.params.leadId;
+    const selectQuery = `select * from registry_details left join employee_sold_units on employee_sold_units.esu_id = registry_details.registry_esu_id left join owner on owner.owner_id = employee_sold_units.esu_owner_id left join projects on projects.project_id = employee_sold_units.esu_project_id left join units on units.unit_id = employee_sold_units.esu_unit_id where registry_details.registry_lead_id = ?`;
+    db.query(selectQuery, leadId, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+      return res.status(200).send(result);
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const updateRegistry = (req, res) => {
+  try {
+    const { registry_id } = req.params;
+
+    if (!registry_id) {
+      return res.status(400).json({ message: "registry_id is required" });
+    }
+
+    const { registry_amount, registry_date, registry_notes } = req.body;
+
+    const registry_document_url = req.file
+      ? `/registry_documents/${req.file.filename}`
+      : null;
+
+    let updateFields = [];
+    let values = [];
+
+    if (registry_amount) {
+      updateFields.push("registry_amount = ?");
+      values.push(registry_amount);
+    }
+
+    if (registry_date) {
+      updateFields.push("registry_date = ?");
+      values.push(registry_date);
+    }
+
+    if (registry_notes) {
+      updateFields.push("registry_notes = ?");
+      values.push(registry_notes);
+    }
+
+    if (registry_document_url) {
+      updateFields.push("registry_document_url = ?");
+      values.push(registry_document_url);
+    }
+
+    if (updateFields.length === 0) {
+      return res.status(400).json({ message: "No fields provided to update" });
+    }
+
+    updateFields.push("registry_updated_at = ?");
+    const currentTime = moment()
+      .tz("Asia/Kolkata")
+      .format("YYYY-MM-DD HH:mm:ss");
+    values.push(currentTime);
+
+    values.push(registry_id);
+
+    const updateQuery = `
+      UPDATE registry_details 
+      SET ${updateFields.join(", ")}
+      WHERE registry_id = ?
+    `;
+
+    db.query(updateQuery, values, (err, result) => {
+      if (err) {
+        return res.status(500).json({ message: "Database error", error: err });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "Registry record not found" });
+      }
+
+      res.status(200).json({
+        message: "Registry record updated successfully",
+      });
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+const deleteRegistry = (req, res) => {
+  try {
+    const { registry_id } = req.params;
+
+    if (!registry_id) {
+      return res
+        .status(400)
+        .json({ success: false, message: "registry_id is required" });
+    }
+
+    const checkQuery = `SELECT * FROM registry_details WHERE registry_id = ?`;
+
+    db.query(checkQuery, [registry_id], (err, result) => {
+      if (err) {
+        return res.status(500).json({ success: false, message: err.message });
+      }
+
+      if (!result || result.length === 0) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Invalid registry ID" });
+      }
+
+      const deleteQuery = `DELETE FROM registry_details WHERE registry_id = ?`;
+
+      db.query(deleteQuery, [registry_id], (err) => {
+        if (err) {
+          return res.status(500).json({ success: false, message: err.message });
+        }
+
+        return res.status(200).json({
+          success: true,
+          message: "Registry deleted successfully",
+        });
+      });
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+module.exports = {
+  createBooking,
+  getBookingBYleadId,
+  updateBooking,
+  createRegistry,
+  getRegistryBYleadId,
+  updateRegistry,
+  deleteRegistry,
+};

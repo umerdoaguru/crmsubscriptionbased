@@ -1,3 +1,785 @@
+  < />
+ 
+
+import { useParams } from "react-router-dom";
+import getFieldValue from "../../utils/getFieldValue";
+ 
+
+              {/* ---------- BOOKING DETAILS ---------- */}
+              <div className="pt-4 border-t">
+                <h3 className="text-lg font-semibold mb-2">Booking Details</h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Booking Amount
+                    </label>
+                    <input
+                      type="number"
+                      name="booking_amount"
+                      value={booking.booking_amount}
+                      onChange={handleInputChangeBooking}
+                      placeholder="Enter Booking Amount"
+                      className="w-full px-3 py-2 border rounded"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Booking Date
+                    </label>
+                    <input
+                      type="date"
+                      name="booking_date"
+                      value={booking.booking_date}
+                      onChange={handleInputChangeBooking}
+                      className="w-full px-3 py-2 border rounded"
+                    />
+                  </div>
+                </div>
+              </div>
+ 
+utChangeBooking
+ 
+
+              {/* ---------- OWNER DETAILS ---------- */}
+              <div className="pt-4 border-t">
+                <h3 className="text-lg font-semibold mb-2">Owner Details</h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Owner Name
+                    </label>
+                    <input
+                      type="text"
+                      name="owner_name"
+                      value={unitsold.owner_name}
+                      onChange={handleInputChangeUnitSold}
+                      placeholder="Enter Owner Name"
+                      className="w-full px-3 py-2 border rounded"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Owner Email
+                    </label>
+                    <input
+                      type="email"
+                      name="owner_email"
+                      value={unitsold.owner_email}
+                      onChange={handleInputChangeUnitSold}
+                      placeholder="Enter Owner Email"
+                      className="w-full px-3 py-2 border rounded"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Owner Phone
+                    </label>
+                    <input
+                      type="text"
+                      name="owner_phone"
+                      value={unitsold.owner_phone}
+                      onChange={handleInputChangeUnitSold}
+                      placeholder="10-digit Phone"
+                      className="w-full px-3 py-2 border rounded"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Owner Address
+                    </label>
+                    <input
+                      type="text"
+                      name="owner_address"
+                      value={unitsold.owner_address}
+                      onChange={handleInputChangeUnitSold}
+                      placeholder="Enter Owner Address"
+                      className="w-full px-3 py-2 border rounded"
+                    />
+                  </div>
+                </div>
+              </div>
+ 
+
+              {/* ---------- SALE DETAILS ---------- */}
+              <div className="pt-4 border-t">
+                <h3 className="text-lg font-semibold mb-2">Sale Details</h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm">Base Sale Price</label>
+                    <input
+                      type="number"
+                      name="esu_sale_price"
+                      value={unitsold.esu_sale_price}
+                      onChange={handleInputChangeUnitSold}
+                      className="w-full px-3 py-2 border rounded"
+                    />
+                  </div>
+
+                  {/* <div>
+                    <label className="text-sm">Sale Status</label>
+                    <select
+                      name="esu_status"
+                      value={unitsold.esu_status}
+                      onChange={handleInputChangeUnitSold}
+                      className="w-full px-3 py-2 border rounded bg-white"
+                    >
+                      <option value="booked">Booked</option>
+                      <option value="registry_done">Registry Done</option>
+                      <option value="sold">Sold</option>
+                    </select>
+                  </div> */}
+                </div>
+              </div>
+ 
+nputChangeUnitSold
+ 
+
+                <div>
+                  <label className="text-sm">Unit Number</label>
+                  <input
+                    type="text"
+                    value={leads[0]?.unit_number || ""}
+                    disabled
+                    className="w-full px-3 py-2 border rounded bg-gray-100"
+                  />
+                </div>
+ 
+
+                <div>
+                  <label className="text-sm">Lead Name</label>
+                  <input
+                    type="text"
+                    value={
+                      leads[0]?.name ||
+                      getFieldValue(leads[0]?.question_fields_data, "full_name")
+                    }
+                    disabled
+                    className="w-full px-3 py-2 border rounded bg-gray-100"
+                  />
+                </div>
+ 
+eads[0]?.project_name || ""
+ 
+  disabled
+ 
+Project Name
+ 
+  fetchUnitSoldEmployee,
+  fetchUnitdata,
+  fetchLeads,
+  fetchMetaLeads,
+ 
+fetchUnitSoldEmployee,
+  fetchUnitdata,
+  fetchLeads,
+  fetchMetaLeads,
+  leads,
+ 
+ {/* ---------- BASIC INFO ---------- */}
+ 
+
+      fetchUnitdata();
+      fetchLeads();
+      fetchMetaLeads();
+      fetchUnitSoldEmployee();
+ 
+ Sold & Booking
+ 
+
+
+      await axios.post(
+        "https://crm-generalize.dentalguru.software/api/createBooking",
+        bookingPayload
+      );
+ 
+      const bookingPayload = {
+        ...booking,
+        booking_esu_id: soldId,
+      };
+ 
+
+      const soldId =
+        soldRes?.data?.sold_id ||
+        soldRes?.data?.data?.sold_id ||
+        soldRes?.data?.esu_id;
+
+      if (!soldId) {
+        cogoToast.error("Sold ID not returned from server");
+        return;
+      }
+ 
+
+      const unitPayload = {
+        esu_lead_id: unitsold.esu_lead_id,
+        esu_staff_id: unitsold.esu_staff_id,
+        esu_unit_id: unitsold.esu_unit_id,
+        esu_project_id: unitsold.esu_project_id,
+        esu_sale_price: unitsold.esu_sale_price,
+        esu_status: unitsold.esu_status,
+
+        owner_org_id: unitsold.owner_org_id,
+        owner_name: unitsold.owner_name,
+        owner_email: unitsold.owner_email,
+        owner_phone: unitsold.owner_phone,
+        owner_address: unitsold.owner_address,
+      };
+ 
+
+      if (unitsold.owner_phone.length !== 10) {
+        cogoToast.warn("Mobile number must be 10 digits");
+        return;
+      }
+ 
+   // Validation
+      if (
+        !unitsold.owner_name ||
+        !unitsold.owner_phone ||
+        !unitsold.owner_email
+      ) {
+        cogoToast.warn("Please fill all required owner details");
+        return;
+      }
+ 
+  const { type } = useParams();
+ 
+
+
+
+  const handleInputChangeBooking = (e) => {
+    const { name, value } = e.target;
+    setBooking((prev) => ({ ...prev, [name]: value }));
+  };
+ 
+  const handleInputChangeUnitSold = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "owner_phone") {
+      const numeric = value.replace(/\D/g, "");
+      if (numeric.length <= 10) {
+        setUnitSold((prev) => ({ ...prev, [name]: numeric }));
+      }
+      return;
+    }
+
+    setUnitSold((prev) => ({ ...prev, [name]: value }));
+  };
+ 
+  useEffect(() => {
+    setUnitSold((prev) => ({
+      ...prev,
+      esu_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
+      booking_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
+      esu_staff_id: leads[0]?.staff_id || leads[0]?.meta_assignedTo,
+      esu_unit_id: leads[0]?.unit_id || leads[0]?.meta_unit_id,
+      esu_project_id: leads[0]?.project_id || leads[0]?.meta_project_id,
+      owner_org_id,
+      esu_sale_price: leads[0]?.base_price,
+    }));
+  }, [leads]);
+ 
+    booking_esu_id: "",
+    booking_lead_id: ,
+ 
+    booking_org_id: owner_org_id,
+ 
+leadgen_id,
+    booking_org_id: owner_org_id,
+ 
+    booking_amount: "",
+    booking_date: today,
+    booking_notes: "",
+ 
+  const [unitsold, setUnitSold] = useState({
+    esu_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
+    esu_staff_id: leads[0]?.staff_id || leads[0]?.meta_assignedTo,
+    esu_unit_id: leads[0]?.unit_id || leads[0]?.meta_unit_id,
+    esu_project_id: leads[0]?.project_id || leads[0]?.meta_project_id,
+
+    esu_sale_price: leads[0]?.base_price,
+    esu_status: "booked",
+
+    leadType: type,
+    owner_org_id: owner_org_id,
+    owner_name: "",
+    owner_email: "",
+    owner_phone: "",
+    owner_address: "",
+  });
+ 
+  const owner_org_id = Emp?.staff_org_id;
+  console.log(leads);
+ 
+Save All
+ 
+ {/* ---------- OWNER DETAILS ---------- */}
+              <div className="pt-4 border-t">
+                <h3 className="text-lg font-semibold mb-2">Owner Details</h3>
+
+              
+              </div>
+ 
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                
+                </div>
+ 
+  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Owner Address
+                    </label>
+                    <input
+                      type="text"
+                      name="owner_address"
+                      value={unitsold.owner_address}
+                      onChange={handleInputChangeUnitSold}
+                      placeholder="Enter Owner Address"
+                      className="w-full px-3 py-2 border rounded"
+                    />
+                  </div>
+ 
+ <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Owner Phone
+                    </label>
+                    <input
+                      type="text"
+                      name="owner_phone"
+                      value={unitsold.owner_phone}
+                      onChange={handleInputChangeUnitSold}
+                      placeholder="10-digit Phone"
+                      className="w-full px-3 py-2 border rounded"
+                    />
+                  </div>
+ 
+ <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Owner Email
+                    </label>
+                    <input
+                      type="email"
+                      name="owner_email"
+                      value={unitsold.owner_email}
+                      onChange={handleInputChangeUnitSold}
+                      placeholder="Enter Owner Email"
+                      className="w-full px-3 py-2 border rounded"
+                    />
+                  </div>
+ 
+ <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Owner Name
+                    </label>
+                    <input
+                      type="text"
+                      name="owner_name"
+                      value={unitsold.owner_name}
+                      onChange={handleInputChangeUnitSold}
+                      placeholder="Enter Owner Name"
+                      className="w-full px-3 py-2 border rounded"
+                    />
+                  </div>
+ 
+ {/* ---------- SALE DETAILS ---------- */}
+              <div className="pt-4 border-t">
+                <h3 className="text-lg font-semibold mb-2">Sale Details</h3>
+              </div>
+ 
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm">Base Sale Price</label>
+                    <input
+                      type="number"
+                      name="esu_sale_price"
+                      value={unitsold.esu_sale_price}
+                      onChange={handleInputChangeUnitSold}
+                      className="w-full px-3 py-2 border rounded"
+                    />
+                  </div>
+                </div>
+ 
+ {/* <div>
+                    <label className="text-sm">Sale Status</label>
+                    <select
+                      name="esu_status"
+                      value={unitsold.esu_status}
+                      onChange={handleInputChangeUnitSold}
+                      className="w-full px-3 py-2 border rounded bg-white"
+                    >
+                      <option value="booked">Booked</option>
+                      <option value="registry_done">Registry Done</option>
+                      <option value="sold">Sold</option>
+                    </select>
+                  </div> */}
+ 
+ <div className="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+ 
+  {/* <div>
+                  <label className="text-sm">Final Sold Date</label>
+                  <input
+                    type="date"
+                    name="esu_final_sold_date"
+                    value={unitsold.esu_final_sold_date}
+                    onChange={handleInputChangeUnitSold}
+                    max={today}
+                    className="w-full px-3 py-2 border rounded"
+                  />
+                </div> */}
+ 
+
+                <div>
+                  <label className="text-sm">Unit Number</label>
+                  <input
+                    type="text"
+                    value={leads[0]?.unit_number || ""}
+                    disabled
+                    className="w-full px-3 py-2 border rounded bg-gray-100"
+                  />
+                </div>
+ 
+   <div>
+                  <label className="text-sm">Lead Name</label>
+                  <input
+                    type="text"
+                    value={
+                      leads[0]?.name ||
+                      getFieldValue(leads[0]?.question_fields_data, "full_name")
+                    }
+                    disabled
+                    className="w-full px-3 py-2 border rounded bg-gray-100"
+                  />
+                </div>
+ 
+<div>
+                  <label className="text-sm">Project Name</label>
+                  <input
+                    type="text"
+                    value={leads[0]?.project_name || ""}
+                    disabled
+                    className="w-full px-3 py-2 border rounded bg-gray-100"
+                  />
+                </div>
+ 
+ {/* ---------- BASIC INFO ---------- */}
+ 
+Unit Sold & Booking saved successfully
+ 
+
+      fetchUnitdata();
+      fetchLeads();
+      fetchMetaLeads();
+      fetchUnitSoldEmployee();
+ 
+
+
+    
+
+      await axios.post(
+        "https://crm-generalize.dentalguru.software/api/createBooking",
+        bookingPayload
+      );
+ 
+  const bookingPayload = {
+        ...booking,
+        booking_esu_id: soldId,
+      };
+ 
+
+      const soldId =
+        soldRes?.data?.sold_id ||
+        soldRes?.data?.data?.sold_id ||
+        soldRes?.data?.esu_id;
+ 
+
+      if (!soldId) {
+        cogoToast.error("Sold ID not returned from server");
+        return;
+      }
+ 
+    const unitPayload = {
+        esu_lead_id: unitsold.esu_lead_id,
+        esu_staff_id: unitsold.esu_staff_id,
+        esu_unit_id: unitsold.esu_unit_id,
+        esu_project_id: unitsold.esu_project_id,
+        esu_sale_price: unitsold.esu_sale_price,
+        esu_status: unitsold.esu_status,
+
+        owner_org_id: unitsold.owner_org_id,
+        owner_name: unitsold.owner_name,
+        owner_email: unitsold.owner_email,
+        owner_phone: unitsold.owner_phone,
+        owner_address: unitsold.owner_address,
+      };
+ 
+
+      if (unitsold.owner_phone.length !== 10) {
+        cogoToast.warn("Mobile number must be 10 digits");
+        return;
+      }
+ 
+  // Validation
+      if (
+        !unitsold.owner_name ||
+        !unitsold.owner_phone ||
+        !unitsold.owner_email
+      ) {
+        cogoToast.warn("Please fill all required owner details");
+        return;
+      }
+ 
+  const handleInputChangeUnitSold = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "owner_phone") {
+      const numeric = value.replace(/\D/g, "");
+      if (numeric.length <= 10) {
+        setUnitSold((prev) => ({ ...prev, [name]: numeric }));
+      }
+      return;
+    }
+
+    setUnitSold((prev) => ({ ...prev, [name]: value }));
+  };
+ 
+
+  const owner_org_id = Emp?.staff_org_id;
+ 
+setUnitSold((prev) => ({
+      ...prev,
+      esu_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
+      booking_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
+      esu_staff_id: leads[0]?.staff_id || leads[0]?.meta_assignedTo,
+      esu_unit_id: leads[0]?.unit_id || leads[0]?.meta_unit_id,
+      esu_project_id: leads[0]?.project_id || leads[0]?.meta_project_id,
+      owner_org_id,
+      esu_sale_price: leads[0]?.base_price,
+    }));
+ 
+    booking_esu_id: "",
+    booking_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
+    booking_org_id: owner_org_id,
+ 
+ booking_esu_id: "",
+    booking_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
+ 
+
+  const [unitsold, setUnitSold] = useState({
+    esu_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
+    esu_staff_id: leads[0]?.staff_id || leads[0]?.meta_assignedTo,
+    esu_unit_id: leads[0]?.unit_id || leads[0]?.meta_unit_id,
+    esu_project_id: leads[0]?.project_id || leads[0]?.meta_project_id,
+
+    esu_sale_price: leads[0]?.base_price,
+    esu_status: "booked",
+
+    leadType: type,
+    owner_org_id: owner_org_id,
+    owner_name: "",
+    owner_email: "",
+    owner_phone: "",
+    owner_address: "",
+  });
+ 
+  const today = new Date().toISOString().split("T")[0];
+ 
+ fetchUnitSoldEmployee,
+  fetchUnitdata,
+  fetchLeads,
+  fetchMetaLeads,
+  leads,
+ 
+
+import getFieldValue from "../../../utils/getFieldValue";
+ 
+  edit | delete
+ 
+{lead?.createdTime || lead.meta_updated_at}
+ 
+updated_at
+ 
+   <td className="px-6 py-4 border-b border-gray-200">
+                  {lead?.project_name}
+                </td>
+ 
+dress ||
+                    getFieldValue(lead.question_fields_data, "street_address")
+ 
+ead_status || lead.meta_lead_status
+ 
+ource || "META"
+ 
+||
+                    getFieldValue(lead.question_fields_data, "phone_number")
+ 
+|
+                    getFieldVal
+ 
+ue(lead.question_fields_data, "full_name")
+ 
+Booking Notes
+ 
+Assigned Date
+ 
+ead Status
+ 
+Lead Source
+ 
+Assigned To
+ 
+import React from "react";
+
+const BookingDetails = () => {
+  return <div>BookingDetails</div>;
+};
+
+export default BookingDetails;
+
+ 
+
+                <td className="px-6 py-4 border-b border-gray-200">
+                  {lead.unit_status}
+                </td>
+ 
+    <th className="px-6 py-3 border-b-2 border-gray-300">
+                Unit Status
+              </th>
+ 
+Sold +
+ 
+
+        esu_final_sold_date: unitsold.esu_final_sold_date,
+ 
+
+    esu_final_sold_date: "",
+ 
+  <div>
+                    <label className="text-sm">Payment Method</label>
+                    <input
+                      type="text"
+                      name="esu_payment_method"
+                      value={unitsold.esu_payment_method}
+                      onChange={handleInputChangeUnitSold}
+                      placeholder="UPI / Cash / Bank Transfer"
+                      className="w-full px-3 py-2 border rounded"
+                    />
+                  </div>
+ 
+
+        esu_payment_method: unitsold.esu_payment_method,
+ 
+
+    esu_payment_method: "",
+ 
+UnitSoldCreationPopup
+ 
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <input
+                    type="number"
+                    name="booking_amount"
+                    value={booking.booking_amount}
+                    onChange={handleInputChangeBooking}
+                    placeholder="Booking Amount"
+                    className="w-full px-3 py-2 border rounded"
+                  />
+
+                  <input
+                    type="date"
+                    name="booking_date"
+                    value={booking.booking_date}
+                    onChange={handleInputChangeBooking}
+                    className="w-full px-3 py-2 border rounded"
+                  />
+
+                  <input
+                    type="text"
+                    name="booking_notes"
+                    value={booking.booking_notes}
+                    onChange={handleInputChangeBooking}
+                    placeholder="Booking Notes"
+                    className="w-full px-3 py-2 border rounded col-span-2"
+                  />
+                </div>
+ 
+  // ---------------------------------------------------
+  //   UI COMPONENT RENDER
+  // ---------------------------------------------------
+ 
+  // -------------------------
+  // UNIT SOLD FORM STATE
+  // -------------------------
+ 
+  // -------------------------
+  // BOOKING FORM STATE
+  // -------------------------
+ 
+  // -------------------------
+  // INPUT HANDLERS
+  // -------------------------
+ 
+  // ---------------------------------------------------
+  //       MASTER FUNCTION → SAVE UNIT SOLD → BOOKING
+  // ---------------------------------------------------
+ 
+
+      // ------------------------------
+      // 1️⃣ SAVE UNIT SOLD
+      // ------------------------------
+ 
+
+      // ------------------------------
+      // 2️⃣ SAVE BOOKING WITH SOLD ID
+      // ------------------------------
+ 
+
+      // ✅ Clean payload aligned with backend
+ 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (modalRef.current && !modalRef.current.contains(e.target)) {
+        onClose();
+      }
+    };
+    const handleEscape = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [onClose]);
+ 
+esuData?.esu_id
+ 
+
+  // UPDATED STATE → matches new DB structure
+ 
+Utility Charges
+ 
+Registry
+ 
+Booking
+ 
+Created
+ 
+Create
+ 
+ {/* <button
+                    className="bg-orange-700 text-white px-4 py-2 rounded w-full sm:w-auto"
+                    onClick={() => setShowPopupRemark(true)}
+                  >
+                    Create Receipt
+                  </button> */}
+ 
+ // onClick={() => setShowPopupUnitSold(true)}
+ 
     esu_payment_method: "",
  
     esu_payment_method: "",

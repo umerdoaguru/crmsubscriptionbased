@@ -2,7 +2,11 @@ const express = require("express");
 const multer = require("multer");
 const router = express.Router();
 const upload = require("../controllers/fileUploadController");
-const { generalUpload, blogUpload } = require("../config/multerConfig");
+const {
+  generalUpload,
+  blogUpload,
+  uploadRegistryDoc,
+} = require("../config/multerConfig");
 
 const {
   getEmployeeInvoice,
@@ -261,6 +265,11 @@ const {
 const {
   createBooking,
   getBookingBYleadId,
+  updateBooking,
+  createRegistry,
+  getRegistryBYleadId,
+  updateRegistry,
+  deleteRegistry,
 } = require("../controllers/controllerEleven");
 
 // ========== Router Begins =====================
@@ -768,5 +777,10 @@ router.post("/addUnitsBulk", excelUpload.single("file"), addUnitsBulk);
 //controller eleven
 router.post("/createBooking", createBooking);
 router.get("/getBookingBYleadId/:leadId", getBookingBYleadId);
+router.put("/updateBooking/:bookingId", updateBooking);
+router.post("/createRegistry", uploadRegistryDoc, createRegistry);
+router.get("/getRegistryBYleadId/:leadId", getRegistryBYleadId);
+router.put("/updateRegistry/:registry_id", uploadRegistryDoc, updateRegistry);
+router.delete("/deleteRegistry/:registry_id", deleteRegistry);
 
 module.exports = router;

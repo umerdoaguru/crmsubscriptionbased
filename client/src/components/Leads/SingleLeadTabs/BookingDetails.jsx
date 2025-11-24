@@ -3,10 +3,20 @@ import { useParams } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import axios from "axios";
+import UpdateBookingModal from "../../EmployeePops/UpdateBookingModal";
 
 const BookingDetails = () => {
   const { type, id } = useParams();
   const [booking, setBooking] = useState([]);
+  const [updateModal, setUpdateModal] = useState(false);
+  const [selected, setSelected] = useState();
+
+  const opneUpdateBooking = (data) => {
+    setUpdateModal(true);
+    setSelected(data);
+  };
+
+  console.log(selected);
 
   const fetchBookingData = async () => {
     try {
@@ -124,18 +134,27 @@ const BookingDetails = () => {
                 </td>
 
                 <td className="px-6 py-4 border-b border-gray-200">
-                  <button className="text-orange-400 font-bold text-2xl">
+                  <button
+                    className="text-orange-400 font-bold text-2xl"
+                    onClick={() => opneUpdateBooking(lead)}
+                  >
                     <FaEdit />
                   </button>
-                  <button className="text-red-600 font-bold text-2xl">
+                  {/* <button className="text-red-600 font-bold text-2xl">
                     <MdDelete />
-                  </button>
+                  </button> */}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      <UpdateBookingModal
+        isOpen={updateModal}
+        onClose={() => setUpdateModal(false)}
+        selected={selected}
+        fetchBookingData={fetchBookingData}
+      />
     </>
   );
 };

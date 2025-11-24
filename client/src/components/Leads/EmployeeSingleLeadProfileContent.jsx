@@ -1,5 +1,4 @@
 import axios from "axios";
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import img from "../../images/lead_profile.png";
@@ -11,7 +10,6 @@ import RemarkCreationPopup from "./RemarkCreationPopup";
 import UnitSoldCreationPopup from "./UnitSoldCreationPopup";
 import UpdateLeadStatusPopup from "./UpdateLeadStatusPopup";
 import getFieldValue from "../../utils/getFieldValue";
-import ViewAllUnitSold from "../../pages/Employees/ViewAllUnitSold";
 import LeadOverview from "./SingleLeadTabs/LeadOverview";
 import BookingDetails from "./SingleLeadTabs/BookingDetails";
 import RegistryDetails from "./SingleLeadTabs/RegistryDetails";
@@ -23,11 +21,13 @@ import FollowUpTab from "./SingleLeadTabs/FollowUpTab";
 import RemarkTab from "./SingleLeadTabs/RemarkTab";
 import SoldUnitView from "./SingleLeadTabs/SoldUnitView";
 import BookingCreationPopup from "../EmployeePops/BookingCreationPopup";
+import RegistryCreatePopup from "../EmployeePops/RegistryCreatePopup";
 
 function EmployeeSingleLeadProfileContent({ isSidebarOpen }) {
   const { type, id } = useParams();
 
   const navigate = useNavigate();
+  const [booking, setBooking] = useState([]);
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(false);
   const [visit, setVisit] = useState([]);
@@ -38,6 +38,7 @@ function EmployeeSingleLeadProfileContent({ isSidebarOpen }) {
   const [showPopupFollowUp, setShowPopupFollowUp] = useState(false);
   const [showPopupRemark, setShowPopupRemark] = useState(false);
   const [showBookPopup, setShowBookPopup] = useState(false);
+  const [showRegistryPopup, setShowRegistryPopup] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [render, setRender] = useState(false);
   const [isOtherReason, setIsOtherReason] = useState(false);
@@ -357,6 +358,23 @@ function EmployeeSingleLeadProfileContent({ isSidebarOpen }) {
 
   console.log(leads);
 
+  const fetchBookingData = async () => {
+    try {
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getBookingBYleadId/${id}`
+      );
+      setBooking(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBookingData();
+  }, []);
+
+  console.log(booking);
+
   return (
     <>
       <div className="flex mt-20">
@@ -486,49 +504,35 @@ function EmployeeSingleLeadProfileContent({ isSidebarOpen }) {
                   >
                     + Add Remark
                   </button>
-                  {/* {employeeunitsoldCreated ? (
-                    <>
-                      <button
-                        className="bg-gray-600 text-white px-4 py-2 rounded w-full sm:w-auto"
-                        disabled
-                      >
-                        Final Unit Sold Added
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        className="bg-cyan-600 text-white px-4 py-2 rounded w-full sm:w-auto"
-                        onClick={() => setShowPopupUnitSold(true)}
-                      >
-                        Create Final Unit Sold
-                      </button>
-                    </>
-                  )} */}
+
                   <button
                     className="bg-emerald-500 text-white px-4 py-2 rounded w-full sm:w-auto"
                     onClick={() => setShowBookPopup(true)}
                   >
                     + Add Booking
                   </button>
-                  <button
-                    className="bg-red-500 text-white px-4 py-2 rounded w-full sm:w-auto"
-                    onClick={() => setShowPopupRemark(true)}
-                  >
-                    + Add Registry
-                  </button>
-                  <button
-                    className="bg-cyan-700 text-white px-4 py-2 rounded w-full sm:w-auto"
-                    onClick={() => setShowPopupRemark(true)}
-                  >
-                    + Add Utility Charges
-                  </button>
-                  <button
-                    className="bg-green-700 text-white px-4 py-2 rounded w-full sm:w-auto"
-                    onClick={() => setShowPopupRemark(true)}
-                  >
-                    + Final Sale
-                  </button>
+                  {booking?.length > 0 && (
+                    <>
+                      <button
+                        className="bg-red-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+                        onClick={() => setShowRegistryPopup(true)}
+                      >
+                        + Add Registry
+                      </button>
+                      <button
+                        className="bg-cyan-700 text-white px-4 py-2 rounded w-full sm:w-auto"
+                        onClick={() => setShowPopupRemark(true)}
+                      >
+                        + Add Utility Charges
+                      </button>
+                      <button
+                        className="bg-green-700 text-white px-4 py-2 rounded w-full sm:w-auto"
+                        onClick={() => setShowPopupRemark(true)}
+                      >
+                        + Final Sale
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -635,6 +639,12 @@ function EmployeeSingleLeadProfileContent({ isSidebarOpen }) {
         fetchUnitdata={fetchUnitdata}
         fetchUnitSoldEmployee={fetchUnitSoldEmployee}
         unitdata={unitdata}
+      />
+      <RegistryCreatePopup
+        isOpen={showRegistryPopup}
+        onClose={() => setShowRegistryPopup(false)}
+        leads={leads}
+        booking={booking}
       />
     </>
   );

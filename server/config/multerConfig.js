@@ -50,4 +50,29 @@ const blogUpload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-module.exports = { generalUpload, blogUpload };
+const registryStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.resolve(__dirname, "../registry_documents"));
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + "-" + file.originalname;
+    cb(null, uniqueName);
+  },
+});
+
+const registryFileFilter = (req, file, cb) => {
+  const ext = path.extname(file.originalname).toLowerCase();
+
+  if (ext === ".pdf") {
+    cb(null, true);
+  } else {
+    cb(new Error("Only PDF files are allowed"), false);
+  }
+};
+
+const uploadRegistryDoc = multer({
+  registryStorage,
+  registryFileFilter,
+}).single("registry_document_url");
+
+module.exports = { generalUpload, blogUpload, uploadRegistryDoc };
