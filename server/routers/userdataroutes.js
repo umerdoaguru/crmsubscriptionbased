@@ -270,6 +270,11 @@ const {
   getRegistryBYleadId,
   updateRegistry,
   deleteRegistry,
+  addUtilityCharges,
+  getUtilityBYleadId,
+  updateUtilityCharges,
+  deleteUtilityCharges,
+  updateSoldDetails,
 } = require("../controllers/controllerEleven");
 
 // ========== Router Begins =====================
@@ -782,5 +787,10 @@ router.post("/createRegistry", uploadRegistryDoc, createRegistry);
 router.get("/getRegistryBYleadId/:leadId", getRegistryBYleadId);
 router.put("/updateRegistry/:registry_id", uploadRegistryDoc, updateRegistry);
 router.delete("/deleteRegistry/:registry_id", deleteRegistry);
+router.post("/addUtilityCharges", addUtilityCharges);
+router.get("/getUtilityBYleadId/:leadId", getUtilityBYleadId);
+router.put("/updateUtilityCharges/:utility_id", updateUtilityCharges);
+router.delete("/deleteUtilityCharges/:utility_id", deleteUtilityCharges);
+router.put("/updateSoldDetails/:esu_id/:leadId/:type", updateSoldDetails);
 
 module.exports = router;

@@ -4,35 +4,35 @@ import axios from "axios";
 import cogoToast from "cogo-toast";
 import { useSelector } from "react-redux";
 
-const RegistryCreatePopup = ({ isOpen, onClose, leads, booking }) => {
+const UtilityCreatePopup = ({ isOpen, onClose, booking, leads }) => {
   const modalRef = useRef();
   const Emp = useSelector((state) => state.auth.user);
   const token = Emp?.token;
-  const today = new Date().toISOString().split("T")[0];
-  const [registry, setRegistry] = useState({
-    registry_esu_id: booking[0]?.esu_id,
-    registry_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
-    registry_amount: "",
-    registry_date: today,
-    registry_notes: "",
-  });
-  const [registryDoc, setRegistryDoc] = useState(null);
-
-  console.log(leads);
-
   const [loading, setLoading] = useState(false);
+  const today = new Date().toISOString().split("T")[0];
+  const [utility, setUtility] = useState({
+    utility_esu_id: booking[0]?.esu_id,
+    utility_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
+    utility_type: "",
+    utility_amount: "",
+    utility_date: today,
+    description: "",
+  });
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setRegistry({
-      ...registry,
-      [name]: value,
+  useEffect(() => {
+    setUtility({
+      ...utility,
+      utility_esu_id: booking[0]?.esu_id,
+      utility_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
     });
+  }, [booking, leads]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUtility((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e) => {
-    setRegistryDoc(e.target.files[0]);
-  };
+  console.log(utility);
 
   const saveUnitSold = async (e) => {
     e.preventDefault();
@@ -43,30 +43,13 @@ const RegistryCreatePopup = ({ isOpen, onClose, leads, booking }) => {
     setLoading(true);
 
     try {
-      const formData = new FormData();
-      formData.append("registry_esu_id", booking[0]?.esu_id);
-      formData.append(
-        "registry_lead_id",
-        leads[0]?.lead_id || leads[0]?.leadgen_id
-      );
-      formData.append("registry_amount", registry.registry_amount);
-      formData.append("registry_date", registry.registry_date);
-      formData.append("registry_notes", registry.registry_notes);
-
-      if (registryDoc) formData.append("registry_document_url", registryDoc);
-
-      const soldRes = await axios.post(
-        `https://crm-generalize.dentalguru.software/api/createRegistry`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
+      const res = await axios.post(
+        `https://crm-generalize.dentalguru.software/api/addUtilityCharges`,
+        utility,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      cogoToast.success("Registry saved successfully");
+      cogoToast.success("Utility record saved successfully");
       onClose();
     } catch (err) {
       console.error(err);
@@ -113,56 +96,62 @@ const RegistryCreatePopup = ({ isOpen, onClose, leads, booking }) => {
             transition={{ duration: 0.3 }}
           >
             <h2 className="text-2xl font-bold mb-4 text-center text-cyan-700">
-              Registry Creation
+              Unit Booking Creation
             </h2>
 
             <form onSubmit={saveUnitSold} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="text-sm">Registry Amount</label>
+                  <label className="text-sm">Utility Type</label>
+                  <select
+                    value={utility?.utility_type}
+                    name="utility_type"
+                    className="w-full px-3 py-2 border rounded"
+                    onChange={handleChange}
+                  >
+                    <option value="">--select--</option>
+                    <option value="Electricity">Electricity</option>
+                    <option value="Water">Water</option>
+                    <option value="Maintenance">Maintenance</option>
+                    <option value="NOC">NOC</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-sm">Utility Amount</label>
                   <input
                     type="text"
-                    name="registry_amount"
-                    placeholder="Enter register amount"
-                    value={registry?.registry_amount}
+                    name="utility_amount"
+                    value={utility?.utility_amount}
+                    placeholder="Enter Utility Amount"
                     onChange={handleChange}
                     className="w-full px-3 py-2 border rounded"
                   />
                 </div>
 
                 <div>
-                  <label className="text-sm">Registry Date</label>
+                  <label className="text-sm">Utility Date</label>
                   <input
                     type="date"
-                    name="registry_date"
-                    value={registry.registry_date}
+                    name="utility_date"
+                    value={utility.utility_date}
                     onChange={handleChange}
                     max={today}
                     className="w-full px-3 py-2 border rounded"
                   />
                 </div>
-                <div className="sm:col-span-2">
+                <div className="sm:col-span-3">
                   <label className="block text-sm font-medium mb-1">
-                    Registry Notes
+                    Utility Description
                   </label>
                   <textarea
-                    name="registry_notes"
-                    value={registry.registry_notes}
+                    name="description"
+                    value={utility.description}
                     onChange={handleChange}
-                    placeholder="Add any notes"
-                    className="w-full px-3 py-2 border rounded h-24 resize-none"
-                  />
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="block text-sm font-medium mb-1">
-                    Upload Registry Document
-                  </label>
-                  <input
-                    type="file"
-                    name="registry_document_url"
-                    accept="application/pdf"
-                    onChange={handleFileChange}
+                    placeholder="Add description..."
                     className="w-full px-3 py-2 border rounded"
+                    rows={4}
                   />
                 </div>
               </div>
@@ -184,7 +173,7 @@ const RegistryCreatePopup = ({ isOpen, onClose, leads, booking }) => {
                     loading ? "bg-gray-600" : "bg-cyan-600 hover:bg-cyan-700"
                   }`}
                 >
-                  {loading ? "Saving..." : "Save"}
+                  {loading ? "Saving..." : "Save All"}
                 </button>
               </div>
             </form>
@@ -195,4 +184,4 @@ const RegistryCreatePopup = ({ isOpen, onClose, leads, booking }) => {
   );
 };
 
-export default RegistryCreatePopup;
+export default UtilityCreatePopup;

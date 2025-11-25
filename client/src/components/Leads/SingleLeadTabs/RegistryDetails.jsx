@@ -5,6 +5,7 @@ import axios from "axios";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import UpdateRegistryModal from "../../EmployeePops/UpdateRegistryModal";
+import cogoToast from "cogo-toast";
 
 const RegistryDetails = () => {
   const { type, id } = useParams();
@@ -37,6 +38,22 @@ const RegistryDetails = () => {
   }, []);
 
   console.log(registry);
+
+  const deleteRegistryData = async (id) => {
+    try {
+      const confirm = window.confirm("Do you really want to delete ?");
+      if (confirm) {
+        const res = await axios.delete(
+          `https://crm-generalize.dentalguru.software/api/deleteRegistry/${id}`
+        );
+
+        cogoToast.success("registry deleted successfully");
+        fetchRegistryDetails();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -136,7 +153,10 @@ const RegistryDetails = () => {
                       >
                         <FaEdit />
                       </button>
-                      <button className="text-red-600 font-bold text-2xl">
+                      <button
+                        className="text-red-600 font-bold text-2xl"
+                        onClick={() => deleteRegistryData(lead?.registry_id)}
+                      >
                         <MdDelete />
                       </button>
                     </td>

@@ -1,3 +1,145 @@
+ opneUpdateBooking
+ 
+  formData.append("registry_esu_id", registry.registry_esu_id);
+      formData.append("registry_lead_id", registry.registry_lead_id);
+ 
+
+  console.log(leads);
+ 
+
+  const today = new Date().toISOString().split("T")[0];
+ 
+  registry_esu_id: booking[0]?.esu_id,
+    registry_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
+ 
+booking,
+ 
+
+                    <td className="px-6 py-4 border-b border-gray-200">
+                      {lead?.unit_status}
+                    </td>
+
+                    <td className="px-6 py-4 border-b border-gray-200">
+                      {lead?.unit_updated_at}
+                    </td>
+ 
+ <td className="px-6 py-4 border-b border-gray-200">
+                      {lead?.unit_type}
+                    </td>
+
+                    <td className="px-6 py-4 border-b border-gray-200">
+                      {lead?.unit_number}
+                    </td>
+ 
+ress ||
+                        getFieldValue(
+                          lead.question_fields_data,
+                          "street_address"
+                        )
+ 
+_status || lead.meta_lead_statu
+ 
+dSource || "META"
+ 
+one ||
+                        getFieldValue(
+                          lead.question_fields_data,
+                          "phone_number"
+                        )
+ 
+||
+                        getFieldValue(lead.question_fields_data, "full_name")
+ 
+staff_name
+ 
+Assigned Date
+ 
+
+            
+              <th className="px-6 py-3 border-b-2 border-gray-300">
+                Close Date
+              </th>
+ 
+  <th className="px-6 py-3 border-b-2 border-gray-300">
+                Unit Number
+              </th>
+              <th className="px-6 py-3 border-b-2 border-gray-300">
+                Unit Status
+              </th>
+ 
+  <th className="px-6 py-3 border-b-2 border-gray-300">
+                Unit Type
+              </th>
+ 
+Project Id
+ 
+Project
+ 
+Phone
+ 
+getFieldValue
+ 
+from "../../../utils/getFieldValue";
+ 
+{ leads }
+ 
+  const saveUnitSold = async (e) => {
+    e.preventDefault();
+
+    if (window.__UNIT_SOLD_SUBMITTING__) return;
+    window.__UNIT_SOLD_SUBMITTING__ = true;
+
+    setLoading(true);
+
+    try {
+      const soldRes = await axios.post(
+        `https://crm-generalize.dentalguru.software/api/createRegistry`,
+        registry,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      cogoToast.success("Registry saved successfully");
+      onClose();
+    } catch (err) {
+      console.error(err);
+      cogoToast.error("Failed to save data");
+    } finally {
+      setLoading(false);
+      setTimeout(() => (window.__UNIT_SOLD_SUBMITTING__ = false), 800);
+    }
+  };
+ 
+ {/* {employeeunitsoldCreated ? (
+                    <>
+                      <button
+                        className="bg-gray-600 text-white px-4 py-2 rounded w-full sm:w-auto"
+                        disabled
+                      >
+                        Final Unit Sold Added
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className="bg-cyan-600 text-white px-4 py-2 rounded w-full sm:w-auto"
+                        onClick={() => setShowPopupUnitSold(true)}
+                      >
+                        Create Final Unit Sold
+                      </button>
+                    </>
+                  )} */}
+ 
+g-gray-100
+ 
+etShowPopupRemark
+ 
+owPopu
+ 
+
+import moment from "moment";
+ 
+import ViewAllUnitSold from "../../pages/Employees/ViewAllUnitSold";
+ 
   < />
  
 

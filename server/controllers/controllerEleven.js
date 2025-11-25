@@ -189,7 +189,7 @@ const createRegistry = (req, res) => {
         registry_created_at,
         registry_updated_at
       ) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
@@ -214,10 +214,30 @@ const createRegistry = (req, res) => {
         return res.status(500).json({ message: "Database error", error: err });
       }
 
-      res.status(200).json({
-        message: "Registry record created successfully",
-        registry_id: result.insertId,
-      });
+      const updateESUQuery = `
+        UPDATE employee_sold_units
+        SET esu_status = 'registry_done',
+            esu_updated_at = ?
+        WHERE esu_id = ?
+      `;
+
+      db.query(
+        updateESUQuery,
+        [currentTime, registry_esu_id],
+        (updateErr, updateResult) => {
+          if (updateErr) {
+            return res.status(500).json({
+              message: "Registry added but failed to update ESU status",
+              error: updateErr,
+            });
+          }
+
+          res.status(200).json({
+            message: "Registry record created successfully & ESU updated",
+            registry_id: result.insertId,
+          });
+        }
+      );
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -353,6 +373,331 @@ const deleteRegistry = (req, res) => {
   }
 };
 
+const addUtilityCharges = (req, res) => {
+  try {
+    const {
+      utility_esu_id,
+      utility_lead_id,
+      utility_type,
+      utility_amount,
+      utility_date,
+      description,
+    } = req.body;
+
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+    const insertQuery = `
+      INSERT INTO booking_details
+      ( utility_esu_id,
+      utility_lead_id,
+      utility_type,
+      utility_amount,
+      utility_date,
+      description, utility_created_at, utility_updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    db.query(
+      insertQuery,
+      [
+        utility_esu_id,
+        utility_lead_id,
+        utility_type,
+        utility_amount,
+        utility_date,
+        description,
+        dateTime,
+        dateTime,
+      ],
+      (err, result) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ message: "Database Insert Error" });
+        }
+
+        const utilityId = result.insertId;
+
+        return res.status(201).json({
+          message: "Booking created successfully",
+          data: {
+            utilityId,
+            utility_esu_id,
+            utility_lead_id,
+            utility_type,
+            utility_amount,
+            utility_date,
+            description,
+          },
+        });
+      }
+    );
+  } catch (error) {
+    console.error("Unexpected Error:", error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const getUtilityBYleadId = async (req, res) => {
+  try {
+    const { leadId } = req.params.leadId;
+    const selectQuery = `select * from utility_charges left join employee_sold_units on employee_sold_units.esu_id = utility_charges.utility_esu_id left join owner on owner.owner_id = employee_sold_units.esu_owner_id left join projects on projects.project_id = employee_sold_units.esu_project_id left join units on units.unit_id = employee_sold_units.esu_unit_id where utility_charges.utility_lead_id = ?`;
+    db.query(selectQuery, leadId, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+      return res.status(200).send(result);
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const updateUtilityCharges = (req, res) => {
+  try {
+    const { utility_id } = req.params;
+
+    if (!utility_id) {
+      return res.status(400).json({
+        message: "utility_id is required",
+      });
+    }
+
+    const {
+      utility_esu_id,
+      utility_lead_id,
+      utility_type,
+      utility_amount,
+      utility_date,
+      description,
+    } = req.body;
+
+    let updateFields = [];
+    let updateValues = [];
+
+    if (utility_esu_id !== undefined) {
+      updateFields.push("utility_esu_id = ?");
+      updateValues.push(utility_esu_id);
+    }
+
+    if (utility_lead_id !== undefined) {
+      updateFields.push("utility_lead_id = ?");
+      updateValues.push(utility_lead_id);
+    }
+
+    if (utility_type !== undefined) {
+      updateFields.push("utility_type = ?");
+      updateValues.push(utility_type);
+    }
+
+    if (utility_amount !== undefined) {
+      updateFields.push("utility_amount = ?");
+      updateValues.push(utility_amount);
+    }
+
+    if (utility_date !== undefined) {
+      updateFields.push("utility_date = ?");
+      updateValues.push(utility_date);
+    }
+
+    if (description !== undefined) {
+      updateFields.push("description = ?");
+      updateValues.push(description);
+    }
+
+    if (updateFields.length === 0) {
+      return res.status(400).json({
+        message: "No fields provided to update",
+      });
+    }
+
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+    updateFields.push("utility_updated_at = ?");
+    updateValues.push(dateTime);
+
+    updateValues.push(utility_id);
+
+    const updateQuery = `
+      UPDATE utility_charges
+      SET ${updateFields.join(", ")}
+      WHERE utility_id = ?
+    `;
+
+    db.query(updateQuery, updateValues, (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Database Update Error" });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({
+          message: "Utility record not found",
+        });
+      }
+
+      return res.status(200).json({
+        message: "Utility charges updated successfully",
+        updatedFields: req.body,
+      });
+    });
+  } catch (error) {
+    console.error("Unexpected Error:", error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const deleteUtilityCharges = (req, res) => {
+  try {
+    const { utility_id } = req.params;
+
+    if (!utility_id) {
+      return res.status(400).json({
+        message: "utility_id is required",
+      });
+    }
+
+    const checkQuery = `SELECT * from utility_charges WHERE utility_id = ?`;
+
+    db.query(checkQuery, [utility_id], (err, result) => {
+      if (err) {
+        console.error("Check Error:", err);
+        return res.status(500).json({ message: "Database Error" });
+      }
+
+      if (result.length === 0) {
+        return res.status(404).json({
+          message: "Utility record not found",
+        });
+      }
+
+      const deleteQuery = `DELETE FROM utility_charges WHERE utility_id = ?`;
+
+      db.query(deleteQuery, [utility_id], (err, deleteResult) => {
+        if (err) {
+          console.error("Delete Error:", err);
+          return res.status(500).json({ message: "Database Delete Error" });
+        }
+
+        return res.status(200).json({
+          message: "Utility charges deleted successfully",
+          deletedId: utility_id,
+        });
+      });
+    });
+  } catch (error) {
+    console.error("Unexpected Error:", error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const updateSoldDetails = (req, res) => {
+  try {
+    const { esu_id, leadId, type } = req.params;
+    const { esu_sale_price, esu_final_sold_date, esu_payment_method } =
+      req.body;
+
+    if (!esu_id || !leadId || !type) {
+      return res.status(400).json({
+        success: false,
+        message: "esu_id, leadId and type are required",
+      });
+    }
+
+    const esu_status = "sold";
+    const dateTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+    const esu_updated_at = dateTime;
+
+    const updateESUQuery = `
+      UPDATE employee_sold_units 
+      SET 
+        esu_sale_price = ?, 
+        esu_status = ?, 
+        esu_final_sold_date = ?, 
+        esu_payment_method = ?, 
+        esu_updated_at = ?
+      WHERE esu_id = ?
+    `;
+
+    const esuData = [
+      esu_sale_price,
+      esu_status,
+      esu_final_sold_date,
+      esu_payment_method,
+      esu_updated_at,
+      esu_id,
+    ];
+
+    db.query(updateESUQuery, esuData, (err, result) => {
+      if (err) {
+        console.error("ESU Update error:", err);
+        return res.status(500).json({
+          success: false,
+          message: "Database update error while updating ESU",
+        });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "ESU record not found",
+        });
+      }
+
+      let leadQuery = "";
+      let successMsg = "";
+
+      if (type === "general") {
+        leadQuery = `
+            UPDATE leads 
+            SET lead_status = 'Sold'
+            WHERE lead_id = ?
+        `;
+        successMsg = "General lead updated to Sold";
+      } else if (type === "meta") {
+        leadQuery = `
+            UPDATE meta_leads 
+            SET meta_lead_status = 'Sold'
+            WHERE meta_id = ?
+        `;
+        successMsg = "Meta lead updated to Sold";
+      } else {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid type. Use 'general' or 'meta'",
+        });
+      }
+
+      db.query(leadQuery, [leadId], (leadErr, leadResult) => {
+        if (leadErr) {
+          console.error("Lead Update Error:", leadErr);
+          return res.status(500).json({
+            success: false,
+            message: "Error updating lead status",
+          });
+        }
+
+        if (leadResult.affectedRows === 0) {
+          return res.status(404).json({
+            success: false,
+            message: "Lead record not found for provided leadId",
+          });
+        }
+
+        return res.status(200).json({
+          success: true,
+          message: "Sold unit and lead status updated successfully",
+          leadUpdate: successMsg,
+        });
+      });
+    });
+  } catch (error) {
+    console.error("Server error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 module.exports = {
   createBooking,
   getBookingBYleadId,
@@ -361,4 +706,9 @@ module.exports = {
   getRegistryBYleadId,
   updateRegistry,
   deleteRegistry,
+  addUtilityCharges,
+  getUtilityBYleadId,
+  updateUtilityCharges,
+  deleteUtilityCharges,
+  updateSoldDetails,
 };

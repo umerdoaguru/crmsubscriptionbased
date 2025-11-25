@@ -22,6 +22,8 @@ import RemarkTab from "./SingleLeadTabs/RemarkTab";
 import SoldUnitView from "./SingleLeadTabs/SoldUnitView";
 import BookingCreationPopup from "../EmployeePops/BookingCreationPopup";
 import RegistryCreatePopup from "../EmployeePops/RegistryCreatePopup";
+import UtilityCreatePopup from "../EmployeePops/UtilityCreatePopup";
+import FInalSalePopup from "../EmployeePops/FInalSalePopup";
 
 function EmployeeSingleLeadProfileContent({ isSidebarOpen }) {
   const { type, id } = useParams();
@@ -39,6 +41,8 @@ function EmployeeSingleLeadProfileContent({ isSidebarOpen }) {
   const [showPopupRemark, setShowPopupRemark] = useState(false);
   const [showBookPopup, setShowBookPopup] = useState(false);
   const [showRegistryPopup, setShowRegistryPopup] = useState(false);
+  const [showUtilityPopup, setShowUtilityPopup] = useState(false);
+  const [showFinalSoldPopup, setShowFinalSoldPopup] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [render, setRender] = useState(false);
   const [isOtherReason, setIsOtherReason] = useState(false);
@@ -521,13 +525,13 @@ function EmployeeSingleLeadProfileContent({ isSidebarOpen }) {
                       </button>
                       <button
                         className="bg-cyan-700 text-white px-4 py-2 rounded w-full sm:w-auto"
-                        onClick={() => setShowPopupRemark(true)}
+                        onClick={() => setShowUtilityPopup(true)}
                       >
                         + Add Utility Charges
                       </button>
                       <button
                         className="bg-green-700 text-white px-4 py-2 rounded w-full sm:w-auto"
-                        onClick={() => setShowPopupRemark(true)}
+                        onClick={() => setShowFinalSoldPopup(true)}
                       >
                         + Final Sale
                       </button>
@@ -620,6 +624,12 @@ function EmployeeSingleLeadProfileContent({ isSidebarOpen }) {
         fetchMetaLeads={fetchMetaLeads}
         unitdata={unitdata}
       />
+      <FInalSalePopup
+        isOpen={showFinalSoldPopup}
+        onClose={() => setShowFinalSoldPopup(false)}
+        leads={leads}
+        booking={booking}
+      />
       <BookingCreationPopup
         isOpen={showBookPopup}
         onClose={() => setShowBookPopup(false)}
@@ -643,6 +653,12 @@ function EmployeeSingleLeadProfileContent({ isSidebarOpen }) {
       <RegistryCreatePopup
         isOpen={showRegistryPopup}
         onClose={() => setShowRegistryPopup(false)}
+        leads={leads}
+        booking={booking}
+      />
+      <UtilityCreatePopup
+        isOpen={showUtilityPopup}
+        onClose={() => setShowUtilityPopup(false)}
         leads={leads}
         booking={booking}
       />

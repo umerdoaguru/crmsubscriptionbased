@@ -2,6 +2,8 @@ import React from "react";
 import getFieldValue from "../../../utils/getFieldValue";
 
 const LeadOverview = ({ leads }) => {
+  console.log(leads);
+
   return (
     <>
       <div className="overflow-x-auto">
@@ -16,9 +18,9 @@ const LeadOverview = ({ leads }) => {
               <th className="px-6 py-3 border-b-2 border-gray-300">
                 Lead Source
               </th>
-              <th className="px-6 py-3 border-b-2 border-gray-300">
+              {/* <th className="px-6 py-3 border-b-2 border-gray-300">
                 Lead Status
-              </th>
+              </th> */}
               <th className="px-6 py-3 border-b-2 border-gray-300">Address</th>
 
               <th className="px-6 py-3 border-b-2 border-gray-300">Project</th>
@@ -67,9 +69,9 @@ const LeadOverview = ({ leads }) => {
                   {lead.leadSource || "META"}
                 </td>
 
-                <td className="px-6 py-4 border-b border-gray-200">
+                {/* <td className="px-6 py-4 border-b border-gray-200">
                   {lead.lead_status || lead.meta_lead_status}
-                </td>
+                </td> */}
 
                 <td className="px-6 py-4 border-b border-gray-200">
                   {lead.address ||
