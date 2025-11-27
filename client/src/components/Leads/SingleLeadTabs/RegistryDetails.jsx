@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import getFieldValue from "../../../utils/getFieldValue";
 import axios from "axios";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import UpdateRegistryModal from "../../EmployeePops/UpdateRegistryModal";
 import cogoToast from "cogo-toast";
+import PaymentCreatePopup from "../../EmployeePops/PaymentCreatePopup";
 
 const RegistryDetails = () => {
   const { type, id } = useParams();
@@ -13,6 +13,13 @@ const RegistryDetails = () => {
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState();
   const [updateModal, setUpdateModal] = useState(false);
+  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState();
+
+  const openPaymentModal = (data) => {
+    setSelectedPayment(data);
+    setIsPaymentPopupOpen(true);
+  };
 
   const openUpdateModal = (data) => {
     setSelected(data);
@@ -144,6 +151,7 @@ const RegistryDetails = () => {
 
                     <td className="px-6 py-4 border-b border-gray-200">
                       {lead?.registry_notes}
+                      {lead?.registry_pay_status}
                     </td>
 
                     <td className="px-6 py-4 border-b border-gray-200">
@@ -159,6 +167,28 @@ const RegistryDetails = () => {
                       >
                         <MdDelete />
                       </button>
+
+                      {lead?.registry_pay_status !== "paid" && (
+                        <>
+                          <button
+                            className="bg-green-600 text-white p-2 px-2 rounded hover:bg-green-700"
+                            onClick={() => openPaymentModal(lead)}
+                          >
+                            Make Payment
+                          </button>
+                        </>
+                      )}
+
+                      {lead?.registry_pay_status === "paid" && (
+                        <>
+                          <button
+                            className="bg-gray-600 text-white p-2 px-2 rounded hover:bg-gray-800"
+                            // onClick={() => openReceiptPage(lead)}
+                          >
+                            Generate Receipt
+                          </button>
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -172,6 +202,13 @@ const RegistryDetails = () => {
         onClose={() => setUpdateModal(false)}
         selected={selected}
         fetchRegistryDetails={fetchRegistryDetails}
+      />
+      <PaymentCreatePopup
+        isOpen={isPaymentPopupOpen}
+        onClose={() => setIsPaymentPopupOpen(false)}
+        selectedPayment={selectedPayment}
+        paymentType={"registry"}
+        callBackFunc={fetchRegistryDetails}
       />
     </>
   );

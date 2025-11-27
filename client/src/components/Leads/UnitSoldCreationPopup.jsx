@@ -23,7 +23,6 @@ const UnitSoldCreationPopup = ({
 
   const today = new Date().toISOString().split("T")[0];
 
-  // UPDATED STATE → matches new DB structure
   const [unitsold, setUnitSold] = useState({
     esu_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
     esu_staff_id: leads[0]?.staff_id || leads[0]?.meta_assignedTo,

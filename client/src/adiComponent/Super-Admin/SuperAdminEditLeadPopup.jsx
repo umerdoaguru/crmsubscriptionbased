@@ -255,6 +255,7 @@ const SuperAdminEditLeadPopup = ({
                   type="text"
                   name="name"
                   placeholder="Write name"
+                  required
                   value={currentLead.name}
                   onChange={handleInputChange}
                   className={`mt-1 w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-400 ${
@@ -324,6 +325,7 @@ const SuperAdminEditLeadPopup = ({
                 <input
                   type="text"
                   name="lead_email"
+                  required
                   value={currentLead.lead_email}
                   placeholder="Enter email"
                   onChange={handleInputChange}

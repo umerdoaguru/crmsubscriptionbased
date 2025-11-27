@@ -4,10 +4,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import cogoToast from "cogo-toast";
 import moment from "moment";
-// import OwnerPaymentSavePopup from "../../pages/Employees/EmpPopupWindow/OwnerPaymentSavePopup";
-// import OwnerLoanAddPopup from "../../pages/Employees/EmpPopupWindow/OwnerLoanAddPopup";
-// import EMIPayPopup from "../../pages/Employees/EmpPopupWindow/EMIPayPopup";
-// import UnitSoldUpdatePopup from "../../pages/Employees/EmpPopupWindow/UnitSoldUpdatePopup";
+import OwnerPaymentSavePopup from "../../../pages/Employees/EmpPopupWindow/OwnerPaymentSavePopup";
 
 const SoldUnitView = () => {
   const [unitSoldData, setUnitSoldData] = useState([]);
@@ -25,10 +22,16 @@ const SoldUnitView = () => {
   const [loanInstallment, setLoanInstallment] = useState([]);
   const [updateModal, setUpdateModal] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState(null);
+  const [selectedOwnPay, setSelectedOwnPay] = useState();
 
   const openUnitModal = (data) => {
     setUpdateModal(true);
     setSelectedUnit(data);
+  };
+
+  const openOwnPaymentModal = (data) => {
+    setOwnPaymentModal(true);
+    setSelectedOwnPay(data);
   };
 
   const openEMIModal = (data) => {
@@ -104,7 +107,13 @@ const SoldUnitView = () => {
   const fetchOwnerPayments = async () => {
     try {
       const { data } = await axios.get(
-        `https://crm-generalize.dentalguru.software/api/getOwnerPaymentsByMultiIds/${unitSoldData[0]?.esu_id}/${unitSoldData[0]?.esu_owner_id}/${EmpId?.staff_org_id}`
+        `https://crm-generalize.dentalguru.software/api/getOwnerPaymentsByMultiIds/${unitSoldData[0]?.esu_id}/${unitSoldData[0]?.esu_owner_id}/${EmpId?.staff_org_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setOwnPayment(data);
     } catch (error) {
@@ -112,12 +121,16 @@ const SoldUnitView = () => {
     }
   };
 
+  console.log(ownPayment);
+
   useEffect(() => {
     if (unitSoldData && unitSoldData.length > 0) {
       fetchOwnerPayments();
       fetchLoanInstallments();
     }
   }, [unitSoldData]);
+
+  console.log(unitSoldData);
 
   const fetchUnitSoldData = async () => {
     try {
@@ -134,7 +147,17 @@ const SoldUnitView = () => {
         },
       });
 
-      setUnitSoldData(Array.isArray(data) ? data : [data]);
+      const result = data;
+
+      let utilities = [];
+
+      try {
+        utilities = JSON.parse(result.utilities);
+      } catch {
+        utilities = [];
+      }
+
+      setUnitSoldData([{ ...result, utilities }]);
     } catch (error) {
       cogoToast.error("Failed to fetch unit sold details");
     } finally {
@@ -199,37 +222,34 @@ const SoldUnitView = () => {
                 key={i}
                 className="bg-white shadow-md rounded-xl p-6 mb-10 border border-gray-200"
               >
-                {/* Action Buttons */}
+                {/* ========= ACTION BUTTONS ========= */}
                 <div className="flex flex-wrap gap-3 justify-end mb-6">
-                  {unitSoldData[0]?.esu_payment_method === "EMI" &&
+                  {data.esu_payment_method === "EMI" &&
                     loanInstallment.length === 0 && (
-                      <>
-                        <button
-                          onClick={() => setOwnerLoanModal(true)}
-                          className="bg-indigo-500 text-white px-4 py-1 rounded-md hover:bg-indigo-600"
-                        >
-                          + Add Loan
-                        </button>
-                      </>
+                      <button
+                        onClick={() => setOwnerLoanModal(true)}
+                        className="bg-indigo-500 text-white px-4 py-1 rounded-md hover:bg-indigo-600"
+                      >
+                        + Add Loan
+                      </button>
                     )}
 
-                  {unitSoldData[0]?.remaining_amount > 0 &&
-                    unitSoldData[0]?.esu_payment_method !== "EMI" && (
-                      <>
-                        <button
-                          onClick={() => setOwnPaymentModal(true)}
-                          className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600"
-                        >
-                          + Add Payment
-                        </button>
-                      </>
+                  {data.esu_payment_method !== "EMI" &&
+                    ownPayment?.length === 0 && (
+                      <button
+                        onClick={() => setOwnPaymentModal(true)}
+                        className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600"
+                      >
+                        + Add Payment
+                      </button>
                     )}
                 </div>
 
-                {/* Project & Unit Details */}
+                {/* ========= PROJECT & UNIT DETAILS ========= */}
                 <h3 className="text-xl font-semibold mb-3 text-cyan-700">
                   Project & Unit Details
                 </h3>
+
                 <div className="grid sm:grid-cols-2 gap-2 text-gray-700 mb-6">
                   <p>
                     <strong>Project Name:</strong> {data.project_name}
@@ -252,27 +272,41 @@ const SoldUnitView = () => {
                   <p>
                     <strong>Status:</strong> {data.unit_status}
                   </p>
-                  <p>
+                  {/* <p>
                     <strong>Remaining Amount:</strong> ₹{data.remaining_amount}
-                  </p>
+                  </p> */}
                 </div>
 
-                {/* Sale & Payment Details */}
+                {/* ========= SALE & BOOKING DETAILS ========= */}
                 <h3 className="text-xl font-semibold mb-3 text-cyan-700">
-                  Sale & Token Payment Details
+                  Sale, Booking & Registry Details
                 </h3>
-                <div className="grid sm:grid-cols-2 gap-2 text-gray-700 mb-6">
+
+                <div className="grid sm:grid-cols-2 gap-4 text-gray-700 mb-6">
                   <p>
                     <strong>Sold Date:</strong>{" "}
-                    {moment(data.esu_sold_date).format("DD MMM YYYY")}
+                    {data.esu_final_sold_date
+                      ? moment(data.esu_final_sold_date).format("DD MMM YYYY")
+                      : "—"}
+                  </p>
+
+                  <p>
+                    <strong>Booking Amount:</strong> ₹
+                    {data.booking_amount || "—"}
                   </p>
                   <p>
                     <strong>Booking Date:</strong>{" "}
-                    {moment(data.esu_booking_date).format("DD MMM YYYY")}
+                    {data.booking_date
+                      ? moment(data.booking_date).format("DD MMM YYYY")
+                      : "—"}
                   </p>
                   <p>
-                    <strong>Final Date:</strong>{" "}
-                    {moment(data.esu_final_date).format("DD MMM YYYY")}
+                    <strong>Booking Notes:</strong> {data.booking_notes || "—"}
+                  </p>
+
+                  <p>
+                    <strong>Registry Amount:</strong> ₹
+                    {data.registry_amount || "—"}
                   </p>
                   <p>
                     <strong>Registry Date:</strong>{" "}
@@ -281,20 +315,20 @@ const SoldUnitView = () => {
                       : "—"}
                   </p>
                   <p>
+                    <strong>Registry Notes:</strong>{" "}
+                    {data.registry_notes || "—"}
+                  </p>
+
+                  <p>
                     <strong>Payment Mode:</strong> {data.esu_payment_method}
-                  </p>
-                  <p>
-                    <strong>Token Amount:</strong> ₹{data.esu_token_amount}
-                  </p>
-                  <p>
-                    <strong>Token Status:</strong> {data.esu_token_paid_status}
                   </p>
                 </div>
 
-                {/* Owner Details */}
+                {/* ========= OWNER DETAILS ========= */}
                 <h3 className="text-xl font-semibold mb-3 text-cyan-700">
                   Owner Details
                 </h3>
+
                 <div className="grid sm:grid-cols-2 gap-2 text-gray-700 mb-6">
                   <p>
                     <strong>Name:</strong> {data.owner_name}
@@ -310,10 +344,11 @@ const SoldUnitView = () => {
                   </p>
                 </div>
 
-                {/* Staff Details */}
+                {/* ========= STAFF DETAILS ========= */}
                 <h3 className="text-xl font-semibold mb-3 text-cyan-700">
                   Staff Details
                 </h3>
+
                 <div className="grid sm:grid-cols-2 gap-2 text-gray-700 mb-6">
                   <p>
                     <strong>Name:</strong> {data.staff_name}
@@ -325,15 +360,56 @@ const SoldUnitView = () => {
                     <strong>Email:</strong> {data.staff_email}
                   </p>
                   <p>
-                    <strong>Role:</strong>{" "}
-                    {data.staff_role
-                      ? data.staff_role.charAt(0).toUpperCase() +
-                        data.staff_role.slice(1)
-                      : ""}
+                    <strong>Role:</strong> {data.staff_role}
                   </p>
                 </div>
 
-                {/* Notes Section */}
+                {/* ========= UTILITY CHARGES ========= */}
+                {data?.utilities && data?.utilities?.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-xl font-semibold mb-3 text-cyan-700">
+                      Utility Charges
+                    </h3>
+
+                    <div className="space-y-4">
+                      {data?.utilities?.map((u, idx) => (
+                        <div
+                          key={idx}
+                          className="border p-4 rounded-lg bg-gray-50 text-gray-700"
+                        >
+                          <p>
+                            <strong>Type:</strong> {u.utility_type}
+                          </p>
+                          <p>
+                            <strong>Amount:</strong> ₹{u.utility_amount}
+                          </p>
+                          <p>
+                            <strong>Date:</strong>{" "}
+                            {moment(u.utility_date).format("DD MMM YYYY")}
+                          </p>
+                          <p>
+                            <strong>Description:</strong> {u.description || "—"}
+                          </p>
+
+                          {u.utility_receipt_url && (
+                            <p>
+                              <strong>Receipt:</strong>{" "}
+                              <a
+                                href={u.utility_receipt_url}
+                                target="_blank"
+                                className="text-blue-600 underline"
+                              >
+                                View Receipt
+                              </a>
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* ========= NOTES ========= */}
                 {data.esu_notes && (
                   <div className="mb-6">
                     <h3 className="text-xl font-semibold mb-2 text-cyan-700">
@@ -345,24 +421,21 @@ const SoldUnitView = () => {
                   </div>
                 )}
 
-                {/* Buttons */}
+                {/* ========= ACTION BUTTONS (BOTTOM) ========= */}
                 <div className="mt-6 flex justify-end gap-3">
-                  {ownPayment?.length === 0 && loanInstallment.length === 0 && (
-                    <>
-                      <button
-                        onClick={() => openUnitModal(data)}
-                        className="bg-cyan-600 text-white sm:px-5 px-2 sm:py-2 py-1 rounded-lg hover:bg-cyan-700"
-                      >
-                        Update Details
-                      </button>
-                      <button
-                        onClick={() => handleDelete(data.esu_id)}
-                        className="bg-red-500 text-white sm:px-5 px-2 sm:py-2 py-1 rounded-lg hover:bg-red-600"
-                      >
-                        Delete Record
-                      </button>
-                    </>
-                  )}
+                  <button
+                    onClick={() => openUnitModal(data)}
+                    className="bg-cyan-600 text-white sm:px-5 px-2 sm:py-2 py-1 rounded-lg hover:bg-cyan-700"
+                  >
+                    Update Details
+                  </button>
+
+                  <button
+                    onClick={() => handleDelete(data.esu_id)}
+                    className="bg-red-500 text-white sm:px-5 px-2 sm:py-2 py-1 rounded-lg hover:bg-red-600"
+                  >
+                    Delete Record
+                  </button>
                 </div>
               </div>
             ))
@@ -404,6 +477,9 @@ const SoldUnitView = () => {
                         <th className="px-4 py-3 text-left font-semibold">
                           Remark
                         </th>
+                        <th className="px-4 py-3 text-left font-semibold">
+                          Action
+                        </th>
                       </tr>
                     </thead>
 
@@ -434,6 +510,16 @@ const SoldUnitView = () => {
                           </td>
                           <td className="px-4 py-2 text-gray-600">
                             {item?.op_remark || "-"}
+                          </td>
+                          <td className="px-4 py-2 text-gray-600">
+                            {index === ownPayment.length - 1 && (
+                              <button
+                                onClick={() => openOwnPaymentModal(item)}
+                                className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600"
+                              >
+                                Make Next Payment
+                              </button>
+                            )}
                           </td>
                         </tr>
                       ))}
@@ -557,26 +643,27 @@ const SoldUnitView = () => {
         )}
       </div>
 
-      {/* <OwnerPaymentSavePopup
+      <OwnerPaymentSavePopup
         isOpen={ownPaymentModal}
         onClose={() => setOwnPaymentModal(false)}
         unitSoldData={unitSoldData}
         fetchUnitSoldData={fetchUnitSoldData}
         fetchOwnerPayments={fetchOwnerPayments}
+        selectedOwnPay={selectedOwnPay}
       />
-      <OwnerLoanAddPopup
+      {/* <OwnerLoanAddPopup
         isOpen={ownerLoanModal}
         onClose={() => setOwnerLoanModal(false)}
         unitSoldData={unitSoldData}
         fetchUnitSoldData={fetchUnitSoldData}
-      />
-      <EMIPayPopup
+      /> */}
+      {/* <EMIPayPopup
         isOpen={emiPayModal}
         onClose={() => setEmiPayModal(false)}
         selectedEMI={selectedEMI}
         fetchLoanInstallments={fetchLoanInstallments}
-      />
-      <UnitSoldUpdatePopup
+      /> */}
+      {/* <UnitSoldUpdatePopup
         isOpen={updateModal}
         onClose={() => setUpdateModal(false)}
         selectedUnit={selectedUnit}

@@ -698,6 +698,132 @@ const updateSoldDetails = (req, res) => {
   }
 };
 
+const addPaymentRecord = (req, res) => {
+  try {
+    const {
+      pt_org_id,
+      txn_id,
+      pt_esu_id,
+      pt_amount,
+      pt_type,
+      pt_method,
+      receipt_url,
+      pt_notes,
+    } = req.body;
+
+    const dateTime = moment().tz("Asia/Kolkata").format("DD-MM-YYYY HH:mm:ss");
+
+    if (!txn_id || !pt_amount || !pt_type || !pt_method || !pt_org_id) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "txn_id, pt_amount, pt_type, pt_org_id, pt_method are required",
+      });
+    }
+
+    const query = `
+      INSERT INTO payment_transactions 
+      (pt_org_id, txn_id, pt_esu_id, pt_amount, pt_type, pt_method, txn_date, receipt_url, pt_notes, pt_created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const values = [
+      pt_org_id,
+      txn_id,
+      pt_esu_id || null,
+      pt_amount,
+      pt_type,
+      pt_method,
+      txn_date || null,
+      receipt_url || null,
+      pt_notes || null,
+      dateTime,
+    ];
+
+    db.query(query, values, (err, result) => {
+      if (err) {
+        console.error("Insert Error:", err);
+        return res.status(500).json({
+          success: false,
+          message: "Database error",
+          error: err,
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Payment saved successfully",
+        paymentId: result.insertId,
+      });
+    });
+  } catch (error) {
+    console.error("Catch Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+const updatePaymentStatus = (req, res) => {
+  const { bookingId } = req.params;
+  const updatedAt = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+  const sqlQuery = `
+    UPDATE booking_details 
+    SET booking_pay_status = 'paid',
+        booking_updated_at = ?
+    WHERE booking_id = ?
+  `;
+
+  db.query(sqlQuery, [updatedAt, bookingId], (err, result) => {
+    if (err) {
+      console.error("Error updating booking:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    return res.status(200).json({
+      message: "Booking payment status updated to paid",
+      booking_id: bookingId,
+      updated_at: updatedAt,
+    });
+  });
+};
+
+const updateRegistryPaymentStatus = (req, res) => {
+  const { registryId } = req.params;
+
+  const updatedAt = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+  const sqlQuery = `
+    UPDATE registry_details
+    SET registry_pay_status = 'paid',
+        registry_updated_at = ?
+    WHERE registry_id = ?
+  `;
+
+  db.query(sqlQuery, [updatedAt, registryId], (err, result) => {
+    if (err) {
+      console.error("Error updating registry:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Registry record not found" });
+    }
+
+    return res.status(200).json({
+      message: "Registry payment status updated to paid",
+      registry_id: registryId,
+      updated_at: updatedAt,
+    });
+  });
+};
+
 module.exports = {
   createBooking,
   getBookingBYleadId,
@@ -711,4 +837,7 @@ module.exports = {
   updateUtilityCharges,
   deleteUtilityCharges,
   updateSoldDetails,
+  addPaymentRecord,
+  updatePaymentStatus,
+  updateRegistryPaymentStatus,
 };

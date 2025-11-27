@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { MdDelete } from "react-icons/md";
-import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import UpdateBookingModal from "../../EmployeePops/UpdateBookingModal";
+import PaymentCreatePopup from "../../EmployeePops/PaymentCreatePopup";
 
 const BookingDetails = () => {
   const { type, id } = useParams();
   const [booking, setBooking] = useState([]);
   const [updateModal, setUpdateModal] = useState(false);
   const [selected, setSelected] = useState();
+  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState();
+
+  const openPaymentModal = (data) => {
+    setSelectedPayment(data);
+    setIsPaymentPopupOpen(true);
+  };
 
   const opneUpdateBooking = (data) => {
     setUpdateModal(true);
@@ -34,6 +40,12 @@ const BookingDetails = () => {
   }, []);
 
   console.log(booking);
+
+  const openReceiptPage = (bookingData) => {
+    const serializedData = encodeURIComponent(JSON.stringify(bookingData));
+    const receiptUrl = `/booking-receipt?data=${serializedData}`;
+    window.open(receiptUrl, "_blank");
+  };
 
   return (
     <>
@@ -133,16 +145,34 @@ const BookingDetails = () => {
                   {lead?.booking_created_at}
                 </td>
 
-                <td className="px-6 py-4 border-b border-gray-200">
+                <td className="px-6 py-4 border-b border-gray-200 flex gap-2">
                   <button
-                    className="text-orange-400 font-bold text-2xl"
+                    className="bg-orange-500 text-white p-2 px-2 rounded hover:bg-orange-600"
                     onClick={() => opneUpdateBooking(lead)}
                   >
-                    <FaEdit />
+                    Edit
                   </button>
-                  {/* <button className="text-red-600 font-bold text-2xl">
-                    <MdDelete />
-                  </button> */}
+                  {lead?.booking_pay_status !== "paid" && (
+                    <>
+                      <button
+                        className="bg-green-600 text-white p-2 px-2 rounded hover:bg-green-700"
+                        onClick={() => openPaymentModal(booking)}
+                      >
+                        Make Payment
+                      </button>
+                    </>
+                  )}
+
+                  {lead?.booking_pay_status === "paid" && (
+                    <>
+                      <button
+                        className="bg-gray-600 text-white p-2 px-2 rounded hover:bg-gray-800"
+                        onClick={() => openReceiptPage(lead)}
+                      >
+                        Generate Receipt
+                      </button>
+                    </>
+                  )}
                 </td>
               </tr>
             ))}
@@ -154,6 +184,13 @@ const BookingDetails = () => {
         onClose={() => setUpdateModal(false)}
         selected={selected}
         fetchBookingData={fetchBookingData}
+      />
+      <PaymentCreatePopup
+        isOpen={isPaymentPopupOpen}
+        onClose={() => setIsPaymentPopupOpen(false)}
+        selectedPayment={selectedPayment}
+        paymentType={"Booking"}
+        callBackFunc={fetchBookingData}
       />
     </>
   );

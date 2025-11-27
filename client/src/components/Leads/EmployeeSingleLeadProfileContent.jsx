@@ -24,6 +24,7 @@ import BookingCreationPopup from "../EmployeePops/BookingCreationPopup";
 import RegistryCreatePopup from "../EmployeePops/RegistryCreatePopup";
 import UtilityCreatePopup from "../EmployeePops/UtilityCreatePopup";
 import FInalSalePopup from "../EmployeePops/FInalSalePopup";
+import PaymentCreatePopup from "../EmployeePops/PaymentCreatePopup";
 
 function EmployeeSingleLeadProfileContent({ isSidebarOpen }) {
   const { type, id } = useParams();
@@ -46,6 +47,7 @@ function EmployeeSingleLeadProfileContent({ isSidebarOpen }) {
   const [isEditing, setIsEditing] = useState(false);
   const [render, setRender] = useState(false);
   const [isOtherReason, setIsOtherReason] = useState(false);
+
   const EmpId = useSelector((state) => state.auth.user);
   const [activeTab, setActiveTab] = useState("overview");
 
@@ -547,7 +549,7 @@ function EmployeeSingleLeadProfileContent({ isSidebarOpen }) {
                   { key: "booking", label: "Booking Details" },
                   { key: "registry", label: "Registry Details" },
                   { key: "utility", label: "Utility Charges" },
-                  { key: "receipts", label: "All Receipts" },
+                  // { key: "receipts", label: "All Receipts" },
                   { key: "transactions", label: "Transactions" },
                   { key: "visit", label: "Visit" },
                   { key: "followup", label: "Follow-Up" },

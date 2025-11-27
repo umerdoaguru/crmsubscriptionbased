@@ -9,6 +9,7 @@ const OwnerPaymentSavePopup = ({
   unitSoldData,
   fetchUnitSoldData,
   fetchOwnerPayments,
+  selectedOwnPay,
 }) => {
   const superadminuser = useSelector((state) => state.auth.user);
   const token = superadminuser.token;
@@ -26,6 +27,9 @@ const OwnerPaymentSavePopup = ({
     op_remaining_amount: "",
   });
 
+  console.log(unitSoldData);
+  console.log(selectedOwnPay);
+
   const modalRef = useRef();
 
   useEffect(() => {
@@ -33,9 +37,11 @@ const OwnerPaymentSavePopup = ({
       ...formData,
       op_sale_id: unitSoldData[0]?.esu_id,
       op_owner_id: unitSoldData[0]?.esu_owner_id,
-      op_remaining_amount: unitSoldData[0]?.remaining_amount,
+      op_remaining_amount:
+        (selectedOwnPay && selectedOwnPay?.op_remaining_amount) ||
+        unitSoldData[0]?.esu_sale_price,
     });
-  }, [unitSoldData]);
+  }, [unitSoldData, selectedOwnPay]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -55,18 +61,33 @@ const OwnerPaymentSavePopup = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    let updatedValue = value;
 
     if (name === "op_amount") {
-      const payableAmount = Number(unitSoldData[0]?.remaining_amount || 0);
+      const payableAmount = Number(
+        selectedOwnPay?.op_remaining_amount ||
+          unitSoldData[0]?.esu_sale_price ||
+          0
+      );
       const enteredAmount = Number(value);
 
       if (enteredAmount > payableAmount) {
         cogoToast.warn("Amount cannot be greater than payable amount");
         return;
       }
+
+      const remainingAmount = payableAmount - enteredAmount;
+
+      setFormData({
+        ...formData,
+        op_amount: enteredAmount,
+        op_remaining_amount: remainingAmount,
+      });
+
+      return;
     }
 
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [name]: updatedValue });
   };
 
   const handleSubmit = async (e) => {
@@ -126,7 +147,7 @@ const OwnerPaymentSavePopup = ({
         className="bg-white rounded-2xl w-[90%] max-w-2xl h-[90vh] overflow-y-auto p-6 shadow-xl relative animate-fadeIn"
       >
         <h2 className="text-xl font-semibold mb-4 text-gray-800 text-center">
-          Add Owner Payment
+          Add Final Sale Payment
         </h2>
 
         <form
@@ -149,7 +170,10 @@ const OwnerPaymentSavePopup = ({
               required
             />
             <small className="block text-green-600 mb-1">
-              Payable Amount: ₹{unitSoldData[0]?.remaining_amount || 0}
+              Payable Amount: ₹
+              {selectedOwnPay?.op_remaining_amount ||
+                unitSoldData[0]?.esu_sale_price ||
+                0}
             </small>
           </div>
 

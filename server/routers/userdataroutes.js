@@ -275,6 +275,9 @@ const {
   updateUtilityCharges,
   deleteUtilityCharges,
   updateSoldDetails,
+  addPaymentRecord,
+  updatePaymentStatus,
+  updateRegistryPaymentStatus,
 } = require("../controllers/controllerEleven");
 
 // ========== Router Begins =====================
@@ -792,5 +795,11 @@ router.get("/getUtilityBYleadId/:leadId", getUtilityBYleadId);
 router.put("/updateUtilityCharges/:utility_id", updateUtilityCharges);
 router.delete("/deleteUtilityCharges/:utility_id", deleteUtilityCharges);
 router.put("/updateSoldDetails/:esu_id/:leadId/:type", updateSoldDetails);
+router.post("/addPaymentRecord", addPaymentRecord);
+router.put("/updatePaymentStatus/:bookingId", updatePaymentStatus);
+router.put(
+  "/updateRegistryPaymentStatus/:registryId",
+  updateRegistryPaymentStatus
+);
 
 module.exports = router;

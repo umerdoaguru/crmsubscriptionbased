@@ -74,6 +74,7 @@ import ViewAllRemark from "../pages/Employees/ViewAllRemark";
 import ViewAllUnitSold from "../pages/Employees/ViewAllUnitSold";
 import SuperAdminProfile from "../pages/superAdmin/SuperAdminProfile";
 import MetaLeadEmp from "../pages/Employees/MetaLeadEmp";
+import BookingReceipt from "../pages/Employees/BookingReceipt";
 
 function EmployeeRoutes() {
   const user = useSelector((state) => state.auth.user);
@@ -111,6 +112,8 @@ function EmployeeRoutes() {
             element={<ViewAllUnitSold />}
           />
           <Route path="/meta-leads-employee" element={<MetaLeadEmp />} />
+
+          <Route path="/booking-receipt" element={<BookingReceipt />} />
 
           {/* ========================================================================== */}
 
