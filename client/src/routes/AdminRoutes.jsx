@@ -57,6 +57,7 @@ import Admin_RemarksView from "../components/Leads/Admin_RemarksView";
 import SuperSocialMediaLeads from "../pages/superAdmin/SuperSocialMediaLeads";
 import ViewAllUnitSold from "../pages/Employees/ViewAllUnitSold";
 import SuperEmployeeLeads from "../pages/superAdmin/SuperEmployeeLeads";
+import EmployeeSingleLeadProfile from "../pages/Employees/EmployeeSingleLeadProfile";
 
 function AdminRoutes() {
   const user = useSelector((state) => state.auth.user);
@@ -67,7 +68,7 @@ function AdminRoutes() {
         <Route path="/" element={<AdminDashboard />} />
         <Route path="/dashboard" element={<AdminDashboard />} />
         {/* <Route path="/leads" element={<AdminLeads />} /> */}
-         <Route path="/leads" element={<SuperEmployeeLeads />} />
+        <Route path="/leads" element={<SuperEmployeeLeads />} />
         <Route
           path="/main-social-media-leads"
           element={<MainSocialMediaByProject />}
@@ -114,10 +115,12 @@ function AdminRoutes() {
           element={<SuperSocialMediaLeads />}
         />
 
-          <Route
-            path="/view_unit_sold/:type/:id"
-            element={<ViewAllUnitSold />}
-          />
+        <Route path="/view_unit_sold/:type/:id" element={<ViewAllUnitSold />} />
+
+        <Route
+          path="/superadmin-lead-single-data/:type/:id"
+          element={<EmployeeSingleLeadProfile />}
+        />
 
         {/* =========================================================================== */}
 

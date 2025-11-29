@@ -380,6 +380,7 @@ function EmployeeSingleLeadProfileContent({ isSidebarOpen }) {
   }, []);
 
   console.log(booking);
+  console.log(EmpId?.staff_role);
 
   return (
     <>
@@ -489,58 +490,61 @@ function EmployeeSingleLeadProfileContent({ isSidebarOpen }) {
                   </div>
                 ))}
               </div>
-              <div className="flex flex-wrap justify-between gap-4 p-4">
-                {/* Left Section for Creation Buttons */}
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    className="bg-orange-500 text-white px-4 py-2 rounded w-full sm:w-auto"
-                    onClick={() => setShowPopupVisit(true)}
-                  >
-                    + Add Visit
-                  </button>
-                  <button
-                    className="bg-yellow-500 text-white px-4 py-2 rounded w-full sm:w-auto"
-                    onClick={() => setShowPopupFollowUp(true)}
-                  >
-                    + Add Follow-Up
-                  </button>
-                  <button
-                    className="bg-purple-500 text-white px-4 py-2 rounded w-full sm:w-auto"
-                    onClick={() => setShowPopupRemark(true)}
-                  >
-                    + Add Remark
-                  </button>
 
-                  <button
-                    className="bg-emerald-500 text-white px-4 py-2 rounded w-full sm:w-auto"
-                    onClick={() => setShowBookPopup(true)}
-                  >
-                    + Add Booking
-                  </button>
-                  {booking?.length > 0 && (
-                    <>
-                      <button
-                        className="bg-red-500 text-white px-4 py-2 rounded w-full sm:w-auto"
-                        onClick={() => setShowRegistryPopup(true)}
-                      >
-                        + Add Registry
-                      </button>
-                      <button
-                        className="bg-cyan-700 text-white px-4 py-2 rounded w-full sm:w-auto"
-                        onClick={() => setShowUtilityPopup(true)}
-                      >
-                        + Add Utility Charges
-                      </button>
-                      <button
-                        className="bg-green-700 text-white px-4 py-2 rounded w-full sm:w-auto"
-                        onClick={() => setShowFinalSoldPopup(true)}
-                      >
-                        + Final Sale
-                      </button>
-                    </>
-                  )}
+              {EmpId?.staff_role === "employee" && (
+                <div className="flex flex-wrap justify-between gap-4 p-4">
+                  {/* Left Section for Creation Buttons */}
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      className="bg-orange-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+                      onClick={() => setShowPopupVisit(true)}
+                    >
+                      + Add Visit
+                    </button>
+                    <button
+                      className="bg-yellow-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+                      onClick={() => setShowPopupFollowUp(true)}
+                    >
+                      + Add Follow-Up
+                    </button>
+                    <button
+                      className="bg-purple-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+                      onClick={() => setShowPopupRemark(true)}
+                    >
+                      + Add Remark
+                    </button>
+
+                    <button
+                      className="bg-emerald-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+                      onClick={() => setShowBookPopup(true)}
+                    >
+                      + Add Booking
+                    </button>
+                    {booking?.length > 0 && (
+                      <>
+                        <button
+                          className="bg-red-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+                          onClick={() => setShowRegistryPopup(true)}
+                        >
+                          + Add Registry
+                        </button>
+                        <button
+                          className="bg-cyan-700 text-white px-4 py-2 rounded w-full sm:w-auto"
+                          onClick={() => setShowUtilityPopup(true)}
+                        >
+                          + Add Utility Charges
+                        </button>
+                        <button
+                          className="bg-green-700 text-white px-4 py-2 rounded w-full sm:w-auto"
+                          onClick={() => setShowFinalSoldPopup(true)}
+                        >
+                          + Final Sale
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Modern Tabs */}
               <div className="flex flex-wrap gap-3 mt-6 bg-white p-3 rounded-xl shadow-sm border border-gray-200">
@@ -580,11 +584,11 @@ function EmployeeSingleLeadProfileContent({ isSidebarOpen }) {
             {activeTab === "registry" && <RegistryDetails />}
             {activeTab === "utility" && <UtilityCharges />}
             {activeTab === "receipts" && <AllReceipts />}
-            {activeTab === "transactions" && <Transactions />}
+            {activeTab === "transactions" && <Transactions booking={booking} />}
             {activeTab === "visit" && <VisitTab />}
             {activeTab === "followup" && <FollowUpTab />}
             {activeTab === "remark" && <RemarkTab />}
-            {activeTab === "unitsold" && <SoldUnitView type={type} id={id} />}
+            {activeTab === "unitsold" && <SoldUnitView booking={booking} />}
           </div>
         </div>
       </div>

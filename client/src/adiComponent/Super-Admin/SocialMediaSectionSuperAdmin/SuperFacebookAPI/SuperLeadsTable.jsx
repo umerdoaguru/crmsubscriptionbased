@@ -10,6 +10,7 @@ import { AiFillCheckCircle, AiFillEye } from "react-icons/ai";
 import MetaAssignedPopup from "../../../../pages/superAdmin/popupWindows/MetaAssignedPopup";
 import Super_Single_Lead_Profile from "../../Super_Single_Lead_Profile";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const SuperLeadsTable = ({ isSidebarOpen, type }) => {
   const [metaLeads, setMetaLeads] = useState([]);
@@ -19,6 +20,7 @@ const SuperLeadsTable = ({ isSidebarOpen, type }) => {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
+  const navigate = useNavigate();
 
   // Dynamic records per page
   const [leadsPerPage, setLeadsPerPage] = useState(10);
@@ -416,7 +418,12 @@ const SuperLeadsTable = ({ isSidebarOpen, type }) => {
                       </td>
                       <td
                         className="px-6 py-4 border-b border-gray-200 underline text-cyan-600 cursor-pointer font-semibold"
-                        onClick={() => handleRowClick(lead)}
+                        // onClick={() => handleRowClick(lead)}
+                        onClick={() =>
+                          navigate(
+                            `/superadmin-lead-single-data/meta/${lead?.leadgen_id}`
+                          )
+                        }
                       >
                         {lead.meta_form_name}
                       </td>

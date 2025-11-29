@@ -212,7 +212,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
         </h1>
         <button
           onClick={toggleSidebar}
-          className="p-2 text-gray-400 hover:text-gray-600 focus:outline-none"
+          className="p-2 text-gray-400 hover:text-gray-600 focus:outline-none text-2xl"
         >
           <GiHamburgerMenu />
         </button>
@@ -227,7 +227,9 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
               key={idx}
               className={({ isActive }) =>
                 `flex items-center ${
-                  isSidebarOpen ? "justify-start gap-2 px-4" : "justify-center"
+                  isSidebarOpen
+                    ? "justify-start gap-2 px-4"
+                    : "justify-center text-xl"
                 } py-2 rounded-md font-medium transition-all duration-200 ${
                   isActive
                     ? "bg-[#EEF0FF] text-cyan-600 rounded-xl"

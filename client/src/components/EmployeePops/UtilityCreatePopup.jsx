@@ -12,6 +12,7 @@ const UtilityCreatePopup = ({ isOpen, onClose, booking, leads }) => {
   const today = new Date().toISOString().split("T")[0];
   const [utility, setUtility] = useState({
     utility_esu_id: booking[0]?.esu_id,
+    utility_org_id: Emp?.staff_org_id,
     utility_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
     utility_type: "",
     utility_amount: "",

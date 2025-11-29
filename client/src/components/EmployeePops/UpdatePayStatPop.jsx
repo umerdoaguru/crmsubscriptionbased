@@ -4,21 +4,19 @@ import axios from "axios";
 import cogoToast from "cogo-toast";
 import { useSelector } from "react-redux";
 
-const PaymentCreatePopup = ({
+const UpdatePayStatPop = ({
   isOpen,
   onClose,
-  selectedPayment,
-  paymentType,
-  callBackFunc,
+  selected,
+  fetchTransactionData,
 }) => {
   const modalRef = useRef();
   const Emp = useSelector((state) => state.auth.user);
   const token = Emp?.token;
-  console.log(selectedPayment?.esu_id);
+  console.log(selected?.esu_id);
   console.log(Emp);
 
   const today = new Date().toISOString().split("T")[0];
-
   const [loading, setLoading] = useState(false);
 
   const [payment, setPayment] = useState({
@@ -26,27 +24,25 @@ const PaymentCreatePopup = ({
     txn_id: "",
     pt_esu_id: "",
     pt_amount: "",
-    pt_type: paymentType,
-    pt_method: "cash",
-    txn_date: today,
+    pt_type: "",
+    pt_method: "",
+    txn_date: "",
     pt_notes: "",
   });
 
   useEffect(() => {
     setPayment((prev) => ({
       ...prev,
-      pt_esu_id: selectedPayment?.[0]?.esu_id || selectedPayment?.esu_id,
-      pt_amount:
-        paymentType === "Booking"
-          ? selectedPayment?.[0]?.booking_amount
-          : paymentType === "registry"
-          ? selectedPayment?.registry_amount
-          : paymentType === "utility"
-          ? selectedPayment?.utility_amount
-          : "",
-      pt_type: paymentType,
+      pt_org_id: Emp?.staff_org_id,
+      txn_id: selected?.txn_id,
+      pt_esu_id: selected?.pt_esu_id,
+      pt_amount: selected?.pt_amount,
+      pt_type: selected?.pt_type,
+      pt_method: selected?.pt_method,
+      txn_date: selected?.txn_date,
+      pt_notes: selected?.pt_notes,
     }));
-  }, [selectedPayment, paymentType]);
+  }, [selected]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,8 +58,8 @@ const PaymentCreatePopup = ({
     setLoading(true);
 
     try {
-      const res = await axios.post(
-        "https://crm-generalize.dentalguru.software/api/addPaymentRecord",
+      const res = await axios.put(
+        `https://crm-generalize.dentalguru.software/api/updatePaymentRecord/${selected?.pt_id}`,
         payment,
         {
           headers: {
@@ -72,30 +68,8 @@ const PaymentCreatePopup = ({
         }
       );
 
-      cogoToast.success("Payment saved successfully!");
-      if (paymentType === "Booking") {
-        updateBookingStatusAfterPayment();
-      }
-
-      if (paymentType === "registry") {
-        updateRegistryStatusAfterPayment();
-      }
-
-      if (paymentType === "utility") {
-        updateUtilityStatusAfterPayment();
-      }
-
-      callBackFunc();
-      setPayment({
-        pt_org_id: Emp?.staff_org_id,
-        txn_id: "",
-        pt_esu_id: "",
-        pt_amount: "",
-        pt_type: paymentType,
-        pt_method: "cash",
-        txn_date: today,
-        pt_notes: "",
-      });
+      cogoToast.success("Payment details update successfully!");
+      fetchTransactionData();
       onClose();
     } catch (err) {
       console.error(err);
@@ -103,45 +77,6 @@ const PaymentCreatePopup = ({
     } finally {
       setLoading(false);
       setTimeout(() => (window.__PAYMENT_SUBMITTING__ = false), 800);
-    }
-  };
-
-  //booking update
-  const updateBookingStatusAfterPayment = async () => {
-    try {
-      const res = await axios.put(
-        `https://crm-generalize.dentalguru.software/api/updatePaymentStatus/${selectedPayment[0]?.booking_id}`
-      );
-
-      cogoToast.success("Booking Status Updated");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  //registry update
-  const updateRegistryStatusAfterPayment = async () => {
-    try {
-      const res = await axios.put(
-        `https://crm-generalize.dentalguru.software/api/updateRegistryPaymentStatus/${selectedPayment?.registry_id}`
-      );
-
-      cogoToast.success("Registry Status Updated");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  //utility update
-  const updateUtilityStatusAfterPayment = async () => {
-    try {
-      const res = await axios.put(
-        `https://crm-generalize.dentalguru.software/api/updateUtilityPaymentStatus/${selectedPayment?.utility_id}`
-      );
-
-      cogoToast.success("Utility Status Updated");
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -181,7 +116,7 @@ const PaymentCreatePopup = ({
             transition={{ duration: 0.3 }}
           >
             <h2 className="text-2xl font-bold mb-4 text-center text-cyan-700">
-              Add Payment Transaction
+              Update Payment Transaction
             </h2>
 
             <form onSubmit={savePayment} className="space-y-4">
@@ -309,4 +244,4 @@ const PaymentCreatePopup = ({
   );
 };
 
-export default PaymentCreatePopup;
+export default UpdatePayStatPop;

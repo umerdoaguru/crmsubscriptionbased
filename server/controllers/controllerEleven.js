@@ -824,6 +824,135 @@ const updateRegistryPaymentStatus = (req, res) => {
   });
 };
 
+const updateUtilityPaymentStatus = (req, res) => {
+  const { utilityId } = req.params;
+
+  const updatedAt = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
+  const sqlQuery = `
+    UPDATE utility_charges
+    SET utility_pay_status = 'paid',
+        utility_updated_at = ?
+    WHERE utility_id = ?
+  `;
+
+  db.query(sqlQuery, [updatedAt, utilityId], (err, result) => {
+    if (err) {
+      console.error("Error updating utility:", err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Utility record not found" });
+    }
+
+    return res.status(200).json({
+      message: "Utility payment status updated to paid",
+      registry_id: utilityId,
+      updated_at: updatedAt,
+    });
+  });
+};
+
+const getAllTransanctionByESUId = (req, res) => {
+  try {
+    const { esuId, orgId } = req.params;
+    const selectQuery = `select * from payment_transactions join company_profile on company_profile.org_id = payment_transactions.pt_org_id join employee_sold_units on employee_sold_units.esu_id = payment_transactions.pt_esu_id where payment_transactions.pt_org_id = ? and payment_transactions.pt_esu_id = ?`;
+    db.query(selectQuery, [orgId, esuId], (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+      return res.status(200).send(result);
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const updatePaymentRecord = (req, res) => {
+  try {
+    const { payId } = req.params;
+    const { txn_date, pt_method, pt_notes } = req.body;
+
+    if (!payId) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment ID is required",
+      });
+    }
+
+    // Prepare fields to update
+    let updateFields = [];
+    let values = [];
+
+    if (txn_date) {
+      updateFields.push("txn_date = ?");
+      values.push(txn_date);
+    }
+
+    if (pt_method) {
+      updateFields.push("pt_method = ?");
+      values.push(pt_method);
+    }
+
+    if (pt_notes) {
+      updateFields.push("pt_notes = ?");
+      values.push(pt_notes);
+    }
+
+    if (updateFields.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No valid fields provided to update",
+      });
+    }
+
+    // Add updated_at timestamp
+    const updatedTime = moment()
+      .tz("Asia/Kolkata")
+      .format("DD-MM-YYYY HH:mm:ss");
+    updateFields.push("pt_updated_at = ?");
+    values.push(updatedTime);
+
+    values.push(payId);
+
+    const query = `
+      UPDATE payment_transactions
+      SET ${updateFields.join(", ")}
+      WHERE id = ?
+    `;
+
+    db.query(query, values, (err, result) => {
+      if (err) {
+        console.error("Update Error:", err);
+        return res.status(500).json({
+          success: false,
+          message: "Database error",
+          error: err,
+        });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Payment record not found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Payment updated successfully",
+      });
+    });
+  } catch (error) {
+    console.error("Catch Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
 module.exports = {
   createBooking,
   getBookingBYleadId,
@@ -840,4 +969,7 @@ module.exports = {
   addPaymentRecord,
   updatePaymentStatus,
   updateRegistryPaymentStatus,
+  updateUtilityPaymentStatus,
+  getAllTransanctionByESUId,
+  updatePaymentRecord,
 };

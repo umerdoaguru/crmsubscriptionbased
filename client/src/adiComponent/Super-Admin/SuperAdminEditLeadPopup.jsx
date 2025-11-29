@@ -15,6 +15,7 @@ const SuperAdminEditLeadPopup = ({
   isEditing,
   selectedLead,
   setIsEditing,
+  saleUser,
 }) => {
   const modalRef = useRef();
   const EmpId = useSelector((state) => state.auth.user);
@@ -42,6 +43,19 @@ const SuperAdminEditLeadPopup = ({
     actual_date: "",
     user_id: userId,
   });
+
+  console.log(saleUser);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    if (saleUser?.staff_role === "employee") {
+      setCurrentLead((prev) => ({
+        ...prev,
+        assignedTo: saleUser?.staff_id,
+      }));
+    }
+  }, [isOpen, saleUser]);
 
   // fetch units for selected project
   const fetchProjectsUnit = async (projectId) => {
@@ -161,6 +175,8 @@ const SuperAdminEditLeadPopup = ({
     setCustomLeadSource(e.target.value);
   };
 
+  console.log(currentLead);
+
   // Save lead
   const saveChanges = async (e) => {
     e.preventDefault();
@@ -265,26 +281,44 @@ const SuperAdminEditLeadPopup = ({
               </div>
 
               {/* Assigned To */}
-              <div>
-                <label className="text-sm font-medium text-gray-600">
-                  Assigned To
-                </label>
-                <select
-                  name="assignedTo"
-                  value={currentLead.assignedTo}
-                  onChange={handleInputChange}
-                  className={`mt-1 w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-400 ${
-                    errors.assignedTo ? "border-red-500" : "border-gray-300"
-                  }`}
-                >
-                  <option value="">Select Employee</option>
-                  {employees.map((emp) => (
-                    <option key={emp.staff_id} value={emp.staff_id}>
-                      {emp.staff_name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {saleUser?.staff_role === "employee" ? (
+                <>
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">
+                      Assigned To
+                    </label>
+                    <input
+                      type="text"
+                      value={saleUser?.staff_name}
+                      readOnly
+                      className="mt-1 w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-700 cursor-not-allowed"
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">
+                      Assigned To
+                    </label>
+                    <select
+                      name="assignedTo"
+                      value={currentLead.assignedTo}
+                      onChange={handleInputChange}
+                      className={`mt-1 w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-400 ${
+                        errors.assignedTo ? "border-red-500" : "border-gray-300"
+                      }`}
+                    >
+                      <option value="">Select Employee</option>
+                      {employees.map((emp) => (
+                        <option key={emp.staff_id} value={emp.staff_id}>
+                          {emp.staff_name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </>
+              )}
 
               {/* Date */}
               <div>

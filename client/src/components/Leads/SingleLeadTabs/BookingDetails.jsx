@@ -146,14 +146,14 @@ const BookingDetails = () => {
                 </td>
 
                 <td className="px-6 py-4 border-b border-gray-200 flex gap-2">
-                  <button
-                    className="bg-orange-500 text-white p-2 px-2 rounded hover:bg-orange-600"
-                    onClick={() => opneUpdateBooking(lead)}
-                  >
-                    Edit
-                  </button>
                   {lead?.booking_pay_status !== "paid" && (
                     <>
+                      <button
+                        className="bg-orange-500 text-white p-2 px-2 rounded hover:bg-orange-600"
+                        onClick={() => opneUpdateBooking(lead)}
+                      >
+                        Edit
+                      </button>
                       <button
                         className="bg-green-600 text-white p-2 px-2 rounded hover:bg-green-700"
                         onClick={() => openPaymentModal(booking)}

@@ -1,3 +1,796 @@
+
+    const handleClose = () => {
+    setFile(null);
+  
+    onClose();
+  };
+ 
+
+  projectunit,
+ 
+
+  const [projectUnit, setProjectUnit] = useState([]);
+ 
+
+  const [projects, setProjects] = useState([]);
+ 
+// reset unit on project change
+ 
+{lead.lead_id}
+ 
+  <button>
+                            
+                           </button>
+ 
+ {lead.lead_status === "active lead" ||
+                            lead.lead_status === "Calling Done" ||
+                            lead.lead_status === "site visit done" ||
+                            lead.lead_status === "interested" ||
+                            lead.lead_status === "not-interested" ? (
+                              <button
+                                className="text-[green] font-semibold hover:text-cyan-700"
+                                onClick={() => handleUpdate(lead)}
+                              >
+                                Started Work
+                              </button>
+                            ) : lead.lead_status === "pending" ? (
+                              <button
+                                className="text-cyan-600 font-semibold hover:text-cyan-700"
+                                onClick={() => handleUpdate(lead)}
+                              >
+                                Not Start Work
+                              </button>
+                            ) : lead.lead_status === "completed" ||
+                              lead.lead_status === "Sold" ? (
+                              <button
+                                className="text-gray-400 font-semibold cursor-not-allowed"
+                                disabled
+                              >
+                                Work Completed
+                              </button>
+                            ) : null}
+ 
+booking.length === 0 &&
+ 
+type={type} id={id}
+ 
+  <Route
+          path="/superadmin-lead-single-data/:type/:id"
+          element={<EmployeeSingleLeadProfile />}
+        />
+ 
+  useEffect(() => {
+    if (isOpen && saleUser?.staff_role === "employee") {
+      setCurrentLead((prev) => ({
+        ...prev,
+        assignedTo: saleUser?.staff_id,
+      }));
+    }
+  }, [isOpen, saleUser]);
+ 
+  useEffect(() => {
+    setCurrentLead({
+      ...currentLead,
+      assignedTo: saleUser?.staff_id,
+    });
+  }, [saleUser]);
+ 
+employees.find(
+                          (emp) => emp.staff_id === currentLead.assignedTo
+                        )?.staff_name || "Not Assigned"
+ 
+employees
+ 
+  const fetchLeads = async () => {
+    try {
+      const response = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/getLeadsByOrg/${superadminuser?.staff_org_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = response.data;
+      const sources = data
+        .map((lead) => lead.leadSource)
+        .filter((source) => source);
+      setDynamicLeadSources(Array.from(new Set(sources)));
+      setLeads(data);
+    } catch (error) {
+      console.error("Error fetching leads:", error);
+    }
+  };
+ 
+addPaymentRecord
+ 
+""
+ 
+
+  //booking update
+  const updateBookingStatusAfterPayment = async () => {
+    try {
+      const res = await axios.put(
+        `https://crm-generalize.dentalguru.software/api/updatePaymentStatus/${selected[0]?.booking_id}`
+      );
+
+      cogoToast.success("Booking Status Updated");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //registry update
+  const updateRegistryStatusAfterPayment = async () => {
+    try {
+      const res = await axios.put(
+        `https://crm-generalize.dentalguru.software/api/updateRegistryPaymentStatus/${selected?.registry_id}`
+      );
+
+      cogoToast.success("Registry Status Updated");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //utility update
+  const updateUtilityStatusAfterPayment = async () => {
+    try {
+      const res = await axios.put(
+        `https://crm-generalize.dentalguru.software/api/updateUtilityPaymentStatus/${selected?.utility_id}`
+      );
+
+      cogoToast.success("Utility Status Updated");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+ 
+
+
+      callBackFunc();
+      setPayment({
+        pt_org_id: Emp?.staff_org_id,
+        txn_id: "",
+        pt_esu_id: "",
+        pt_amount: "",
+        pt_type: paymentType,
+        pt_method: "cash",
+        txn_date: today,
+        pt_notes: "",
+      });
+ 
+      if (paymentType === "Booking") {
+        updateBookingStatusAfterPayment();
+      }
+
+      if (paymentType === "registry") {
+        updateRegistryStatusAfterPayment();
+      }
+
+      if (paymentType === "utility") {
+        updateUtilityStatusAfterPayment();
+      }
+ 
+paymentType
+ 
+elected?.[0]?.esu_id || selected?.esu_id,
+ 
+paymentType === "Booking"
+          ? selected?.[0]?.booking_amount
+          : paymentType === "registry"
+          ? selected?.registry_amount
+          : paymentType === "utility"
+          ? selected?.utility_amount
+          :
+ 
+paymentType
+ 
+today
+ 
+paymentType
+ 
+  const today = new Date().toISOString().split("T")[0];
+ 
+aymentType
+ 
+setIsPaymentPopupOpen
+ 
+sPaymentPopupOpen
+ 
+ment
+ 
+  callBackFunc,
+ 
+import React, { useRef, useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
+import cogoToast from "cogo-toast";
+import { useSelector } from "react-redux";
+
+const PaymentCreatePopup = ({
+  isOpen,
+  onClose,
+  selectedPayment,
+  paymentType,
+  callBackFunc,
+}) => {
+  const modalRef = useRef();
+  const Emp = useSelector((state) => state.auth.user);
+  const token = Emp?.token;
+  console.log(selectedPayment?.esu_id);
+  console.log(Emp);
+
+  const today = new Date().toISOString().split("T")[0];
+
+  const [loading, setLoading] = useState(false);
+
+  const [payment, setPayment] = useState({
+    pt_org_id: Emp?.staff_org_id,
+    txn_id: "",
+    pt_esu_id: "",
+    pt_amount: "",
+    pt_type: paymentType,
+    pt_method: "cash",
+    txn_date: today,
+    pt_notes: "",
+  });
+
+  useEffect(() => {
+    setPayment((prev) => ({
+      ...prev,
+      pt_esu_id: selectedPayment?.[0]?.esu_id || selectedPayment?.esu_id,
+      pt_amount:
+        paymentType === "Booking"
+          ? selectedPayment?.[0]?.booking_amount
+          : paymentType === "registry"
+          ? selectedPayment?.registry_amount
+          : paymentType === "utility"
+          ? selectedPayment?.utility_amount
+          : "",
+      pt_type: paymentType,
+    }));
+  }, [selectedPayment, paymentType]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setPayment((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const savePayment = async (e) => {
+    e.preventDefault();
+
+    if (window.__PAYMENT_SUBMITTING__) return;
+    window.__PAYMENT_SUBMITTING__ = true;
+
+    setLoading(true);
+
+    try {
+      const res = await axios.post(
+        "https://crm-generalize.dentalguru.software/api/addPaymentRecord",
+        payment,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      cogoToast.success("Payment saved successfully!");
+      if (paymentType === "Booking") {
+        updateBookingStatusAfterPayment();
+      }
+
+      if (paymentType === "registry") {
+        updateRegistryStatusAfterPayment();
+      }
+
+      if (paymentType === "utility") {
+        updateUtilityStatusAfterPayment();
+      }
+
+      callBackFunc();
+      setPayment({
+        pt_org_id: Emp?.staff_org_id,
+        txn_id: "",
+        pt_esu_id: "",
+        pt_amount: "",
+        pt_type: paymentType,
+        pt_method: "cash",
+        txn_date: today,
+        pt_notes: "",
+      });
+      onClose();
+    } catch (err) {
+      console.error(err);
+      cogoToast.error("Failed to save payment");
+    } finally {
+      setLoading(false);
+      setTimeout(() => (window.__PAYMENT_SUBMITTING__ = false), 800);
+    }
+  };
+
+  //booking update
+  const updateBookingStatusAfterPayment = async () => {
+    try {
+      const res = await axios.put(
+        `https://crm-generalize.dentalguru.software/api/updatePaymentStatus/${selectedPayment[0]?.booking_id}`
+      );
+
+      cogoToast.success("Booking Status Updated");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //registry update
+  const updateRegistryStatusAfterPayment = async () => {
+    try {
+      const res = await axios.put(
+        `https://crm-generalize.dentalguru.software/api/updateRegistryPaymentStatus/${selectedPayment?.registry_id}`
+      );
+
+      cogoToast.success("Registry Status Updated");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //utility update
+  const updateUtilityStatusAfterPayment = async () => {
+    try {
+      const res = await axios.put(
+        `https://crm-generalize.dentalguru.software/api/updateUtilityPaymentStatus/${selectedPayment?.utility_id}`
+      );
+
+      cogoToast.success("Utility Status Updated");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (modalRef.current && !modalRef.current.contains(e.target)) {
+        onClose();
+      }
+    };
+    const handleEscape = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [onClose]);
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            ref={modalRef}
+            className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-3xl mx-4 overflow-y-auto max-h-[90vh]"
+            initial={{ scale: 0.9, opacity: 0, y: -30 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 30 }}
+            transition={{ duration: 0.3 }}
+          >
+            <h2 className="text-2xl font-bold mb-4 text-center text-cyan-700">
+              Add Payment Transaction
+            </h2>
+
+            <form onSubmit={savePayment} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {/* txn_id */}
+                <div>
+                  <label className="text-sm">Transaction ID</label>
+                  <input
+                    type="text"
+                    name="txn_id"
+                    value={payment.txn_id}
+                    onChange={handleChange}
+                    placeholder="Enter Transaction ID"
+                    className="w-full px-3 py-2 border rounded"
+                  />
+                </div>
+
+                {/* pt_amount */}
+                <div>
+                  <label className="text-sm">Amount</label>
+                  <input
+                    type="text"
+                    name="pt_amount"
+                    value={payment.pt_amount}
+                    onChange={handleChange}
+                    placeholder="Enter Amount"
+                    className="w-full px-3 py-2 border rounded"
+                  />
+                </div>
+
+                {/* txn_date */}
+                <div>
+                  <label className="text-sm">Transaction Date</label>
+                  <input
+                    type="date"
+                    name="txn_date"
+                    value={payment.txn_date}
+                    onChange={handleChange}
+                    max={today}
+                    className="w-full px-3 py-2 border rounded"
+                  />
+                </div>
+
+                {/* pt_type */}
+                <div>
+                  <label className="text-sm">Payment Type</label>
+                  <input
+                    type="text"
+                    name="pt_type"
+                    value={payment.pt_type}
+                    readOnly
+                    className="w-full px-3 py-2 border rounded bg-gray-100 cursor-not-allowed"
+                  />
+                </div>
+
+                {/* pt_method */}
+                <div>
+                  <label className="text-sm">Payment Method</label>
+                  <select
+                    name="pt_method"
+                    value={payment.pt_method}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border rounded"
+                  >
+                    <option value="">--select--</option>
+                    <option value="cash">Cash</option>
+                    <option value="bank">Bank</option>
+                    <option value="upi">UPI</option>
+                    <option value="cheque">Cheque</option>
+                  </select>
+                </div>
+
+                {/* receipt_url */}
+                {/* <div>
+                  <label className="text-sm">Receipt URL</label>
+                  <input
+                    type="text"
+                    name="receipt_url"
+                    value={payment.receipt_url}
+                    onChange={handleChange}
+                    placeholder="Add receipt link"
+                    className="w-full px-3 py-2 border rounded"
+                  />
+                </div> */}
+
+                {/* Notes */}
+                <div className="sm:col-span-3">
+                  <label className="text-sm font-medium">Notes</label>
+                  <textarea
+                    name="pt_notes"
+                    value={payment.pt_notes}
+                    onChange={handleChange}
+                    placeholder="Add notes..."
+                    className="w-full px-3 py-2 border rounded"
+                    rows={3}
+                  />
+                </div>
+              </div>
+
+              {/* BUTTONS */}
+              <div className="flex justify-end gap-3 pt-4 border-t">
+                <button
+                  type="button"
+                  className="bg-gray-500 text-white px-4 py-2 rounded"
+                  onClick={onClose}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`px-4 py-2 rounded text-white ${
+                    loading ? "bg-gray-600" : "bg-cyan-600 hover:bg-cyan-700"
+                  }`}
+                >
+                  {loading ? "Saving..." : "Save Payment"}
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+export default PaymentCreatePopup;
+
+ 
+  console.log(user);
+  console.log(booking[0]?.esu_id);
+ 
+
+
+                <td className="px-6 py-4 border-b border-gray-200">
+                  {lead?.booking_created_at}
+                </td>
+ 
+                <td className="px-6 py-4 border-b border-gray-200">
+                  {lead?.unit_type}
+                </td>
+
+                <td className="px-6 py-4 border-b border-gray-200">
+                  {lead?.unit_number}
+                </td>
+
+                <td className="px-6 py-4 border-b border-gray-200">
+                  {lead?.unit_status}
+                </td>
+                <td className="px-6 py-4 border-b border-gray-200">
+                  {lead?.booking_notes}
+                </td>
+
+ 
+ {lead?.project_id}
+ 
+booking_amount
+ 
+booking_date
+ 
+Payment Note
+ 
+
+              <th className="px-6 py-3 border-b-2 border-gray-300">
+                Booking Notes
+              </th>
+              <th className="px-6 py-3 border-b-2 border-gray-300">
+                Booking Created AT
+              </th>
+ 
+ <th className="px-6 py-3 border-b-2 border-gray-300">
+                Unit Number
+              </th>
+              <th className="px-6 py-3 border-b-2 border-gray-300">
+                Unit Status
+              </th>
+ 
+ <th className="px-6 py-3 border-b-2 border-gray-300">
+                Project Id
+              </th>
+              <th className="px-6 py-3 border-b-2 border-gray-300">
+                Unit Type
+              </th>
+ 
+ject
+ 
+ Owner Email
+ 
+Owner Name
+ 
+ Booking Date
+ 
+ <td className="px-6 py-4 border-b border-gray-200 flex gap-2">
+              
+
+                  {lead?.booking_pay_status === "paid" && (
+                    <>
+                      <button
+                        className="bg-gray-600 text-white p-2 px-2 rounded hover:bg-gray-800"
+                        onClick={() => openReceiptPage(lead)}
+                      >
+                        Generate Receipt
+                      </button>
+                    </>
+                  )}
+                </td>
+ 
+    {lead?.booking_pay_status !== "paid" && (
+                    <>
+                      {/* <button
+                        className="bg-orange-500 text-white p-2 px-2 rounded hover:bg-orange-600"
+                        onClick={() => opneUpdateBooking(lead)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="bg-green-600 text-white p-2 px-2 rounded hover:bg-green-700"
+                        onClick={() => openPaymentModal(booking)}
+                      >
+                        Make Payment
+                      </button> */}
+                    </>
+                  )}
+ 
+ <th className="px-6 py-3 border-b-2 border-gray-300">Actions</th>
+ 
+  const openReceiptPage = (bookingData) => {
+    const serializedData = encodeURIComponent(JSON.stringify(bookingData));
+    const receiptUrl = `/booking-receipt?data=${serializedData}`;
+    window.open(receiptUrl, "_blank");
+  };
+ 
+:esuId
+ 
+yeeunitsoldCreated
+ 
+booking
+ 
+setemployeeunitsoldCreated
+ 
+fetchBookingData
+ 
+
+  console.log(booking);
+ 
+getBookingBYleadId/${id}
+ 
+
+
+  console.log(selected);
+
+ 
+
+  const openPaymentModal = (data) => {
+    setSelectedPayment(data);
+    setIsPaymentPopupOpen(true);
+  };
+
+  const opneUpdateBooking = (data) => {
+    setUpdateModal(true);
+    setSelected(data);
+  };
+ 
+  const [updateModal, setUpdateModal] = useState(false);
+  const [selected, setSelected] = useState();
+  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState();
+ 
+      <UpdateBookingModal
+        isOpen={updateModal}
+        onClose={() => setUpdateModal(false)}
+        selected={selected}
+        fetchBookingData={fetchBookingData}
+      />
+      <PaymentCreatePopup
+        isOpen={isPaymentPopupOpen}
+        onClose={() => setIsPaymentPopupOpen(false)}
+        selectedPayment={selectedPayment}
+        paymentType={"Booking"}
+        callBackFunc={fetchBookingData}
+      />
+ 
+import UpdateBookingModal from "../../EmployeePops/UpdateBookingModal";
+import PaymentCreatePopup from "../../EmployeePops/PaymentCreatePopup";
+ 
+import React from "react";
+
+const Transactions = () => {
+  return <div>Transactions</div>;
+};
+
+export default Transactions;
+
+ 
+istryReceipt
+ 
+registry-receipt
+ 
+updateRegistryStatusAfterPayment();
+ 
+eRegistryPaymentStatu
+ 
+registry
+ 
+registry
+ 
+etchRegistryDetails
+ 
+booking[0]?.esu_id
+ 
+ <button
+                        className="bg-green-600 font-bold text-white p-2 px-2 rounded hover:bg-green-800"
+                        onClick={() => openPaymentModal(lead)}
+                      >
+                        Make Payment
+                      </button>
+ 
+  {lead?.registry_pay_status === "paid" && (
+                        <>
+                         
+                        </>
+                      )}
+ 
+ pt_org_id: selectedPayment?.[0]?.project_org_id,
+ 
+ updateBookingStatusAfterPayment
+ 
+g_id
+ 
+pt_amount: selectedPayment && selectedPayment[0]?.booking_amount
+ 
+   // ,
+ 
+booking_amount
+ 
+deleta
+ 
+eRegistryDat
+ 
+ooking
+ 
+fetchBookingData
+ 
+ <MdDelete />
+ 
+import getFieldValue from "../../..";
+ 
+/utils/getFieldValue
+ 
+support@realestate.com
+ 
+ India
+ 
+l Estate Developers Pvt Ltd
+ 
+ // onClick={() => openPaymentModal(booking)}
+ 
+yellow
+ 
+Make Payment
+ 
+{
+
+      }
+ 
+booking
+ 
+ {item?.op_remark || "-"}
+ 
+      // Calculate remaining amount
+ 
+ normal setFormData
+ 
+
+    // default update
+ 
+ const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "op_amount") {
+      const payableAmount = Number(unitSoldData[0]?.esu_sale_price || 0);
+      const enteredAmount = Number(value);
+
+      if (enteredAmount > payableAmount) {
+        cogoToast.warn("Amount cannot be greater than payable amount");
+        return;
+      }
+    }
+
+    setFormData({ ...formData, [name]: value });
+  };
+ 
+remaining_amount
+ 
+remaining_amount
+ 
+import OwnerPaymentSavePopup from ""
+ 
+// import OwnerPaymentSavePopup from "../../pages/Employees/EmpPopupWindow/OwnerPaymentSavePopup";
+// import OwnerLoanAddPopup from "../../pages/Employees/EmpPopupWindow/OwnerLoanAddPopup";
+// import EMIPayPopup from "../../pages/Employees/EmpPopupWindow/EMIPayPopup";
+// import UnitSoldUpdatePopup from "../../pages/Employees/EmpPopupWindow/UnitSoldUpdatePopup";
+ 
 payment/add-payment
  
 import { MdDelete } from "react-icons/md";

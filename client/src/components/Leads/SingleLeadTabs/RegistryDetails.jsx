@@ -62,6 +62,12 @@ const RegistryDetails = () => {
     }
   };
 
+  const openReceiptPage = (bookingData) => {
+    const serializedData = encodeURIComponent(JSON.stringify(bookingData));
+    const receiptUrl = `/registry-receipt?data=${serializedData}`;
+    window.open(receiptUrl, "_blank");
+  };
+
   return (
     <>
       <div className="overflow-x-auto">
@@ -155,18 +161,24 @@ const RegistryDetails = () => {
                     </td>
 
                     <td className="px-6 py-4 border-b border-gray-200">
-                      <button
-                        className="text-orange-400 font-bold text-2xl"
-                        onClick={() => openUpdateModal(lead)}
-                      >
-                        <FaEdit />
-                      </button>
-                      <button
-                        className="text-red-600 font-bold text-2xl"
-                        onClick={() => deleteRegistryData(lead?.registry_id)}
-                      >
-                        <MdDelete />
-                      </button>
+                      {lead?.registry_pay_status !== "paid" && (
+                        <>
+                          <button
+                            className="text-orange-400 font-bold text-2xl"
+                            onClick={() => openUpdateModal(lead)}
+                          >
+                            <FaEdit />
+                          </button>
+                          <button
+                            className="text-red-600 font-bold text-2xl"
+                            onClick={() =>
+                              deleteRegistryData(lead?.registry_id)
+                            }
+                          >
+                            <MdDelete />
+                          </button>
+                        </>
+                      )}
 
                       {lead?.registry_pay_status !== "paid" && (
                         <>
@@ -183,7 +195,7 @@ const RegistryDetails = () => {
                         <>
                           <button
                             className="bg-gray-600 text-white p-2 px-2 rounded hover:bg-gray-800"
-                            // onClick={() => openReceiptPage(lead)}
+                            onClick={() => openReceiptPage(lead)}
                           >
                             Generate Receipt
                           </button>

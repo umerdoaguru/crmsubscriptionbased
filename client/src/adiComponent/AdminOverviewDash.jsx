@@ -175,7 +175,7 @@ const AdminOverviewDash = () => {
         </div>
 
         <div className="w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 my-3 p-0 sm-mx-0 mx-3 ">
-          <Link to="/admin-total-leads">
+          <Link to="/leads">
             <div className="shadow-lg rounded-lg overflow-hidden cursor-pointer text-gray-600 border-1">
               <div className="p-4 flex flex-col items-center text-center">
                 <div className=" text-3xl text-cyan-600">

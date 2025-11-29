@@ -5,13 +5,54 @@ import cogoToast from "cogo-toast";
 import { IoCloseSharp } from "react-icons/io5";
 import { useSelector } from "react-redux";
 
-const BulkLeadUploadPopup = ({ isOpen, onClose, fetchLeads }) => {
+const BulkLeadUploadPopup = ({
+  isOpen,
+  onClose,
+  fetchLeads,
+  projects,
+  employees,
+}) => {
   const modalRef = useRef();
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const EmpId = useSelector((state) => state.auth.user);
   const token = EmpId?.token;
   const lead_org_id = EmpId?.staff_org_id;
+  const [projectUnit, setProjectUnit] = useState([]);
+  const [main_project_id, setMainProjectId] = useState("");
+  const [unit_id, setUnitId] = useState("");
+  const [assignedTo, setAssignedTo] = useState("");
+
+  const fetchUnits = async (projectId) => {
+    if (!projectId) {
+      setProjectUnit([]);
+      return;
+    }
+
+    try {
+      const res = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/super-admin-project-unit/${projectId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (Array.isArray(res.data)) {
+        setProjectUnit(res.data);
+      } else {
+        setProjectUnit([]);
+      }
+    } catch (error) {
+      console.log("Error fetching units:", error);
+      setProjectUnit([]);
+    }
+  };
+
+  useEffect(() => {
+    if (main_project_id) {
+      fetchUnits(main_project_id);
+    }
+  }, [main_project_id]);
 
   // Close popup when clicking outside or pressing ESC
   useEffect(() => {
@@ -33,13 +74,16 @@ const BulkLeadUploadPopup = ({ isOpen, onClose, fetchLeads }) => {
 
   const handleClose = () => {
     setFile(null);
+    setAssignedTo("");
+    setMainProjectId("");
+    setUnitId("");
     onClose();
   };
 
   // File upload change handler
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
+  // const handleFileChange = (e) => {
+  //   setFile(e.target.files[0]);
+  // };
 
   // ✅ Download sample Excel
   const handleDownloadSample = () => {
@@ -52,17 +96,59 @@ const BulkLeadUploadPopup = ({ isOpen, onClose, fetchLeads }) => {
   };
 
   // Submit handler
+  // const handleUpload = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!file) {
+  //     cogoToast.warn("Please select an Excel file");
+  //     return;
+  //   }
+
+  //   const formData = new FormData();
+  //   formData.append("file", file);
+  //   formData.append("lead_org_id", lead_org_id);
+
+  //   try {
+  //     setLoading(true);
+
+  //     const response = await axios.post(
+  //       "https://crm-generalize.dentalguru.software/api/bulk-upload-leads",
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+
+  //     cogoToast.success(
+  //       response.data.message || "Leads uploaded successfully!"
+  //     );
+  //     fetchLeads && fetchLeads();
+  //     handleClose();
+  //   } catch (error) {
+  //     console.error("Error uploading file:", error);
+  //     cogoToast.error(error.response?.data?.message || "File upload failed");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleUpload = async (e) => {
     e.preventDefault();
 
-    if (!file) {
-      cogoToast.warn("Please select an Excel file");
-      return;
-    }
+    if (!file) return cogoToast.warn("Please select an Excel file");
+    if (!assignedTo) return cogoToast.warn("Please select Assigned To");
+    if (!main_project_id) return cogoToast.warn("Please select Project");
+    if (!unit_id) return cogoToast.warn("Please select Unit Type");
 
     const formData = new FormData();
     formData.append("file", file);
     formData.append("lead_org_id", lead_org_id);
+    formData.append("assignedTo", assignedTo);
+    formData.append("main_project_id", main_project_id);
+    formData.append("unit_id", unit_id);
 
     try {
       setLoading(true);
@@ -78,14 +164,11 @@ const BulkLeadUploadPopup = ({ isOpen, onClose, fetchLeads }) => {
         }
       );
 
-      cogoToast.success(
-        response.data.message || "Leads uploaded successfully!"
-      );
+      cogoToast.success(response.data.message);
       fetchLeads && fetchLeads();
       handleClose();
     } catch (error) {
-      console.error("Error uploading file:", error);
-      cogoToast.error(error.response?.data?.message || "File upload failed");
+      cogoToast.error(error.response?.data?.message || "Upload failed");
     } finally {
       setLoading(false);
     }
@@ -123,15 +206,73 @@ const BulkLeadUploadPopup = ({ isOpen, onClose, fetchLeads }) => {
 
             {/* Form */}
             <form onSubmit={handleUpload} className="space-y-5">
+              {/* Assigned To */}
               <div>
-                <label className="text-sm font-medium text-gray-600 block mb-2">
+                <label className="text-sm font-medium text-gray-600">
+                  Assigned To
+                </label>
+                <select
+                  value={assignedTo}
+                  onChange={(e) => setAssignedTo(e.target.value)}
+                  className="mt-1 w-full px-3 py-2 border rounded-lg border-gray-300"
+                >
+                  <option value="">Select Employee</option>
+                  {employees.map((emp) => (
+                    <option key={emp.staff_id} value={emp.staff_id}>
+                      {emp.staff_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Project Name */}
+              <div>
+                <label className="text-sm font-medium text-gray-600">
+                  Project Name
+                </label>
+                <select
+                  value={main_project_id}
+                  onChange={(e) => setMainProjectId(e.target.value)}
+                  className="mt-1 w-full px-3 py-2 border rounded-lg border-gray-300"
+                >
+                  <option value="">Select Project</option>
+                  {projects.map((proj) => (
+                    <option key={proj.project_id} value={proj.project_id}>
+                      {proj.project_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Unit Type */}
+              <div>
+                <label className="text-sm font-medium text-gray-600">
+                  Unit Type
+                </label>
+                <select
+                  value={unit_id}
+                  onChange={(e) => setUnitId(e.target.value)}
+                  className="mt-1 w-full px-3 py-2 border rounded-lg border-gray-300"
+                >
+                  <option value="">Select Unit Type</option>
+                  {projectUnit.map((u) => (
+                    <option key={u.unit_id} value={u.unit_id}>
+                      {`${u.unit_number} - ${u.unit_type} - ₹${u.base_price}`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* File Upload */}
+              <div>
+                <label className="text-sm font-medium text-gray-600">
                   Select Excel File
                 </label>
                 <input
                   type="file"
-                  accept=".xlsx, .xls"
-                  onChange={handleFileChange}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 file:mr-3 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-cyan-600 file:text-white hover:file:bg-cyan-700 focus:outline-none"
+                  accept=".xlsx,.xls"
+                  onChange={(e) => setFile(e.target.files[0])}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2"
                 />
               </div>
 
@@ -149,19 +290,19 @@ const BulkLeadUploadPopup = ({ isOpen, onClose, fetchLeads }) => {
                 </button>
               </div>
 
-              {/* Buttons */}
-              <div className="flex justify-end gap-3 pt-2">
+              {/* Upload */}
+              <div className="flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                  className="px-4 py-2 bg-gray-200 rounded-lg"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-4 py-2 bg-cyan-600 text-white rounded-lg shadow hover:bg-cyan-700 transition"
+                  className="px-4 py-2 bg-cyan-600 text-white rounded-lg"
                 >
                   {loading ? "Uploading..." : "Upload"}
                 </button>

@@ -278,6 +278,9 @@ const {
   addPaymentRecord,
   updatePaymentStatus,
   updateRegistryPaymentStatus,
+  updateUtilityPaymentStatus,
+  getAllTransanctionByESUId,
+  updatePaymentRecord,
 } = require("../controllers/controllerEleven");
 
 // ========== Router Begins =====================
@@ -801,5 +804,15 @@ router.put(
   "/updateRegistryPaymentStatus/:registryId",
   updateRegistryPaymentStatus
 );
+router.put(
+  "/updateUtilityPaymentStatus/:utilityId",
+  updateUtilityPaymentStatus
+);
+router.get(
+  "/getAllTransanctionByESUId/:esuId/:orgId",
+  getAllTransanctionByESUId
+);
+
+router.put("/updatePaymentRecord/:payId", updatePaymentRecord);
 
 module.exports = router;

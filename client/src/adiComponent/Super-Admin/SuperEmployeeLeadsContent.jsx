@@ -12,11 +12,15 @@ import { FaDatabase } from "react-icons/fa6";
 import { BiExport } from "react-icons/bi";
 import * as XLSX from "xlsx";
 import GenLeadAssignedPopup from "../../pages/superAdmin/popupWindows/GenLeadAssignedPopup";
+import { useNavigate } from "react-router-dom";
 
 function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   const superadminuser = useSelector((state) => state.auth.user);
+  console.log("admin 365", superadminuser);
+
   const token = superadminuser.token;
   const userId = superadminuser.staff_id;
+  const navigate = useNavigate();
 
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
@@ -611,12 +615,18 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
               </div>
 
               {/* Dropdown */}
-              <div>
+              <div className="w-full sm:w-auto">
+                <label className="text-sm font-medium text-gray-700">
+                  Number of rows:
+                </label>
+
                 <select
                   onChange={handleLeadsPerPageChange}
-                  className="px-2 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition w-48"
+                  className="mt-1 px-2 py-2 border border-gray-300 rounded-lg shadow-sm 
+               focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 
+               transition w-24"
                 >
-                  <option value={10}>Rows: 10</option>
+                  <option value={10}>10</option>
                   <option value={20}>20</option>
                   <option value={50}>50</option>
                   <option value="All">All</option>
@@ -732,7 +742,12 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
                         </td>
                         <td
                           className="px-6 py-4 border-b border-gray-200 underline text-cyan-600 cursor-pointer font-semibold"
-                          onClick={() => handleRowClick(lead)}
+                          // onClick={() => handleRowClick(lead)}
+                          onClick={() =>
+                            navigate(
+                              `/superadmin-lead-single-data/general/${lead.lead_id}`
+                            )
+                          }
                         >
                           {lead.lead_id}
                         </td>
@@ -925,6 +940,9 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
         isOpen={showBulkModal}
         onClose={() => setShowBulkModal(false)}
         fetchLeads={fetchLeads}
+        projectunit={projectunit}
+        projects={projects}
+        employees={employees}
       />
       <GenLeadAssignedPopup
         isOpen={isBulkAssignOpen}

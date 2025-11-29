@@ -7,10 +7,13 @@ import { useSelector } from "react-redux";
 const RegistryCreatePopup = ({ isOpen, onClose, leads, booking }) => {
   const modalRef = useRef();
   const Emp = useSelector((state) => state.auth.user);
+  console.log(Emp);
+
   const token = Emp?.token;
   const today = new Date().toISOString().split("T")[0];
   const [registry, setRegistry] = useState({
     registry_esu_id: booking[0]?.esu_id,
+    registry_org_id: Emp?.staff_org_id,
     registry_lead_id: leads[0]?.lead_id || leads[0]?.leadgen_id,
     registry_amount: "",
     registry_date: today,
@@ -45,6 +48,7 @@ const RegistryCreatePopup = ({ isOpen, onClose, leads, booking }) => {
     try {
       const formData = new FormData();
       formData.append("registry_esu_id", booking[0]?.esu_id);
+      formData.append("registry_org_id", Emp?.staff_org_id);
       formData.append(
         "registry_lead_id",
         leads[0]?.lead_id || leads[0]?.leadgen_id

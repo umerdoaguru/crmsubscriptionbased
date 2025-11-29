@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
+import { FaDatabase } from "react-icons/fa";
+import SuperAdminEditLeadPopup from "../../adiComponent/Super-Admin/SuperAdminEditLeadPopup";
 
 const EmployeeLeadContent = ({ isSidebarOpen }) => {
   const [leads, setLeads] = useState([]);
@@ -26,12 +28,26 @@ const EmployeeLeadContent = ({ isSidebarOpen }) => {
   const [sortOrder, setSortOrder] = useState("desce");
   const [currentPage, setCurrentPage] = useState(0);
   const [leadsPerPage, setLeadsPerPage] = useState(10);
+  const [isEditing, setIsEditing] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [employees, setEmployees] = useState([]);
+  const [projectunit, setProjectUnit] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [selectedLead, setSelectedLead] = useState();
+
   const navigate = useNavigate();
   const EmpId = useSelector((state) => state.auth.user);
+  console.log(EmpId);
+
   const token = EmpId?.token;
   const uniqueYears = [
     ...new Set(leads.map((lead) => moment(lead.createdTime).format("YYYY"))),
   ];
+
+  const handleCreateClick = () => {
+    setIsEditing(false);
+    setShowPopup(true);
+  };
 
   const monthOrder = [
     "January",
@@ -72,6 +88,8 @@ const EmployeeLeadContent = ({ isSidebarOpen }) => {
 
   useEffect(() => {
     fetchLeads();
+    fetchProjectsUnit();
+    fetchProjects();
   }, []);
 
   const fetchLeads = async () => {
@@ -86,9 +104,58 @@ const EmployeeLeadContent = ({ isSidebarOpen }) => {
         }
       );
       const data = response.data;
+      const sources = data
+        .map((lead) => lead.leadSource)
+        .filter((source) => source);
+      setDynamicLeadSources(Array.from(new Set(sources)));
       setLeads(data);
     } catch (error) {
       console.error("Error fetching leads:", error);
+    }
+  };
+
+  const fetchProjects = async () => {
+    try {
+      const { data } = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/super-admin-all-project/${EmpId?.staff_org_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setProjects(data);
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    }
+  };
+
+  const fetchProjectsUnit = async (main_project_id) => {
+    try {
+      if (!main_project_id) {
+        setProjectUnit([]);
+        return;
+      }
+
+      const response = await axios.get(
+        `https://crm-generalize.dentalguru.software/api/super-admin-project-unit/${main_project_id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.length > 0) {
+        setProjectUnit(response.data);
+      } else {
+        setProjectUnit([]);
+      }
+    } catch (error) {
+      console.error("Error fetching units:", error);
+      setProjectUnit([]);
     }
   };
 
@@ -297,6 +364,27 @@ const EmployeeLeadContent = ({ isSidebarOpen }) => {
     setSortOrder("desce");
   };
 
+  const hardCodedLeadSources = [
+    "Referrals",
+    "Cold Calling",
+    "Email Campaigns",
+    "Networking Events",
+    "Paid Advertising",
+    "Content Marketing",
+    "SEO",
+    "Trade Shows",
+    "Affiliate Marketing",
+    "Direct Mail",
+    "Online Directories",
+    "others",
+  ];
+
+  const [dynamicLeadSources, setDynamicLeadSources] = useState([]);
+
+  const combinedLeadSources = [
+    ...new Set([...hardCodedLeadSources, ...dynamicLeadSources]),
+  ];
+
   return (
     <>
       <div className="flex mt-20">
@@ -309,6 +397,20 @@ const EmployeeLeadContent = ({ isSidebarOpen }) => {
               <center className="mx-auto h-[3px] w-16 bg-cyan-600 my-3"></center>
 
               {/* Button to create a new lead */}
+              <div className="flex mb-4 gap-2">
+                <button
+                  className="bg-cyan-600 text-white mt-2 px-4 py-2 rounded hover:bg-cyan-700 font-medium"
+                  onClick={handleCreateClick}
+                >
+                  + Add Lead
+                </button>
+                {/* <button
+                  className="bg-green-600 text-white mt-2 px-4 py-2 rounded hover:bg-green-700 font-medium flex gap-2 items-center"
+                  onClick={() => setShowBulkModal(true)}
+                >
+                  <FaDatabase /> Add Lead Bulk
+                </button> */}
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 gap-y-3 mb-4">
                 {/* Search */}
@@ -428,11 +530,15 @@ const EmployeeLeadContent = ({ isSidebarOpen }) => {
 
                 {/* Dropdown */}
                 <div className="w-full sm:w-auto">
+                  <label className="text-sm font-medium text-gray-700">
+                    Number of rows:{" "}
+                  </label>
+
                   <select
                     onChange={handleLeadsPerPageChange}
-                    className="border border-cyan-600 rounded text-md text-gray-600 p-2 w-full sm:w-48"
+                    className="mt-1 border border-cyan-600 rounded text-sm text-gray-600 p-2 w-full sm:w-48"
                   >
-                    <option value={10}>Number of rows: 10</option>
+                    <option value={10}>10</option>
                     <option value={20}>20</option>
                     <option value={50}>50</option>
                     <option value="All">All</option>
@@ -542,34 +648,12 @@ const EmployeeLeadContent = ({ isSidebarOpen }) => {
                               .format("DD MMM YYYY")
                               .toUpperCase()}
                           </td>
-                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-gray-600 font-semibold whitespace-normal break-words">
-                            {lead.lead_status === "active lead" ||
-                            lead.lead_status === "Calling Done" ||
-                            lead.lead_status === "site visit done" ||
-                            lead.lead_status === "interested" ||
-                            lead.lead_status === "not-interested" ? (
-                              <button
-                                className="text-[green] font-semibold hover:text-cyan-700"
-                                onClick={() => handleUpdate(lead)}
-                              >
-                                Started Work
-                              </button>
-                            ) : lead.lead_status === "pending" ? (
-                              <button
-                                className="text-cyan-600 font-semibold hover:text-cyan-700"
-                                onClick={() => handleUpdate(lead)}
-                              >
-                                Not Start Work
-                              </button>
-                            ) : lead.lead_status === "completed" ||
-                              lead.lead_status === "Sold" ? (
-                              <button
-                                className="text-gray-400 font-semibold cursor-not-allowed"
-                                disabled
-                              >
-                                Work Completed
-                              </button>
-                            ) : null}
+                          <td className="px-2 sm:px-4 py-3 border-b border-gray-200 text-cyan-600 hover:text-cyan-800 font-semibold whitespace-normal break-words">
+                            <Link
+                              to={`/employee-lead-single-data/general/${lead.lead_id}`}
+                            >
+                              View Details
+                            </Link>
                           </td>
                         </tr>
                       ))
@@ -613,6 +697,27 @@ const EmployeeLeadContent = ({ isSidebarOpen }) => {
           </div>
         </div>
       </div>
+      <SuperAdminEditLeadPopup
+        isOpen={showPopup}
+        onClose={() => setShowPopup(false)}
+        employees={employees}
+        combinedLeadSources={combinedLeadSources}
+        projectunit={projectunit}
+        projects={projects}
+        fetchProjectsUnit={fetchProjectsUnit}
+        fetchLeads={fetchLeads}
+        isEditing={isEditing}
+        currentLeads={currentLeads}
+        selectedLead={selectedLead}
+        setIsEditing={setIsEditing}
+        saleUser={EmpId}
+      />
+
+      {/* <BulkLeadUploadPopup
+              isOpen={showBulkModal}
+              onClose={() => setShowBulkModal(false)}
+              fetchLeads={fetchLeads}
+            /> */}
     </>
   );
 };

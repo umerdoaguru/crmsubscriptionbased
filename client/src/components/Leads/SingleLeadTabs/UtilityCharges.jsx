@@ -6,6 +6,7 @@ import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import UpdateUtilityPopup from "../../EmployeePops/UpdateUtilityPopup";
 import cogoToast from "cogo-toast";
+import PaymentCreatePopup from "../../EmployeePops/PaymentCreatePopup";
 
 const UtilityCharges = () => {
   const { type, id } = useParams();
@@ -13,6 +14,13 @@ const UtilityCharges = () => {
   const [utility, setUtility] = useState([]);
   const [updateModal, setUpdateModal] = useState(false);
   const [selected, setSelected] = useState();
+  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState();
+
+  const openPaymentModal = (data) => {
+    setSelectedPayment(data);
+    setIsPaymentPopupOpen(true);
+  };
 
   const openUpdateModal = (data) => {
     setSelected(data);
@@ -52,6 +60,11 @@ const UtilityCharges = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const openUtilityReceipt = (bill) => {
+    const serialized = encodeURIComponent(JSON.stringify(bill));
+    window.open(`/utility-receipt?data=${serialized}`, "_blank");
   };
 
   return (
@@ -111,18 +124,39 @@ const UtilityCharges = () => {
                 </td>
 
                 <td className="px-6 py-4 border-b border-gray-200">
-                  <button
-                    className="text-orange-400 font-bold text-2xl"
-                    onClick={() => openUpdateModal(lead)}
-                  >
-                    <FaEdit />
-                  </button>
-                  <button
-                    className="text-red-600 font-bold text-2xl"
-                    onClick={() => deleteUtilityData(lead?.utility_id)}
-                  >
-                    <MdDelete />
-                  </button>
+                  {lead?.utility_pay_status !== "paid" && (
+                    <>
+                      <button
+                        className="text-orange-400 font-bold text-2xl"
+                        onClick={() => openUpdateModal(lead)}
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        className="text-red-600 font-bold text-2xl"
+                        onClick={() => deleteUtilityData(lead?.utility_id)}
+                      >
+                        <MdDelete />
+                      </button>
+                      <button
+                        className="bg-green-600 text-white p-2 px-2 rounded hover:bg-green-700"
+                        onClick={() => openPaymentModal(lead)}
+                      >
+                        Make Payment
+                      </button>
+                    </>
+                  )}
+
+                  {lead?.utility_pay_status === "paid" && (
+                    <>
+                      <button
+                        className="bg-gray-600 text-white p-2 px-2 rounded hover:bg-gray-800"
+                        onClick={() => openUtilityReceipt(lead)}
+                      >
+                        Generate Receipt
+                      </button>
+                    </>
+                  )}
                 </td>
               </tr>
             ))}
@@ -134,6 +168,13 @@ const UtilityCharges = () => {
         onClose={() => setUpdateModal(false)}
         selected={selected}
         fetchUtilityBills={fetchUtilityBills}
+      />
+      <PaymentCreatePopup
+        isOpen={isPaymentPopupOpen}
+        onClose={() => setIsPaymentPopupOpen(false)}
+        selectedPayment={selectedPayment}
+        paymentType={"utility"}
+        callBackFunc={fetchUtilityBills}
       />
     </>
   );

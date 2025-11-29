@@ -6,7 +6,9 @@ import cogoToast from "cogo-toast";
 import moment from "moment";
 import OwnerPaymentSavePopup from "../../../pages/Employees/EmpPopupWindow/OwnerPaymentSavePopup";
 
-const SoldUnitView = () => {
+const SoldUnitView = ({ booking }) => {
+  console.log(booking.length);
+
   const [unitSoldData, setUnitSoldData] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -130,7 +132,7 @@ const SoldUnitView = () => {
     }
   }, [unitSoldData]);
 
-  console.log(unitSoldData);
+  console.log(unitSoldData, "hello unit");
 
   const fetchUnitSoldData = async () => {
     try {
@@ -211,234 +213,247 @@ const SoldUnitView = () => {
               Unit Sold Details
             </h2>
           </div>
-
-          {unitSoldData.length === 0 ? (
-            <div className="text-center text-gray-500 mt-10">
-              No unit sold details found.
-            </div>
-          ) : (
-            unitSoldData.map((data, i) => (
-              <div
-                key={i}
-                className="bg-white shadow-md rounded-xl p-6 mb-10 border border-gray-200"
-              >
-                {/* ========= ACTION BUTTONS ========= */}
-                <div className="flex flex-wrap gap-3 justify-end mb-6">
-                  {data.esu_payment_method === "EMI" &&
-                    loanInstallment.length === 0 && (
-                      <button
-                        onClick={() => setOwnerLoanModal(true)}
-                        className="bg-indigo-500 text-white px-4 py-1 rounded-md hover:bg-indigo-600"
-                      >
-                        + Add Loan
-                      </button>
-                    )}
-
-                  {data.esu_payment_method !== "EMI" &&
-                    ownPayment?.length === 0 && (
-                      <button
-                        onClick={() => setOwnPaymentModal(true)}
-                        className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600"
-                      >
-                        + Add Payment
-                      </button>
-                    )}
+          {booking.length > 0 ? (
+            <>
+              {unitSoldData.length === 0 ? (
+                <div className="text-center text-gray-500 mt-10">
+                  No unit sold details found.
                 </div>
+              ) : (
+                unitSoldData.map((data, i) => (
+                  <div
+                    key={i}
+                    className="bg-white shadow-md rounded-xl p-6 mb-10 border border-gray-200"
+                  >
+                    {/* ========= ACTION BUTTONS ========= */}
+                    <div className="flex flex-wrap gap-3 justify-end mb-6">
+                      {data.esu_payment_method === "EMI" &&
+                        loanInstallment.length === 0 && (
+                          <button
+                            onClick={() => setOwnerLoanModal(true)}
+                            className="bg-indigo-500 text-white px-4 py-1 rounded-md hover:bg-indigo-600"
+                          >
+                            + Add Loan
+                          </button>
+                        )}
 
-                {/* ========= PROJECT & UNIT DETAILS ========= */}
-                <h3 className="text-xl font-semibold mb-3 text-cyan-700">
-                  Project & Unit Details
-                </h3>
+                      {data.esu_payment_method !== "EMI" &&
+                        ownPayment?.length === 0 && (
+                          <button
+                            onClick={() => setOwnPaymentModal(true)}
+                            className="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600"
+                          >
+                            + Add Payment
+                          </button>
+                        )}
+                    </div>
 
-                <div className="grid sm:grid-cols-2 gap-2 text-gray-700 mb-6">
-                  <p>
-                    <strong>Project Name:</strong> {data.project_name}
-                  </p>
-                  <p>
-                    <strong>Unit No:</strong> {data.unit_number}
-                  </p>
-                  <p>
-                    <strong>Unit Type:</strong> {data.unit_type}
-                  </p>
-                  <p>
-                    <strong>Area:</strong> {data.unit_area} sqft
-                  </p>
-                  <p>
-                    <strong>Base Price:</strong> ₹{data.base_price}
-                  </p>
-                  <p>
-                    <strong>Sale Price:</strong> ₹{data.esu_sale_price}
-                  </p>
-                  <p>
-                    <strong>Status:</strong> {data.unit_status}
-                  </p>
-                  {/* <p>
+                    {/* ========= PROJECT & UNIT DETAILS ========= */}
+                    <h3 className="text-xl font-semibold mb-3 text-cyan-700">
+                      Project & Unit Details
+                    </h3>
+
+                    <div className="grid sm:grid-cols-2 gap-2 text-gray-700 mb-6">
+                      <p>
+                        <strong>Project Name:</strong> {data.project_name}
+                      </p>
+                      <p>
+                        <strong>Unit No:</strong> {data.unit_number}
+                      </p>
+                      <p>
+                        <strong>Unit Type:</strong> {data.unit_type}
+                      </p>
+                      <p>
+                        <strong>Area:</strong> {data.unit_area} sqft
+                      </p>
+                      <p>
+                        <strong>Base Price:</strong> ₹{data.base_price}
+                      </p>
+                      <p>
+                        <strong>Sale Price:</strong> ₹{data.esu_sale_price}
+                      </p>
+                      <p>
+                        <strong>Status:</strong> {data.unit_status}
+                      </p>
+                      {/* <p>
                     <strong>Remaining Amount:</strong> ₹{data.remaining_amount}
                   </p> */}
-                </div>
+                    </div>
 
-                {/* ========= SALE & BOOKING DETAILS ========= */}
-                <h3 className="text-xl font-semibold mb-3 text-cyan-700">
-                  Sale, Booking & Registry Details
-                </h3>
-
-                <div className="grid sm:grid-cols-2 gap-4 text-gray-700 mb-6">
-                  <p>
-                    <strong>Sold Date:</strong>{" "}
-                    {data.esu_final_sold_date
-                      ? moment(data.esu_final_sold_date).format("DD MMM YYYY")
-                      : "—"}
-                  </p>
-
-                  <p>
-                    <strong>Booking Amount:</strong> ₹
-                    {data.booking_amount || "—"}
-                  </p>
-                  <p>
-                    <strong>Booking Date:</strong>{" "}
-                    {data.booking_date
-                      ? moment(data.booking_date).format("DD MMM YYYY")
-                      : "—"}
-                  </p>
-                  <p>
-                    <strong>Booking Notes:</strong> {data.booking_notes || "—"}
-                  </p>
-
-                  <p>
-                    <strong>Registry Amount:</strong> ₹
-                    {data.registry_amount || "—"}
-                  </p>
-                  <p>
-                    <strong>Registry Date:</strong>{" "}
-                    {data.registry_date
-                      ? moment(data.registry_date).format("DD MMM YYYY")
-                      : "—"}
-                  </p>
-                  <p>
-                    <strong>Registry Notes:</strong>{" "}
-                    {data.registry_notes || "—"}
-                  </p>
-
-                  <p>
-                    <strong>Payment Mode:</strong> {data.esu_payment_method}
-                  </p>
-                </div>
-
-                {/* ========= OWNER DETAILS ========= */}
-                <h3 className="text-xl font-semibold mb-3 text-cyan-700">
-                  Owner Details
-                </h3>
-
-                <div className="grid sm:grid-cols-2 gap-2 text-gray-700 mb-6">
-                  <p>
-                    <strong>Name:</strong> {data.owner_name}
-                  </p>
-                  <p>
-                    <strong>Phone:</strong> {data.owner_phone}
-                  </p>
-                  <p>
-                    <strong>Email:</strong> {data.owner_email}
-                  </p>
-                  <p>
-                    <strong>Address:</strong> {data.owner_address}
-                  </p>
-                </div>
-
-                {/* ========= STAFF DETAILS ========= */}
-                <h3 className="text-xl font-semibold mb-3 text-cyan-700">
-                  Staff Details
-                </h3>
-
-                <div className="grid sm:grid-cols-2 gap-2 text-gray-700 mb-6">
-                  <p>
-                    <strong>Name:</strong> {data.staff_name}
-                  </p>
-                  <p>
-                    <strong>Phone:</strong> {data.staff_phone}
-                  </p>
-                  <p>
-                    <strong>Email:</strong> {data.staff_email}
-                  </p>
-                  <p>
-                    <strong>Role:</strong> {data.staff_role}
-                  </p>
-                </div>
-
-                {/* ========= UTILITY CHARGES ========= */}
-                {data?.utilities && data?.utilities?.length > 0 && (
-                  <div className="mb-6">
+                    {/* ========= SALE & BOOKING DETAILS ========= */}
                     <h3 className="text-xl font-semibold mb-3 text-cyan-700">
-                      Utility Charges
+                      Sale, Booking & Registry Details
                     </h3>
 
-                    <div className="space-y-4">
-                      {data?.utilities?.map((u, idx) => (
-                        <div
-                          key={idx}
-                          className="border p-4 rounded-lg bg-gray-50 text-gray-700"
-                        >
-                          <p>
-                            <strong>Type:</strong> {u.utility_type}
-                          </p>
-                          <p>
-                            <strong>Amount:</strong> ₹{u.utility_amount}
-                          </p>
-                          <p>
-                            <strong>Date:</strong>{" "}
-                            {moment(u.utility_date).format("DD MMM YYYY")}
-                          </p>
-                          <p>
-                            <strong>Description:</strong> {u.description || "—"}
-                          </p>
+                    <div className="grid sm:grid-cols-2 gap-4 text-gray-700 mb-6">
+                      <p>
+                        <strong>Sold Date:</strong>{" "}
+                        {data.esu_final_sold_date
+                          ? moment(data.esu_final_sold_date).format(
+                              "DD MMM YYYY"
+                            )
+                          : "—"}
+                      </p>
 
-                          {u.utility_receipt_url && (
-                            <p>
-                              <strong>Receipt:</strong>{" "}
-                              <a
-                                href={u.utility_receipt_url}
-                                target="_blank"
-                                className="text-blue-600 underline"
-                              >
-                                View Receipt
-                              </a>
-                            </p>
-                          )}
+                      <p>
+                        <strong>Booking Amount:</strong> ₹
+                        {data.booking_amount || "—"}
+                      </p>
+                      <p>
+                        <strong>Booking Date:</strong>{" "}
+                        {data.booking_date
+                          ? moment(data.booking_date).format("DD MMM YYYY")
+                          : "—"}
+                      </p>
+                      <p>
+                        <strong>Booking Notes:</strong>{" "}
+                        {data.booking_notes || "—"}
+                      </p>
+
+                      <p>
+                        <strong>Registry Amount:</strong> ₹
+                        {data.registry_amount || "—"}
+                      </p>
+                      <p>
+                        <strong>Registry Date:</strong>{" "}
+                        {data.registry_date
+                          ? moment(data.registry_date).format("DD MMM YYYY")
+                          : "—"}
+                      </p>
+                      <p>
+                        <strong>Registry Notes:</strong>{" "}
+                        {data.registry_notes || "—"}
+                      </p>
+
+                      <p>
+                        <strong>Payment Mode:</strong> {data.esu_payment_method}
+                      </p>
+                    </div>
+
+                    {/* ========= OWNER DETAILS ========= */}
+                    <h3 className="text-xl font-semibold mb-3 text-cyan-700">
+                      Owner Details
+                    </h3>
+
+                    <div className="grid sm:grid-cols-2 gap-2 text-gray-700 mb-6">
+                      <p>
+                        <strong>Name:</strong> {data.owner_name}
+                      </p>
+                      <p>
+                        <strong>Phone:</strong> {data.owner_phone}
+                      </p>
+                      <p>
+                        <strong>Email:</strong> {data.owner_email}
+                      </p>
+                      <p>
+                        <strong>Address:</strong> {data.owner_address}
+                      </p>
+                    </div>
+
+                    {/* ========= STAFF DETAILS ========= */}
+                    <h3 className="text-xl font-semibold mb-3 text-cyan-700">
+                      Staff Details
+                    </h3>
+
+                    <div className="grid sm:grid-cols-2 gap-2 text-gray-700 mb-6">
+                      <p>
+                        <strong>Name:</strong> {data.staff_name}
+                      </p>
+                      <p>
+                        <strong>Phone:</strong> {data.staff_phone}
+                      </p>
+                      <p>
+                        <strong>Email:</strong> {data.staff_email}
+                      </p>
+                      <p>
+                        <strong>Role:</strong> {data.staff_role}
+                      </p>
+                    </div>
+
+                    {/* ========= UTILITY CHARGES ========= */}
+                    {data?.utilities && data?.utilities?.length > 0 && (
+                      <div className="mb-6">
+                        <h3 className="text-xl font-semibold mb-3 text-cyan-700">
+                          Utility Charges
+                        </h3>
+
+                        <div className="space-y-4">
+                          {data?.utilities?.map((u, idx) => (
+                            <div
+                              key={idx}
+                              className="border p-4 rounded-lg bg-gray-50 text-gray-700"
+                            >
+                              <p>
+                                <strong>Type:</strong> {u.utility_type}
+                              </p>
+                              <p>
+                                <strong>Amount:</strong> ₹{u.utility_amount}
+                              </p>
+                              <p>
+                                <strong>Date:</strong>{" "}
+                                {moment(u.utility_date).format("DD MMM YYYY")}
+                              </p>
+                              <p>
+                                <strong>Description:</strong>{" "}
+                                {u.description || "—"}
+                              </p>
+
+                              {u.utility_receipt_url && (
+                                <p>
+                                  <strong>Receipt:</strong>{" "}
+                                  <a
+                                    href={u.utility_receipt_url}
+                                    target="_blank"
+                                    className="text-blue-600 underline"
+                                  >
+                                    View Receipt
+                                  </a>
+                                </p>
+                              )}
+                            </div>
+                          ))}
                         </div>
-                      ))}
+                      </div>
+                    )}
+
+                    {/* ========= NOTES ========= */}
+                    {data.esu_notes && (
+                      <div className="mb-6">
+                        <h3 className="text-xl font-semibold mb-2 text-cyan-700">
+                          Notes
+                        </h3>
+                        <p className="bg-gray-50 border p-3 rounded-lg text-gray-700">
+                          {data.esu_notes}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* ========= ACTION BUTTONS (BOTTOM) ========= */}
+                    <div className="mt-6 flex justify-end gap-3">
+                      <button
+                        onClick={() => openUnitModal(data)}
+                        className="bg-cyan-600 text-white sm:px-5 px-2 sm:py-2 py-1 rounded-lg hover:bg-cyan-700"
+                      >
+                        Update Details
+                      </button>
+
+                      <button
+                        onClick={() => handleDelete(data.esu_id)}
+                        className="bg-red-500 text-white sm:px-5 px-2 sm:py-2 py-1 rounded-lg hover:bg-red-600"
+                      >
+                        Delete Record
+                      </button>
                     </div>
                   </div>
-                )}
-
-                {/* ========= NOTES ========= */}
-                {data.esu_notes && (
-                  <div className="mb-6">
-                    <h3 className="text-xl font-semibold mb-2 text-cyan-700">
-                      Notes
-                    </h3>
-                    <p className="bg-gray-50 border p-3 rounded-lg text-gray-700">
-                      {data.esu_notes}
-                    </p>
-                  </div>
-                )}
-
-                {/* ========= ACTION BUTTONS (BOTTOM) ========= */}
-                <div className="mt-6 flex justify-end gap-3">
-                  <button
-                    onClick={() => openUnitModal(data)}
-                    className="bg-cyan-600 text-white sm:px-5 px-2 sm:py-2 py-1 rounded-lg hover:bg-cyan-700"
-                  >
-                    Update Details
-                  </button>
-
-                  <button
-                    onClick={() => handleDelete(data.esu_id)}
-                    className="bg-red-500 text-white sm:px-5 px-2 sm:py-2 py-1 rounded-lg hover:bg-red-600"
-                  >
-                    Delete Record
-                  </button>
-                </div>
+                ))
+              )}
+            </>
+          ) : (
+            <>
+              <div className="text-center text-gray-500 mt-10">
+                No unit sold details found.
               </div>
-            ))
+            </>
           )}
         </div>
         {ownPayment.length > 0 && (
