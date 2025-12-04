@@ -39,6 +39,8 @@ const SuperAdminVisitContent = () => {
     }
   };
 
+  console.log(leads);
+
   useEffect(() => {
     let filtered = leads;
     console.log(filtered);

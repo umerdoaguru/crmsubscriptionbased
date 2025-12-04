@@ -287,7 +287,7 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
   const handleLeadsPerPageChange = (e) => {
     const value = e.target.value;
     setLeadsPerPage(value === "All" ? Infinity : parseInt(value, 10));
-    setCurrentPage(0); // Reset to the first page
+    setCurrentPage(0); //  to the first page
   };
 
   const openModal = (data) => {
@@ -653,10 +653,12 @@ function SuperEmployeeLeadsContent({ isSidebarOpen }) {
 
             <div
               className={`overflow-x-auto mt-2 ${
-                isSidebarOpen ? "w-[78rem]" : "sm:w-[86rem]"
+                isSidebarOpen
+                  ? "w-[78rem] lg:w-[70rem] xl:w-[78rem] 2xl:w-[78rem] 3xl:w-full"
+                  : "sm:w-[86rem]"
               }`}
             >
-              <table className="tt min-w-full bg-white border whitespace-nowrap">
+              <table className="min-w-full bg-white border whitespace-nowrap">
                 <thead>
                   <tr>
                     <th className="px-4 py-2 border-y-2 border-gray-300 text-left text-cyan-700">

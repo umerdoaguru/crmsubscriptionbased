@@ -1,11 +1,9 @@
-import { FaBell, FaSearch } from "react-icons/fa";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { FaSearch } from "react-icons/fa";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import logoTwo from "../assets/favicon_one.png";
-import logoOne from "../assets/CRMGuruLogo.png";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 
 const Topbar = ({ isSidebarOpen }) => {
   const user = useSelector((state) => state.auth.user);
@@ -16,12 +14,13 @@ const Topbar = ({ isSidebarOpen }) => {
   const [query, setQuery] = useState("");
   const [filteredPages, setFilteredPages] = useState([]);
 
-  const role = user?.staff_role;
   const isLoggedIn = !!user;
 
-  const isAdmin = role === "Admin";
-  const isEmployee = role === "employee" || role === "Employee";
-  const isSuperAdmin = role === "Super-Admin";
+  const role = user?.staff_role?.toLowerCase();
+
+  const isAdmin = role === "admin";
+  const isEmployee = role === "employee";
+  const isSuperAdmin = role === "superadmin";
 
   const pages = [
     ...(isLoggedIn
@@ -129,18 +128,24 @@ const Topbar = ({ isSidebarOpen }) => {
       .toUpperCase();
   };
 
+  // const navigateToProfile = () => {
+  //   if (role === "superadmin") {
+  //     navigate("/super-admin-profile");
+  //   }
+
+  //   if (role === "admin") {
+  //     navigate("/admin-profile");
+  //   }
+
+  //   if (role === "employee") {
+  //     navigate("/employee-profile");
+  //   }
+  // };
+
   const navigateToProfile = () => {
-    if (role === "superadmin") {
-      navigate("/super-admin-profile");
-    }
-
-    if (role === "admin") {
-      navigate("/admin-profile");
-    }
-
-    if (role === "employee") {
-      navigate("/employee-profile");
-    }
+    if (isSuperAdmin) navigate("/super-admin-profile");
+    else if (isAdmin) navigate("/admin-profile");
+    else if (isEmployee) navigate("/employee-profile");
   };
 
   return (

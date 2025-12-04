@@ -255,6 +255,19 @@ const OneLoginOnly = () => {
             </form>
 
             {/* <GoogleOAuthButton /> */}
+            <div>
+              <p className="text-center mt-4">
+                Do not have account ?{" "}
+                <a
+                  href="https://crm.doaguru.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-cyan-200 hover:bg-black px-2 p-2 rounded"
+                >
+                  register here
+                </a>
+              </p>
+            </div>
           </div>
 
           {/* Footer */}

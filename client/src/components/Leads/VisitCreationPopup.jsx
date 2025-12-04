@@ -22,6 +22,7 @@ const VisitCreationPopup = ({
   console.log(user);
 
   const [visitLead, setVisitLead] = useState({
+    visit_org_id: user?.staff_org_id,
     vis_staff_id: user?.staff_id,
     vis_lead_id: Number(id),
     visit_details: "",

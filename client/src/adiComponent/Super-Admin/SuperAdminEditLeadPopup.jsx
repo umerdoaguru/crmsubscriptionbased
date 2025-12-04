@@ -25,13 +25,14 @@ const SuperAdminEditLeadPopup = ({
   const [errors, setErrors] = useState({});
   const [customLeadSource, setCustomLeadSource] = useState("");
   const [projectUnit, setProjectUnit] = useState([]);
+  const today = new Date().toISOString().split("T")[0];
   const [currentLead, setCurrentLead] = useState({
     lead_org_id: EmpId?.staff_org_id,
     lead_no: "",
     assignedTo: "",
     employeeId: "",
     employeephone: "",
-    createdTime: "",
+    createdTime: today,
     name: "",
     phone: "",
     lead_email: "",
@@ -41,6 +42,7 @@ const SuperAdminEditLeadPopup = ({
     unit_id: "",
     address: "",
     actual_date: "",
+    referred_by: "",
     user_id: userId,
   });
 
@@ -101,7 +103,7 @@ const SuperAdminEditLeadPopup = ({
         lead_org_id: EmpId?.staff_org_id,
         lead_no: "",
         assignedTo: "",
-        createdTime: "",
+        createdTime: today,
         name: "",
         phone: "",
         lead_email: "",
@@ -110,6 +112,7 @@ const SuperAdminEditLeadPopup = ({
         unit_type: "",
         unit_id: 0,
         address: "",
+        referred_by: "",
         actual_date: "",
       });
       setProjectUnit([]);
@@ -215,6 +218,23 @@ const SuperAdminEditLeadPopup = ({
             },
           }
         );
+
+        setCurrentLead({
+          lead_org_id: EmpId?.staff_org_id,
+          lead_no: "",
+          assignedTo: "",
+          createdTime: today,
+          name: "",
+          phone: "",
+          lead_email: "",
+          leadSource: "",
+          main_project_id: "",
+          unit_type: "",
+          unit_id: 0,
+          address: "",
+          referred_by: "",
+          actual_date: "",
+        });
       }
       setIsEditing(false);
       fetchLeads();
@@ -396,6 +416,23 @@ const SuperAdminEditLeadPopup = ({
                   />
                 )}
               </div>
+
+              {currentLead.leadSource === "Referrals" && (
+                <div>
+                  <label className="text-sm font-medium text-gray-600">
+                    Referred By
+                  </label>
+                  <input
+                    type="text"
+                    name="referred_by"
+                    required
+                    value={currentLead.referred_by}
+                    placeholder="Enter text here.."
+                    onChange={handleInputChange}
+                    className="mt-1 w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-cyan-400"
+                  />
+                </div>
+              )}
 
               {/* Project */}
               <div>

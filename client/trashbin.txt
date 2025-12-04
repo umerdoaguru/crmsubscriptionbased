@@ -1,3 +1,36 @@
+-{" "}
+ 
+xl:w-full
+ 
+-[90%] sm:w-full min-h-screen bg-[#F9FAFF] p-2
+ 
+className="grid max-sm:grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6"
+ 
+<IoSettings />
+ 
+Email
+ 
+Reset
+ 
+metaassignedTo
+ 
+ pages
+ 
+  const role = user?.staff_role;
+ 
+
+  const isAdmin = role === "Admin";
+  const isEmployee = role === "employee" || role === "Employee";
+  const isSuperAdmin = role === "Super-Admin";
+ 
+aBell,
+ 
+
+import axios from "axios";
+ 
+
+import logoOne from "../assets/CRMGuruLogo.png";
+ 
 
     const handleClose = () => {
     setFile(null);

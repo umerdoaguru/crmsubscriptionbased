@@ -37,6 +37,12 @@ const GeneralLeads = () => {
 
   console.log(leads);
 
+  const assignFilter = leads?.filter((item) => {
+    return item?.assignedTo !== null;
+  });
+
+  console.log(assignFilter);
+
   const indexOfLastLead = (currentPage + 1) * leadsPerPage;
   const indexOfFirstLead = indexOfLastLead - leadsPerPage;
   const currentLeads = leads?.slice(indexOfFirstLead, indexOfLastLead);
@@ -73,7 +79,7 @@ const GeneralLeads = () => {
             </thead>
             <tbody>
               {currentLeads?.length > 0 ? (
-                currentLeads?.map((lead, index) => (
+                assignFilter?.map((lead, index) => (
                   <tr
                     key={lead.id}
                     className={index % 2 === 0 ? "bg-gray-100" : ""}
