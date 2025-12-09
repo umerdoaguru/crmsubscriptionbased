@@ -1694,27 +1694,86 @@ const getEmployeeUnitSoldById = async (req, res) => {
     res.status(500).json({ message: "Internal Server Erro, error: errr" });
   }
 };
-const getEmployeeUnitSoldByLeadId = async (req, res) => {
+// const getEmployeeUnitSoldByLeadId = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const sql =
+//       "SELECT * FROM employee_sold_units join projects on projects.project_id = employee_sold_units.esu_project_id join leads on leads.lead_id = employee_sold_units.esu_lead_id join units on units.unit_id = employee_sold_units.esu_unit_id join company_staff on company_staff.staff_id = employee_sold_units.esu_staff_id WHERE employee_sold_units.esu_lead_id = ?";
+
+//     const result = await new Promise((resolve, reject) => {
+//       db.query(sql, [id], (err, results) => {
+//         if (err) {
+//           reject(err);
+//         } else {
+//           resolve(results);
+//         }
+//       });
+//     });
+
+//     res.status(200).json(result);
+//   } catch (err) {
+//     res.status(500).json({ message: "Internal Server Erro, error: errr" });
+//   }
+// };
+
+const getEmployeeUnitSoldByLeadId = (req, res) => {
   try {
     const { id } = req.params;
-    const sql =
-      "SELECT * FROM employee_sold_units join projects on projects.project_id = employee_sold_units.esu_project_id join leads on leads.lead_id = employee_sold_units.esu_lead_id join units on units.unit_id = employee_sold_units.esu_unit_id join company_staff on company_staff.staff_id = employee_sold_units.esu_staff_id WHERE employee_sold_units.esu_lead_id = ?";
 
-    const result = await new Promise((resolve, reject) => {
-      db.query(sql, [id], (err, results) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(results);
-        }
-      });
+    const sql = `
+      SELECT 
+        esu.*,
+        projects.*,
+        leads.*,
+        units.*,
+        company_staff.*,
+        owner.*,
+        booking_details.*,
+        registry_details.*,
+        COALESCE(
+          JSON_ARRAYAGG(
+            JSON_OBJECT(
+              'utility_id', utility_charges.utility_id,
+              'utility_type', utility_charges.utility_type,
+              'utility_amount', utility_charges.utility_amount,
+              'utility_date', utility_charges.utility_date,
+              'utility_receipt_url', utility_charges.utility_receipt_url,
+              'description', utility_charges.description
+            )
+          ) FILTER (WHERE utility_charges.utility_id IS NOT NULL),
+          JSON_ARRAY()
+        ) AS utilities
+      FROM employee_sold_units esu
+      JOIN projects ON projects.project_id = esu.esu_project_id
+      JOIN leads ON leads.lead_id = esu.esu_lead_id
+      JOIN units ON units.unit_id = esu.esu_unit_id
+      JOIN company_staff ON company_staff.staff_id = esu.esu_staff_id
+      JOIN owner ON owner.owner_id = esu.esu_owner_id
+      LEFT JOIN booking_details ON booking_details.booking_lead_id = esu.esu_lead_id
+      LEFT JOIN registry_details ON registry_details.registry_lead_id = esu.esu_lead_id
+      LEFT JOIN utility_charges ON utility_charges.utility_lead_id = esu.esu_lead_id
+      WHERE esu.esu_lead_id = ?
+      GROUP BY esu.esu_id
+    `;
+
+    db.query(sql, [id], (err, results) => {
+      if (err) {
+        console.log(err);
+        return res
+          .status(500)
+          .json({ message: "Database Error", error: err });
+      }
+
+      res.status(200).json(results[0]);
     });
 
-    res.status(200).json(result);
   } catch (err) {
-    res.status(500).json({ message: "Internal Server Erro, error: errr" });
+    console.log(err);
+    res.status(500).json({ message: "Internal Server Error", error: err });
   }
 };
+
+
 
 const getUnitDataByUnitId = async (req, res) => {
   try {

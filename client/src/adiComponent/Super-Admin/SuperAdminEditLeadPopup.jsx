@@ -379,7 +379,6 @@ const SuperAdminEditLeadPopup = ({
                 <input
                   type="text"
                   name="lead_email"
-                  required
                   value={currentLead.lead_email}
                   placeholder="Enter email"
                   onChange={handleInputChange}

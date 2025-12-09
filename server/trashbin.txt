@@ -1,3 +1,231 @@
+    // ⭐ IMPORTANT: assignedTo, main_project_id, unit_id req.body se aa rahe hain
+ 
+// for WHERE
+ 
+// payment id
+ 
+
+import moment from "moment-timezone";
+ 
+
+export default updatePaymentRecord;
+ 
+.registry_id
+ 
+
+  // Timestamp using Asia/Kolkata timezone
+ 
+booking_id
+ 
+
+  // Generate timestamp using Asia/Kolkata timezone
+ 
+const db = require("../db");
+const moment = require("moment-timezone");
+
+// Update booking payment status
+ 
+dat
+ 
+
+    // Required validation
+ 
+
+const db = require("../db"); // MySQL connection
+ 
+      // returns first & only row after GROUP BY
+ 
+new Date()
+ 
+
+      // Step 2: Update corresponding lead status
+ 
+    // Step 1: Update ESU details
+ 
+
+    // esu_status is always sold
+ 
+      // ==========================================
+      //  UPDATE employee_sold_units AFTER SUCCESS
+      // ==========================================
+ 
+const createRegistry = (req, res) => {
+  try {
+    const {
+      registry_esu_id,
+      registry_lead_id,
+      registry_amount,
+      registry_date,
+      registry_notes,
+    } = req.body;
+
+    const registry_document_url = req.file
+      ? `/registry_documents/${req.file.filename}`
+      : null;
+
+    if (
+      !registry_esu_id ||
+      !registry_lead_id ||
+      !registry_amount ||
+      !registry_date
+    ) {
+      return res.status(400).json({
+        message:
+          "registry_esu_id, registry_lead_id, registry_amount and registry_date are required",
+      });
+    }
+
+    const currentTime = moment()
+      .tz("Asia/Kolkata")
+      .format("YYYY-MM-DD HH:mm:ss");
+
+    const insertQuery = `
+      INSERT INTO registry_details 
+      (
+        registry_esu_id,
+        registry_lead_id,
+        registry_amount,
+        registry_date,
+        registry_document_url,
+        registry_notes,
+        registry_created_at,
+        registry_updated_at
+      ) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const values = [
+      registry_esu_id,
+      registry_lead_id,
+      registry_amount,
+      registry_date,
+      registry_document_url || null,
+      registry_notes || null,
+      currentTime,
+      currentTime,
+    ];
+
+    db.query(insertQuery, values, (err, result) => {
+      if (err) {
+        if (err.code === "ER_DUP_ENTRY") {
+          return res.status(409).json({
+            message:
+              "Duplicate: registry_lead_id or registry_esu_id must be unique",
+          });
+        }
+        return res.status(500).json({ message: "Database error", error: err });
+      }
+
+      res.status(200).json({
+        message: "Registry record created successfully",
+        registry_id: result.insertId,
+      });
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+ 
+
+      // Delete the record
+ 
+    // Check record exists
+ 
+    // Add utility_id for WHERE condition
+ 
+    // If no fields sent
+ 
+    // Build dynamic update query
+ 
+    // DB INSERT
+ 
+ing_esu_id, booking_org_id, booking_amount, booking_date, booking_notes, 
+ 
+  if (!booking_amount || !booking_date) {
+      return res
+        .status(400)
+        .json({ message: "booking_amount and booking_date are required" });
+    }
+ 
+
+    if (registry_esu_id) {
+      updateFields.push("registry_esu_id = ?");
+      values.push(registry_esu_id);
+    }
+
+    if (registry_lead_id) {
+      updateFields.push("registry_lead_id = ?");
+      values.push(registry_lead_id);
+    }
+ 
+      registry_esu_id,
+      registry_lead_id,
+ 
+      registry_esu_id,
+      registry_lead_id,
+ 
+    // File update (optional)
+ 
+
+    // Add WHERE condition
+ 
+    // Always update timestamp
+ 
+    // If no fields provided
+ 
+  // Build dynamic update query
+ 
+  const selectQuery = `select * from registry_details left join employee_sold_units on employee_sold_units.esu_id = registry_details.registry_esu_id left join owner on owner.owner_id = employee_sold_units.esu_owner_id where employee_sold_units.registry_lead_id = ?`;
+ 
+const getBookingBYleadId = async (req, res) => {
+  try {
+    const { leadId } = req.params.leadId;
+    const selectQuery = `select * from booking_details left join employee_sold_units on employee_sold_units.esu_id = booking_details.booking_esu_id left join owner on owner.owner_id = employee_sold_units.esu_owner_id where employee_sold_units.esu_lead_id = ?`;
+    db.query(selectQuery, leadId, (err, result) => {
+      if (err) {
+        return res.status(400).json({ success: false, message: err.message });
+      }
+      return res.status(200).send(result);
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+ 
+     registry_document_url,
+ 
+
+      registry_receipt_url || null,
+ 
+
+        registry_receipt_url,
+ 
+  registry_receipt_url,
+ 
+   // Required fields validation
+ 
+    if (booking_esu_id !== undefined) {
+      fields.push("booking_esu_id = ?");
+      values.push(booking_esu_id);
+    }
+
+    if (booking_org_id !== undefined) {
+      fields.push("booking_org_id = ?");
+      values.push(booking_org_id);
+    }
+ 
+      booking_esu_id,
+      booking_org_id,
+ 
+    // Add booking_id at last
+ 
+
+    // Always update timestamp
+ 
+    // If no fields provided
+ 
+    // Dynamically build SET query
+ 
 require("../i")
  
 // controllers/bookingsController.js
